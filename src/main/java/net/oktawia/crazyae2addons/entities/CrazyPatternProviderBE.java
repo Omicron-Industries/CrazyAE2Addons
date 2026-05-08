@@ -1,7 +1,5 @@
 package net.oktawia.crazyae2addons.entities;
 
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -14,7 +12,6 @@ import appeng.menu.locator.MenuLocator;
 import appeng.util.SettingsFrom;
 import appeng.util.inv.AppEngInternalInventory;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
@@ -22,8 +19,6 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -40,12 +35,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @Getter
-public class CrazyPatternProviderBE extends PatternProviderBlockEntity
-        implements IUpgradeableObject, IManagedBEHelper {
+public class CrazyPatternProviderBE extends PatternProviderBlockEntity implements IManagedBEHelper, IUpgradeableObject {
 
     private static final int BASE_SIZE = 8 * 9;
     private static final int ROW_SIZE = 9;
     private static final String NBT_PATTERNS = "crazy_patterns";
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(), 1, this::setChanged);
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(CrazyPatternProviderBE.class);
@@ -78,6 +73,11 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity
         if (level != null) {
             applySize();
         }
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return this.upgrades;
     }
 
     @Override
@@ -139,10 +139,6 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity
             applySize();
             getLogic().updatePatterns();
         }
-    }
-
-    private void onUpgradesChanged() {
-        setChanged();
     }
 
     private void applySize() {

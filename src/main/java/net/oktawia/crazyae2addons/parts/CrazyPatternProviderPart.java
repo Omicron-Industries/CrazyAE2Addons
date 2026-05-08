@@ -1,7 +1,5 @@
 package net.oktawia.crazyae2addons.parts;
 
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
@@ -23,7 +21,6 @@ import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.accessor.IManagedAccessor;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -42,6 +39,7 @@ import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.defs.LangDefs;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IProviderLogicResizable;
@@ -76,12 +74,18 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
     );
 
     private final PartState state = new PartState(this);
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(), 1, () -> getHost().markForSave());
 
     public CrazyPatternProviderPart(IPartItem<?> partItem) {
         super(partItem);
         if (!CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_PART_ENABLED.get()) {
             getMainNode().destroy();
         }
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return this.upgrades;
     }
 
     public int getAdded() {
@@ -297,10 +301,6 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
                     this,
                     NbtTagPayload.of(tag)
             );
-        }
-
-        private void onUpgradesChanged() {
-            owner.saveChanges();
         }
 
         private void markFieldDirty(String name) {

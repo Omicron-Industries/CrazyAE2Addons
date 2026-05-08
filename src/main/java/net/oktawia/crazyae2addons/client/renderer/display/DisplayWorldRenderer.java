@@ -1,5 +1,6 @@
 package net.oktawia.crazyae2addons.client.renderer.display;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,8 @@ import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.logic.display.DisplayGrid;
 import net.oktawia.crazyae2addons.parts.Display;
 
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
@@ -28,6 +30,13 @@ public final class DisplayWorldRenderer {
 
     private static final float RENDER_DIST_SQ = 128f * 128f;
     private static final float DISPLAY_SURFACE_OFFSET = 0.501f;
+    private static final int DISPLAY_BUFFER_SIZE = 262_144;
+    private static final int MAX_RENDERED_GROUPS_PER_FRAME = 256;
+    private static final int MAX_COMMANDS_PER_GROUP = 16_384;
+
+    private static final BufferBuilder DISPLAY_BUFFER_BUILDER = new BufferBuilder(DISPLAY_BUFFER_SIZE);
+    private static final MultiBufferSource.BufferSource DISPLAY_BUFFER_SOURCE =
+            MultiBufferSource.immediate(DISPLAY_BUFFER_BUILDER);
 
     private DisplayWorldRenderer() {
     }
@@ -39,88 +48,149 @@ public final class DisplayWorldRenderer {
         }
 
         Minecraft mc = Minecraft.getInstance();
+
         if (mc.level == null || mc.player == null) {
             return;
         }
 
         PoseStack ps = event.getPoseStack();
         Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
-        MultiBufferSource.BufferSource buf = mc.renderBuffers().bufferSource();
         Frustum frustum = event.getFrustum();
 
-        boolean removedAny = Display.CLIENT_INSTANCES.removeIf(p -> {
-            var be = p.getBlockEntity();
-            return be == null || be.isRemoved() || be.getLevel() != mc.level;
-        });
+        boolean renderedAnything = false;
 
-        if (removedAny) {
-            DisplayGrid.invalidateClientCache();
-        }
+        try {
+            boolean removedAny = Display.CLIENT_INSTANCES.removeIf(p -> {
+                if (p == null) {
+                    return true;
+                }
 
-        Set<Display> visited = new HashSet<>();
+                var be = p.getBlockEntity();
+                return be == null || be.isRemoved() || be.getLevel() != mc.level;
+            });
 
-        for (Display part : Display.CLIENT_INSTANCES) {
-            if (visited.contains(part)) {
-                continue;
+            if (removedAny) {
+                DisplayGrid.invalidateClientCache();
             }
 
-            DisplayGrid.RenderGroup group = DisplayGrid.getRenderGroup(part);
-            Set<Display> grid = group.parts();
+            Set<Display> visited = Collections.newSetFromMap(new IdentityHashMap<>());
 
-            if (grid.isEmpty()) {
+            int renderedGroups = 0;
+
+            for (Display part : Display.CLIENT_INSTANCES) {
+                if (part == null || visited.contains(part)) {
+                    continue;
+                }
+
+                DisplayGrid.RenderGroup group = DisplayGrid.getRenderGroup(part);
+
+                if (group == null) {
+                    visited.add(part);
+                    continue;
+                }
+
+                Set<Display> grid = group.parts();
+
+                if (grid == null || grid.isEmpty()) {
+                    visited.add(part);
+                    continue;
+                }
+
+                Display renderOrigin = group.renderOrigin();
+
+                if (renderOrigin == null) {
+                    visited.add(part);
+                    visited.addAll(grid);
+                    continue;
+                }
+
+                boolean alreadyRendered = visited.contains(renderOrigin);
+
                 visited.add(part);
-                continue;
+                visited.addAll(grid);
+
+                if (alreadyRendered) {
+                    continue;
+                }
+
+                AABB aabb = group.aabb();
+
+                if (aabb == null) {
+                    continue;
+                }
+
+                Vec3 center = aabb.getCenter();
+
+                if (center.distanceToSqr(cam) > RENDER_DIST_SQ) {
+                    continue;
+                }
+
+                if (frustum != null && !frustum.isVisible(aabb)) {
+                    continue;
+                }
+
+                if (renderedGroups >= MAX_RENDERED_GROUPS_PER_FRAME) {
+                    break;
+                }
+
+                if (renderMatrix(renderOrigin, grid, ps, DISPLAY_BUFFER_SOURCE, cam)) {
+                    renderedAnything = true;
+                    renderedGroups++;
+                }
             }
-
-            Display renderOrigin = group.renderOrigin();
-            boolean alreadyRendered = visited.contains(renderOrigin);
-
-            visited.add(part);
-            visited.addAll(grid);
-
-            if (alreadyRendered) {
-                continue;
+        } finally {
+            if (renderedAnything) {
+                try {
+                    DISPLAY_BUFFER_SOURCE.endBatch();
+                } catch (Throwable ignored) {
+                }
             }
-
-            AABB aabb = group.aabb();
-            Vec3 center = aabb.getCenter();
-            if (center.distanceToSqr(cam) > RENDER_DIST_SQ) {
-                continue;
-            }
-            if (!frustum.isVisible(aabb)) {
-                continue;
-            }
-
-            renderMatrix(renderOrigin, grid, ps, buf, cam);
         }
     }
 
-    private static void renderMatrix(
+    private static boolean renderMatrix(
             Display renderOrigin,
             Set<Display> grid,
             PoseStack ps,
             MultiBufferSource.BufferSource buf,
             Vec3 cam
     ) {
+        if (renderOrigin == null || grid == null || grid.isEmpty()) {
+            return false;
+        }
+
+        var be = renderOrigin.getBlockEntity();
+
+        if (be == null || be.isRemoved()) {
+            return false;
+        }
+
         Font font = Minecraft.getInstance().font;
         DisplayRendererCommon.PreparedDisplay prepared = DisplayRendererCommon.prepare(font, renderOrigin, grid);
 
-        if (prepared.commands().isEmpty()) {
-            return;
+        if (prepared == null || prepared.commands().isEmpty()) {
+            return false;
         }
 
-        BlockPos originPos = renderOrigin.getBlockEntity().getBlockPos();
+        if (prepared.commands().size() > MAX_COMMANDS_PER_GROUP) {
+            return false;
+        }
+
+        BlockPos originPos = be.getBlockPos();
 
         ps.pushPose();
-        ps.translate(originPos.getX() - cam.x, originPos.getY() - cam.y, originPos.getZ() - cam.z);
-        applyFacingTransform(ps, renderOrigin);
-        ps.translate(0.0f, 0.0f, DISPLAY_SURFACE_OFFSET);
 
-        ps.scale(1f / 64f, -1f / 64f, 1f / 64f);
+        try {
+            ps.translate(originPos.getX() - cam.x, originPos.getY() - cam.y, originPos.getZ() - cam.z);
+            applyFacingTransform(ps, renderOrigin);
+            ps.translate(0.0f, 0.0f, DISPLAY_SURFACE_OFFSET);
+            ps.scale(1f / 64f, -1f / 64f, 1f / 64f);
 
-        DisplayRendererCommon.renderPrepared(prepared, ps, buf, font, 0xF000F0);
-
-        ps.popPose();
+            DisplayRendererCommon.renderPrepared(prepared, ps, buf, font, 0xF000F0);
+            return true;
+        } finally {
+            ps.popPose();
+        }
     }
 
     private record Transformation(float tx, float ty, float tz, float yRot, float xRot) {
@@ -128,9 +198,11 @@ public final class DisplayWorldRenderer {
 
     private static void applyFacingTransform(PoseStack ps, Display part) {
         Transformation t = getFacingTransformation(part.getSide());
+
         ps.translate(t.tx, t.ty, t.tz);
         ps.mulPose(Axis.YP.rotationDegrees(t.yRot));
         ps.mulPose(Axis.XP.rotationDegrees(t.xRot));
+
         if (t.xRot != 0f) {
             applySpinTransformation(ps, part, t.xRot);
         }
