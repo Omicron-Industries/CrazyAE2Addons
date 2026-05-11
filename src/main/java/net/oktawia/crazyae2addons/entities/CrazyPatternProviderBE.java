@@ -19,16 +19,17 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IProviderLogicResizable;
+import net.oktawia.crazyae2addons.logic.provider.CrazyProviderNbt;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,8 +40,14 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
 
     private static final int BASE_SIZE = 8 * 9;
     private static final int ROW_SIZE = 9;
-    private static final String NBT_PATTERNS = "crazy_patterns";
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(), 1, this::setChanged);
+
+    private static final String NBT_LEGACY_PATTERNS = "crazy_patterns";
+
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(
+            CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(),
+            1,
+            this::setChanged
+    );
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(CrazyPatternProviderBE.class);
@@ -52,9 +59,12 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
     @UpdateListener(methodName = "onAddedSynced")
     private int added = 0;
 
+    private boolean pendingPatternUpdate = false;
+
     public CrazyPatternProviderBE(BlockPos pos, BlockState blockState) {
         super(CrazyBlockEntityRegistrar.CRAZY_PATTERN_PROVIDER_BE.get(), pos, blockState);
         this.getMainNode().setVisualRepresentation(CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get().asItem());
+
         if (!CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_BLOCK_ENABLED.get()) {
             this.getMainNode().destroy();
         }
@@ -76,6 +86,15 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
     }
 
     @Override
+    public void onReady() {
+        super.onReady();
+
+        if (pendingPatternUpdate) {
+            requestPatternUpdateWhenReady();
+        }
+    }
+
+    @Override
     public IUpgradeInventory getUpgrades() {
         return this.upgrades;
     }
@@ -86,17 +105,130 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
         super.setRemoved();
     }
 
+    private boolean canUpdatePatternsNow() {
+        return level != null;
+    }
+
+    private void requestPatternUpdateWhenReady() {
+        if (canUpdatePatternsNow()) {
+            pendingPatternUpdate = false;
+            getLogic().updatePatterns();
+        } else {
+            pendingPatternUpdate = true;
+        }
+    }
+
+    private CompoundTag saveProviderData() {
+        CompoundTag providerTag = new CompoundTag();
+
+        providerTag.put(CrazyProviderNbt.NBT_STATE, CrazyProviderNbt.saveState(added));
+
+        CompoundTag logicTag = new CompoundTag();
+        getLogic().writeToNBT(logicTag);
+        providerTag.put(CrazyProviderNbt.NBT_LOGIC, logicTag);
+
+        return providerTag;
+    }
+
+    private void writeProviderDataTo(CompoundTag tag) {
+        tag.put(CrazyProviderNbt.NBT_PROVIDER, saveProviderData());
+    }
+
+    private boolean loadProviderStateBeforeLogic(CompoundTag tag) {
+        if (CrazyProviderNbt.hasProviderDataOrLegacyAdded(tag)) {
+            this.added = CrazyProviderNbt.loadAddedFromAnyKnownFormat(tag, this.added);
+            applySize();
+            return true;
+        }
+
+        applySize();
+        return false;
+    }
+
+    private boolean loadProviderLogicFromCommonTag(CompoundTag tag) {
+        CompoundTag providerTag = CrazyProviderNbt.findProviderTag(tag);
+
+        if (providerTag.isEmpty() || !providerTag.contains(CrazyProviderNbt.NBT_LOGIC, Tag.TAG_COMPOUND)) {
+            return false;
+        }
+
+        getLogic().readFromNBT(providerTag.getCompound(CrazyProviderNbt.NBT_LOGIC));
+        pendingPatternUpdate = true;
+        return true;
+    }
+
+    private boolean loadProviderDataFromCommonTag(CompoundTag tag) {
+        CompoundTag providerTag = CrazyProviderNbt.findProviderTag(tag);
+
+        if (providerTag.isEmpty()) {
+            return false;
+        }
+
+        boolean loaded = false;
+
+        if (providerTag.contains(CrazyProviderNbt.NBT_STATE, Tag.TAG_COMPOUND)) {
+            CompoundTag stateTag = providerTag.getCompound(CrazyProviderNbt.NBT_STATE);
+            this.added = CrazyProviderNbt.loadAdded(stateTag, this.added);
+            applySize();
+            loaded = true;
+        } else {
+            applySize();
+        }
+
+        if (providerTag.contains(CrazyProviderNbt.NBT_LOGIC, Tag.TAG_COMPOUND)) {
+            getLogic().readFromNBT(providerTag.getCompound(CrazyProviderNbt.NBT_LOGIC));
+            pendingPatternUpdate = true;
+            loaded = true;
+        }
+
+        return loaded;
+    }
+
+    private boolean loadLegacyDismantleData(CompoundTag tag) {
+        if (CrazyProviderNbt.hasProviderDataOrLegacyAdded(tag)) {
+            this.added = CrazyProviderNbt.loadAddedFromAnyKnownFormat(tag, this.added);
+        } else {
+            loadManagedData(tag);
+        }
+
+        applySize();
+
+        if (tag.contains(NBT_LEGACY_PATTERNS)) {
+            ((AppEngInternalInventory) getLogic().getPatternInv()).readFromNBT(tag, NBT_LEGACY_PATTERNS);
+            pendingPatternUpdate = true;
+        }
+
+        return true;
+    }
+
+    private void writeProviderDataToMatchingDrops(List<ItemStack> drops) {
+        CompoundTag providerTag = saveProviderData();
+
+        for (ItemStack drop : drops) {
+            if (drop.getItem() == CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get().asItem()) {
+                CompoundTag rootTag = drop.getOrCreateTag();
+
+                CrazyProviderNbt.writeProviderTagToItemRoot(rootTag, providerTag);
+                CrazyProviderNbt.writeProviderTagToBlockEntityTag(rootTag, providerTag);
+            }
+        }
+    }
+
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
+
         saveManagedData(tag);
+        writeProviderDataTo(tag);
     }
 
     @Override
     public void loadTag(CompoundTag tag) {
-        loadManagedData(tag);
-        applySize();
+        loadProviderStateBeforeLogic(tag);
+
         super.loadTag(tag);
+
+        loadProviderLogicFromCommonTag(tag);
     }
 
     @Override
@@ -104,8 +236,7 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
         super.exportSettings(mode, output, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            saveManagedData(output);
-            ((AppEngInternalInventory) getLogic().getPatternInv()).writeToNBT(output, NBT_PATTERNS);
+            writeProviderDataTo(output);
         }
     }
 
@@ -114,11 +245,14 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            loadManagedData(input);
-            applySize();
+            boolean loaded = loadProviderDataFromCommonTag(input);
 
-            ((AppEngInternalInventory) getLogic().getPatternInv()).readFromNBT(input, NBT_PATTERNS);
-            getLogic().updatePatterns();
+            if (!loaded) {
+                loadLegacyDismantleData(input);
+            }
+
+            requestPatternUpdateWhenReady();
+            syncManaged();
             setChanged();
         }
     }
@@ -130,14 +264,14 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
 
         this.added = newAdded;
         applySize();
-        getLogic().updatePatterns();
+        requestPatternUpdateWhenReady();
         syncManaged();
     }
 
     private void onAddedSynced(int newValue, int oldValue) {
         if (level != null) {
             applySize();
-            getLogic().updatePatterns();
+            requestPatternUpdateWhenReady();
         }
     }
 
@@ -146,7 +280,9 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {}
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        writeProviderDataToMatchingDrops(drops);
+    }
 
     @Override
     protected PatternProviderLogic createLogic() {

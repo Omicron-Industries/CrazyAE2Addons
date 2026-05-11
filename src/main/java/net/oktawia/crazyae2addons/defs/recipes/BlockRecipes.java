@@ -33,10 +33,6 @@ public class BlockRecipes {
     }
 
     public static void registerRecipes() {
-        recipe("crazy_pattern_provider")
-                .shapeless(CrazyItemRegistrar.CRAZY_PATTERN_PROVIDER_PART.get())
-                .output(CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get())
-                .register();
         recipe("recipe_fabricator")
                 .shaped("LCR")
                 .define('L', AEBlocks.PATTERN_PROVIDER)

@@ -37,12 +37,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IProviderLogicResizable;
+import net.oktawia.crazyae2addons.logic.provider.CrazyProviderNbt;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -52,8 +52,8 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
     private static final int BASE_SIZE = 8 * 9;
     private static final int ROW_SIZE = 9;
 
-    private static final String NBT_STATE = "crazy_state";
-    private static final String NBT_PATTERNS = "crazy_patterns";
+    private static final String NBT_LEGACY_STATE = "crazy_state";
+    private static final String NBT_LEGACY_PATTERNS = "crazy_patterns";
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(
@@ -74,10 +74,22 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
     );
 
     private final PartState state = new PartState(this);
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(), 1, () -> getHost().markForSave());
+
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(
+            CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(),
+            1,
+            () -> {
+                if (getHost() != null) {
+                    getHost().markForSave();
+                }
+            }
+    );
+
+    private boolean pendingPatternUpdate = false;
 
     public CrazyPatternProviderPart(IPartItem<?> partItem) {
         super(partItem);
+
         if (!CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_PART_ENABLED.get()) {
             getMainNode().destroy();
         }
@@ -104,7 +116,7 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
 
         state.setAdded(newAdded);
         applySize();
-        getLogic().updatePatterns();
+        requestPatternUpdateWhenReady();
         markForSync();
     }
 
@@ -118,8 +130,130 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
 
     private void markForSync() {
         saveChanges();
+
         if (getHost() != null) {
             getHost().markForUpdate();
+        }
+    }
+
+    private boolean canUpdatePatternsNow() {
+        return getBlockEntity() != null && getBlockEntity().getLevel() != null;
+    }
+
+    private void requestPatternUpdateWhenReady() {
+        if (canUpdatePatternsNow()) {
+            pendingPatternUpdate = false;
+            getLogic().updatePatterns();
+        } else {
+            pendingPatternUpdate = true;
+        }
+    }
+
+    private CompoundTag saveProviderData() {
+        CompoundTag providerTag = new CompoundTag();
+
+        providerTag.put(CrazyProviderNbt.NBT_STATE, CrazyProviderNbt.saveState(state.getAdded()));
+
+        CompoundTag logicTag = new CompoundTag();
+        getLogic().writeToNBT(logicTag);
+        providerTag.put(CrazyProviderNbt.NBT_LOGIC, logicTag);
+
+        return providerTag;
+    }
+
+    private void writeProviderDataTo(CompoundTag tag) {
+        tag.put(CrazyProviderNbt.NBT_PROVIDER, saveProviderData());
+    }
+
+    private boolean loadProviderStateBeforeLogic(CompoundTag tag) {
+        if (CrazyProviderNbt.hasProviderDataOrLegacyAdded(tag)) {
+            state.loadAdded(CrazyProviderNbt.loadAddedFromAnyKnownFormat(tag, state.getAdded()));
+            applySize();
+            return true;
+        }
+
+        applySize();
+        return false;
+    }
+
+    private boolean loadProviderLogicFromCommonTag(CompoundTag tag) {
+        CompoundTag providerTag = CrazyProviderNbt.findProviderTag(tag);
+
+        if (providerTag.isEmpty() || !providerTag.contains(CrazyProviderNbt.NBT_LOGIC, Tag.TAG_COMPOUND)) {
+            return false;
+        }
+
+        getLogic().readFromNBT(providerTag.getCompound(CrazyProviderNbt.NBT_LOGIC));
+        pendingPatternUpdate = true;
+        return true;
+    }
+
+    private boolean loadProviderDataFromCommonTag(CompoundTag tag) {
+        CompoundTag providerTag = CrazyProviderNbt.findProviderTag(tag);
+
+        if (providerTag.isEmpty()) {
+            return false;
+        }
+
+        boolean loaded = false;
+
+        if (providerTag.contains(CrazyProviderNbt.NBT_STATE, Tag.TAG_COMPOUND)) {
+            CompoundTag stateTag = providerTag.getCompound(CrazyProviderNbt.NBT_STATE);
+            state.loadAdded(CrazyProviderNbt.loadAdded(stateTag, state.getAdded()));
+            applySize();
+            loaded = true;
+        } else {
+            applySize();
+        }
+
+        if (providerTag.contains(CrazyProviderNbt.NBT_LOGIC, Tag.TAG_COMPOUND)) {
+            getLogic().readFromNBT(providerTag.getCompound(CrazyProviderNbt.NBT_LOGIC));
+            pendingPatternUpdate = true;
+            loaded = true;
+        }
+
+        return loaded;
+    }
+
+    private boolean loadLegacyDismantleData(CompoundTag tag) {
+        boolean loaded = false;
+
+        if (tag.contains(NBT_LEGACY_STATE, Tag.TAG_COMPOUND)
+                || tag.contains(CrazyProviderNbt.NBT_ADDED, Tag.TAG_ANY_NUMERIC)
+                || tag.contains(CrazyProviderNbt.NBT_BLOCK_ENTITY_TAG, Tag.TAG_COMPOUND)) {
+            state.loadAdded(CrazyProviderNbt.loadAddedFromAnyKnownFormat(tag, state.getAdded()));
+            applySize();
+            loaded = true;
+        } else {
+            applySize();
+        }
+
+        if (tag.contains(NBT_LEGACY_PATTERNS)) {
+            ((AppEngInternalInventory) getLogic().getPatternInv()).readFromNBT(tag, NBT_LEGACY_PATTERNS);
+            pendingPatternUpdate = true;
+            loaded = true;
+        }
+
+        return loaded;
+    }
+
+    private void writeProviderDataToMatchingDrops(List<ItemStack> drops) {
+        CompoundTag providerTag = saveProviderData();
+
+        for (ItemStack drop : drops) {
+            if (drop.getItem() == CrazyItemRegistrar.CRAZY_PATTERN_PROVIDER_PART.get().asItem()) {
+                CompoundTag rootTag = drop.getOrCreateTag();
+                CrazyProviderNbt.writeProviderTagToItemRoot(rootTag, providerTag);
+            }
+        }
+    }
+
+    @Override
+    public void addToWorld() {
+        super.addToWorld();
+
+        if (pendingPatternUpdate) {
+            requestPatternUpdateWhenReady();
         }
     }
 
@@ -128,11 +262,13 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
         if (!CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_PART_ENABLED.get()) {
             return true;
         }
+
         ItemStack heldItem = player.getItemInHand(hand);
 
         if (heldItem.getItem() == CrazyItemRegistrar.CRAZY_UPGRADE.get().asItem()) {
             if (!player.level().isClientSide) {
                 int maxAdd = CrazyConfig.COMMON.CRAZY_PROVIDER_MAX_UPGRADES.get();
+
                 if (maxAdd != -1 && state.getAdded() >= maxAdd) {
                     player.displayClientMessage(
                             Component.translatable(LangDefs.PROVIDER_MAX.getTranslationKey()),
@@ -144,6 +280,7 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
                 heldItem.shrink(1);
                 upgradeOnce();
             }
+
             return true;
         }
 
@@ -161,17 +298,18 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
     @Override
     public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
-        data.put(NBT_STATE, state.savePersisted());
+
+        data.put(NBT_LEGACY_STATE, state.savePersisted());
+        writeProviderDataTo(data);
     }
 
     @Override
     public void readFromNBT(CompoundTag data) {
-        if (data.contains(NBT_STATE, Tag.TAG_COMPOUND)) {
-            state.loadPersisted(data.getCompound(NBT_STATE));
-            applySize();
-        }
+        loadProviderStateBeforeLogic(data);
 
         super.readFromNBT(data);
+
+        loadProviderLogicFromCommonTag(data);
     }
 
     @Override
@@ -193,7 +331,7 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
 
         if (oldAdded != state.getAdded()) {
             applySize();
-            getLogic().updatePatterns();
+            requestPatternUpdateWhenReady();
         }
 
         return changed || oldAdded != state.getAdded();
@@ -204,8 +342,7 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
         super.exportSettings(mode, output);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            output.put(NBT_STATE, state.savePersisted());
-            ((AppEngInternalInventory) getLogic().getPatternInv()).writeToNBT(output, NBT_PATTERNS);
+            writeProviderDataTo(output);
         }
     }
 
@@ -214,19 +351,21 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            if (input.contains(NBT_STATE, Tag.TAG_COMPOUND)) {
-                state.loadPersisted(input.getCompound(NBT_STATE));
-                applySize();
+            boolean loaded = loadProviderDataFromCommonTag(input);
+
+            if (!loaded) {
+                loadLegacyDismantleData(input);
             }
 
-            ((AppEngInternalInventory) getLogic().getPatternInv()).readFromNBT(input, NBT_PATTERNS);
-            getLogic().updatePatterns();
+            requestPatternUpdateWhenReady();
             markForSync();
         }
     }
 
     @Override
-    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {}
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+        writeProviderDataToMatchingDrops(drops);
+    }
 
     @Override
     public void openMenu(Player player, MenuLocator locator) {
@@ -257,9 +396,11 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
         if (isActive() && isPowered()) {
             return MODELS_HAS_CHANNEL;
         }
+
         if (isPowered()) {
             return MODELS_ON;
         }
+
         return MODELS_OFF;
     }
 
@@ -281,6 +422,10 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
         public void setAdded(int added) {
             this.added = added;
             markFieldDirty("added");
+        }
+
+        public void loadAdded(int added) {
+            this.added = added;
         }
 
         public CompoundTag savePersisted() {

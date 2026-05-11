@@ -19,8 +19,6 @@ public enum LangDefs implements LocalizationEnum {
     CONFIG_SECTION_PATTERN_MULTIPLIER("screen.crazyae2addons.config.section.pattern_multiplier", "Pattern Multiplier"),
     CONFIG_SECTION_CRAZY_PATTERN_PROVIDER("screen.crazyae2addons.config.section.crazy_pattern_provider", "Crazy Pattern Provider"),
     CONFIG_SECTION_EJECTOR("screen.crazyae2addons.config.section.ejector", "Ejector"),
-    CONFIG_SECTION_PORTABLE_SPATIAL_STORAGE("screen.crazyae2addons.config.section.portable_spatial_storage", "Portable Spatial Storage"),
-    CONFIG_SECTION_PORTABLE_SPATIAL_CLONER("screen.crazyae2addons.config.section.portable_spatial_cloner", "Portable Spatial Cloner"),
     CONFIG_ENTRY_ENABLED("screen.crazyae2addons.config.entry.enabled", "Enabled"),
     CONFIG_ENTRY_IMAGES_ENABLED("screen.crazyae2addons.config.entry.images_enabled", "Images Enabled"),
     CONFIG_ENTRY_STOCK_ENABLED("screen.crazyae2addons.config.entry.stock_enabled", "Stock Enabled"),

@@ -16,6 +16,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
+import appeng.util.SettingsFrom;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -76,6 +77,7 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
     public final HashMap<String, String> resolvedTokens = new HashMap<>();
     public final Map<String, SampleRing> rateHistory = new HashMap<>();
     public transient int gridWarmupRemaining = 2;
+    private static final String NBT_MEMORY_DISPLAY = "crazy_display_memory";
 
     @Nullable
     public volatile String pendingInsert = null;
@@ -393,6 +395,33 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         }
     }
 
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+
+        if (mode != SettingsFrom.MEMORY_CARD) {
+            return;
+        }
+
+        output.put(NBT_MEMORY_DISPLAY, state.saveMemoryCardSettings());
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode != SettingsFrom.MEMORY_CARD) {
+            return;
+        }
+
+        if (!input.contains(NBT_MEMORY_DISPLAY, Tag.TAG_COMPOUND)) {
+            return;
+        }
+
+        state.loadMemoryCardSettings(input.getCompound(NBT_MEMORY_DISPLAY));
+        markDirtyAndSync();
+    }
+
     @Getter
     @Setter
     public static final class PartState {
@@ -508,6 +537,42 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             }
 
             selectedDisplayImageId = displayImages.get(0).id();
+        }
+
+        public CompoundTag saveMemoryCardSettings() {
+            CompoundTag tag = new CompoundTag();
+
+            tag.putString(NBT_TEXT, textValue == null ? "" : textValue);
+            tag.putByte(NBT_SPIN, spin);
+            tag.putBoolean(NBT_MERGE, mergeMode);
+            tag.putBoolean(NBT_MARGIN, addMargin);
+            tag.putBoolean(NBT_CENTER, centerText);
+
+            return tag;
+        }
+
+        public void loadMemoryCardSettings(CompoundTag tag) {
+            if (tag.contains(NBT_TEXT, Tag.TAG_STRING)) {
+                textValue = tag.getString(NBT_TEXT);
+            }
+
+            if (tag.contains(NBT_SPIN, Tag.TAG_BYTE)) {
+                spin = tag.getByte(NBT_SPIN);
+            }
+
+            if (tag.contains(NBT_MERGE, Tag.TAG_BYTE)) {
+                mergeMode = tag.getBoolean(NBT_MERGE);
+            }
+
+            if (tag.contains(NBT_MARGIN, Tag.TAG_BYTE)) {
+                addMargin = tag.getBoolean(NBT_MARGIN);
+            }
+
+            if (tag.contains(NBT_CENTER, Tag.TAG_BYTE)) {
+                centerText = tag.getBoolean(NBT_CENTER);
+            }
+
+            normalizeSelectedImage();
         }
     }
 }

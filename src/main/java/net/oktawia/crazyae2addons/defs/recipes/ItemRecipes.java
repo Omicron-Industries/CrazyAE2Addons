@@ -99,10 +99,6 @@ public class ItemRecipes {
                 .define('D', AEItems.ADVANCED_CARD)
                 .output(CrazyItemRegistrar.CRAZY_UPGRADE.get())
                 .register();
-        recipe("crazy_pattern_provider_part")
-                .shapeless(CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get())
-                .output(CrazyItemRegistrar.CRAZY_PATTERN_PROVIDER_PART.get())
-                .register();
     }
 
     public static class Builder {

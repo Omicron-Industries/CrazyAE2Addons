@@ -1,5 +1,9 @@
 package net.oktawia.crazyae2addons.logic.display;
 
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AmountFormat;
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -20,6 +24,7 @@ import net.oktawia.crazyae2addons.util.MathParser;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +86,9 @@ public final class DisplayRenderData {
 
     private static final Pattern LINE_SPLIT = Pattern.compile("&nl|\\r\\n|\\r|\\n");
 
+    private static final Pattern CLIENT_DYNAMIC_TOKEN =
+            Pattern.compile("&d\\^([a-z0-9_\\.:]+)(?:%(\\d+[tsm]))?@(\\d+[tsm])", Pattern.CASE_INSENSITIVE);
+
     private DisplayRenderData() {
     }
 
@@ -95,40 +103,169 @@ public final class DisplayRenderData {
         while (m.find()) {
             String key = m.group(1);
             String withAmp = "&" + key;
-            String repl = variables.get(key);
 
-            if (repl == null) {
-                Matcher sm = CLIENT_STOCK_TOKEN.matcher(withAmp);
-                if (sm.matches()) {
-                    String itemId = sm.group(1);
-                    String powStr = sm.group(2);
-                    String baseVal = variables.get("s^" + itemId);
-                    if (baseVal != null) {
-                        try {
-                            long amount = Long.parseLong(baseVal);
-                            long divisor = 1L;
-                            if (powStr != null) {
-                                int pow = Integer.parseInt(powStr);
-                                if (pow > 0) {
-                                    divisor = (long) Math.pow(10, pow);
-                                }
-                            }
-                            repl = String.valueOf(Math.round((double) amount / divisor));
-                        } catch (NumberFormatException e) {
-                            CrazyAddons.LOGGER.debug("invalid divisor in display token", e);
-                        }
-                    }
-                }
+            String repl = null;
+
+            if (key.regionMatches(true, 0, "s^", 0, 2)) {
+                repl = resolveStockTokenClientSide(key, withAmp, variables);
+            } else if (key.regionMatches(true, 0, "d^", 0, 2)) {
+                repl = resolveDynamicTokenClientSide(key, withAmp, variables);
             }
 
             if (repl == null) {
                 repl = variables.getOrDefault(key, withAmp);
             }
+
             m.appendReplacement(sb, Matcher.quoteReplacement(repl));
         }
 
         m.appendTail(sb);
         return evalMathExpressions(sb.toString());
+    }
+
+    @Nullable
+    private static String resolveDynamicTokenClientSide(String key, String withAmp, Map<String, String> variables) {
+        Matcher dm = CLIENT_DYNAMIC_TOKEN.matcher(withAmp);
+
+        if (!dm.matches()) {
+            return null;
+        }
+
+        String materialId = dm.group(1);
+        String baseVal = variables.get(key);
+
+        if (baseVal == null) {
+            return null;
+        }
+
+        try {
+            long amount = parseDisplayAmountToLong(baseVal);
+            return formatMaterialAmountDefault(materialId, amount);
+        } catch (NumberFormatException | ArithmeticException e) {
+            CrazyAddons.LOGGER.debug("invalid dynamic amount in display token: {} = {}", withAmp, baseVal, e);
+            return baseVal;
+        }
+    }
+
+    private static long parseDisplayAmountToLong(String s) {
+        if (s == null) {
+            throw new NumberFormatException("null");
+        }
+
+        String t = s.trim();
+
+        if (t.isEmpty()) {
+            throw new NumberFormatException("empty");
+        }
+
+        return new BigDecimal(t)
+                .setScale(0, RoundingMode.HALF_UP)
+                .longValueExact();
+    }
+
+    @Nullable
+    private static String resolveStockTokenClientSide(String key, String withAmp, Map<String, String> variables) {
+        Matcher sm = CLIENT_STOCK_TOKEN.matcher(withAmp);
+        if (!sm.matches()) {
+            return null;
+        }
+
+        String materialId = sm.group(1);
+        String powStr = sm.group(2);
+
+        String baseVal = variables.get("s^" + materialId);
+        if (baseVal == null) {
+            return variables.get(key);
+        }
+
+        try {
+            long amount = Long.parseLong(baseVal);
+
+            if (powStr != null) {
+                return formatAmountWithExplicitDivisor(amount, powStr);
+            }
+
+            return formatMaterialAmountDefault(materialId, amount);
+        } catch (NumberFormatException e) {
+            CrazyAddons.LOGGER.debug("invalid stock amount in display token: {}", withAmp, e);
+            return variables.get(key);
+        }
+    }
+
+    private static String formatAmountWithExplicitDivisor(long amount, String powStr) {
+        try {
+            int pow = Math.min(18, Math.max(0, Integer.parseInt(powStr)));
+
+            long divisor = 1L;
+            for (int i = 0; i < pow; i++) {
+                divisor *= 10L;
+            }
+
+            return String.valueOf(Math.round((double) amount / divisor));
+        } catch (NumberFormatException e) {
+            CrazyAddons.LOGGER.debug("invalid divisor in display token", e);
+            return String.valueOf(amount);
+        }
+    }
+
+    private static String formatMaterialAmountDefault(String materialId, long amount) {
+        AEKey key = resolveMaterialKeyForFormatting(materialId);
+
+        if (key == null) {
+            return String.valueOf(amount);
+        }
+
+        if (key.getAmountPerUnit() > 1 || key.getUnitSymbol() != null) {
+            return compactAmountUnit(key.formatAmount(amount, AmountFormat.FULL));
+        }
+
+        return String.valueOf(amount);
+    }
+
+    private static String compactAmountUnit(String s) {
+        return s == null ? "" : s.replaceFirst("(?<=\\d)\\s+(?=\\D)", "");
+    }
+
+    @Nullable
+    private static AEKey resolveMaterialKeyForFormatting(String id) {
+        try {
+            int colon = id.indexOf(':');
+
+            if (colon > 0) {
+                String prefix = id.substring(0, colon);
+                String rest = id.substring(colon + 1);
+
+                if (prefix.equals("item")) {
+                    var item = BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(rest)).orElse(null);
+                    return item != null && item != Items.AIR ? AEItemKey.of(item) : null;
+                }
+
+                if (prefix.equals("fluid")) {
+                    var fluid = BuiltInRegistries.FLUID.getOptional(ResourceLocation.parse(rest)).orElse(null);
+                    return fluid != null && fluid != Fluids.EMPTY ? AEFluidKey.of(fluid) : null;
+                }
+
+                if (DisplayKeyCompatRegistry.hasPrefix(prefix)) {
+                    return DisplayKeyCompatRegistry.resolve(prefix, rest);
+                }
+            }
+
+            ResourceLocation rl = ResourceLocation.parse(id);
+
+            var item = BuiltInRegistries.ITEM.getOptional(rl).orElse(null);
+            if (item != null && item != Items.AIR) {
+                return AEItemKey.of(item);
+            }
+
+            var fluid = BuiltInRegistries.FLUID.getOptional(rl).orElse(null);
+            if (fluid != null && fluid != Fluids.EMPTY) {
+                return AEFluidKey.of(fluid);
+            }
+        } catch (Throwable e) {
+            CrazyAddons.LOGGER.debug("failed to resolve material key for display amount: {}", id, e);
+        }
+
+        return null;
     }
 
     public static String evalMathExpressions(String s) {
@@ -167,7 +304,7 @@ public final class DisplayRenderData {
                 String repl;
                 try {
                     double val = MathParser.parse(inner);
-                    repl = formatMathResult(val);
+                    repl = formatMathResult(val, inner.contains("/"));
                 } catch (Throwable t) {
                     repl = "ERR";
                 }
@@ -182,14 +319,23 @@ public final class DisplayRenderData {
         return out.toString();
     }
 
-    private static String formatMathResult(double v) {
+    private static String formatMathResult(double v, boolean roundedDivision) {
         if (Double.isNaN(v) || Double.isInfinite(v)) {
             return "ERR";
         }
-        BigDecimal bd = BigDecimal.valueOf(v).stripTrailingZeros();
+
+        BigDecimal bd = BigDecimal.valueOf(v);
+
+        if (roundedDivision) {
+            bd = bd.setScale(2, java.math.RoundingMode.HALF_UP);
+        }
+
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+
         if (bd.compareTo(BigDecimal.ZERO) == 0) {
             return "0";
         }
+
         return bd.toPlainString();
     }
 

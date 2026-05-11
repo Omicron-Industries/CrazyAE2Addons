@@ -17,6 +17,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -27,7 +28,14 @@ public final class DisplayImageUploadClient {
     public record Result(Component message, int color, boolean success) {}
 
     private static final int MAX_DIM = UploadDisplayImagePacket.MAX_IMAGE_DIM;
-    private static final int MAX_BYTES = UploadDisplayImagePacket.MAX_IMAGE_BYTES;
+    private static final int MAX_PACKET_BYTES = 32 * 1024;
+    private static final int PACKET_ESTIMATE_EXTRA_BYTES = 512;
+    private static final int MAX_SOURCE_NAME_BYTES = 64;
+
+    private static final int MAX_EFFECTIVE_IMAGE_BYTES = Math.min(
+            UploadDisplayImagePacket.MAX_IMAGE_BYTES,
+            MAX_PACKET_BYTES - PACKET_ESTIMATE_EXTRA_BYTES
+    );
 
     private DisplayImageUploadClient() {
     }
@@ -163,7 +171,8 @@ public final class DisplayImageUploadClient {
                 );
             }
 
-            return uploadBufferedImage(image, path.getFileName().toString());
+            Path fileName = path.getFileName();
+            return uploadBufferedImage(image, fileName == null ? "image.png" : fileName.toString());
         } catch (Throwable e) {
             CrazyAddons.LOGGER.debug("failed to upload display image from path", e);
             return new Result(
@@ -190,23 +199,33 @@ public final class DisplayImageUploadClient {
                 img = resizeToFit(img, MAX_DIM, MAX_DIM);
             }
 
+            String safeName = sanitizeSourceName(sourceName);
             byte[] pngBytes = encodePng(img);
 
-            while (pngBytes.length > MAX_BYTES && img.getWidth() > 1 && img.getHeight() > 1) {
-                int nextW = Math.max(1, (int) Math.floor(img.getWidth() * 0.85));
-                int nextH = Math.max(1, (int) Math.floor(img.getHeight() * 0.85));
-                if (nextW == img.getWidth() && nextH == img.getHeight()) {
+            while (isUploadTooLarge(safeName, pngBytes, img.getWidth(), img.getHeight())) {
+                int oldW = img.getWidth();
+                int oldH = img.getHeight();
+
+                if (oldW <= 1 && oldH <= 1) {
                     break;
                 }
+
+                int nextW = oldW > 1 ? Math.max(1, (int) Math.floor(oldW * 0.85)) : 1;
+                int nextH = oldH > 1 ? Math.max(1, (int) Math.floor(oldH * 0.85)) : 1;
+
+                if (nextW == oldW && nextH == oldH) {
+                    break;
+                }
+
                 img = resizeExact(img, nextW, nextH);
                 pngBytes = encodePng(img);
             }
 
-            if (pngBytes.length > MAX_BYTES) {
+            if (isUploadTooLarge(safeName, pngBytes, img.getWidth(), img.getHeight())) {
                 return new Result(
                         Component.translatable(
                                 LangDefs.IMAGE_UPLOAD_TOO_LARGE.getTranslationKey(),
-                                pngBytes.length
+                                MAX_PACKET_BYTES / 1024
                         ),
                         0xFFFF5555,
                         false
@@ -214,7 +233,7 @@ public final class DisplayImageUploadClient {
             }
 
             NetworkHandler.sendToServer(new UploadDisplayImagePacket(
-                    sourceName == null || sourceName.isBlank() ? "image.png" : sourceName,
+                    safeName,
                     pngBytes,
                     img.getWidth(),
                     img.getHeight()
@@ -237,6 +256,118 @@ public final class DisplayImageUploadClient {
                     false
             );
         }
+    }
+
+    private static boolean isUploadTooLarge(String sourceName, byte[] pngBytes, int width, int height) {
+        if (pngBytes == null) {
+            return true;
+        }
+
+        return pngBytes.length > MAX_EFFECTIVE_IMAGE_BYTES
+                || estimateUploadPacketBytes(sourceName, pngBytes, width, height) > MAX_PACKET_BYTES;
+    }
+
+    private static int estimateUploadPacketBytes(String sourceName, byte[] pngBytes, int width, int height) {
+        int size = 0;
+
+        size += 5;
+
+        byte[] nameBytes = sourceName.getBytes(StandardCharsets.UTF_8);
+        size += varIntSize(nameBytes.length);
+        size += nameBytes.length;
+
+        size += varIntSize(pngBytes.length);
+        size += pngBytes.length;
+
+        size += 4;
+        size += 4;
+
+        size += PACKET_ESTIMATE_EXTRA_BYTES;
+
+        return size;
+    }
+
+    private static int varIntSize(int value) {
+        int bytes = 1;
+
+        while ((value & ~0x7F) != 0) {
+            value >>>= 7;
+            bytes++;
+        }
+
+        return bytes;
+    }
+
+    private static String sanitizeSourceName(String sourceName) {
+        String name = sourceName == null || sourceName.isBlank() ? "image.png" : sourceName.trim();
+
+        name = stripQuotes(name);
+        name = name.replace('\\', '/');
+
+        int slash = name.lastIndexOf('/');
+        if (slash >= 0) {
+            name = slash + 1 < name.length() ? name.substring(slash + 1) : "image.png";
+        }
+
+        if (name.isBlank()) {
+            name = "image.png";
+        }
+
+        name = trimUtf8ToMaxBytes(name, MAX_SOURCE_NAME_BYTES);
+
+        if (name.isBlank()) {
+            name = "image.png";
+        }
+
+        return name;
+    }
+
+    private static String trimUtf8ToMaxBytes(String s, int maxBytes) {
+        if (s.getBytes(StandardCharsets.UTF_8).length <= maxBytes) {
+            return s;
+        }
+
+        int dot = s.lastIndexOf('.');
+        String ext = "";
+
+        if (dot > 0 && dot + 1 < s.length() && s.length() - dot <= 12) {
+            ext = s.substring(dot);
+        }
+
+        if (!ext.isEmpty()) {
+            int extBytes = ext.getBytes(StandardCharsets.UTF_8).length;
+            int baseMaxBytes = Math.max(1, maxBytes - extBytes);
+            String base = s.substring(0, dot);
+            String trimmedBase = trimUtf8Prefix(base, baseMaxBytes);
+            String out = trimmedBase + ext;
+
+            if (!trimmedBase.isBlank() && out.getBytes(StandardCharsets.UTF_8).length <= maxBytes) {
+                return out;
+            }
+        }
+
+        return trimUtf8Prefix(s, maxBytes);
+    }
+
+    private static String trimUtf8Prefix(String s, int maxBytes) {
+        StringBuilder out = new StringBuilder();
+        int used = 0;
+
+        for (int i = 0; i < s.length(); ) {
+            int cp = s.codePointAt(i);
+            String part = new String(Character.toChars(cp));
+            int partBytes = part.getBytes(StandardCharsets.UTF_8).length;
+
+            if (used + partBytes > maxBytes) {
+                break;
+            }
+
+            out.appendCodePoint(cp);
+            used += partBytes;
+            i += Character.charCount(cp);
+        }
+
+        return out.toString();
     }
 
     private static BufferedImage resizeToFit(BufferedImage src, int maxW, int maxH) {

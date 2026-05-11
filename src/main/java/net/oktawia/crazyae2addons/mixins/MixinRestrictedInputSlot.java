@@ -3,6 +3,7 @@ package net.oktawia.crazyae2addons.mixins;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.slot.RestrictedInputSlot;
 import net.minecraft.world.item.ItemStack;
+import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
@@ -26,7 +27,8 @@ public abstract class MixinRestrictedInputSlot {
                     target = "Lappeng/menu/slot/RestrictedInputSlot;which:Lappeng/menu/slot/RestrictedInputSlot$PlacableItemType;",
                     opcode = Opcodes.GETFIELD
             ),
-            cancellable = true
+            cancellable = true,
+            remap = true
     )
     private void crazyae2addons$acceptAnyViewCell(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (this.which != RestrictedInputSlot.PlacableItemType.VIEW_CELL) {
