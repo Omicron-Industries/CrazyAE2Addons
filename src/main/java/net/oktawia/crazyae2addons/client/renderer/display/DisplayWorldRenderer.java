@@ -28,7 +28,7 @@ import java.util.Set;
 @Mod.EventBusSubscriber(modid = CrazyAddons.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class DisplayWorldRenderer {
 
-    private static final float RENDER_DIST_SQ = 128f * 128f;
+    private static final float RENDER_DIST_SQ = 256f * 256f;
     private static final float DISPLAY_SURFACE_OFFSET = 0.501f;
     private static final int DISPLAY_BUFFER_SIZE = 262_144;
     private static final int MAX_RENDERED_GROUPS_PER_FRAME = 256;
@@ -177,6 +177,15 @@ public final class DisplayWorldRenderer {
         }
 
         BlockPos originPos = be.getBlockPos();
+
+        Direction facing = renderOrigin.getSide();
+        double nx = facing.getStepX(), ny = facing.getStepY(), nz = facing.getStepZ();
+        double sx = originPos.getX() + 0.5 + nx * 0.5;
+        double sy = originPos.getY() + 0.5 + ny * 0.5;
+        double sz = originPos.getZ() + 0.5 + nz * 0.5;
+        if (nx * (cam.x - sx) + ny * (cam.y - sy) + nz * (cam.z - sz) <= 0) {
+            return false;
+        }
 
         ps.pushPose();
 

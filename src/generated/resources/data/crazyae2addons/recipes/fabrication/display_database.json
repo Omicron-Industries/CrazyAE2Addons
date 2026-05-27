@@ -1,0 +1,17 @@
+{
+  "type": "crazyae2addons:fabrication",
+  "input": [
+    {
+      "count": 6,
+      "item": "crazyae2addons:display"
+    },
+    {
+      "count": 1,
+      "item": "ae2:controller"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "crazyae2addons:me_display_database"
+  }
+}

@@ -36,6 +36,10 @@ public class CrazyConfigScreen {
                             cfg.DISPLAY_ENABLED::set,
                             LangDefs.CONFIG_DESC_DISPLAY_ENABLED
                     ));
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_DISPLAY_DATABASE_ENABLED, cfg.DISPLAY_DATABASE_ENABLED.get(), true,
+                            cfg.DISPLAY_DATABASE_ENABLED::set,
+                            LangDefs.CONFIG_DESC_DISPLAY_DATABASE_ENABLED
+                    ));
                     entries.add(bool(eb, LangDefs.CONFIG_ENTRY_IMAGES_ENABLED, cfg.DISPLAY_IMAGES_ENABLED.get(), true,
                             cfg.DISPLAY_IMAGES_ENABLED::set,
                             LangDefs.CONFIG_DESC_DISPLAY_IMAGES_ENABLED

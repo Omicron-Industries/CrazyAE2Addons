@@ -345,7 +345,20 @@ public enum LangDefs implements LocalizationEnum {
     CONFIG_DESC_PSS_ENERGY_COST_MULTIPLIER_2("config.crazyae2addons.desc.pss_energy_cost_multiplier_2", "Final cost is: base cost × block distance × multiplier."),
     CONFIG_DESC_PSC_ENERGY_COST_MULTIPLIER_1("config.crazyae2addons.desc.psc_energy_cost_multiplier_1", "Multiplier applied to the distance-based AE cost for portable spatial cloner."),
     CONFIG_DESC_PSC_ENERGY_COST_MULTIPLIER_2("config.crazyae2addons.desc.psc_energy_cost_multiplier_2", "Final cost is: base cost × block distance × multiplier."),
-    CONFIG_DESC_ENERGY_COST_MULTIPLIER_ZERO("config.crazyae2addons.desc.energy_cost_multiplier_zero", "Set to 0 to disable energy cost for this gadget.");
+    CONFIG_DESC_ENERGY_COST_MULTIPLIER_ZERO("config.crazyae2addons.desc.energy_cost_multiplier_zero", "Set to 0 to disable energy cost for this gadget."),
+    CONNECT_UP("gui.crazyae2addons.connect_up", "Connect Up"),
+    CONNECT_DOWN("gui.crazyae2addons.connect_down", "Connect Down"),
+    CONNECT_LEFT("gui.crazyae2addons.connect_left", "Connect Left"),
+    CONNECT_RIGHT("gui.crazyae2addons.connect_right", "Connect Right"),
+    DISPLAY_DATABASE_KEY("gui.crazyae2addons.display_database_key", "Key"),
+    DISPLAY_DATABASE_VALUE("gui.crazyae2addons.display_database_value", "Value"),
+    DISPLAY_DATABASE_ADD("gui.crazyae2addons.display_database_add", "Add"),
+    DISPLAY_DATABASE_CLEAR("gui.crazyae2addons.display_database_clear", "Clear"),
+    DISPLAY_DATABASE_ADD_TOOLTIP("gui.crazyae2addons.display_database_add_tooltip", "Add / update entry"),
+    DISPLAY_DATABASE_CLEAR_TOOLTIP("gui.crazyae2addons.display_database_clear_tooltip", "Clear entries"),
+    NO_ENTRIES("gui.crazyae2addons.no_entries", "No entries"),
+    CONFIG_ENTRY_DISPLAY_DATABASE_ENABLED("config.crazyae2addons.entry.display_database_enabled", "Display Database Enabled"),
+    CONFIG_DESC_DISPLAY_DATABASE_ENABLED("config.crazyae2addons.desc.display_database_enabled", "Enable or disable ME Display Database GUI, ComputerCraft peripheral and display database tokens.");
 
 
     private final String key;

@@ -22,6 +22,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.client.screens.CrazyConfigScreen;
+import net.oktawia.crazyae2addons.compat.CC.CCCompat;
 import net.oktawia.crazyae2addons.logic.wormhole.extensions.GTWormholeCapabilityExtension;
 import net.oktawia.crazyae2addons.parts.p2p.WormholeP2PTunnelPart;
 import net.oktawia.crazyae2addons.defs.Screens;
@@ -130,6 +131,9 @@ public class CrazyAddons {
                 WormholeP2PTunnelPart.registerExtension(GTWormholeCapabilityExtension::new);
             }
             NetworkHandler.registerMessages();
+            if (IsModLoaded.COMPUTERCRAFT) {
+                CCCompat.init();
+            }
         });
     }
 

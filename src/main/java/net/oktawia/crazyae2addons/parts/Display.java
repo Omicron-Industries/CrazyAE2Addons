@@ -46,6 +46,7 @@ import net.oktawia.crazyae2addons.menus.part.DisplayMenu;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,8 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, IGridTickable {
+
+    public enum LocalDir { UP, DOWN, LEFT, RIGHT }
 
     private static final ResourceLocation MODEL_CHASSIS_OFF = AppEng.makeId("part/transition_plane_off");
     private static final ResourceLocation MODEL_CHASSIS_ON = AppEng.makeId("part/transition_plane_on");
@@ -383,6 +386,47 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         }
     }
 
+    public void reorderDisplayImage(String id, int delta) {
+        if (id == null || id.isBlank()) {
+            return;
+        }
+        int idx = -1;
+        for (int i = 0; i < state.displayImages.size(); i++) {
+            if (state.displayImages.get(i).id().equals(id)) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx < 0) {
+            return;
+        }
+        int newIdx = Mth.clamp(idx + delta, 0, state.displayImages.size() - 1);
+        if (newIdx == idx) {
+            return;
+        }
+        Collections.swap(state.displayImages, idx, newIdx);
+        markDirtyAndSync();
+    }
+
+    public boolean canConnectLocal(LocalDir dir) {
+        return switch (dir) {
+            case UP    -> state.connectUp;
+            case DOWN  -> state.connectDown;
+            case LEFT  -> state.connectLeft;
+            case RIGHT -> state.connectRight;
+        };
+    }
+
+    public void setConnectLocal(LocalDir dir, boolean value) {
+        switch (dir) {
+            case UP    -> state.connectUp    = value;
+            case DOWN  -> state.connectDown  = value;
+            case LEFT  -> state.connectLeft = value;
+            case RIGHT -> state.connectRight  = value;
+        }
+        markDirtyAndSync();
+    }
+
     public byte[] getDisplayImageBytes(String id) {
         return state.displayImageData.get(id);
     }
@@ -434,12 +478,20 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         private static final String NBT_DISPLAY_IMAGES = "display_images";
         private static final String NBT_DISPLAY_IMAGE_DATA = "display_image_data";
         private static final String NBT_SELECTED_DISPLAY_IMAGE = "selected_display_image";
+        private static final String NBT_CONNECT_UP    = "connect_up";
+        private static final String NBT_CONNECT_DOWN  = "connect_down";
+        private static final String NBT_CONNECT_LEFT  = "connect_left";
+        private static final String NBT_CONNECT_RIGHT = "connect_right";
 
         private String textValue = "";
         private byte spin = 0;
         private boolean mergeMode = true;
         private boolean addMargin = false;
         private boolean centerText = false;
+        private boolean connectUp    = true;
+        private boolean connectDown  = true;
+        private boolean connectLeft  = true;
+        private boolean connectRight = true;
 
         @Getter(AccessLevel.NONE)
         @Setter(AccessLevel.NONE)
@@ -481,6 +533,10 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             tag.put(NBT_DISPLAY_IMAGE_DATA, imageDataTag);
 
             tag.putString(NBT_SELECTED_DISPLAY_IMAGE, selectedDisplayImageId == null ? "" : selectedDisplayImageId);
+            tag.putBoolean(NBT_CONNECT_UP,    connectUp);
+            tag.putBoolean(NBT_CONNECT_DOWN,  connectDown);
+            tag.putBoolean(NBT_CONNECT_LEFT,  connectLeft);
+            tag.putBoolean(NBT_CONNECT_RIGHT, connectRight);
             return tag;
         }
 
@@ -517,6 +573,11 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
 
             selectedDisplayImageId = tag.getString(NBT_SELECTED_DISPLAY_IMAGE);
             normalizeSelectedImage();
+
+            connectUp    = !tag.contains(NBT_CONNECT_UP)    || tag.getBoolean(NBT_CONNECT_UP);
+            connectDown  = !tag.contains(NBT_CONNECT_DOWN)  || tag.getBoolean(NBT_CONNECT_DOWN);
+            connectLeft  = !tag.contains(NBT_CONNECT_LEFT)  || tag.getBoolean(NBT_CONNECT_LEFT);
+            connectRight = !tag.contains(NBT_CONNECT_RIGHT) || tag.getBoolean(NBT_CONNECT_RIGHT);
         }
 
         private void normalizeSelectedImage() {

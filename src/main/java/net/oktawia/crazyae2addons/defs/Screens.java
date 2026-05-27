@@ -1,7 +1,9 @@
 package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
+import com.mojang.blaze3d.platform.DisplayData;
 import net.oktawia.crazyae2addons.client.screens.CrazyPatternProviderScreen;
+import net.oktawia.crazyae2addons.client.screens.block.DisplayDatabaseScreen;
 import net.oktawia.crazyae2addons.client.screens.block.EjectorScreen;
 import net.oktawia.crazyae2addons.client.screens.block.RecipeFabricatorScreen;
 import net.oktawia.crazyae2addons.client.screens.item.*;
@@ -16,6 +18,7 @@ import net.oktawia.crazyae2addons.client.screens.part.TagLevelEmitterScreen;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.CrazyPatternProviderMenu;
 import net.oktawia.crazyae2addons.menus.PatternMultiplierMenu;
+import net.oktawia.crazyae2addons.menus.block.DisplayDatabaseMenu;
 import net.oktawia.crazyae2addons.menus.block.EjectorMenu;
 import net.oktawia.crazyae2addons.menus.block.RecipeFabricatorMenu;
 import net.oktawia.crazyae2addons.menus.item.*;
@@ -113,6 +116,11 @@ public final class Screens {
                 CrazyMenuRegistrar.RECIPE_FABRICATOR_MENU.get(),
                 RecipeFabricatorScreen<RecipeFabricatorMenu>::new,
                 "/screens/recipe_fabricator.json"
+        );
+        InitScreens.register(
+                CrazyMenuRegistrar.DISPLAY_DATABASE_MENU.get(),
+                DisplayDatabaseScreen<DisplayDatabaseMenu>::new,
+                "/screens/display_database.json"
         );
     }
 

@@ -102,6 +102,12 @@ public final class NetworkHandler {
                 .decoder(UpdatePatternsPacket::decode)
                 .consumerMainThread(UpdatePatternsPacket::handle)
                 .add();
+
+        CHANNEL.messageBuilder(SyncBlockClientPacket.class, nextId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(SyncBlockClientPacket::encode)
+                .decoder(SyncBlockClientPacket::decode)
+                .consumerMainThread(SyncBlockClientPacket::handle)
+                .add();
     }
 
     public static void sendToPlayer(ServerPlayer player, Object packet) {

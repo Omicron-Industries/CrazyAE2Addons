@@ -18,18 +18,22 @@ import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.network.PacketDistributor;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IProviderLogicResizable;
 import net.oktawia.crazyae2addons.logic.provider.CrazyProviderNbt;
+import net.oktawia.crazyae2addons.network.NetworkHandler;
+import net.oktawia.crazyae2addons.network.packets.SyncBlockClientPacket;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -311,5 +315,14 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
     @Override
     public ItemStack getMainMenuIcon() {
         return getBlockState().getBlock().asItem().getDefaultInstance();
+    }
+
+    public void syncAddedToClients() {
+        if (getLevel() == null || getLevel().isClientSide) {
+            return;
+        }
+        NetworkHandler.sendToTrackingChunk(getLevel().getChunkAt(getBlockPos()),
+                new SyncBlockClientPacket(getBlockPos(), added, Direction.NORTH)
+        );
     }
 }

@@ -8,6 +8,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.entities.DisplayDatabaseBE;
 import net.oktawia.crazyae2addons.entities.EjectorBE;
 import net.oktawia.crazyae2addons.entities.RecipeFabricatorBE;
 import net.oktawia.crazyae2addons.logic.cpupriority.CpuPrioHost;
@@ -15,6 +16,7 @@ import net.oktawia.crazyae2addons.logic.patternmultiplier.PatternMultiplierHost;
 import net.oktawia.crazyae2addons.logic.viewcell.TagViewCellHost;
 import net.oktawia.crazyae2addons.menus.CrazyPatternProviderMenu;
 import net.oktawia.crazyae2addons.menus.PatternMultiplierMenu;
+import net.oktawia.crazyae2addons.menus.block.DisplayDatabaseMenu;
 import net.oktawia.crazyae2addons.menus.block.EjectorMenu;
 import net.oktawia.crazyae2addons.menus.block.RecipeFabricatorMenu;
 import net.oktawia.crazyae2addons.menus.item.*;
@@ -99,6 +101,9 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<RecipeFabricatorMenu>> RECIPE_FABRICATOR_MENU =
             reg("recipe_fabricator_menu", RecipeFabricatorMenu::new, RecipeFabricatorBE.class);
+
+    public static final RegistryObject<MenuType<DisplayDatabaseMenu>> DISPLAY_DATABASE_MENU =
+            reg("me_display_database", DisplayDatabaseMenu::new, DisplayDatabaseBE.class);
 
     private CrazyMenuRegistrar() {}
 }

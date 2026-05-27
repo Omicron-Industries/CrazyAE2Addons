@@ -6,6 +6,7 @@ import appeng.menu.guisync.GuiSync;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
@@ -29,6 +30,7 @@ public class DisplayImagesSubMenu extends AEBaseMenu implements ISubMenu {
     public static final String ACTION_SELECT = "selectImage";
     public static final String ACTION_REMOVE = "removeImage";
     public static final String ACTION_UPDATE = "updateImage";
+    public static final String ACTION_REORDER = "reorderImage";
     public static final String ACTION_REQUEST_PREVIEW = "requestPreview";
 
     @GuiSync(1)
@@ -60,6 +62,7 @@ public class DisplayImagesSubMenu extends AEBaseMenu implements ISubMenu {
         registerClientAction(ACTION_SELECT, String.class, this::selectImage);
         registerClientAction(ACTION_REMOVE, String.class, this::removeImage);
         registerClientAction(ACTION_UPDATE, String.class, this::updateImageFromPayload);
+        registerClientAction(ACTION_REORDER, String.class, this::reorderImageFromPayload);
         registerClientAction(ACTION_REQUEST_PREVIEW, this::requestPreview);
     }
 
@@ -175,6 +178,36 @@ public class DisplayImagesSubMenu extends AEBaseMenu implements ISubMenu {
         sendSelectedPreviewToClient();
     }
 
+    public void reorderImage(String id, int delta) {
+        if (isClientSide()) {
+            var images = new ArrayList<>(getImages());
+            int idx = -1;
+            for (int i = 0; i < images.size(); i++) {
+                if (images.get(i).id().equals(id)) {
+                    idx = i;
+                    break;
+                }
+            }
+            if (idx >= 0) {
+                int newIdx = Mth.clamp(idx + delta, 0, images.size() - 1);
+                if (newIdx != idx) {
+                    Collections.swap(images, idx, newIdx);
+                }
+            }
+            applyClientMirror(images);
+            sendClientAction(ACTION_REORDER, id + "|" + delta);
+            return;
+        }
+
+        if (host == null) {
+            return;
+        }
+
+        host.reorderDisplayImage(id, delta);
+        syncFromHost();
+        broadcastChanges();
+    }
+
     public void addImage(String sourceName, byte[] pngBytes, int width, int height) {
         if (isClientSide()) {
             return;
@@ -226,6 +259,31 @@ public class DisplayImagesSubMenu extends AEBaseMenu implements ISubMenu {
             sendSelectedPreviewToClient();
         } catch (Throwable e) {
             CrazyAddons.LOGGER.debug("failed to update display image and send preview", e);
+        }
+    }
+
+    private void reorderImageFromPayload(String payload) {
+        if (isClientSide()) {
+            return;
+        }
+
+        if (host == null) {
+            return;
+        }
+
+        String[] parts = payload.split("\\|", 2);
+        if (parts.length != 2) {
+            return;
+        }
+
+        try {
+            String id = parts[0];
+            int delta = Integer.parseInt(parts[1]);
+            host.reorderDisplayImage(id, delta);
+            syncFromHost();
+            broadcastChanges();
+        } catch (Throwable e) {
+            CrazyAddons.LOGGER.debug("failed to reorder display image", e);
         }
     }
 

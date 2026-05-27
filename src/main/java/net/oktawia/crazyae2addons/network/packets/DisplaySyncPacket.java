@@ -9,6 +9,8 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.oktawia.crazyae2addons.parts.Display;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.function.Supplier;
 
 public record DisplaySyncPacket(BlockPos pos, Direction side, String packed) {
@@ -39,6 +41,7 @@ public record DisplaySyncPacket(BlockPos pos, Direction side, String packed) {
 
     @net.minecraftforge.api.distmarker.OnlyIn(Dist.CLIENT)
     private static final class Client {
+
         private static void handle(DisplaySyncPacket pkt) {
             var mc = net.minecraft.client.Minecraft.getInstance();
             if (mc.level == null) {
@@ -55,15 +58,43 @@ public record DisplaySyncPacket(BlockPos pos, Direction side, String packed) {
             }
 
             part.resolvedTokens.clear();
+            unpackResolvedTokens(pkt.packed, part.resolvedTokens);
+        }
 
-            if (!pkt.packed.isEmpty()) {
-                for (String entry : pkt.packed.split("\\|", -1)) {
-                    int eq = entry.indexOf('=');
-                    if (eq > 0) {
-                        part.resolvedTokens.put(entry.substring(0, eq), entry.substring(eq + 1));
+        private static void unpackResolvedTokens(String packed, java.util.Map<String, String> out) {
+            if (packed == null || packed.isEmpty()) {
+                return;
+            }
+
+            Base64.Decoder decoder = Base64.getUrlDecoder();
+
+            for (String entry : packed.split("\\|", -1)) {
+                int eq = entry.indexOf('=');
+                if (eq <= 0) {
+                    continue;
+                }
+
+                String keyPart = entry.substring(0, eq);
+                String valuePart = entry.substring(eq + 1);
+
+                try {
+                    String key = decodePackedPart(decoder, keyPart);
+                    String value = decodePackedPart(decoder, valuePart);
+
+                    if (!key.isEmpty()) {
+                        out.put(key, value);
+                    }
+                } catch (Throwable ignored) {
+                    int oldEq = entry.indexOf('=');
+                    if (oldEq > 0) {
+                        out.put(entry.substring(0, oldEq), entry.substring(oldEq + 1));
                     }
                 }
             }
+        }
+
+        private static String decodePackedPart(Base64.Decoder decoder, String value) {
+            return new String(decoder.decode(value), StandardCharsets.UTF_8);
         }
     }
 }

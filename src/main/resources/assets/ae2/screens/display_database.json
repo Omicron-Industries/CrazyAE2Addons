@@ -1,0 +1,72 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/display_database.png",
+    "srcRect": [0, 0, 256, 256]
+  },
+  "slots": {
+    "PLAYER_INVENTORY": {
+      "left": 47,
+      "bottom": 82,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 47,
+      "bottom": 24,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "block.crazyae2addons.me_display_database"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
+      },
+      "position": {
+        "left": 47,
+        "bottom": 93
+      }
+    }
+  },
+  "widgets": {
+    "key": {
+      "left": 8,
+      "top": 26,
+      "width": 68,
+      "height": 16
+    },
+    "value": {
+      "left": 80,
+      "top": 26,
+      "width": 98,
+      "height": 16
+    },
+    "add": {
+      "left": 182,
+      "top": 24,
+      "width": 30,
+      "height": 16
+    },
+    "clear": {
+      "left": 216,
+      "top": 24,
+      "width": 32,
+      "height": 16
+    },
+    "entries": {
+      "left": 8,
+      "top": 46,
+      "width": 240,
+      "height": 116
+    }
+  }
+}

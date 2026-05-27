@@ -67,32 +67,58 @@ public final class DisplayGrid {
 
         Set<Display> assigned = Collections.newSetFromMap(new IdentityHashMap<>());
 
+        boolean progressed;
+        do {
+            progressed = false;
+
+            for (Display part : snapshot) {
+                if (assigned.contains(part)) {
+                    continue;
+                }
+
+                Direction side = part.getSide();
+
+                if (!part.isPowered() || !part.isMergeMode()) {
+                    RenderGroup singleton = buildSingletonRenderGroup(part);
+                    CLIENT_RENDER_GROUP_CACHE.put(part, singleton);
+                    assigned.add(part);
+                    progressed = true;
+                    continue;
+                }
+
+                Set<Display> component = getActiveConnectedComponent(part, side, assigned);
+                if (component.isEmpty()) {
+                    RenderGroup singleton = buildSingletonRenderGroup(part);
+                    CLIENT_RENDER_GROUP_CACHE.put(part, singleton);
+                    assigned.add(part);
+                    progressed = true;
+                    continue;
+                }
+
+                RenderGroup group = buildRenderGroupForActiveComponent(component);
+                if (group.parts().isEmpty()) {
+                    RenderGroup singleton = buildSingletonRenderGroup(part);
+                    CLIENT_RENDER_GROUP_CACHE.put(part, singleton);
+                    assigned.add(part);
+                    progressed = true;
+                    continue;
+                }
+
+                for (Display member : group.parts()) {
+                    if (!assigned.contains(member)) {
+                        CLIENT_RENDER_GROUP_CACHE.put(member, group);
+                        assigned.add(member);
+                        progressed = true;
+                    }
+                }
+            }
+        } while (progressed);
+
         for (Display part : snapshot) {
-            if (assigned.contains(part)) {
-                continue;
-            }
-
-            Direction side = part.getSide();
-
-            if (!part.isPowered() || !part.isMergeMode()) {
+            if (!assigned.contains(part)) {
                 RenderGroup singleton = buildSingletonRenderGroup(part);
                 CLIENT_RENDER_GROUP_CACHE.put(part, singleton);
                 assigned.add(part);
-                continue;
-            }
-
-            Set<Display> component = getActiveConnectedComponent(part, side, assigned);
-            if (component.isEmpty()) {
-                RenderGroup singleton = buildSingletonRenderGroup(part);
-                CLIENT_RENDER_GROUP_CACHE.put(part, singleton);
-                assigned.add(part);
-                continue;
-            }
-
-            RenderGroup group = buildRenderGroupForActiveComponent(component);
-            for (Display member : component) {
-                CLIENT_RENDER_GROUP_CACHE.put(member, group);
-                assigned.add(member);
             }
         }
     }
@@ -122,7 +148,50 @@ public final class DisplayGrid {
             return buildSingletonRenderGroup(origin);
         }
 
-        return buildRenderGroupForActiveComponent(component);
+        return buildRenderGroupContaining(component, origin);
+    }
+
+    private static RenderGroup buildRenderGroupContaining(Set<Display> component, Display target) {
+        if (component == null || component.isEmpty()) {
+            return buildSingletonRenderGroup(target);
+        }
+
+        if (!component.contains(target)) {
+            return buildSingletonRenderGroup(target);
+        }
+
+        Set<Display> remaining = new LinkedHashSet<>(component);
+
+        while (!remaining.isEmpty()) {
+            RenderGroup group = buildNextRenderGroupFromRemaining(remaining);
+
+            if (group.parts().contains(target)) {
+                return group;
+            }
+
+            remaining.removeAll(group.parts());
+        }
+
+        return buildSingletonRenderGroup(target);
+    }
+
+    private static RenderGroup buildNextRenderGroupFromRemaining(Set<Display> remaining) {
+        Display renderOrigin = getRenderOrigin(remaining);
+
+        Set<Display> renderParts;
+
+        if (isStructureComplete(remaining)) {
+            renderParts = remaining;
+        } else {
+            renderParts = findLargestAnchoredRectangle(remaining, renderOrigin);
+
+            if (renderParts.isEmpty()) {
+                renderParts = Set.of(renderOrigin);
+            }
+        }
+
+        Set<Display> immutableParts = Collections.unmodifiableSet(new LinkedHashSet<>(renderParts));
+        return new RenderGroup(immutableParts, renderOrigin, getMatrixAABB(immutableParts));
     }
 
     private static RenderGroup buildSingletonRenderGroup(Display part) {
@@ -151,7 +220,7 @@ public final class DisplayGrid {
         return getActiveConnectedComponent(origin, side, Collections.emptySet());
     }
 
-    private static Set<Display> getActiveConnectedComponent(Display origin, Direction side, Set<Display> excluded) {
+    private static Set<Display> getBaseConnectedComponent(Display origin, Direction side, Set<Display> excluded) {
         Set<Display> all = new LinkedHashSet<>();
         Deque<Display> queue = new ArrayDeque<>();
 
@@ -164,7 +233,6 @@ public final class DisplayGrid {
 
         while (!queue.isEmpty()) {
             Display cur = queue.poll();
-
             for (Direction dir : dirs) {
                 Display nb = getNeighbor(cur, dir);
                 if (nb != null
@@ -180,6 +248,141 @@ public final class DisplayGrid {
         }
 
         return all;
+    }
+
+    private static Set<Display> getActiveConnectedComponent(Display origin, Direction side, Set<Display> excluded) {
+        Set<Display> base = getBaseConnectedComponent(origin, side, excluded);
+        if (base.size() <= 1) {
+            return base;
+        }
+
+        Map<Pair<Integer, Integer>, Display> grid = new HashMap<>();
+        for (Display d : base) {
+            grid.put(Pair.of(partCol(d), partRow(d)), d);
+        }
+
+        Set<Display> result = new LinkedHashSet<>();
+        Deque<Display> queue = new ArrayDeque<>();
+
+        result.add(origin);
+        queue.add(origin);
+
+        boolean floorOrCeiling = side == Direction.UP || side == Direction.DOWN;
+
+        while (!queue.isEmpty()) {
+            Display cur = queue.poll();
+
+            int col = partCol(cur);
+            int row = partRow(cur);
+
+            if (floorOrCeiling) {
+                tryExpand(
+                        cur,
+                        Display.LocalDir.RIGHT,
+                        Display.LocalDir.LEFT,
+                        grid.get(Pair.of(col + 1, row)),
+                        result,
+                        queue
+                );
+
+                tryExpand(
+                        cur,
+                        Display.LocalDir.LEFT,
+                        Display.LocalDir.RIGHT,
+                        grid.get(Pair.of(col - 1, row)),
+                        result,
+                        queue
+                );
+            } else {
+                tryExpand(
+                        cur,
+                        Display.LocalDir.LEFT,
+                        Display.LocalDir.RIGHT,
+                        grid.get(Pair.of(col + 1, row)),
+                        result,
+                        queue
+                );
+
+                tryExpand(
+                        cur,
+                        Display.LocalDir.RIGHT,
+                        Display.LocalDir.LEFT,
+                        grid.get(Pair.of(col - 1, row)),
+                        result,
+                        queue
+                );
+            }
+
+            if (side == Direction.UP) {
+                tryExpand(
+                        cur,
+                        Display.LocalDir.DOWN,
+                        Display.LocalDir.UP,
+                        grid.get(Pair.of(col, row + 1)),
+                        result,
+                        queue
+                );
+
+                tryExpand(
+                        cur,
+                        Display.LocalDir.UP,
+                        Display.LocalDir.DOWN,
+                        grid.get(Pair.of(col, row - 1)),
+                        result,
+                        queue
+                );
+            } else if (side == Direction.DOWN) {
+                tryExpand(
+                        cur,
+                        Display.LocalDir.UP,
+                        Display.LocalDir.DOWN,
+                        grid.get(Pair.of(col, row + 1)),
+                        result,
+                        queue
+                );
+
+                tryExpand(
+                        cur,
+                        Display.LocalDir.DOWN,
+                        Display.LocalDir.UP,
+                        grid.get(Pair.of(col, row - 1)),
+                        result,
+                        queue
+                );
+            } else {
+                tryExpand(
+                        cur,
+                        Display.LocalDir.UP,
+                        Display.LocalDir.DOWN,
+                        grid.get(Pair.of(col, row + 1)),
+                        result,
+                        queue
+                );
+
+                tryExpand(
+                        cur,
+                        Display.LocalDir.DOWN,
+                        Display.LocalDir.UP,
+                        grid.get(Pair.of(col, row - 1)),
+                        result,
+                        queue
+                );
+            }
+        }
+
+        return result;
+    }
+
+    private static void tryExpand(Display cur, Display.LocalDir curDir, Display.LocalDir nbDir,
+                                  Display nb, Set<Display> result, Deque<Display> queue) {
+        if (nb == null || result.contains(nb)) {
+            return;
+        }
+
+        if (cur.canConnectLocal(curDir) && nb.canConnectLocal(nbDir)) {
+            result.add(nb);
+            queue.add(nb);
+        }
     }
 
     public static Display getRenderOrigin(Set<Display> parts) {
@@ -252,10 +455,10 @@ public final class DisplayGrid {
 
         if (side == Direction.UP || side == Direction.DOWN) {
             return switch (Math.floorMod(part.getSpin(), 4)) {
-                case 0 -> pos.getX();   // right = east
-                case 1 -> pos.getZ();   // right = south
-                case 2 -> -pos.getX();  // right = west
-                default -> -pos.getZ(); // right = north
+                case 0 -> pos.getX();
+                case 1 -> pos.getZ();
+                case 2 -> -pos.getX();
+                default -> -pos.getZ();
             };
         }
 
@@ -269,15 +472,70 @@ public final class DisplayGrid {
 
         if (side == Direction.UP || side == Direction.DOWN) {
             return switch (Math.floorMod(part.getSpin(), 4)) {
-                case 0 -> pos.getZ();   // down = south
-                case 1 -> -pos.getX();  // down = west
-                case 2 -> -pos.getZ();  // down = north
-                default -> pos.getX();  // down = east
+                case 0 -> pos.getZ();
+                case 1 -> -pos.getX();
+                case 2 -> -pos.getZ();
+                default -> pos.getX();
             };
         }
 
         PlaneAxes axes = axesForWall(side, part.getSpin());
         return project(pos, axes.up());
+    }
+
+    private static Display.LocalDir oppositeLocal(Display.LocalDir dir) {
+        return switch (dir) {
+            case LEFT -> Display.LocalDir.RIGHT;
+            case RIGHT -> Display.LocalDir.LEFT;
+            case UP -> Display.LocalDir.DOWN;
+            case DOWN -> Display.LocalDir.UP;
+        };
+    }
+
+    private static Display.LocalDir localDirForDelta(Direction side, int dc, int dr) {
+        boolean floorOrCeiling = side == Direction.UP || side == Direction.DOWN;
+
+        if (dc == 1) {
+            return floorOrCeiling ? Display.LocalDir.RIGHT : Display.LocalDir.LEFT;
+        }
+
+        if (dc == -1) {
+            return floorOrCeiling ? Display.LocalDir.LEFT : Display.LocalDir.RIGHT;
+        }
+
+        if (dr == 1) {
+            return switch (side) {
+                case UP -> Display.LocalDir.DOWN;
+                case DOWN -> Display.LocalDir.UP;
+                default -> Display.LocalDir.UP;
+            };
+        }
+
+        if (dr == -1) {
+            return switch (side) {
+                case UP -> Display.LocalDir.UP;
+                case DOWN -> Display.LocalDir.DOWN;
+                default -> Display.LocalDir.DOWN;
+            };
+        }
+
+        throw new IllegalArgumentException("Invalid grid delta: dc=" + dc + ", dr=" + dr);
+    }
+
+    private static boolean hasOpenInternalEdge(Display a, Display b) {
+        Direction side = a.getSide();
+
+        int dc = partCol(b) - partCol(a);
+        int dr = partRow(b) - partRow(a);
+
+        if (Math.abs(dc) + Math.abs(dr) != 1) {
+            return false;
+        }
+
+        Display.LocalDir aDir = localDirForDelta(side, dc, dr);
+        Display.LocalDir bDir = oppositeLocal(aDir);
+
+        return a.canConnectLocal(aDir) && b.canConnectLocal(bDir);
     }
 
     private static Set<Display> findLargestAnchoredRectangle(Set<Display> parts, Display anchor) {
@@ -290,6 +548,7 @@ public final class DisplayGrid {
         byte anchorSpin = anchor.getSpin();
 
         Map<Pair<Integer, Integer>, Display> grid = new HashMap<>();
+
         int minCol = Integer.MAX_VALUE;
         int minRow = Integer.MAX_VALUE;
         int maxCol = Integer.MIN_VALUE;
@@ -299,10 +558,12 @@ public final class DisplayGrid {
             if (floorOrCeiling && part.getSpin() != anchorSpin) {
                 continue;
             }
+
             int col = partCol(part);
             int row = partRow(part);
 
             grid.put(Pair.of(col, row), part);
+
             minCol = Math.min(minCol, col);
             minRow = Math.min(minRow, row);
             maxCol = Math.max(maxCol, col);
@@ -338,7 +599,7 @@ public final class DisplayGrid {
                         }
                     }
 
-                    if (valid) {
+                    if (valid && isStructureComplete(candidate)) {
                         bestArea = area;
                         best = candidate;
                     }
@@ -371,7 +632,7 @@ public final class DisplayGrid {
                         }
                     }
 
-                    if (valid) {
+                    if (valid && isStructureComplete(candidate)) {
                         bestArea = area;
                         best = candidate;
                     }
@@ -403,7 +664,7 @@ public final class DisplayGrid {
                     }
                 }
 
-                if (valid) {
+                if (valid && isStructureComplete(candidate)) {
                     bestArea = area;
                     best = candidate;
                 }
@@ -434,7 +695,8 @@ public final class DisplayGrid {
             return false;
         }
 
-        Set<Pair<Integer, Integer>> coords = new HashSet<>();
+        Map<Pair<Integer, Integer>, Display> grid = new HashMap<>();
+
         int minRow = Integer.MAX_VALUE;
         int maxRow = Integer.MIN_VALUE;
         int minCol = Integer.MAX_VALUE;
@@ -444,7 +706,8 @@ public final class DisplayGrid {
             int col = partCol(part);
             int row = partRow(part);
 
-            coords.add(Pair.of(col, row));
+            grid.put(Pair.of(col, row), part);
+
             minCol = Math.min(minCol, col);
             maxCol = Math.max(maxCol, col);
             minRow = Math.min(minRow, row);
@@ -453,7 +716,18 @@ public final class DisplayGrid {
 
         for (int col = minCol; col <= maxCol; col++) {
             for (int row = minRow; row <= maxRow; row++) {
-                if (!coords.contains(Pair.of(col, row))) {
+                Display cur = grid.get(Pair.of(col, row));
+                if (cur == null) {
+                    return false;
+                }
+
+                Display right = grid.get(Pair.of(col + 1, row));
+                if (right != null && !hasOpenInternalEdge(cur, right)) {
+                    return false;
+                }
+
+                Display rowPlus = grid.get(Pair.of(col, row + 1));
+                if (rowPlus != null && !hasOpenInternalEdge(cur, rowPlus)) {
                     return false;
                 }
             }
@@ -491,9 +765,11 @@ public final class DisplayGrid {
 
         for (Display part : group) {
             BlockPos pos = part.getBlockEntity().getBlockPos();
+
             minX = Math.min(minX, pos.getX());
             minY = Math.min(minY, pos.getY());
             minZ = Math.min(minZ, pos.getZ());
+
             maxX = Math.max(maxX, pos.getX() + 1);
             maxY = Math.max(maxY, pos.getY() + 1);
             maxZ = Math.max(maxZ, pos.getZ() + 1);
@@ -508,12 +784,13 @@ public final class DisplayGrid {
         }
 
         Direction side = origin.getSide();
+
         Set<Display> component = getActiveConnectedComponent(origin, side);
         if (component.isEmpty()) {
             return Pair.of(1, 1);
         }
 
-        RenderGroup group = buildRenderGroupForActiveComponent(component);
+        RenderGroup group = buildRenderGroupContaining(component, origin);
         if (group.parts().isEmpty()) {
             return Pair.of(1, 1);
         }

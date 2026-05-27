@@ -83,6 +83,11 @@ public class FabricationRecipes {
                 .input("minecraft:diamond", 4)
                 .output("crazyae2addons:wormhole", 1)
                 .register();
+        recipe("display_database")
+                .input("crazyae2addons:display", 6)
+                .input("ae2:controller", 1)
+                .output("crazyae2addons:me_display_database", 1)
+                .register();
     }
 
     public static class Builder {

@@ -91,6 +91,30 @@
       "top": 26,
       "width": 240,
       "height": 135
+    },
+    "connectUp": {
+      "left": 276,
+      "top": 6,
+      "width": 16,
+      "height": 16
+    },
+    "connectLeft": {
+      "left": 258,
+      "top": 24,
+      "width": 16,
+      "height": 16
+    },
+    "connectRight": {
+      "left": 294,
+      "top": 24,
+      "width": 16,
+      "height": 16
+    },
+    "connectDown": {
+      "left": 276,
+      "top": 42,
+      "width": 16,
+      "height": 16
     }
   }
 }

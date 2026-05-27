@@ -17,6 +17,7 @@ public final class CrazyConfig {
     public static final class Common {
 
         public final ForgeConfigSpec.BooleanValue DISPLAY_ENABLED;
+        public final ForgeConfigSpec.BooleanValue DISPLAY_DATABASE_ENABLED;
         public final ForgeConfigSpec.BooleanValue DISPLAY_IMAGES_ENABLED;
         public final ForgeConfigSpec.BooleanValue DISPLAY_STOCK_ENABLED;
         public final ForgeConfigSpec.BooleanValue DISPLAY_ICONS_ENABLED;
@@ -79,6 +80,13 @@ public final class CrazyConfig {
             DISPLAY_ENABLED = bool(builder,
                     "enabled", true,
                     "Enable or disable the entire display feature."
+            );
+
+            DISPLAY_DATABASE_ENABLED = bool(builder,
+                    "databaseEnabled", true,
+                    "Enable or disable ME Display Database.",
+                    "When disabled, the database GUI will not open, ComputerCraft peripheral methods will not work,",
+                    "and display database tokens such as &key will not resolve."
             );
 
             DISPLAY_IMAGES_ENABLED = bool(builder,

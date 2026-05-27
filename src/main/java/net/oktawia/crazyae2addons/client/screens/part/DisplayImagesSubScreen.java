@@ -136,7 +136,6 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
         widgets.add("scaleSlider", scaleSlider);
 
         imageListWidget = new ImageListWidget();
-        imageListWidget.setTooltip(Tooltip.create(Component.translatable(LangDefs.IMAGE_LIST_TOOLTIP.getTranslationKey())));
         widgets.add("imageList", imageListWidget);
     }
 
@@ -423,6 +422,7 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
     private final class ImageListWidget extends AbstractWidget {
 
         private static final int ROW_H = 14;
+        private static final int CONTROLS_H = ROW_H;
         private int scrollOff = 0;
 
         private ImageListWidget() {
@@ -430,7 +430,7 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
         }
 
         private int visibleRows() {
-            return Math.max(0, (height - 4) / ROW_H);
+            return Math.max(0, (height - 4 - CONTROLS_H) / ROW_H);
         }
 
         private int maxScroll() {
@@ -517,20 +517,52 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
                 int trackX1 = x + width - 3;
                 int trackX2 = x + width - 1;
                 int trackY1 = y + 2;
-                int trackY2 = y + height - 2;
+                int trackY2 = y + height - CONTROLS_H - 2;
                 int trackH = trackY2 - trackY1;
 
-                int thumbH = Math.max(12, (int) ((vis / (float) images.size()) * trackH));
-                int maxScroll = maxScroll();
-                int thumbY = trackY1;
+                if (trackH > 0) {
+                    int thumbH = Math.max(12, (int) ((vis / (float) images.size()) * trackH));
+                    int maxScroll = maxScroll();
+                    int thumbY = trackY1;
 
-                if (maxScroll > 0) {
-                    thumbY += (int) ((scrollOff / (float) maxScroll) * (trackH - thumbH));
+                    if (maxScroll > 0) {
+                        thumbY += (int) ((scrollOff / (float) maxScroll) * (trackH - thumbH));
+                    }
+
+                    g.fill(trackX1, trackY1, trackX2, trackY2, 0xFF2A2A2A);
+                    g.fill(trackX1, thumbY, trackX2, thumbY + thumbH, 0xFF777777);
                 }
-
-                g.fill(trackX1, trackY1, trackX2, trackY2, 0xFF2A2A2A);
-                g.fill(trackX1, thumbY, trackX2, thumbY + thumbH, 0xFF777777);
             }
+
+            // --- pasek reorder (dół widgetu) ---
+            int ctrlY = y + height - CONTROLS_H;
+            g.fill(x, ctrlY - 1, x + width, ctrlY, 0xFF555555);
+
+            DisplayImageEntry selectedCtrl = getMenu().getSelectedImage();
+            List<DisplayImageEntry> allImages = getMenu().getImages();
+            int selectedIdx = -1;
+            if (selectedCtrl != null) {
+                for (int i = 0; i < allImages.size(); i++) {
+                    if (allImages.get(i).id().equals(selectedCtrl.id())) {
+                        selectedIdx = i;
+                        break;
+                    }
+                }
+            }
+
+            boolean canUp   = selectedIdx > 0;
+            boolean canDown = selectedIdx >= 0 && selectedIdx < allImages.size() - 1;
+            int halfW = width / 2;
+            boolean hovUp   = mouseX >= x            && mouseX < x + halfW && mouseY >= ctrlY && mouseY < ctrlY + CONTROLS_H;
+            boolean hovDown = mouseX >= x + halfW    && mouseX < x + width  && mouseY >= ctrlY && mouseY < ctrlY + CONTROLS_H;
+
+            g.fill(x + 1, ctrlY, x + halfW - 1, ctrlY + CONTROLS_H,
+                   canUp   ? (hovUp   ? 0xFF3A3A3A : 0xFF2A2A2A) : 0xFF1E1E1E);
+            g.fill(x + halfW + 1, ctrlY, x + width - 1, ctrlY + CONTROLS_H,
+                   canDown ? (hovDown ? 0xFF3A3A3A : 0xFF2A2A2A) : 0xFF1E1E1E);
+
+            g.drawCenteredString(font, "▲", x + halfW / 2,         ctrlY + 3, canUp   ? 0xFFCCCCCC : 0xFF555555);
+            g.drawCenteredString(font, "▼", x + halfW + halfW / 2, ctrlY + 3, canDown ? 0xFFCCCCCC : 0xFF555555);
         }
 
         @Override
@@ -539,8 +571,40 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
                 return false;
             }
 
+            int mx = (int) mouseX;
+            int my = (int) mouseY;
+
+            // Kliknięcie w pasek reorder (dół widgetu)
+            int ctrlY = getY() + height - CONTROLS_H;
+            if (my >= ctrlY && my < ctrlY + CONTROLS_H) {
+                DisplayImageEntry sel = getMenu().getSelectedImage();
+                if (sel == null) {
+                    return false;
+                }
+                List<DisplayImageEntry> images = getMenu().getImages();
+                int selIdx = -1;
+                for (int i = 0; i < images.size(); i++) {
+                    if (images.get(i).id().equals(sel.id())) {
+                        selIdx = i;
+                        break;
+                    }
+                }
+                if (selIdx < 0) {
+                    return false;
+                }
+                int halfW = width / 2;
+                if (mx < getX() + halfW && selIdx > 0) {
+                    getMenu().reorderImage(sel.id(), -1);
+                    return true;
+                } else if (mx >= getX() + halfW && selIdx < images.size() - 1) {
+                    getMenu().reorderImage(sel.id(), 1);
+                    return true;
+                }
+                return false;
+            }
+
             List<DisplayImageEntry> images = getMenu().getImages();
-            int localY = (int) mouseY - getY() - 2;
+            int localY = my - getY() - 2;
             int row = localY / ROW_H;
             int idx = row + scrollOff;
 

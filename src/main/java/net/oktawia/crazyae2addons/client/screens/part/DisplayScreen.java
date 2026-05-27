@@ -8,21 +8,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mojang.datafixers.util.Pair;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.parts.Display;
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.misc.LDLibColorSelectorAdapter;
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
@@ -31,6 +29,7 @@ import net.oktawia.crazyae2addons.client.renderer.display.DisplayRendererCommon;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
 import net.oktawia.crazyae2addons.menus.part.DisplayMenu;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
@@ -51,6 +50,10 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
     private final ToggleButton mode;
     private final ToggleButton center;
     private final ToggleButton margin;
+    private final ToggleButton connectUp;
+    private final ToggleButton connectDown;
+    private final ToggleButton connectLeft;
+    private final ToggleButton connectRight;
 
     private final Map<String, byte[]> previewImageData = new HashMap<>();
 
@@ -156,6 +159,16 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
         this.center.setTooltip(Tooltip.create(Component.translatable(LangDefs.CENTER_TEXT.getTranslationKey())));
         this.margin.setTooltip(Tooltip.create(Component.translatable(LangDefs.ADD_MARGIN.getTranslationKey())));
 
+        this.connectUp    = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectUp);
+        this.connectDown  = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectDown);
+        this.connectLeft  = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectLeft);
+        this.connectRight = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectRight);
+
+        this.connectUp.setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_UP.getTranslationKey())));
+        this.connectDown.setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_DOWN.getTranslationKey())));
+        this.connectLeft.setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_LEFT.getTranslationKey())));
+        this.connectRight.setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_RIGHT.getTranslationKey())));
+
         widgets.add("value", value);
         widgets.add("confirm", confirm);
         widgets.add("mode", mode);
@@ -163,6 +176,10 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
         widgets.add("margin", margin);
         widgets.add("backgroundColor", backgroundColor);
         widgets.add("selectedTextColor", selectedTextColor);
+        widgets.add("connectUp",    connectUp);
+        widgets.add("connectDown",  connectDown);
+        widgets.add("connectLeft",  connectLeft);
+        widgets.add("connectRight", connectRight);
     }
 
     @Override
@@ -185,6 +202,11 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
             center.setState(centerState);
             margin.setState(marginState);
 
+            connectUp.setState(getMenu().connectUp);
+            connectDown.setState(getMenu().connectDown);
+            connectLeft.setState(getMenu().connectLeft);
+            connectRight.setState(getMenu().connectRight);
+
             backgroundColor.setColor(extractBackgroundColor(value.getValue(), 0xFF202020));
             selectedTextColor.setColor(0xFFFFFFFF);
 
@@ -193,6 +215,8 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
 
             initialized = true;
         }
+
+        updateConnectButtonVisibility();
 
         String pending = getMenu().pendingInsert;
         if (pending != null && !pending.isEmpty()) {
@@ -481,6 +505,14 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
         modeState = enabled;
         getMenu().changeMode(enabled);
         mode.setState(enabled);
+        updateConnectButtonVisibility();
+    }
+
+    private void updateConnectButtonVisibility() {
+        connectUp.visible    = modeState;
+        connectDown.visible  = modeState;
+        connectLeft.visible  = modeState;
+        connectRight.visible = modeState;
     }
 
     private void changeCenter(boolean enabled) {
@@ -495,6 +527,26 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
         margin.setState(enabled);
     }
 
+    private void changeConnectUp(boolean enabled) {
+        getMenu().setConnectDir(Display.LocalDir.UP, enabled);
+        connectUp.setState(enabled);
+    }
+
+    private void changeConnectDown(boolean enabled) {
+        getMenu().setConnectDir(Display.LocalDir.DOWN, enabled);
+        connectDown.setState(enabled);
+    }
+
+    private void changeConnectLeft(boolean enabled) {
+        getMenu().setConnectDir(Display.LocalDir.LEFT, enabled);
+        connectLeft.setState(enabled);
+    }
+
+    private void changeConnectRight(boolean enabled) {
+        getMenu().setConnectDir(Display.LocalDir.RIGHT, enabled);
+        connectRight.setState(enabled);
+    }
+
     @Override
     public void onClose() {
         if (!allowCloseWithoutPrompt) {
@@ -505,5 +557,58 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
         backgroundColor.removed();
         selectedTextColor.removed();
         super.onClose();
+    }
+
+    public List<Rect2i> getXeiExtraAreas() {
+        List<Rect2i> areas = new ArrayList<>();
+
+        if (connectUp.visible || connectDown.visible || connectLeft.visible || connectRight.visible) {
+            areas.add(getConnectControlsExtraArea());
+        }
+
+        Rect2i previewArea = getPreviewExtraArea();
+        if (previewArea != null) {
+            areas.add(previewArea);
+        }
+
+        return areas;
+    }
+
+    private Rect2i getConnectControlsExtraArea() {
+        return new Rect2i(
+                leftPos + 258,
+                topPos + 6,
+                52,
+                52
+        );
+    }
+
+    @Nullable
+    private Rect2i getPreviewExtraArea() {
+        int previewW = DisplayGuiRenderer.computePreviewWidth(
+                leftPos,
+                PREVIEW_PREFERRED_W,
+                PREVIEW_GAP,
+                PREVIEW_MIN_X
+        );
+
+        if (previewW < 52) {
+            return null;
+        }
+
+        int previewH = Math.max(72, Math.min(imageHeight - 20, PREVIEW_PREFERRED_H));
+        int previewX = DisplayGuiRenderer.clampPreviewX(leftPos, previewW, PREVIEW_GAP, PREVIEW_MIN_X);
+        int previewY = DisplayGuiRenderer.clampPreviewY(topPos, imageHeight, previewH);
+
+        int labelY = Math.max(2, previewY - 10);
+        int areaY = Math.min(labelY, previewY);
+        int areaH = previewY + previewH - areaY;
+
+        return new Rect2i(
+                previewX,
+                areaY,
+                previewW,
+                areaH
+        );
     }
 }

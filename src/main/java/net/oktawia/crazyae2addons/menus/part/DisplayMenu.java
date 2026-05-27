@@ -35,6 +35,7 @@ public class DisplayMenu extends AEBaseMenu {
     public static final String ACTION_OPEN_INSERT = "openInsert";
     public static final String ACTION_OPEN_IMAGES = "openImages";
     public static final String ACTION_REQUEST_IMAGES = "requestImages";
+    public static final String ACTION_CONNECT_DIR = "setConnectDir";
 
     @GuiSync(145)
     public String displayValue = "";
@@ -66,6 +67,18 @@ public class DisplayMenu extends AEBaseMenu {
     @GuiSync(38)
     public String previewImagesJson = "[]";
 
+    @GuiSync(39)
+    public boolean connectUp    = true;
+
+    @GuiSync(40)
+    public boolean connectDown  = true;
+
+    @GuiSync(41)
+    public boolean connectLeft  = true;
+
+    @GuiSync(42)
+    public boolean connectRight = true;
+
     @Getter
     private final Display host;
 
@@ -80,6 +93,10 @@ public class DisplayMenu extends AEBaseMenu {
         this.mode = host.isMergeMode();
         this.margin = host.isAddMargin();
         this.centerText = host.getCenterText();
+        this.connectUp    = host.canConnectLocal(Display.LocalDir.UP);
+        this.connectDown  = host.canConnectLocal(Display.LocalDir.DOWN);
+        this.connectLeft  = host.canConnectLocal(Display.LocalDir.LEFT);
+        this.connectRight = host.canConnectLocal(Display.LocalDir.RIGHT);
 
         String pending = host.pendingInsert;
         if (pending != null) {
@@ -98,6 +115,7 @@ public class DisplayMenu extends AEBaseMenu {
         registerClientAction(ACTION_OPEN_INSERT, Integer.class, this::openInsert);
         registerClientAction(ACTION_OPEN_IMAGES, this::openImages);
         registerClientAction(ACTION_REQUEST_IMAGES, this::requestImages);
+        registerClientAction(ACTION_CONNECT_DIR, String.class, this::setConnectDirFromPayload);
 
         createPlayerInventorySlots(inv);
     }
@@ -237,6 +255,39 @@ public class DisplayMenu extends AEBaseMenu {
 
         if (isClientSide()) {
             sendClientAction(ACTION_OPEN_INSERT, cursorPos);
+        }
+    }
+
+    public void setConnectDir(Display.LocalDir dir, boolean val) {
+        applyConnectFlag(dir, val);
+        host.setConnectLocal(dir, val);
+        host.getHost().markForUpdate();
+
+        if (isClientSide()) {
+            DisplayGrid.invalidateClientCache();
+            sendClientAction(ACTION_CONNECT_DIR, dir.name() + "|" + val);
+        }
+    }
+
+    private void applyConnectFlag(Display.LocalDir dir, boolean val) {
+        switch (dir) {
+            case UP    -> connectUp    = val;
+            case DOWN  -> connectDown  = val;
+            case LEFT  -> connectLeft  = val;
+            case RIGHT -> connectRight = val;
+        }
+    }
+
+    private void setConnectDirFromPayload(String payload) {
+        if (isClientSide()) return;
+        String[] parts = payload.split("\\|", 2);
+        if (parts.length != 2) return;
+        try {
+            Display.LocalDir dir = Display.LocalDir.valueOf(parts[0]);
+            boolean val = Boolean.parseBoolean(parts[1]);
+            setConnectDir(dir, val);
+        } catch (Throwable e) {
+            CrazyAddons.LOGGER.debug("failed to set connect dir", e);
         }
     }
 

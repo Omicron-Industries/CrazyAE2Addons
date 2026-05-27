@@ -66,6 +66,10 @@ public class CrazyPatternProviderBlock extends PatternProviderBlock {
             return InteractionResult.PASS;
         }
 
+        if (level.getBlockEntity(pos) instanceof CrazyPatternProviderBE provider) {
+            provider.syncAddedToClients();
+        }
+
         return super.onActivated(level, pos, player, hand, heldItem, hit);
     }
 }

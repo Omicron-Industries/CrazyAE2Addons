@@ -50,5 +50,12 @@ public class CrazyBlockRegistrar {
             BLOCK_ITEMS.register("recipe_fabricator",
                     () -> new AEBaseBlockItem(RECIPE_FABRICATOR_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<DisplayDatabaseBlock> DISPLAY_DATABASE_BLOCK =
+            BLOCKS.register("me_display_database", DisplayDatabaseBlock::new);
+
+    public static final RegistryObject<BlockItem> DISPLAY_DATABASE_BLOCK_ITEM =
+            BLOCK_ITEMS.register("me_display_database",
+                    () -> new AEBaseBlockItem(DISPLAY_DATABASE_BLOCK.get(), new Item.Properties()));
+
     private CrazyBlockRegistrar() {}
 }

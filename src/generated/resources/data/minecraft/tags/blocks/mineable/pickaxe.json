@@ -2,6 +2,7 @@
   "values": [
     "crazyae2addons:crazy_pattern_provider",
     "crazyae2addons:ejector",
-    "crazyae2addons:recipe_fabricator"
+    "crazyae2addons:recipe_fabricator",
+    "crazyae2addons:me_display_database"
   ]
 }

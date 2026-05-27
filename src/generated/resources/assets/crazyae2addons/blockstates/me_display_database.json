@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "crazyae2addons:block/me_display_database"
+    }
+  }
+}

@@ -41,6 +41,7 @@ import org.joml.Matrix4f;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,8 @@ public final class DisplayRendererCommon {
             float x,
             float y,
             float widthPx,
-            float heightPx
+            float heightPx,
+            float z
     ) implements DrawCommand {
     }
 
@@ -146,15 +148,19 @@ public final class DisplayRendererCommon {
         }
 
         if (images != null && imageData != null && CrazyConfig.COMMON.DISPLAY_IMAGES_ENABLED.get()) {
+            int listSize = images.size();
+            int imageListIdx = 0;
             for (DisplayImageEntry image : images) {
                 byte[] pngBytes = imageData.get(image.id());
                 if (pngBytes == null || pngBytes.length == 0) {
+                    imageListIdx++;
                     continue;
                 }
 
                 String cacheKey = imageCacheKey(image.id(), pngBytes);
                 CachedImage cached = getOrCreateCachedImage(cacheKey, pngBytes);
                 if (cached == null || cached.width() <= 0 || cached.height() <= 0) {
+                    imageListIdx++;
                     continue;
                 }
 
@@ -176,16 +182,22 @@ public final class DisplayRendererCommon {
                 float xPx = Math.max(0f, pxW - imageW) * (xPercent / 100f);
                 float yPx = Math.max(0f, pxH - imageH) * (yPercent / 100f);
 
+                float imageZ = IMAGE_LAYER_Z + (listSize - 1 - imageListIdx) * 0.5f;
+
                 imageCommands.add(new ImageCommand(
                         cacheKey,
                         pngBytes,
                         xPx,
                         yPx,
                         imageW,
-                        imageH
+                        imageH,
+                        imageZ
                 ));
+                imageListIdx++;
             }
         }
+
+        Collections.reverse(imageCommands);
 
         if (renderLines.isEmpty()) {
             out.addAll(imageCommands);
@@ -299,6 +311,7 @@ public final class DisplayRendererCommon {
                 ps.pushPose();
                 ps.translate(tc.x(), tc.y(), TEXT_LAYER_Z);
                 ps.scale(tc.scale(), tc.scale(), 1f);
+
                 font.drawInBatch(
                         tc.text(),
                         0f,
@@ -307,10 +320,11 @@ public final class DisplayRendererCommon {
                         false,
                         ps.last().pose(),
                         buf,
-                        Font.DisplayMode.NORMAL,
+                        Font.DisplayMode.POLYGON_OFFSET,
                         0,
                         light
                 );
+
                 ps.popPose();
             } else if (cmd instanceof ItemCommand ic) {
                 renderItemFlattened(
@@ -339,7 +353,8 @@ public final class DisplayRendererCommon {
                             ic.widthPx(),
                             ic.heightPx(),
                             prepared.surfaceWidthPx(),
-                            prepared.surfaceHeightPx()
+                            prepared.surfaceHeightPx(),
+                            ic.z()
                     );
                 }
             }
@@ -509,7 +524,7 @@ public final class DisplayRendererCommon {
             float sizePx,
             TextureAtlasSprite sprite
     ) {
-        VertexConsumer buffer = buf.getBuffer(RenderType.text(InventoryMenu.BLOCK_ATLAS));
+        VertexConsumer buffer = buf.getBuffer(RenderType.textPolygonOffset(InventoryMenu.BLOCK_ATLAS));
         Matrix4f m = ps.last().pose();
 
         int a = (argb >>> 24) & 0xFF;
@@ -592,7 +607,8 @@ public final class DisplayRendererCommon {
             float width,
             float height,
             float clipX1,
-            float clipY1
+            float clipY1,
+            float z
     ) {
         if (width <= 0f || height <= 0f) {
             return;
@@ -601,8 +617,8 @@ public final class DisplayRendererCommon {
         float srcX1 = x + width;
         float srcY1 = y + height;
 
-        float dstX0 = Math.max(x, (float) 0.0);
-        float dstY0 = Math.max(y, (float) 0.0);
+        float dstX0 = Math.max(x, 0.0f);
+        float dstY0 = Math.max(y, 0.0f);
         float dstX1 = Math.min(srcX1, clipX1);
         float dstY1 = Math.min(srcY1, clipY1);
 
@@ -615,9 +631,8 @@ public final class DisplayRendererCommon {
         float u1 = (dstX1 - x) / width;
         float v1 = (dstY1 - y) / height;
 
-        VertexConsumer buffer = buf.getBuffer(RenderType.text(texture));
+        VertexConsumer buffer = buf.getBuffer(RenderType.textPolygonOffset(texture));
         Matrix4f m = ps.last().pose();
-        float z = IMAGE_LAYER_Z;
 
         buffer.vertex(m, dstX0, dstY0, z).color(255, 255, 255, 255).uv(u0, v0).uv2(light).endVertex();
         buffer.vertex(m, dstX1, dstY0, z).color(255, 255, 255, 255).uv(u1, v0).uv2(light).endVertex();

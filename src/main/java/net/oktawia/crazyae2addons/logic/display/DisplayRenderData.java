@@ -97,6 +97,27 @@ public final class DisplayRenderData {
             return "";
         }
 
+        if (variables == null || variables.isEmpty()) {
+            return evalMathExpressions(input);
+        }
+
+        String current = input;
+
+        for (int depth = 0; depth < 8; depth++) {
+            String next = resolveTokensClientSideOnce(current, variables);
+
+            if (next.equals(current)) {
+                current = next;
+                break;
+            }
+
+            current = next;
+        }
+
+        return evalMathExpressions(current);
+    }
+
+    private static String resolveTokensClientSideOnce(String input, Map<String, String> variables) {
         StringBuilder sb = new StringBuilder();
         Matcher m = CLIENT_VAR_TOKEN.matcher(input);
 
@@ -120,7 +141,7 @@ public final class DisplayRenderData {
         }
 
         m.appendTail(sb);
-        return evalMathExpressions(sb.toString());
+        return sb.toString();
     }
 
     @Nullable

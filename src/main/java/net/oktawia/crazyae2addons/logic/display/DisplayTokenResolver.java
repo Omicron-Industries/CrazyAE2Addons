@@ -8,13 +8,16 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.entities.DisplayDatabaseBE;
 import net.oktawia.crazyae2addons.logic.display.keytypes.DisplayKeyCompatRegistry;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.DisplaySyncPacket;
 import net.oktawia.crazyae2addons.parts.Display;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,8 +33,22 @@ public final class DisplayTokenResolver {
 
     private static final long MAX_RATE_WINDOW_TICKS = 20L * 60L * 30L;
 
-    private static final Pattern SERVER_STOCK_TOKEN = Pattern.compile("&(s\\^[\\w:]+(?:%\\d+)?)", Pattern.CASE_INSENSITIVE);
-    private static final Pattern SERVER_DELTA_TOKEN = Pattern.compile("&(d\\^[a-z0-9_\\.:]+(?:%\\d+[tsm])?@\\d+[tsm])", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SERVER_STOCK_TOKEN =
+            Pattern.compile("&(s\\^[\\w:]+(?:%\\d+)?)", Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern SERVER_DELTA_TOKEN =
+            Pattern.compile("&(d\\^[a-z0-9_\\.:]+(?:%\\d+[tsm])?@\\d+[tsm])", Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern SERVER_DATABASE_TOKEN = Pattern.compile(
+            "&(?![sdi]\\^)(?![cb][0-9a-f]{6}\\b)(?!nl\\b)([a-z0-9_]+)",
+            Pattern.CASE_INSENSITIVE
+    );
+
+    private static final Pattern DATABASE_KEY_PATTERN = Pattern.compile(
+            "^(?!nl$)[a-z0-9_]+$",
+            Pattern.CASE_INSENSITIVE
+    );
+
     private static final Pattern DELTA_PARSE = Pattern.compile(
             "^d\\^([a-z0-9_\\.:]+)(?:%(\\d+)([tsm]))?@([0-9]+)([tsm])$",
             Pattern.CASE_INSENSITIVE
@@ -46,18 +63,30 @@ public final class DisplayTokenResolver {
     private record DeltaToken(String tokenKey, DeltaSpec spec) {
     }
 
+    private record DatabaseResolveResult(
+            String expandedText,
+            Map<String, String> resolved,
+            Set<String> liveKeys
+    ) {
+    }
+
     public static void recomputeVariablesAndNotify(Display part) {
         var level = part.getLevel();
         if (level == null || level.isClientSide()) {
             return;
         }
 
-        String txt = part.getTextValue() == null ? "" : part.getTextValue();
+        String rawText = part.getTextValue() == null ? "" : part.getTextValue();
+
+        DatabaseResolveResult databaseResult = resolveDatabaseTokensServerSide(part, rawText);
+        String txt = databaseResult.expandedText();
 
         List<String> stockTokens = new ArrayList<>();
         List<DeltaToken> deltaTokens = new ArrayList<>();
         Set<String> neededIds = new HashSet<>();
-        Set<String> liveKeys = new HashSet<>();
+        Set<String> liveKeys = new HashSet<>(databaseResult.liveKeys());
+
+        part.resolvedTokens.putAll(databaseResult.resolved());
 
         if (CrazyConfig.COMMON.DISPLAY_STOCK_ENABLED.get()) {
             Matcher sm = SERVER_STOCK_TOKEN.matcher(txt);
@@ -65,11 +94,13 @@ public final class DisplayTokenResolver {
                 String token = sm.group(1);
                 stockTokens.add(token);
                 liveKeys.add(token);
+
                 String core = token;
                 int pct = token.indexOf('%');
                 if (pct >= 0) {
                     core = token.substring(0, pct);
                 }
+
                 if (core.startsWith("s^")) {
                     neededIds.add(core.substring(2));
                 }
@@ -92,15 +123,22 @@ public final class DisplayTokenResolver {
         if (stockTokens.size() > 512) {
             stockTokens = stockTokens.subList(0, 512);
         }
+
         if (deltaTokens.size() > 512) {
             deltaTokens = deltaTokens.subList(0, 512);
         }
 
-        Map<String, Long> amounts = neededIds.isEmpty() ? Collections.emptyMap() : getAmountsInME(part, neededIds);
+        Map<String, Long> amounts = neededIds.isEmpty()
+                ? Collections.emptyMap()
+                : getAmountsInME(part, neededIds);
+
         long nowTick = level.getGameTime();
 
         if (!deltaTokens.isEmpty()) {
-            Set<String> deltaIds = deltaTokens.stream().map(dt -> dt.spec().id()).collect(Collectors.toSet());
+            Set<String> deltaIds = deltaTokens.stream()
+                    .map(dt -> dt.spec().id())
+                    .collect(Collectors.toSet());
+
             part.rateHistory.keySet().removeIf(id -> !deltaIds.contains(id));
 
             if (amounts.isEmpty()) {
@@ -113,9 +151,11 @@ public final class DisplayTokenResolver {
                 if (!amounts.containsKey(id)) {
                     continue;
                 }
+
                 if (part.gridWarmupRemaining > 0) {
                     continue;
                 }
+
                 SampleRing ring = part.rateHistory.computeIfAbsent(id, k -> new SampleRing());
                 ring.add(nowTick, amounts.get(id));
                 ring.trimOlderThan(nowTick - MAX_RATE_WINDOW_TICKS);
@@ -128,6 +168,7 @@ public final class DisplayTokenResolver {
         for (String token : stockTokens) {
             String core = token;
             long divisor = 1L;
+
             int pct = token.indexOf('%');
             if (pct >= 0) {
                 core = token.substring(0, pct);
@@ -140,13 +181,16 @@ public final class DisplayTokenResolver {
                     CrazyAddons.LOGGER.debug("invalid divisor format in display token", e);
                 }
             }
+
             if (!core.startsWith("s^")) {
                 continue;
             }
+
             String itemId = core.substring(2);
             if (!amounts.containsKey(itemId)) {
                 continue;
             }
+
             long amount = amounts.get(itemId);
             long display = Math.round((double) amount / (double) divisor);
             part.resolvedTokens.put(token, String.valueOf(display));
@@ -155,17 +199,23 @@ public final class DisplayTokenResolver {
         for (DeltaToken dt : deltaTokens) {
             String tokenKey = dt.tokenKey();
             DeltaSpec spec = dt.spec();
+
             long cur = amounts.getOrDefault(spec.id(), 0L);
             SampleRing ring = part.rateHistory.get(spec.id());
+
             String out = "0";
+
             if (ring != null) {
                 long targetTick = nowTick - spec.windowTicks();
                 SampleRing.Sample past = ring.getAtOrBefore(targetTick);
+
                 if (past == null) {
                     past = ring.oldest();
                 }
+
                 if (past != null) {
                     long dticks = nowTick - past.tick();
+
                     if (dticks > 0) {
                         long delta = cur - past.value();
                         double scaled = (double) delta * (double) spec.perTicksForDisplay() / (double) dticks;
@@ -173,17 +223,16 @@ public final class DisplayTokenResolver {
                     }
                 }
             }
+
             part.resolvedTokens.put(tokenKey, out);
         }
 
-        if (!liveKeys.isEmpty()) {
-            part.resolvedTokens.keySet().removeIf(k ->
-                    (k.startsWith("s^") || k.startsWith("d^")) && !liveKeys.contains(k));
-        }
+        part.resolvedTokens.keySet().removeIf(k ->
+                (k.startsWith("s^") || k.startsWith("d^") || isDatabaseTokenKey(k))
+                        && !liveKeys.contains(k)
+        );
 
-        String packed = part.resolvedTokens.entrySet().stream()
-                .map(e -> e.getKey() + "=" + e.getValue())
-                .collect(Collectors.joining("|"));
+        String packed = packResolvedTokens(part.resolvedTokens);
 
         var be = part.getBlockEntity();
         NetworkHandler.sendToTrackingChunk(
@@ -192,17 +241,114 @@ public final class DisplayTokenResolver {
         );
     }
 
+    private static DatabaseResolveResult resolveDatabaseTokensServerSide(Display part, String input) {
+        if (input == null || input.isEmpty()) {
+            return new DatabaseResolveResult("", Collections.emptyMap(), Collections.emptySet());
+        }
+
+        Map<String, String> database = getDatabaseVariablesInMEServerSide(part);
+        if (database.isEmpty()) {
+            return new DatabaseResolveResult(input, Collections.emptyMap(), Collections.emptySet());
+        }
+
+        Map<String, String> resolved = new HashMap<>();
+        Set<String> liveKeys = new HashSet<>();
+
+        String current = input;
+
+        for (int depth = 0; depth < 8; depth++) {
+            Matcher matcher = SERVER_DATABASE_TOKEN.matcher(current);
+            StringBuilder out = new StringBuilder(current.length());
+
+            boolean changed = false;
+
+            while (matcher.find()) {
+                String key = matcher.group(1);
+                String value = database.get(key);
+
+                if (value == null) {
+                    matcher.appendReplacement(out, Matcher.quoteReplacement("&" + key));
+                    continue;
+                }
+
+                liveKeys.add(key);
+                resolved.put(key, value);
+
+                matcher.appendReplacement(out, Matcher.quoteReplacement(value));
+                changed = true;
+            }
+
+            matcher.appendTail(out);
+            current = out.toString();
+
+            if (!changed) {
+                break;
+            }
+        }
+
+        return new DatabaseResolveResult(current, resolved, liveKeys);
+    }
+
+    private static Map<String, String> getDatabaseVariablesInMEServerSide(Display part) {
+        try {
+            var level = part.getLevel();
+            if (level == null || level.isClientSide()) {
+                return Collections.emptyMap();
+            }
+
+            var node = part.getGridNode();
+            if (node == null) {
+                return Collections.emptyMap();
+            }
+
+            var grid = node.getGrid();
+            if (grid == null) {
+                return Collections.emptyMap();
+            }
+
+            return DisplayDatabaseBE.getMergedVariablesForGrid(grid);
+        } catch (Throwable e) {
+            CrazyAddons.LOGGER.debug("failed to resolve ME display database variables", e);
+            return Collections.emptyMap();
+        }
+    }
+
+    private static boolean isDatabaseTokenKey(String key) {
+        return key != null && DATABASE_KEY_PATTERN.matcher(key).matches();
+    }
+
+    private static String packResolvedTokens(Map<String, String> tokens) {
+        if (tokens == null || tokens.isEmpty()) {
+            return "";
+        }
+
+        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+
+        return tokens.entrySet().stream()
+                .map(e -> encodePackedPart(encoder, e.getKey())
+                        + "="
+                        + encodePackedPart(encoder, e.getValue()))
+                .collect(Collectors.joining("|"));
+    }
+
+    private static String encodePackedPart(Base64.Encoder encoder, String value) {
+        return encoder.encodeToString((value == null ? "" : value).getBytes(StandardCharsets.UTF_8));
+    }
+
     private static Map<String, Long> getAmountsInME(Display part, Set<String> ids) {
         Map<String, Long> out = new HashMap<>();
+
         try {
             var node = part.getGridNode();
             if (node == null) {
                 return out;
             }
+
             var grid = node.getGrid();
             if (grid == null) {
                 return out;
             }
+
             IStorageService storage = grid.getService(IStorageService.class);
             if (storage == null) {
                 return out;
@@ -210,6 +356,7 @@ public final class DisplayTokenResolver {
 
             var avail = storage.getInventory().getAvailableStacks();
             Map<Object, Long> byKey = new HashMap<>();
+
             for (var gs : avail) {
                 byKey.merge(gs.getKey(), gs.getLongValue(), Long::sum);
             }
@@ -227,32 +374,40 @@ public final class DisplayTokenResolver {
         } catch (Throwable e) {
             CrazyAddons.LOGGER.debug("failed to resolve display storage amounts", e);
         }
+
         return out;
     }
 
     @Nullable
     public static AEKey resolveKey(String rawId) {
         int colon = rawId.indexOf(':');
+
         if (colon > 0) {
             String prefix = rawId.substring(0, colon);
             String rest = rawId.substring(colon + 1);
+
             if (prefix.equals("item")) {
                 var item = BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(rest)).orElse(null);
                 return (item != null && item != net.minecraft.world.item.Items.AIR) ? AEItemKey.of(item) : null;
             }
+
             if (prefix.equals("fluid")) {
                 var fluid = BuiltInRegistries.FLUID.getOptional(ResourceLocation.parse(rest)).orElse(null);
                 return (fluid != null && fluid != net.minecraft.world.level.material.Fluids.EMPTY) ? AEFluidKey.of(fluid) : null;
             }
+
             if (DisplayKeyCompatRegistry.hasPrefix(prefix)) {
                 return DisplayKeyCompatRegistry.resolve(prefix, rest);
             }
         }
+
         ResourceLocation rl = ResourceLocation.parse(rawId);
+
         var item = BuiltInRegistries.ITEM.getOptional(rl).orElse(null);
         if (item != null && item != net.minecraft.world.item.Items.AIR) {
             return AEItemKey.of(item);
         }
+
         var fluid = BuiltInRegistries.FLUID.getOptional(rl).orElse(null);
         return (fluid != null && fluid != net.minecraft.world.level.material.Fluids.EMPTY) ? AEFluidKey.of(fluid) : null;
     }
@@ -279,6 +434,7 @@ public final class DisplayTokenResolver {
 
         long winN = 5L;
         char winU = 's';
+
         try {
             winN = Long.parseLong(m.group(4));
             winU = m.group(5).charAt(0);
@@ -288,9 +444,11 @@ public final class DisplayTokenResolver {
 
         long perTicks = unitToTicks(perN, perU);
         long windowTicks = unitToTicks(winN, winU);
+
         if (windowTicks < 20L) {
             windowTicks = 20L;
         }
+
         if (windowTicks > MAX_RATE_WINDOW_TICKS) {
             windowTicks = MAX_RATE_WINDOW_TICKS;
         }
@@ -300,6 +458,7 @@ public final class DisplayTokenResolver {
 
     public static long unitToTicks(long n, char unit) {
         n = Math.max(1L, n);
+
         return switch (Character.toLowerCase(unit)) {
             case 't' -> n;
             case 's' -> n * 20L;
@@ -312,19 +471,25 @@ public final class DisplayTokenResolver {
         if (Math.abs(v) < 0.0005) {
             return "0";
         }
+
         long r = Math.round(v);
+
         if (Math.abs(v - r) < 1e-9) {
             return (r > 0 ? "+" : "") + r;
         }
+
         String s = String.format(Locale.ROOT, "%+.2f", v);
+
         if (s.indexOf('.') >= 0) {
             while (s.endsWith("0")) {
                 s = s.substring(0, s.length() - 1);
             }
+
             if (s.endsWith(".")) {
                 s = s.substring(0, s.length() - 1);
             }
         }
+
         return s;
     }
 }
