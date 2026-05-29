@@ -14,6 +14,7 @@ import net.oktawia.crazyae2addons.client.screens.part.EmitterTerminalScreen;
 import net.oktawia.crazyae2addons.client.screens.part.MultiLevelEmitterScreen;
 import net.oktawia.crazyae2addons.client.screens.part.RedstoneEmitterScreen;
 import net.oktawia.crazyae2addons.client.screens.part.RedstoneTerminalScreen;
+import net.oktawia.crazyae2addons.client.screens.part.ResourceTrackingTerminalScreen;
 import net.oktawia.crazyae2addons.client.screens.part.TagLevelEmitterScreen;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.CrazyPatternProviderMenu;
@@ -27,6 +28,7 @@ import net.oktawia.crazyae2addons.menus.part.EmitterTerminalMenu;
 import net.oktawia.crazyae2addons.menus.part.MultiLevelEmitterMenu;
 import net.oktawia.crazyae2addons.menus.part.RedstoneEmitterMenu;
 import net.oktawia.crazyae2addons.menus.part.RedstoneTerminalMenu;
+import net.oktawia.crazyae2addons.menus.part.ResourceTrackingTerminalMenu;
 import net.oktawia.crazyae2addons.menus.part.TagLevelEmitterMenu;
 
 public final class Screens {
@@ -121,6 +123,11 @@ public final class Screens {
                 CrazyMenuRegistrar.DISPLAY_DATABASE_MENU.get(),
                 DisplayDatabaseScreen<DisplayDatabaseMenu>::new,
                 "/screens/display_database.json"
+        );
+        InitScreens.register(
+                CrazyMenuRegistrar.RESOURCE_TRACKING_TERMINAL_MENU.get(),
+                ResourceTrackingTerminalScreen<ResourceTrackingTerminalMenu>::new,
+                "/screens/resource_tracking_terminal.json"
         );
     }
 

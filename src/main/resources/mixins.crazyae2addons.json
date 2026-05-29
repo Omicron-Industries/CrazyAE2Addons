@@ -29,7 +29,15 @@
     "cpupriority.MixinCraftingCPUCycler",
     "cpupriority.MixinCraftingCpuListEntryPrio",
     "cpupriority.MixinCraftingService",
-    "cpupriority.MixinCraftingStatusMenu"
+    "cpupriority.MixinCraftingStatusMenu",
+    "resourcetracking.MixinInitGridServices",
+    "resourcetracking.MixinCraftingCpuHelper",
+    "resourcetracking.MixinInterfaceLogic",
+    "resourcetracking.MixinStorageBusPart",
+    "resourcetracking.MixinMEInputBusPartMachine",
+    "resourcetracking.MixinMEInputHatchPartMachine",
+    "resourcetracking.MixinMEStockingItemSlot",
+    "resourcetracking.MixinMEStockingFluidSlot"
   ],
   "client": [
     "analogemitter.MixinStorageLevelEmitterScreenAnalog",

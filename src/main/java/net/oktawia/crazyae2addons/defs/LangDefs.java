@@ -358,7 +358,12 @@ public enum LangDefs implements LocalizationEnum {
     DISPLAY_DATABASE_CLEAR_TOOLTIP("gui.crazyae2addons.display_database_clear_tooltip", "Clear entries"),
     NO_ENTRIES("gui.crazyae2addons.no_entries", "No entries"),
     CONFIG_ENTRY_DISPLAY_DATABASE_ENABLED("config.crazyae2addons.entry.display_database_enabled", "Display Database Enabled"),
-    CONFIG_DESC_DISPLAY_DATABASE_ENABLED("config.crazyae2addons.desc.display_database_enabled", "Enable or disable ME Display Database GUI, ComputerCraft peripheral and display database tokens.");
+    CONFIG_DESC_DISPLAY_DATABASE_ENABLED("config.crazyae2addons.desc.display_database_enabled", "Enable or disable ME Display Database GUI, ComputerCraft peripheral and display database tokens."),
+    RESOURCE_TRACKING_TITLE("gui.crazyae2addons.resource_tracking.title", "Resources"),
+    RESOURCE_TRACKING_NO_DATA("gui.crazyae2addons.resource_tracking.no_data", "No resource usage data yet."),
+    RESOURCE_TRACKING_USED_FOR("gui.crazyae2addons.resource_tracking.used_for", "used for:"),
+    RESOURCE_TRACKING_BACK("gui.crazyae2addons.resource_tracking.back", "Back"),
+    RESOURCE_TRACKING_CRAFTING("gui.crazyae2addons.resource_tracking.crafting", "crafting");
 
 
     private final String key;

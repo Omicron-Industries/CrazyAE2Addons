@@ -11,6 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.items.*;
 import net.oktawia.crazyae2addons.items.part.*;
+import net.oktawia.crazyae2addons.parts.ResourceTrackingTerminalPart;
 import net.oktawia.crazyae2addons.items.wireless.*;
 import net.oktawia.crazyae2addons.parts.p2p.*;
 
@@ -114,6 +115,10 @@ public class CrazyItemRegistrar {
     public static final RegistryObject<CrazyPatternProviderPartItem> CRAZY_PATTERN_PROVIDER_PART =
             ITEMS.register("crazy_pattern_provider_part",
                     () -> new CrazyPatternProviderPartItem(new Item.Properties()));
+
+    public static final RegistryObject<ResourceTrackingTerminalPartItem> RESOURCE_TRACKING_TERMINAL =
+            ITEMS.register("resource_tracking_terminal",
+                    () -> new ResourceTrackingTerminalPartItem(new Item.Properties()));
 
     private CrazyItemRegistrar() {}
 }

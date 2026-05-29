@@ -99,6 +99,10 @@ public class ItemRecipes {
                 .define('D', AEItems.ADVANCED_CARD)
                 .output(CrazyItemRegistrar.CRAZY_UPGRADE.get())
                 .register();
+        recipe("resource_tracking_terminal")
+                .shapeless(AEBlocks.CONTROLLER, AEParts.TERMINAL)
+                .output(CrazyItemRegistrar.RESOURCE_TRACKING_TERMINAL.get())
+                .register();
     }
 
     public static class Builder {

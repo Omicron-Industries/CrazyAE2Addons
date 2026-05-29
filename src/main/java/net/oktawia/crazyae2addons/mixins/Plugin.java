@@ -23,6 +23,7 @@ public class Plugin implements IMixinConfigPlugin {
     public static final Logger LOGGER = LogUtils.getLogger();
     private boolean hasTrySubmitJobBoolean;
     private boolean advancedAeLoaded;
+    private boolean gtceuLoaded;
 
     private static boolean isModLoaded(String modId) {
         try {
@@ -70,6 +71,7 @@ public class Plugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         this.advancedAeLoaded = isModLoaded("advanced_ae");
+        this.gtceuLoaded = isModLoaded("gtceu");
         this.hasTrySubmitJobBoolean = detectTrySubmitJobBooleanByBytecode() || isModLoaded("ae2cl");
         Ae2clOpenCraftingMenu.IS_AE2_CL = this.hasTrySubmitJobBoolean;
     }
@@ -92,6 +94,11 @@ public class Plugin implements IMixinConfigPlugin {
                     doload = hasTrySubmitJobBoolean;
             case "net.oktawia.crazyae2addons.mixins.cancelallcrafting.MixinCraftingCPUScreen" ->
                     doload = !hasTrySubmitJobBoolean;
+            case "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEInputBusPartMachine",
+                 "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEInputHatchPartMachine",
+                 "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEStockingItemSlot",
+                 "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEStockingFluidSlot" ->
+                    doload = gtceuLoaded;
         };
         LOGGER.info("{} load status: {}", mixinClassName, doload);
         return doload;

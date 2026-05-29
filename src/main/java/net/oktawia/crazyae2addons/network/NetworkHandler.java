@@ -108,6 +108,18 @@ public final class NetworkHandler {
                 .decoder(SyncBlockClientPacket::decode)
                 .consumerMainThread(SyncBlockClientPacket::handle)
                 .add();
+
+        CHANNEL.messageBuilder(ResourceListPacket.class, nextId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ResourceListPacket::encode)
+                .decoder(ResourceListPacket::decode)
+                .consumerMainThread(ResourceListPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(ResourceDetailPacket.class, nextId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(ResourceDetailPacket::encode)
+                .decoder(ResourceDetailPacket::decode)
+                .consumerMainThread(ResourceDetailPacket::handle)
+                .add();
     }
 
     public static void sendToPlayer(ServerPlayer player, Object packet) {

@@ -27,12 +27,14 @@ import net.oktawia.crazyae2addons.menus.part.EmitterTerminalMenu;
 import net.oktawia.crazyae2addons.menus.part.MultiLevelEmitterMenu;
 import net.oktawia.crazyae2addons.menus.part.RedstoneEmitterMenu;
 import net.oktawia.crazyae2addons.menus.part.RedstoneTerminalMenu;
+import net.oktawia.crazyae2addons.menus.part.ResourceTrackingTerminalMenu;
 import net.oktawia.crazyae2addons.menus.part.TagLevelEmitterMenu;
 import net.oktawia.crazyae2addons.parts.Display;
 import net.oktawia.crazyae2addons.parts.EmitterTerminal;
 import net.oktawia.crazyae2addons.parts.MultiLevelEmitter;
 import net.oktawia.crazyae2addons.parts.RedstoneEmitter;
 import net.oktawia.crazyae2addons.parts.RedstoneTerminal;
+import net.oktawia.crazyae2addons.parts.ResourceTrackingTerminalPart;
 import net.oktawia.crazyae2addons.parts.TagLevelEmitter;
 
 public class CrazyMenuRegistrar {
@@ -104,6 +106,9 @@ public class CrazyMenuRegistrar {
 
     public static final RegistryObject<MenuType<DisplayDatabaseMenu>> DISPLAY_DATABASE_MENU =
             reg("me_display_database", DisplayDatabaseMenu::new, DisplayDatabaseBE.class);
+
+    public static final RegistryObject<MenuType<ResourceTrackingTerminalMenu>> RESOURCE_TRACKING_TERMINAL_MENU =
+            reg("resource_tracking_terminal_menu", ResourceTrackingTerminalMenu::new, ResourceTrackingTerminalPart.class);
 
     private CrazyMenuRegistrar() {}
 }
