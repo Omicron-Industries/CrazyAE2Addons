@@ -13,6 +13,7 @@ import net.oktawia.crazyae2addons.logic.display.keytypes.DisplayKeyCompatRegistr
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.DisplaySyncPacket;
 import net.oktawia.crazyae2addons.parts.Display;
+import net.oktawia.crazyae2addons.util.TagMatcher;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
@@ -34,13 +35,13 @@ public final class DisplayTokenResolver {
     private static final long MAX_RATE_WINDOW_TICKS = 20L * 60L * 30L;
 
     private static final Pattern SERVER_STOCK_TOKEN =
-            Pattern.compile("&(s\\^[\\w:]+(?:%\\d+)?)", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("&(s\\^(?:tag\\{[^}]*\\}|[\\w:]+)(?:%\\d+)?)", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern SERVER_DELTA_TOKEN =
-            Pattern.compile("&(d\\^[a-z0-9_\\.:]+(?:%\\d+[tsm])?@\\d+[tsm])", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("&(d\\^(?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+)(?:%\\d+[tsm])?@\\d+[tsm])", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern SERVER_DATABASE_TOKEN = Pattern.compile(
-            "&(?![sdi]\\^)(?![cb][0-9a-f]{6}\\b)(?!nl\\b)([a-z0-9_]+)",
+            "&(?![sdi]\\^)(?![cb][0-9a-f]{6}\\b)(?!nl\\b)(?!tag\\{)([a-z0-9_]+)",
             Pattern.CASE_INSENSITIVE
     );
 
@@ -50,9 +51,11 @@ public final class DisplayTokenResolver {
     );
 
     private static final Pattern DELTA_PARSE = Pattern.compile(
-            "^d\\^([a-z0-9_\\.:]+)(?:%(\\d+)([tsm]))?@([0-9]+)([tsm])$",
+            "^d\\^((?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+))(?:%(\\d+)([tsm]))?@([0-9]+)([tsm])$",
             Pattern.CASE_INSENSITIVE
     );
+
+    private static final Map<String, TagMatcher.Compiled> COMPILED_CACHE = new HashMap<>();
 
     private DisplayTokenResolver() {
     }
@@ -363,9 +366,14 @@ public final class DisplayTokenResolver {
 
             for (String id : ids) {
                 try {
-                    AEKey key = resolveKey(id);
-                    if (key != null) {
-                        out.put(id, byKey.getOrDefault(key, 0L));
+                    if (id.regionMatches(true, 0, "tag{", 0, 4)) {
+                        String expr = id.substring(4, id.length() - 1);
+                        out.put(id, resolveTagExprAmount(expr, byKey));
+                    } else {
+                        AEKey key = resolveKey(id);
+                        if (key != null) {
+                            out.put(id, byKey.getOrDefault(key, 0L));
+                        }
                     }
                 } catch (Throwable e) {
                     CrazyAddons.LOGGER.debug("failed to resolve display key: {}", id, e);
@@ -376,6 +384,26 @@ public final class DisplayTokenResolver {
         }
 
         return out;
+    }
+
+    private static TagMatcher.Compiled getOrCompileTagExpr(String expr) {
+        return COMPILED_CACHE.computeIfAbsent(expr, TagMatcher::compile);
+    }
+
+    private static long resolveTagExprAmount(String tagExpr, Map<Object, Long> byKey) {
+        TagMatcher.Compiled compiled = getOrCompileTagExpr(tagExpr);
+        if (!compiled.isValid() || !compiled.isNeedsTags()) {
+            return 0L;
+        }
+        long sum = 0L;
+        for (Map.Entry<Object, Long> entry : byKey.entrySet()) {
+            if (entry.getKey() instanceof AEItemKey itemKey) {
+                if (TagMatcher.doesItemMatch(itemKey, compiled)) {
+                    sum += entry.getValue();
+                }
+            }
+        }
+        return sum;
     }
 
     @Nullable

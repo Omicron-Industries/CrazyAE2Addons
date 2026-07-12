@@ -11,141 +11,156 @@ item_ids:
 
 # Display
 
-The **Display** is a cable part that shows text, images, item/fluid icons, and
-live ME network data directly on a cable bus.
+Cable part that renders text, icons, and live ME data on its face.
+Adjacent Displays can merge into one big screen.
 
-It can be used for labels, storage counters, machine status panels, production
-monitors, or large wall-mounted dashboards. Adjacent Displays can merge into one
-larger screen.
+Needs a channel for live data. Without it, text shows but all counts read 0.
 
----
-
-## Placement
-
-Place the Display on any face of an AE2 cable bus.
-
-The Display needs a working ME network channel to show live network data.
-Without a channel, text and images still render, but stock and delta values show
-0.
-
-On floors and ceilings, the Display rotation follows the player's facing
-direction when placed.
+Right-click opens the GUI. In Merge Mode, that edits the whole merged group.
+Shift + right-click always opens just the one Display you clicked.
 
 ---
 
-## Interaction
+## Formatting
 
-Right-click opens the Display GUI.
+Headings: start a line with # through ###### — six levels, scaling from 1.6× down to 0.95×.
 
-If Merge Mode is enabled, right-click edits the whole merged screen.
+Bullet list: start a line with * or - followed by a space.
 
-Shift + right-click opens the GUI for only the selected Display part.
+Indent a line with >> at the start (stack for deeper levels, e.g. >>>> for two levels).
 
----
-
-## Text
-
-The Display supports multiline text with basic formatting.
-
-Examples:
-
-# Heading
-
-**Bold text**
-
-*Italic text*
-
-__Underlined text__
-
-~~Strikethrough text~~
-
-Monospace text can be created with the monospace formatting button in the GUI.
-
-Text can also be colored with hex colors:
-
-&cFF0000Red text
-
-Normal &c00FF00(green word) normal
+**Bold**, *italic*, __underline__, ~~strikethrough~~ work with standard Markdown syntax.
 
 ---
 
-## Live ME data
+## Colors and background
 
-Displays can show live ME network values using tokens.
+&cRRGGBB sets the text color from that point to the end of the line.
 
-You usually do not need to type tokens manually. Use the token builder in the
-Display GUI to insert them.
+&cRRGGBB(text here) scopes the color — resets at the closing parenthesis. Can span multiple lines.
 
-The token builder can insert:
+&bRRGGBB sets a fill color for the entire Display face. Only the last one in the text applies.
 
-- stock counters
-- production and consumption rate counters
-- item and fluid icons
+---
 
-Examples:
+## Math expressions
 
-&i^item:minecraft:diamond Diamonds: &s^minecraft:diamond
+&(expression) evaluates and inserts the result inline. Supports +, -, *, / and parentheses.
+Evaluated after all token substitution, so you can do arithmetic on live counts.
 
-Iron/min: &d^minecraft:iron_ingot%1m@5m
+Example: &(&s^minecraft:diamond * 100 / &s^minecraft:iron_ingot)
 
-Stock tokens start with &s^.
+---
 
-Delta/rate tokens start with &d^.
+## Tables
 
-Icon tokens start with &i^.
+Standard Markdown table syntax. Column alignment via the separator row:
+|---| left, |:---:| center, |---:| right.
+
+Cells can contain tokens, icons, and colors.
+
+---
+
+## Icons
+
+&i^item:mod:name — item icon inline with text.
+
+&i^fluid:mod:name — fluid icon.
+
+&i^mod:name — tries item first, then fluid.
+
+---
+
+## Stock tokens
+
+&s^mod:name shows how much of that item or fluid is stored in the ME network.
+
+&s^mod:name%N divides the count by 10^N before displaying it.
+For example, %3 divides by 1000, so 12345 becomes 12.
+
+---
+
+## Delta (rate) tokens
+
+&d^mod:name@30s shows how much the stored amount changed per second, averaged over 30 seconds.
+Positive = net inflow, negative = net outflow.
+
+Default display unit is per second. Change it with a %Nu prefix before the @:
+
+&d^minecraft:iron_ingot%1m@5m — per minute, averaged over 5 minutes
+
+&d^minecraft:iron_ingot%1t@1m — per tick, averaged over 1 minute
+
+Time units: t = ticks, s = seconds, m = minutes. Window minimum is 1 second, maximum 30 minutes.
+
+---
+
+## Tag expressions
+
+Both stock and delta tokens accept a tag expression instead of a single item ID:
+
+&s^tag{forge:ingots}
+
+&s^tag{forge:ingots && !forge:ingots/iron}
+
+&d^tag{forge:ingots}%1m@5m
+
+See the [Tag Matcher](./tag_matcher.md) page for full syntax.
+
+---
+
+## Display Database variables
+
+The **Display Database** block (a separate block, not a cable part) connects to your ME network
+and holds named text variables you define, like factoryName = Reactor Hall.
+
+Any Display on the same network can insert a variable with &varname:
+
+# &factoryName
+
+Variables are expanded before tokens, up to 8 levels deep, so a variable can itself contain
+tokens or other variables. Useful for shared labels across many Displays.
+
+---
+
+## Mod compat types
+
+With supported mods installed, use their resources in tokens and icons:
+
+| Prefix | Mod |
+|---|---|
+| flux: | AppFlux |
+| mana: | Applied Botania |
+| source: | Ars Energistique |
+| gas: | Mekanism |
+| infusion: | Mekanism |
+| pigment: | Mekanism |
+| slurry: | Mekanism |
 
 ---
 
 ## Images
 
-Use the Images button in the Display GUI to open the image screen.
+Open the Images tab in the GUI. Add images by picking a file, drag-and-dropping onto the GUI,
+or pressing Ctrl+V — that also works with screenshots you copied to your clipboard.
 
-From there, you can upload PNG images and set their position and size on the
-Display.
+Any common image format works (PNG, JPEG, etc.). Images larger than 512×512 are
+automatically scaled down.
 
-Images render behind text, so they can be used as backgrounds, logos, icons, or
-decorative panels.
+Per image: X and Y position it on the face (0–100% from the top-left corner),
+Scale controls its size (1–100% of the face). Multiple images stack in list order;
+use the ▲ and ▼ buttons to reorder them. Images render behind text.
 
 ---
 
 ## Merge Mode
 
-When Merge Mode is enabled, adjacent Displays on the same plane and facing the
-same direction automatically join into one larger screen.
+Displays on the same face, same orientation merge into one screen when Merge Mode is on.
 
-Normal right-click edits the whole merged screen.
+**Per-edge connect toggles** — each Display has four on/off switches for its edges.
+Disabling one prevents merging across that edge, so you can split a wall of Displays
+into separate logical groups without removing any.
 
-Shift + right-click edits only the selected Display part.
+**Center text** — horizontally centers each line across the merged screen.
 
-Merged Displays work best when they form a complete rectangle.
-
-Disable Merge Mode if you want a Display to stay separate even when touching
-other Displays.
-
----
-
-## Examples
-
-### Simple storage counter
-
-&i^item:minecraft:diamond Diamonds: &s^minecraft:diamond
-
-&i^item:minecraft:iron_ingot Iron: &s^minecraft:iron_ingot
-
-### Production monitor
-
-# Factory Line A
-
-Iron/min: &d^minecraft:iron_ingot%1m@5m
-
-Copper/min: &d^minecraft:copper_ingot%1m@5m
-
-### Storage dashboard
-
-# Storage Status
-
-| Resource                          | Stored                  |
-|-----------------------------------|-------------------------|
-| &i^item:minecraft:diamond Diamond | &s^minecraft:diamond    |
-| &i^item:minecraft:iron_ingot Iron | &s^minecraft:iron_ingot |
-| &i^fluid:minecraft:lava Lava      | &s^fluid:minecraft:lava |
+**Add margin** — adds padding between the text and the Display edges.

@@ -71,10 +71,10 @@ public final class DisplayRenderData {
     private record StructuralLine(String rawForInline, int indentLevel, boolean bullet, float scaleMul) {}
 
     private static final Pattern CLIENT_VAR_TOKEN = Pattern.compile(
-            "&(d\\^[a-z0-9_\\.:]+(?:%\\d+[tsm])?@\\d+[tsm]|" +
-                    "s\\^[a-z0-9_\\.:]+(?:%\\d+)?|" +
+            "&(d\\^(?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+)(?:%\\d+[tsm])?@\\d+[tsm]|" +
+                    "s\\^(?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+)(?:%\\d+)?|" +
                     "i\\^[a-z0-9_.\\-]+(?::[a-z0-9_./\\-]+)+|" +
-                    "(?![cb][0-9A-Fa-f]{6}\\b)[A-Za-z0-9_]+)",
+                    "(?![cb][0-9A-Fa-f]{6}\\b)(?!tag\\{)[A-Za-z0-9_]+)",
             Pattern.CASE_INSENSITIVE
     );
 

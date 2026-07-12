@@ -53,6 +53,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
     private static final Map<String, String> TYPE_EXAMPLES = new LinkedHashMap<>();
 
     static {
+        TYPE_EXAMPLES.put("tag", "{forge:ingots | *whatever*}");
         TYPE_EXAMPLES.put("item", "mod_name:resource");
         TYPE_EXAMPLES.put("fluid", "mod_name:resource");
         TYPE_EXAMPLES.put("gas", "mekanism:resource");
@@ -262,9 +263,10 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                 g.fill(cx + 1, ry, cx + cw - 1, ry + rowH, 0xFF3A1A1A);
             }
 
+            String sep = ex.startsWith("{") ? "" : ":";
             g.drawString(
                     font,
-                    t + ":" + ex,
+                    t + sep + ex,
                     cx + 4,
                     ry + 1,
                     sel ? 0xFFFF5555 : 0xFFAAAAAA,
@@ -438,8 +440,14 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
         };
     }
 
+    private boolean isTagExprType() {
+        return typeIdx >= 0 && typeIdx < availableTypes.size()
+                && "tag".equals(availableTypes.get(typeIdx));
+    }
+
     private void buildAvailableTypes() {
         LinkedHashSet<String> dedup = new LinkedHashSet<>();
+        dedup.add("tag");
         dedup.add("item");
         dedup.add("fluid");
         dedup.addAll(DisplayKeyCompatRegistry.getPrefixes());
@@ -507,7 +515,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
     private String buildToken(String id, String prefix) {
         return switch (type) {
             case ICON -> {
-                if (!CrazyConfig.COMMON.DISPLAY_ICONS_ENABLED.get()) {
+                if (!CrazyConfig.COMMON.DISPLAY_ICONS_ENABLED.get() || isTagExprType()) {
                     yield null;
                 }
                 yield "&i^" + prefix + id;
@@ -518,6 +526,9 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                 }
 
                 String[] suffixes = {"", "%1", "%2", "%3", "%4", "%5", "%6"};
+                if (isTagExprType()) {
+                    yield "&s^tag{" + id + "}" + suffixes[divisorPow];
+                }
                 yield "&s^" + prefix + id + suffixes[divisorPow];
             }
             case DELTA -> {
@@ -536,6 +547,9 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                         ? ""
                         : "%" + pN + unitCode(perUnitIdx);
 
+                if (isTagExprType()) {
+                    yield "&d^tag{" + id + "}" + perPart + "@" + wN + unitCode(winUnitIdx);
+                }
                 yield "&d^" + prefix + id + perPart + "@" + wN + unitCode(winUnitIdx);
             }
         };
