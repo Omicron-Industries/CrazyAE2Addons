@@ -1,0 +1,164 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/builder_pattern_subscreen.png",
+    "srcRect": [0, 0, 256, 210]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.insaneae2addons.builder_pattern_subscreen_title"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "width_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.width"
+      },
+      "position": {
+        "left": 8,
+        "top": 37
+      }
+    },
+    "height_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.height"
+      },
+      "position": {
+        "left": 8,
+        "top": 59
+      }
+    },
+    "depth_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.depth"
+      },
+      "position": {
+        "left": 8,
+        "top": 81
+      }
+    },
+    "action_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.action"
+      },
+      "position": {
+        "left": 8,
+        "top": 107
+      }
+    },
+    "place_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.place"
+      },
+      "position": {
+        "left": 8,
+        "top": 129
+      }
+    },
+    "condition_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.condition"
+      },
+      "position": {
+        "left": 8,
+        "top": 151
+      }
+    },
+    "check_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.check"
+      },
+      "position": {
+        "left": 8,
+        "top": 173
+      }
+    }
+  },
+  "widgets": {
+    "width": {
+      "left": 64,
+      "top": 34,
+      "width": 46,
+      "height": 18
+    },
+    "widthDir": {
+      "left": 116,
+      "top": 32,
+      "width": 124,
+      "height": 18
+    },
+
+    "height": {
+      "left": 64,
+      "top": 56,
+      "width": 46,
+      "height": 18
+    },
+    "heightDir": {
+      "left": 116,
+      "top": 54,
+      "width": 124,
+      "height": 18
+    },
+
+    "depth": {
+      "left": 64,
+      "top": 78,
+      "width": 46,
+      "height": 18
+    },
+    "depthDir": {
+      "left": 116,
+      "top": 76,
+      "width": 124,
+      "height": 18
+    },
+
+    "action": {
+      "left": 64,
+      "top": 102,
+      "width": 176,
+      "height": 18
+    },
+
+    "place": {
+      "left": 64,
+      "top": 126,
+      "width": 100,
+      "height": 18
+    },
+
+    "condition": {
+      "left": 64,
+      "top": 146,
+      "width": 176,
+      "height": 18
+    },
+
+    "check": {
+      "left": 64,
+      "top": 170,
+      "width": 100,
+      "height": 18
+    },
+
+    "generate": {
+      "left": 170,
+      "top": 189,
+      "width": 70,
+      "height": 20
+    },
+
+    "back": {
+      "left": 232,
+      "top": 6,
+      "width": 16,
+      "height": 16
+    }
+  }
+}

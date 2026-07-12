@@ -1,0 +1,33 @@
+{
+  "variants": {
+    "push_direction=all": {
+      "model": "insaneae2addons:block/broken_pattern_provider"
+    },
+    "push_direction=down": {
+      "model": "insaneae2addons:block/broken_pattern_provider_oriented",
+      "x": 180
+    },
+    "push_direction=east": {
+      "model": "insaneae2addons:block/broken_pattern_provider_oriented",
+      "x": 90,
+      "y": 90
+    },
+    "push_direction=north": {
+      "model": "insaneae2addons:block/broken_pattern_provider_oriented",
+      "x": 90
+    },
+    "push_direction=south": {
+      "model": "insaneae2addons:block/broken_pattern_provider_oriented",
+      "x": 90,
+      "y": 180
+    },
+    "push_direction=up": {
+      "model": "insaneae2addons:block/broken_pattern_provider_oriented"
+    },
+    "push_direction=west": {
+      "model": "insaneae2addons:block/broken_pattern_provider_oriented",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

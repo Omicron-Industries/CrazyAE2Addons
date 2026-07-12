@@ -1,0 +1,230 @@
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+
+def insane_mod_id = 'insaneae2addons'
+def insane_group = 'net.oktawia.insaneae2addons'
+
+version = mod_version
+group = insane_group
+
+base {
+    archivesName = insane_mod_id
+}
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods {
+                "${insane_mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        client {
+            mods {
+                "crazyae2addons" {
+                    source project(':').sourceSets.main
+                }
+            }
+        }
+
+        server {
+            args '--nogui'
+            mods {
+                "crazyae2addons" {
+                    source project(':').sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run-data')
+            mods {
+                "crazyae2addons" {
+                    source project(':').sourceSets.main
+                }
+            }
+            args '--mod', insane_mod_id, '--all',
+                    '--output', file('src/generated/resources/'),
+                    '--existing', file('src/main/resources/')
+        }
+    }
+    mixin {
+        add sourceSets.main, "mixins.insaneae2addons.json"
+        defaultObfuscationEnv 'searge'
+    }
+}
+
+sourceSets {
+    main {
+        ext.refMap = "mixins.insaneae2addons.refmap.json"
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources', 'src/generated/resources']
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name "Modmaven"
+        url "https://modmaven.dev/"
+        content {
+            includeGroup 'appeng'
+            includeGroup 'de.mari_023'
+        }
+    }
+    maven {
+        name = 'GTCEu Maven'
+        url = 'https://maven.gtceu.com'
+        content {
+            includeGroup 'com.gregtechceu.gtceu'
+            includeGroup 'appeng'
+        }
+    }
+    maven {
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        url 'https://www.cursemaven.com'
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        url "https://maven.shadowsoffire.dev/releases"
+        content {
+            includeGroup "dev.shadowsoffire"
+        }
+    }
+    maven {
+        name = "firstdarkdev"
+        url = "https://maven.firstdarkdev.xyz/snapshots"
+        content {
+            includeGroup 'com.lowdragmc.ldlib'
+        }
+    }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    compileOnly "org.projectlombok:lombok:1.18.44"
+    annotationProcessor "org.projectlombok:lombok:1.18.44"
+
+    implementation project(':')
+
+    implementation fg.deobf("appeng:appliedenergistics2-forge:15.4.10")
+    compileOnly fg.deobf("appeng:appliedenergistics2-forge:15.4.10:api")
+
+    compileOnly fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:1.0.45") { transitive = false }
+    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:7.5.2") { transitive = false }
+
+    runtimeOnly fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:1.0.45") { transitive = false }
+
+    compileOnly fg.deobf("curse.maven:applied-energistics-2-wireless-terminals-459929:7251206")
+    compileOnly fg.deobf("curse.maven:cc-tweaked-282001:5714507")
+    compileOnly fg.deobf("curse.maven:curios-309927:6418456")
+    compileOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
+    compileOnly fg.deobf("curse.maven:cloth-config-348521:5729105")
+    compileOnly fg.deobf("dev.shadowsoffire:Placebo:1.20.1-8.6.3")
+    compileOnly fg.deobf("dev.shadowsoffire:ApothicAttributes:1.20.1-1.3.7")
+    compileOnly fg.deobf("dev.shadowsoffire:Apotheosis:1.20.1-7.4.8")
+    compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge:15.20.0.115")
+    compileOnly fg.deobf("curse.maven:advancedae-1084104:7849215")
+    compileOnly fg.deobf("curse.maven:guideme-1173950:6489464")
+    compileOnly fg.deobf("dev.emi:emi-forge:1.1.22+1.20.1:api")
+    compileOnly fg.deobf("curse.maven:applied-flux-965012:6649403")
+    compileOnly fg.deobf("curse.maven:jade-324717:6106101")
+    compileOnly fg.deobf("curse.maven:ars-energistique-905641:5504444")
+    compileOnly fg.deobf("curse.maven:applied-botanics-addon-610632:7427985")
+    compileOnly fg.deobf("curse.maven:mekanism-268560:6552911")
+    compileOnly fg.deobf("curse.maven:applied-mekanistics-574300:7244744")
+    compileOnly fg.deobf("curse.maven:framedblocks-441647:7386520")
+
+    runtimeOnly fg.deobf("curse.maven:curios-309927:6418456")
+    runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
+    runtimeOnly fg.deobf("curse.maven:cloth-config-348521:5729105")
+    runtimeOnly fg.deobf("curse.maven:guideme-1173950:6489464")
+    runtimeOnly fg.deobf("curse.maven:applied-energistics-2-wireless-terminals-459929:7251206")
+
+    runtimeOnly fg.deobf("curse.maven:jade-324717:6106101")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:15.20.0.115")
+    runtimeOnly fg.deobf("curse.maven:emi-580555:6420945")
+    runtimeOnly fg.deobf("curse.maven:mekanism-268560:6552911")
+    runtimeOnly fg.deobf("curse.maven:mekanism-generators-268566:6552914")
+
+    runtimeOnly fg.deobf("curse.maven:ex-pattern-provider-892005:7986603")
+    runtimeOnly fg.deobf("curse.maven:glodium-957920:5226922")
+    runtimeOnly fg.deobf("curse.maven:geckolib-388172:6333474")
+    runtimeOnly fg.deobf("curse.maven:advancedae-1084104:7849215")
+    runtimeOnly fg.deobf("curse.maven:flux-networks-248020:5234697")
+    runtimeOnly fg.deobf("curse.maven:journeymap-32274:5789363")
+    runtimeOnly fg.deobf("curse.maven:ftb-chunks-forge-314906:6431735")
+    runtimeOnly fg.deobf("curse.maven:ftb-library-forge-404465:7296748")
+    runtimeOnly fg.deobf("curse.maven:ftb-teams-forge-404468:6130786")
+    runtimeOnly fg.deobf("curse.maven:cc-tweaked-282001:5714507")
+
+    runtimeOnly fg.deobf("curse.maven:applied-flux-965012:6649403")
+    runtimeOnly fg.deobf("curse.maven:apothic-attributes-898963:5634071")
+    runtimeOnly fg.deobf("curse.maven:placebo-283644:6274231")
+    runtimeOnly fg.deobf("curse.maven:apotheosis-313970:6461960")
+    runtimeOnly fg.deobf("curse.maven:applied-mekanistics-574300:7244744")
+    runtimeOnly fg.deobf("curse.maven:ars-energistique-905641:5504444")
+    runtimeOnly fg.deobf("curse.maven:ars-nouveau-401955:6688854")
+    runtimeOnly fg.deobf("curse.maven:applied-botanics-addon-610632:7427985")
+    runtimeOnly fg.deobf("curse.maven:botania-225643:7649894")
+    runtimeOnly fg.deobf("curse.maven:patchouli-306770:7731017")
+    runtimeOnly fg.deobf("curse.maven:framedblocks-441647:7386520")
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version: forge_version, forge_version_range: forge_version_range,
+            loader_version_range: loader_version_range,
+            mod_id: insane_mod_id, mod_name: 'Insane AE2 Addons', mod_license: mod_license,
+            mod_version: mod_version, mod_authors: mod_authors,
+            mod_description: 'Insane extension of Crazy AE2 Addons',
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

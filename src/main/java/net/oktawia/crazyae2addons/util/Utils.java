@@ -1,11 +1,15 @@
 package net.oktawia.crazyae2addons.util;
 
+import net.minecraft.network.chat.Component;
+
 import java.util.*;
 import java.util.concurrent.*;
 
 public class Utils {
 
     private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
+
+    public static final int DEFAULT_TOOLTIP_MAX_CHARS = 30;
 
     public static void asyncDelay(Runnable function, float delay) {
         long delayInMillis = (long) (delay * 1000);
@@ -72,5 +76,58 @@ public class Utils {
             out.append(' ');
         }
         return out.toString().trim();
+    }
+
+    public static List<Component> wrapTooltip(Component component) {
+        return wrapTooltip(component, DEFAULT_TOOLTIP_MAX_CHARS);
+    }
+
+    public static List<Component> wrapTooltip(Component component, int maxChars) {
+        List<Component> lines = new ArrayList<>();
+        addWrappedTooltipLines(lines, component, maxChars);
+        return lines;
+    }
+
+    public static void addWrappedTooltipLines(List<Component> lines, Component component) {
+        addWrappedTooltipLines(lines, component, DEFAULT_TOOLTIP_MAX_CHARS);
+    }
+
+    public static void addWrappedTooltipLines(List<Component> lines, Component component, int maxChars) {
+        if (component == null) {
+            return;
+        }
+
+        String text = component.getString().trim();
+
+        if (text.isBlank()) {
+            return;
+        }
+
+        int max = Math.max(8, maxChars);
+        String remaining = text;
+
+        while (remaining.length() > max) {
+            int split = remaining.lastIndexOf(' ', max);
+
+            if (split <= 0) {
+                split = remaining.indexOf(' ', max);
+
+                if (split <= 0) {
+                    break;
+                }
+            }
+
+            String line = remaining.substring(0, split).trim();
+
+            if (!line.isBlank()) {
+                lines.add(Component.literal(line).withStyle(component.getStyle()));
+            }
+
+            remaining = remaining.substring(split + 1).trim();
+        }
+
+        if (!remaining.isBlank()) {
+            lines.add(Component.literal(remaining).withStyle(component.getStyle()));
+        }
     }
 }

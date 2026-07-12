@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.oktawia.insaneae2addons.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mixins.insaneae2addons.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ]
+}

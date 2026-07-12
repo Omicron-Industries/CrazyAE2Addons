@@ -1,0 +1,517 @@
+package net.oktawia.insaneae2addons.entities;
+
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.util.inv.AppEngInternalInventory;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import lombok.Getter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.oktawia.crazyae2addons.util.IManagedBEHelper;
+import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
+import net.oktawia.insaneae2addons.items.DataDrive;
+import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
+import net.oktawia.insaneae2addons.recipes.ResearchRecipe;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+public class ResearchStationBE extends AENetworkInvBlockEntity implements IGridTickable, IManagedBEHelper {
+
+    private static final int PEDESTAL_RANGE = 3;
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
+            new ManagedFieldHolder(ResearchStationBE.class);
+
+    @Getter
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+
+    private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
+    private final InternalInventory disk = inv.getSubInventory(0, 1);
+
+    @Persisted
+    private int progressTicks = 0;
+
+    @DescSynced
+    @Getter
+    private ResearchStatus status = ResearchStatus.IDLE;
+
+    @Nullable
+    private ResearchRecipe activeRecipe = null;
+    private final List<PedestalUse> activePedestals = new ArrayList<>();
+
+    public ResearchStationBE(BlockPos pos, BlockState blockState) {
+        super(InsaneBlockEntityRegistrar.RESEARCH_STATION_BE.get(), pos, blockState);
+        this.getMainNode().addService(IGridTickable.class, this);
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public InternalInventory getInternalInventory() {
+        return this.inv;
+    }
+
+    @Override
+    public void onChangeInventory(InternalInventory inventory, int slot) {
+        hardReset();
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        saveManagedData(tag);
+    }
+
+    @Override
+    public void loadTag(CompoundTag tag) {
+        loadManagedData(tag);
+        super.loadTag(tag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveManagedData(tag);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        loadManagedData(tag);
+        super.handleUpdateTag(tag);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        CompoundTag tag = pkt.getTag();
+        if (tag != null) {
+            handleUpdateTag(tag);
+        }
+    }
+
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(1, 5, false, false);
+    }
+
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (level == null || level.isClientSide()) {
+            return TickRateModulation.IDLE;
+        }
+
+        if (activeRecipe == null) {
+            activeRecipe = findMatchingRecipe();
+            progressTicks = 0;
+
+            if (activeRecipe == null) {
+                setStatus(diagnoseIdle());
+                return TickRateModulation.IDLE;
+            }
+        }
+
+        if (!canWork(activeRecipe)) {
+            hardReset();
+            return TickRateModulation.IDLE;
+        }
+
+        if (!doPedestalsWork()) {
+            hardReset();
+            setStatus(ResearchStatus.NOT_ENOUGH_POWER);
+            return TickRateModulation.IDLE;
+        }
+
+        if (!drainStationPower(activeRecipe, true)) {
+            hardReset();
+            setStatus(ResearchStatus.NOT_ENOUGH_POWER);
+            return TickRateModulation.IDLE;
+        }
+        drainStationPower(activeRecipe, false);
+
+        int tickComputation = getTickComputation();
+        if (tickComputation <= 0) {
+            hardReset();
+            setStatus(ResearchStatus.NOT_ENOUGH_COMPUTATION);
+            return TickRateModulation.IDLE;
+        }
+
+        progressTicks += tickComputation;
+        setStatus(ResearchStatus.WORKING);
+
+        if (progressTicks >= activeRecipe.duration) {
+            ResearchRecipe done = activeRecipe;
+            consumeInputs();
+            writeKeyToDrive(done);
+            finishedEffect();
+            hardReset();
+            setStatus(ResearchStatus.READY);
+            return TickRateModulation.IDLE;
+        }
+
+        setChanged();
+        return TickRateModulation.URGENT;
+    }
+
+    private void hardReset() {
+        this.progressTicks = 0;
+        this.activeRecipe = null;
+        this.activePedestals.clear();
+        setChanged();
+    }
+
+    private void setStatus(ResearchStatus newStatus) {
+        if (this.status != newStatus) {
+            this.status = newStatus;
+        }
+        setChanged();
+    }
+
+    private ItemStack getDrive() {
+        return this.disk.getStackInSlot(0);
+    }
+
+    private boolean diskHasKeyFor(ResearchRecipe recipe) {
+        ItemStack drive = getDrive();
+        return !drive.isEmpty() && DataDrive.hasKey(drive, recipe.unlock.key);
+    }
+
+    private List<ItemStack> gatherPedestalStacks() {
+        List<ItemStack> result = new ArrayList<>();
+        if (level == null) {
+            return result;
+        }
+
+        BlockPos base = this.worldPosition;
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+        for (int dx = -PEDESTAL_RANGE; dx <= PEDESTAL_RANGE; dx++) {
+            for (int dz = -PEDESTAL_RANGE; dz <= PEDESTAL_RANGE; dz++) {
+                pos.set(base.getX() + dx, base.getY() + 1, base.getZ() + dz);
+                if (level.getBlockEntity(pos) instanceof ResearchPedestalTopBE top && !top.isEmpty()) {
+                    result.add(top.getStoredStack().copy());
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    private ResearchRecipe findMatchingRecipe() {
+        if (level == null) {
+            return null;
+        }
+
+        List<ItemStack> stacks = gatherPedestalStacks();
+        SimpleContainer container = new SimpleContainer(stacks.size());
+        for (int i = 0; i < stacks.size(); i++) {
+            container.setItem(i, stacks.get(i));
+        }
+
+        boolean hasDrive = !getDrive().isEmpty();
+
+        for (ResearchRecipe recipe : level.getRecipeManager().getAllRecipesFor(InsaneRecipes.RESEARCH_TYPE.get())) {
+            if (!recipe.matches(container, level)) {
+                continue;
+            }
+
+            if (recipe.driveRequired && (!hasDrive || diskHasKeyFor(recipe))) {
+                continue;
+            }
+
+            List<PedestalUse> pedestals = allocatePedestals(recipe);
+            if (pedestals == null) {
+                continue;
+            }
+
+            this.activePedestals.clear();
+            this.activePedestals.addAll(pedestals);
+            return recipe;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private List<PedestalUse> allocatePedestals(ResearchRecipe recipe) {
+        if (level == null) {
+            return null;
+        }
+
+        List<BlockPos> topPositions = new ArrayList<>();
+        List<BlockPos> bottomPositions = new ArrayList<>();
+        List<ItemStack> stacks = new ArrayList<>();
+        List<Integer> computations = new ArrayList<>();
+
+        BlockPos base = this.worldPosition;
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+        for (int dx = -PEDESTAL_RANGE; dx <= PEDESTAL_RANGE; dx++) {
+            for (int dz = -PEDESTAL_RANGE; dz <= PEDESTAL_RANGE; dz++) {
+                pos.set(base.getX() + dx, base.getY() + 1, base.getZ() + dz);
+                if (!(level.getBlockEntity(pos) instanceof ResearchPedestalTopBE top) || top.isEmpty()) {
+                    continue;
+                }
+
+                BlockPos bottomPos = pos.below();
+                if (!(level.getBlockEntity(bottomPos) instanceof ResearchPedestalBottomBE bottom)) {
+                    continue;
+                }
+
+                topPositions.add(pos.immutable());
+                bottomPositions.add(bottomPos.immutable());
+                stacks.add(top.getStoredStack().copy());
+                computations.add(bottom.getConnectedComputation());
+            }
+        }
+
+        if (topPositions.isEmpty()) {
+            return null;
+        }
+
+        int count = topPositions.size();
+        boolean[] used = new boolean[count];
+        List<PedestalUse> result = new ArrayList<>();
+
+        List<ResearchRecipe.Consumable> consumables = new ArrayList<>(recipe.consumables);
+        consumables.sort(Comparator.comparingInt((ResearchRecipe.Consumable c) -> c.computation).reversed());
+
+        for (ResearchRecipe.Consumable consumable : consumables) {
+            if (consumable.count <= 0) {
+                continue;
+            }
+
+            boolean assigned = false;
+            for (int i = 0; i < count; i++) {
+                if (used[i]) {
+                    continue;
+                }
+
+                ItemStack stack = stacks.get(i);
+                if (stack.getItem() != consumable.item || stack.getCount() < consumable.count) {
+                    continue;
+                }
+                if (computations.get(i) < consumable.computation) {
+                    continue;
+                }
+
+                used[i] = true;
+                result.add(new PedestalUse(topPositions.get(i), bottomPositions.get(i), consumable.count));
+                assigned = true;
+                break;
+            }
+
+            if (!assigned) {
+                return null;
+            }
+        }
+
+        return result.isEmpty() ? null : result;
+    }
+
+    private boolean canWork(@Nullable ResearchRecipe recipe) {
+        if (recipe == null || level == null) {
+            return false;
+        }
+
+        if (recipe.driveRequired && (getDrive().isEmpty() || diskHasKeyFor(recipe))) {
+            return false;
+        }
+
+        List<ItemStack> stacks = gatherPedestalStacks();
+        SimpleContainer container = new SimpleContainer(stacks.size());
+        for (int i = 0; i < stacks.size(); i++) {
+            container.setItem(i, stacks.get(i));
+        }
+
+        if (!recipe.matches(container, level)) {
+            return false;
+        }
+
+        List<PedestalUse> pedestals = allocatePedestals(recipe);
+        if (pedestals == null) {
+            return false;
+        }
+
+        this.activePedestals.clear();
+        this.activePedestals.addAll(pedestals);
+        return true;
+    }
+
+    private boolean doPedestalsWork() {
+        if (level == null || activePedestals.isEmpty()) {
+            return false;
+        }
+
+        for (PedestalUse use : activePedestals) {
+            if (!(level.getBlockEntity(use.bottomPos()) instanceof ResearchPedestalBottomBE bottom) || !bottom.doWork()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private int getTickComputation() {
+        if (level == null) {
+            return 0;
+        }
+
+        int sum = 0;
+        for (PedestalUse use : activePedestals) {
+            if (level.getBlockEntity(use.bottomPos()) instanceof ResearchPedestalBottomBE bottom) {
+                sum += Math.max(0, bottom.getConnectedComputation());
+            }
+        }
+        return sum;
+    }
+
+    private boolean drainStationPower(ResearchRecipe recipe, boolean simulate) {
+        int need = Math.max(0, recipe.energyPerTick);
+        if (need == 0) {
+            return true;
+        }
+
+        IGrid grid = getMainNode().getGrid();
+        if (grid == null) {
+            return false;
+        }
+
+        IEnergyService energy = grid.getEnergyService();
+        Actionable mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
+        return energy.extractAEPower(need, mode, PowerMultiplier.CONFIG) >= need;
+    }
+
+    private void consumeInputs() {
+        if (level == null) {
+            return;
+        }
+
+        for (PedestalUse use : activePedestals) {
+            if (use.count() <= 0) {
+                continue;
+            }
+            if (!(level.getBlockEntity(use.topPos()) instanceof ResearchPedestalTopBE top)) {
+                continue;
+            }
+
+            ItemStack stack = top.takeStoredStack();
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            if (stack.getCount() > use.count()) {
+                stack.shrink(use.count());
+                top.setStoredStack(stack);
+            }
+        }
+
+        setChanged();
+    }
+
+    private void writeKeyToDrive(ResearchRecipe recipe) {
+        ItemStack drive = getDrive();
+        if (drive.isEmpty()) {
+            return;
+        }
+
+        if (DataDrive.addKey(drive, recipe.unlock.key)) {
+            this.disk.setItemDirect(0, drive);
+            setChanged();
+        }
+    }
+
+    private ResearchStatus diagnoseIdle() {
+        if (level == null) {
+            return ResearchStatus.IDLE;
+        }
+
+        List<ItemStack> stacks = gatherPedestalStacks();
+        if (stacks.isEmpty()) {
+            return ResearchStatus.IDLE;
+        }
+
+        SimpleContainer container = new SimpleContainer(stacks.size());
+        for (int i = 0; i < stacks.size(); i++) {
+            container.setItem(i, stacks.get(i));
+        }
+
+        boolean hasDrive = !getDrive().isEmpty();
+        boolean matchNeedsDrive = false;
+
+        for (ResearchRecipe recipe : level.getRecipeManager().getAllRecipesFor(InsaneRecipes.RESEARCH_TYPE.get())) {
+            if (!recipe.matches(container, level)) {
+                continue;
+            }
+            if (recipe.driveRequired && !hasDrive) {
+                matchNeedsDrive = true;
+                continue;
+            }
+            if (recipe.driveRequired && diskHasKeyFor(recipe)) {
+                continue;
+            }
+            return ResearchStatus.NOT_ENOUGH_COMPUTATION;
+        }
+
+        return matchNeedsDrive ? ResearchStatus.NO_DATA_DRIVE : ResearchStatus.NO_MATCHING_RECIPE;
+    }
+
+    private void finishedEffect() {
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.ENCHANT,
+                    worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5,
+                    8, 0.2, 0.2, 0.2, 0.01);
+            serverLevel.playSound(null, worldPosition, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f, 1.2f);
+        }
+    }
+
+    public int getProgressPct() {
+        if (activeRecipe == null) {
+            return 0;
+        }
+        int duration = Math.max(1, activeRecipe.duration);
+        return Math.max(0, Math.min(1000, (int) Math.round(1000.0 * progressTicks / duration)));
+    }
+
+    private record PedestalUse(BlockPos topPos, BlockPos bottomPos, int count) {
+        PedestalUse(BlockPos topPos, BlockPos bottomPos, int count) {
+            this.topPos = topPos.immutable();
+            this.bottomPos = bottomPos.immutable();
+            this.count = count;
+        }
+    }
+}

@@ -13,9 +13,9 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public final class MultiblockDefinition {
@@ -119,13 +119,13 @@ public final class MultiblockDefinition {
                     );
                 }
 
-                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
+                if (!ForgeRegistries.BLOCKS.containsKey(id)) {
                     throw new IllegalArgumentException(
                             "Unknown block id '" + blockId + "' for symbol '" + symbol + "'"
                     );
                 }
 
-                resolvedBlocks.add(BuiltInRegistries.BLOCK.get(id));
+                resolvedBlocks.add(ForgeRegistries.BLOCKS.getValue(id));
             }
 
             SymbolDef previous = this.symbols.put(symbol, new SymbolDef(List.copyOf(resolvedBlocks), tracking));

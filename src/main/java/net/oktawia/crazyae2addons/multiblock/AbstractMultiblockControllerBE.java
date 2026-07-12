@@ -6,23 +6,21 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 
 public abstract class AbstractMultiblockControllerBE
         extends AENetworkBlockEntity
-        implements IGridTickable, IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IManaged {
+        implements IGridTickable, IManagedBEHelper {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(AbstractMultiblockControllerBE.class);
@@ -57,18 +55,20 @@ public abstract class AbstractMultiblockControllerBE
     }
 
     @Override
-    public IManagedStorage getRootStorage() {
-        return getSyncStorage();
-    }
-
-    @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
     @Override
-    public void onChanged() {
-        setChanged();
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        saveManagedData(tag);
+    }
+
+    @Override
+    public void loadTag(CompoundTag tag) {
+        loadManagedData(tag);
+        super.loadTag(tag);
     }
 
     protected abstract MultiblockDefinition getMultiblockDefinition();

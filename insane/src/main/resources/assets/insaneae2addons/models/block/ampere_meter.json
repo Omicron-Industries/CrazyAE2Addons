@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "insaneae2addons:block/ampere_meter",
+    "down": "insaneae2addons:block/ampere_meter",
+    "up": "insaneae2addons:block/ampere_meter",
+    "north": "insaneae2addons:block/ampere_meter_front",
+    "south": "insaneae2addons:block/ampere_meter",
+    "east": "insaneae2addons:block/ampere_meter_side",
+    "west": "insaneae2addons:block/ampere_meter_side"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "insaneae2addons:block/ampere_meter" },
+    "facing=east":  { "model": "insaneae2addons:block/ampere_meter", "y": 90 },
+    "facing=south": { "model": "insaneae2addons:block/ampere_meter", "y": 180 },
+    "facing=west":  { "model": "insaneae2addons:block/ampere_meter", "y": 270 }
+  }
+}
