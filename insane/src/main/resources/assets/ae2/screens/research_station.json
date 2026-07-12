@@ -1,0 +1,39 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/research_station.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": { "translate": "block.insaneae2addons.research_station" },
+      "position": { "left": 8, "top": 6 }
+    },
+    "status": {
+      "position": { "left": 8, "top": 30 },
+      "align": "LEFT"
+    },
+    "working": {
+      "position": { "left": 34, "top": 64 },
+      "align": "CENTER"
+    }
+  },
+  "images": {
+    "progressRecipe": {
+      "texture": "guis/research_station.png",
+      "srcRect": [177, 12, 50, 6]
+    }
+  },
+  "slots": {
+    "MACHINE_OUTPUT": {
+      "left": 106,
+      "top": 40,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "widgets": {
+    "recipeBar": { "left": 8, "top": 50, "width": 50, "height": 6 },
+    "devbtn": { "right": 24, "top": 8, "width": 16, "height": 16 }
+  }
+}

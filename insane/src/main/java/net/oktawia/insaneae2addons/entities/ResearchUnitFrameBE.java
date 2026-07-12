@@ -4,11 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockFrameBE;
+import net.oktawia.insaneae2addons.blocks.ICableMachine;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import org.jetbrains.annotations.Nullable;
 
-public class ResearchUnitFrameBE extends AbstractMultiblockFrameBE<ResearchUnitBE> {
+public class ResearchUnitFrameBE extends AbstractMultiblockFrameBE<ResearchUnitBE> implements ICableMachine {
 
     public ResearchUnitFrameBE(BlockPos pos, BlockState blockState) {
         super(

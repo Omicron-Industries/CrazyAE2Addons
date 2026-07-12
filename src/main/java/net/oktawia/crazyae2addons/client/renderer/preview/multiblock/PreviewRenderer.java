@@ -14,9 +14,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -79,16 +78,6 @@ public final class PreviewRenderer {
             visibleBlocks.add(info);
         }
 
-        List<MultiblockPreviewInfo.BlockInfo> glassBlocks = new ArrayList<>();
-        List<MultiblockPreviewInfo.BlockInfo> solidBlocks = new ArrayList<>();
-        for (MultiblockPreviewInfo.BlockInfo info : visibleBlocks) {
-            if (isGlass(info.state())) {
-                glassBlocks.add(info);
-            } else {
-                solidBlocks.add(info);
-            }
-        }
-
         MultiblockPreviewInfo.BlockInfo pointed = null;
         float closestDistance = Float.MAX_VALUE;
 
@@ -135,68 +124,40 @@ public final class PreviewRenderer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
 
-        for (MultiblockPreviewInfo.BlockInfo info : solidBlocks) {
+        for (MultiblockPreviewInfo.BlockInfo info : visibleBlocks) {
             BlockPos pos = info.pos();
             BlockState state = info.state();
+
+            float alpha = previewInfo.alpha.computeIfAbsent(pos.getY(), y -> previewAlpha);
+            if (alpha <= 0) {
+                continue;
+            }
 
             poseStack.pushPose();
             poseStack.translate(pos.getX() + 0.06f, pos.getY() + 0.06f, pos.getZ() + 0.06f);
             poseStack.scale(0.88f, 0.88f, 0.88f);
 
             BakedModel model = blockRenderer.getBlockModel(state);
+            ModelData modelData = previewModelData(model, mc.level, pos, state);
             VertexConsumer translucentBuffer = buffer.getBuffer(RenderType.translucent());
 
-            float alpha = previewInfo.alpha.computeIfAbsent(pos.getY(), y -> previewAlpha);
-
-            if (alpha > 0) {
+            for (RenderType layer : model.getRenderTypes(state, RandomSource.create(42L), modelData)) {
                 for (Direction direction : Direction.values()) {
-                    RandomSource random = RandomSource.create(42L);
-                    for (BakedQuad quad : model.getQuads(state, direction, random, ModelData.EMPTY, null)) {
+                    for (BakedQuad quad : model.getQuads(state, direction, RandomSource.create(42L), modelData, layer)) {
                         translucentBuffer.putBulkData(
-                                poseStack.last(),
-                                quad,
+                                poseStack.last(), quad,
                                 1f, 1f, 1f, alpha,
-                                0x00F000F0,
-                                OverlayTexture.NO_OVERLAY,
-                                true
+                                0x00F000F0, OverlayTexture.NO_OVERLAY, true
                         );
                     }
                 }
-
-                RandomSource random = RandomSource.create(42L);
-                for (BakedQuad quad : model.getQuads(state, null, random, ModelData.EMPTY, null)) {
+                for (BakedQuad quad : model.getQuads(state, null, RandomSource.create(42L), modelData, layer)) {
                     translucentBuffer.putBulkData(
-                            poseStack.last(),
-                            quad,
+                            poseStack.last(), quad,
                             1f, 1f, 1f, alpha,
-                            0x00F000F0,
-                            OverlayTexture.NO_OVERLAY,
-                            true
+                            0x00F000F0, OverlayTexture.NO_OVERLAY, true
                     );
                 }
-            }
-
-            poseStack.popPose();
-        }
-
-        VertexConsumer lineBuffer = buffer.getBuffer(RenderType.lines());
-        for (MultiblockPreviewInfo.BlockInfo info : glassBlocks) {
-            BlockPos pos = info.pos();
-
-            poseStack.pushPose();
-            poseStack.translate(pos.getX() + 0.06f, pos.getY() + 0.06f, pos.getZ() + 0.06f);
-            poseStack.scale(0.88f, 0.88f, 0.88f);
-
-            float alpha = previewInfo.alpha.computeIfAbsent(pos.getY(), y -> previewAlpha);
-
-            if (alpha > 0) {
-                LevelRenderer.renderLineBox(
-                        poseStack,
-                        lineBuffer,
-                        0.0, 0.0, 0.0,
-                        1.0, 1.0, 1.0,
-                        0.30f, 0.65f, 1.0f, Math.min(1.0f, alpha + 0.25f)
-                );
             }
 
             poseStack.popPose();
@@ -227,8 +188,11 @@ public final class PreviewRenderer {
         buffer.endBatch(RenderType.lines());
     }
 
-    private static boolean isGlass(BlockState state) {
-        ResourceLocation key = BuiltInRegistries.BLOCK.getKey(state.getBlock());
-        return key != null && key.getPath().toLowerCase().contains("glass");
+    private static ModelData previewModelData(BakedModel model, BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        try {
+            return model.getModelData(level, pos, state, ModelData.EMPTY);
+        } catch (Throwable t) {
+            return ModelData.EMPTY;
+        }
     }
 }

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "insaneae2addons:block/research_station",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "insaneae2addons:block/research_station"
+    },
+    "facing=south": {
+      "model": "insaneae2addons:block/research_station",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "insaneae2addons:block/research_station",
+      "y": 270
+    }
+  }
+}

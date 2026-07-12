@@ -3,14 +3,20 @@ package net.oktawia.insaneae2addons.items;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.items.AEBaseItem;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.DataHost;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,6 +93,14 @@ public class DataDrive extends AEBaseItem implements IMenuItem {
         list.add(StringTag.valueOf(value));
         root.put(TAG_KEYS, list);
         return true;
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (!level.isClientSide()) {
+            MenuOpener.open(InsaneMenuRegistrar.DATA_DRIVE_MENU.get(), player, MenuLocators.forHand(player, hand));
+        }
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 
     @Override

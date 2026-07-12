@@ -60,7 +60,8 @@ minecraft {
             }
             args '--mod', insane_mod_id, '--all',
                     '--output', file('src/generated/resources/'),
-                    '--existing', file('src/main/resources/')
+                    '--existing', file('src/main/resources/'),
+                    '--existing-mod', 'crazyae2addons'
         }
     }
     mixin {
@@ -143,7 +144,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:1.18.44"
     annotationProcessor "org.projectlombok:lombok:1.18.44"
 
-    implementation project(':')
+    implementation project(path: ':', configuration: 'devClasses')
 
     implementation fg.deobf("appeng:appliedenergistics2-forge:15.4.10")
     compileOnly fg.deobf("appeng:appliedenergistics2-forge:15.4.10:api")

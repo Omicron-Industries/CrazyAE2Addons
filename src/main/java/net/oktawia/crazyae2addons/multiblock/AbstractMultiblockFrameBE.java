@@ -4,6 +4,8 @@ import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.menu.locator.MenuLocator;
+import appeng.menu.locator.MenuLocators;
 import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -14,17 +16,19 @@ import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
 public abstract class AbstractMultiblockFrameBE<C extends BlockEntity> extends AENetworkBlockEntity
-        implements MultiblockCallback, IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IManaged {
+        implements MultiblockCallback, IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IManaged, IMenuOpeningBlockEntity {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(AbstractMultiblockFrameBE.class);
@@ -138,6 +142,19 @@ public abstract class AbstractMultiblockFrameBE<C extends BlockEntity> extends A
 
     public @Nullable C getActiveController() {
         return getResolvedController();
+    }
+
+    @Override
+    public void openMenu(Player player, MenuLocator locator) {
+        C controller = getResolvedController();
+        if (controller instanceof IMenuOpeningBlockEntity opener) {
+            opener.openMenu(player, MenuLocators.forBlockEntity(controller));
+        }
+    }
+
+    @Override
+    public boolean canOpenMenu() {
+        return getResolvedController() != null;
     }
 
     public @Nullable MultiblockState getActiveState() {

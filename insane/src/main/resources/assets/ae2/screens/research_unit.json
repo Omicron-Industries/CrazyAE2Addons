@@ -1,0 +1,24 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/research_unit.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": { "translate": "block.insaneae2addons.research_unit" },
+      "position": { "left": 8, "top": 6 }
+    },
+    "computation": { "position": { "left": 12, "top": 20 }, "align": "LEFT" },
+    "coolant": { "position": { "left": 12, "top": 31 }, "align": "LEFT" },
+    "power": { "position": { "left": 12, "top": 42 }, "align": "LEFT" },
+    "buffer": { "position": { "left": 12, "top": 53 }, "align": "LEFT" },
+    "status": { "position": { "left": 12, "top": 66 }, "align": "LEFT" }
+  },
+  "widgets": {
+    "fluidBar": { "left": 12, "top": 80, "width": 152, "height": 6 },
+    "powerBar": { "left": 12, "top": 90, "width": 152, "height": 6 },
+    "preview": { "left": 152, "top": 6, "width": 16, "height": 16 }
+  }
+}

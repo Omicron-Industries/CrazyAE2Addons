@@ -3,6 +3,14 @@
     "insaneae2addons:ampere_meter",
     "insaneae2addons:auto_builder",
     "insaneae2addons:auto_builder_creative_supply",
-    "insaneae2addons:broken_pattern_provider"
+    "insaneae2addons:broken_pattern_provider",
+    "insaneae2addons:research_unit",
+    "insaneae2addons:research_unit_frame",
+    "insaneae2addons:research_pedestal_top",
+    "insaneae2addons:research_pedestal_bottom",
+    "insaneae2addons:research_cable",
+    "insaneae2addons:research_cable_black",
+    "insaneae2addons:research_cable_white",
+    "insaneae2addons:research_station"
   ]
 }

@@ -87,7 +87,32 @@ public enum LangDefs implements LocalizationEnum {
     CONFIG_ENTRY_RESEARCH_REQUIRED("gui.insaneae2addons.config.entry.research_required", "Research required"),
     CONFIG_DESC_RESEARCH_REQUIRED("gui.insaneae2addons.config.desc.research_required", "When on, insane fabrication recipes require the matching research unlock on a Data Drive."),
     CONFIG_ENTRY_RESEARCH_UNIT_EXTRA_Q_BLOCKS("gui.insaneae2addons.config.entry.research_unit_extra_q_blocks", "Unit extra Q blocks"),
-    CONFIG_DESC_RESEARCH_UNIT_EXTRA_Q_BLOCKS("gui.insaneae2addons.config.desc.research_unit_extra_q_blocks", "Extra block ids accepted in the Q slots of the Research Unit structure.");
+    CONFIG_DESC_RESEARCH_UNIT_EXTRA_Q_BLOCKS("gui.insaneae2addons.config.desc.research_unit_extra_q_blocks", "Extra block ids accepted in the Q slots of the Research Unit structure."),
+
+    RESEARCH_RECIPE_PROGRESS("gui.insaneae2addons.research_recipe_progress", "Research progress"),
+    RESEARCH_STORED_FLUID("gui.insaneae2addons.research_stored_fluid", "Stored research fluid"),
+    RESEARCH_STORED_POWER("gui.insaneae2addons.research_stored_power", "Stored power"),
+    RESEARCH_LOADING("gui.insaneae2addons.research_loading", "Researching..."),
+    RESEARCH_DEV_UNLOCK("gui.insaneae2addons.research_dev_unlock", "Unlock all researches to the drive"),
+    RESEARCH_UNIT_COMPUTATION("gui.insaneae2addons.research_unit_computation", "Computation: "),
+    RESEARCH_UNIT_COOLANT("gui.insaneae2addons.research_unit_coolant", "Fluid use: "),
+    RESEARCH_UNIT_POWER("gui.insaneae2addons.research_unit_power", "Power use: "),
+    RESEARCH_UNIT_BUFFER("gui.insaneae2addons.research_unit_buffer", "Power buffer: "),
+    RESEARCH_PEDESTAL_COMPUTATION("gui.insaneae2addons.research_pedestal_computation", "Computation: "),
+    RESEARCH_PEDESTAL_INVALID("gui.insaneae2addons.research_pedestal_invalid", "No unit connected"),
+    DATA_DRIVE_RESEARCHES("gui.insaneae2addons.data_drive_researches", "Researches"),
+
+    RESEARCH_STATUS_IDLE("gui.insaneae2addons.research_status.idle", "Idle"),
+    RESEARCH_STATUS_READY("gui.insaneae2addons.research_status.ready", "Ready"),
+    RESEARCH_STATUS_WORKING("gui.insaneae2addons.research_status.working", "Working"),
+    RESEARCH_STATUS_NO_DATA_DRIVE("gui.insaneae2addons.research_status.no_data_drive", "No Data Drive"),
+    RESEARCH_STATUS_NO_MATCHING_RECIPE("gui.insaneae2addons.research_status.no_matching_recipe", "No matching research"),
+    RESEARCH_STATUS_MISSING_ITEMS("gui.insaneae2addons.research_status.missing_items", "Missing items"),
+    RESEARCH_STATUS_NOT_ENOUGH_POWER("gui.insaneae2addons.research_status.not_enough_power", "Not enough power"),
+    RESEARCH_STATUS_OUT_OF_RESEARCH_FLUID("gui.insaneae2addons.research_status.out_of_research_fluid", "Out of research fluid"),
+    RESEARCH_STATUS_FLUID_LOW("gui.insaneae2addons.research_status.fluid_low", "Research fluid low"),
+    RESEARCH_STATUS_NOT_ENOUGH_COMPUTATION("gui.insaneae2addons.research_status.not_enough_computation", "Not enough computation"),
+    RESEARCH_STATUS_STRUCTURE_INCOMPLETE("gui.insaneae2addons.research_status.structure_incomplete", "Structure incomplete");
 
     private final String key;
     private final String value;

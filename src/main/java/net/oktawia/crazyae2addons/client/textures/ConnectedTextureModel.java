@@ -16,6 +16,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -29,12 +30,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> {
     private static final ModelProperty<Connections> CONNECTIONS = new ModelProperty<>();
+    private static final float OVERLAY_EPS = 0.1f;
 
     private final ConnectedTextureEntry entry;
     private final FaceBakery bakery = new FaceBakery();
 
     private final Map<ResourceLocation, TextureAtlasSprite> spriteCache = new ConcurrentHashMap<>();
     private final Map<QuadCacheKey, List<BakedQuad>> quadCache = new ConcurrentHashMap<>();
+    private final Map<FullFaceKey, List<BakedQuad>> fullFaceCache = new ConcurrentHashMap<>();
 
     public ConnectedTextureModel(BakedModel originalModel, ConnectedTextureEntry entry) {
         super(originalModel);
@@ -60,6 +63,15 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> {
             return originalModel.getQuads(state, side, rand, modelData, renderType);
         }
 
+        if (renderType == RenderType.translucent()) {
+            ResourceLocation overlay = entry.faceOverlay(state, side);
+            if (overlay == null) {
+                return List.of();
+            }
+            FullFaceKey key = new FullFaceKey(overlay, side);
+            return fullFaceCache.computeIfAbsent(key, ignored -> List.of(bakeFullFace(side, overlay)));
+        }
+
         Connections connections = modelData.has(CONNECTIONS) ? modelData.get(CONNECTIONS) : Connections.EMPTY;
         NeighborBits bits = connections.forFace(side);
         FaceQuarters quarters = QuarterLogic.resolve(bits);
@@ -68,6 +80,14 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> {
         QuadCacheKey key = new QuadCacheKey(texture, side, quarters);
 
         return quadCache.computeIfAbsent(key, ignored -> bakeFace(side, texture, quarters));
+    }
+
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+        if (entry.hasOverlay()) {
+            return ChunkRenderTypeSet.of(RenderType.solid(), RenderType.translucent());
+        }
+        return super.getRenderTypes(state, rand, data);
     }
 
     @Override
@@ -115,6 +135,47 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> {
                 true,
                 rl
         );
+    }
+
+    private BakedQuad bakeFullFace(Direction face, ResourceLocation texture) {
+        TextureAtlasSprite sprite = spriteCache.computeIfAbsent(
+                texture,
+                tex -> Minecraft.getInstance()
+                        .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                        .apply(tex)
+        );
+
+        Vector3f[] bounds = fullFaceBounds(face);
+        BlockElementFace elementFace = new BlockElementFace(
+                face,
+                -1,
+                "",
+                new BlockFaceUV(new float[]{0.0f, 0.0f, 16.0f, 16.0f}, 0)
+        );
+
+        return bakery.bakeQuad(
+                bounds[0],
+                bounds[1],
+                elementFace,
+                sprite,
+                face,
+                BlockModelRotation.X0_Y0,
+                null,
+                true,
+                texture
+        );
+    }
+
+    private static Vector3f[] fullFaceBounds(Direction face) {
+        float e = OVERLAY_EPS;
+        return switch (face) {
+            case NORTH -> new Vector3f[]{new Vector3f(0, 0, -e), new Vector3f(16, 16, -e)};
+            case SOUTH -> new Vector3f[]{new Vector3f(0, 0, 16 + e), new Vector3f(16, 16, 16 + e)};
+            case WEST -> new Vector3f[]{new Vector3f(-e, 0, 0), new Vector3f(-e, 16, 16)};
+            case EAST -> new Vector3f[]{new Vector3f(16 + e, 0, 0), new Vector3f(16 + e, 16, 16)};
+            case UP -> new Vector3f[]{new Vector3f(0, 16 + e, 0), new Vector3f(16, 16 + e, 16)};
+            case DOWN -> new Vector3f[]{new Vector3f(0, -e, 0), new Vector3f(16, -e, 16)};
+        };
     }
 
     private static float[] quarterUv(int tile, Quarter quarter) {
@@ -198,6 +259,8 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> {
     }
 
     private record QuadCacheKey(ResourceLocation texture, Direction face, FaceQuarters quarters) {}
+
+    private record FullFaceKey(ResourceLocation texture, Direction face) {}
 
     private record Connections(Map<Direction, NeighborBits> byFace) {
         static final Connections EMPTY = new Connections(Map.of());

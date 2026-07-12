@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "crazyae2addons:block/controller"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "insaneae2addons:block/research_unit_frame_formed"
+    }
+  ]
+}

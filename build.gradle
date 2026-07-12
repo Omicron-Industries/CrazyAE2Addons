@@ -282,6 +282,22 @@ tasks.named('jar', Jar).configure {
     finalizedBy 'reobfJar'
 }
 
+configurations {
+    devClasses {
+        canBeConsumed = true
+        canBeResolved = false
+    }
+}
+
+tasks.register('devJar', Jar) {
+    archiveClassifier = 'dev'
+    from sourceSets.main.output
+}
+
+artifacts {
+    devClasses tasks.named('devJar')
+}
+
 publishing {
     publications {
         register('mavenJava', MavenPublication) {

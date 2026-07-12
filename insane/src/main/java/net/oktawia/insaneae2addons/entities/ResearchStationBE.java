@@ -11,6 +11,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.filter.IAEItemFilter;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
@@ -21,27 +22,42 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
+import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
 import net.oktawia.insaneae2addons.items.DataDrive;
 import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
+import net.oktawia.insaneae2addons.menus.block.ResearchStationMenu;
 import net.oktawia.insaneae2addons.recipes.ResearchRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class ResearchStationBE extends AENetworkInvBlockEntity implements IGridTickable, IManagedBEHelper {
+public class ResearchStationBE extends AENetworkInvBlockEntity
+        implements IGridTickable, IManagedBEHelper, MenuProvider, IMenuOpeningBlockEntity {
 
     private static final int PEDESTAL_RANGE = 3;
 
@@ -61,6 +77,12 @@ public class ResearchStationBE extends AENetworkInvBlockEntity implements IGridT
     @Getter
     private ResearchStatus status = ResearchStatus.IDLE;
 
+    @DescSynced
+    @Getter
+    private String[] diagnostics = new String[0];
+
+    private int diagTick = 0;
+
     @Nullable
     private ResearchRecipe activeRecipe = null;
     private final List<PedestalUse> activePedestals = new ArrayList<>();
@@ -68,6 +90,12 @@ public class ResearchStationBE extends AENetworkInvBlockEntity implements IGridT
     public ResearchStationBE(BlockPos pos, BlockState blockState) {
         super(InsaneBlockEntityRegistrar.RESEARCH_STATION_BE.get(), pos, blockState);
         this.getMainNode().addService(IGridTickable.class, this);
+        this.inv.setFilter(new IAEItemFilter() {
+            @Override
+            public boolean allowInsert(InternalInventory inventory, int slot, ItemStack stack) {
+                return stack.getItem() == InsaneItemRegistrar.DATA_DRIVE.get();
+            }
+        });
     }
 
     @Override
@@ -132,6 +160,11 @@ public class ResearchStationBE extends AENetworkInvBlockEntity implements IGridT
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (level == null || level.isClientSide()) {
             return TickRateModulation.IDLE;
+        }
+
+        if (++diagTick >= 10) {
+            diagTick = 0;
+            rebuildDiagnostics();
         }
 
         if (activeRecipe == null) {
@@ -505,6 +538,86 @@ public class ResearchStationBE extends AENetworkInvBlockEntity implements IGridT
         }
         int duration = Math.max(1, activeRecipe.duration);
         return Math.max(0, Math.min(1000, (int) Math.round(1000.0 * progressTicks / duration)));
+    }
+
+    public InternalInventory getDiskInventory() {
+        return this.disk;
+    }
+
+    @Override
+    public void openMenu(Player player, MenuLocator locator) {
+        MenuOpener.open(InsaneMenuRegistrar.RESEARCH_STATION_MENU.get(), player, locator);
+    }
+
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new ResearchStationMenu(id, inventory, this);
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return getBlockState().getBlock().getName();
+    }
+
+    public void unlockAllToDisk() {
+        if (level == null) {
+            return;
+        }
+
+        ItemStack drive = getDrive();
+        if (drive.isEmpty()) {
+            return;
+        }
+
+        boolean changed = false;
+        for (ResearchRecipe recipe : level.getRecipeManager().getAllRecipesFor(InsaneRecipes.RESEARCH_TYPE.get())) {
+            changed |= DataDrive.addKey(drive, recipe.unlock.key);
+        }
+
+        if (changed) {
+            this.disk.setItemDirect(0, drive);
+            setChanged();
+        }
+    }
+
+    private void rebuildDiagnostics() {
+        List<String> out = new ArrayList<>();
+        out.add(encodeDiagnostic(worldPosition, "STATION", this.status));
+
+        Set<BlockPos> seenUnits = new HashSet<>();
+        BlockPos base = this.worldPosition;
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+        for (int dx = -PEDESTAL_RANGE; dx <= PEDESTAL_RANGE; dx++) {
+            for (int dz = -PEDESTAL_RANGE; dz <= PEDESTAL_RANGE; dz++) {
+                pos.set(base.getX() + dx, base.getY() + 1, base.getZ() + dz);
+                if (!(level.getBlockEntity(pos) instanceof ResearchPedestalTopBE)) {
+                    continue;
+                }
+
+                BlockPos bottomPos = pos.below();
+                if (!(level.getBlockEntity(bottomPos) instanceof ResearchPedestalBottomBE bottom)) {
+                    continue;
+                }
+
+                out.add(encodeDiagnostic(bottomPos, "PEDESTAL", bottom.getNodeStatus()));
+
+                ResearchUnitBE unit = bottom.getConnectedUnit();
+                if (unit != null && seenUnits.add(unit.getBlockPos())) {
+                    out.add(encodeDiagnostic(unit.getBlockPos(), "UNIT", unit.getNodeStatus()));
+                }
+            }
+        }
+
+        String[] arr = out.toArray(new String[0]);
+        if (!Arrays.equals(arr, this.diagnostics)) {
+            this.diagnostics = arr;
+            setChanged();
+        }
+    }
+
+    private static String encodeDiagnostic(BlockPos pos, String role, ResearchStatus status) {
+        return pos.getX() + "," + pos.getY() + "," + pos.getZ() + "|" + role + "|" + status.name();
     }
 
     private record PedestalUse(BlockPos topPos, BlockPos bottomPos, int count) {

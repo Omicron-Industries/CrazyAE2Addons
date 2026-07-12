@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -14,6 +15,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
+import net.oktawia.crazyae2addons.client.textures.ConnectedTextures;
+import net.oktawia.insaneae2addons.client.InsaneConnectedTextures;
 import net.oktawia.insaneae2addons.client.screens.InsaneConfigScreen;
 import net.oktawia.insaneae2addons.defs.Screens;
 import net.oktawia.insaneae2addons.defs.UpgradeCards;
@@ -87,6 +90,12 @@ public class InsaneAddons {
                     () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> InsaneConfigScreen.create(parent))
             );
             Screens.register();
+            InsaneConnectedTextures.register();
+        }
+
+        @SubscribeEvent
+        public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
+            ConnectedTextures.onModifyBakingResult(event);
         }
     }
 }

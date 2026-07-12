@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": { "model": "insaneae2addons:block/research_pedestal_bottom" },
+    "facing=south": { "model": "insaneae2addons:block/research_pedestal_bottom", "y": 180 },
+    "facing=west":  { "model": "insaneae2addons:block/research_pedestal_bottom", "y": 270 },
+    "facing=east":  { "model": "insaneae2addons:block/research_pedestal_bottom", "y": 90 },
+    "facing=up":    { "model": "insaneae2addons:block/research_pedestal_bottom", "x": 270 },
+    "facing=down":  { "model": "insaneae2addons:block/research_pedestal_bottom", "x": 90 }
+  }
+}

@@ -7,6 +7,7 @@ import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneFluidRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 
 public class InsaneLangProvider extends LanguageProvider {
@@ -25,5 +26,9 @@ public class InsaneLangProvider extends LanguageProvider {
         for (var entry : LangDefs.values()) {
             this.add(entry.getTranslationKey(), entry.getEnglishText());
         }
+
+        this.add("fluid_type.insaneae2addons.research_fluid_type", "Research Fluid");
+        this.add(InsaneFluidRegistrar.RESEARCH_FLUID_BUCKET.get().getDescriptionId(), "Research Fluid Bucket");
+        this.add(InsaneFluidRegistrar.RESEARCH_FLUID_BLOCK.get().getDescriptionId(), "Research Fluid");
     }
 }

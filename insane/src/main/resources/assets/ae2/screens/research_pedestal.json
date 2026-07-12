@@ -1,0 +1,16 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "common/player_inventory.json"],
+  "background": {
+    "texture": "guis/research_pedestal.png",
+    "srcRect": [0, 0, 176, 205]
+  },
+  "text": {
+    "dialog_title": {
+      "text": { "translate": "block.insaneae2addons.research_pedestal_bottom" },
+      "position": { "left": 8, "top": 6 }
+    },
+    "computation": { "position": { "left": 88, "top": 40 }, "align": "CENTER" },
+    "status": { "position": { "left": 88, "top": 54 }, "align": "CENTER" }
+  }
+}

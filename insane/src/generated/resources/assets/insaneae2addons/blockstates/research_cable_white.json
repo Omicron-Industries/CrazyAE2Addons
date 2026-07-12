@@ -1,0 +1,63 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "insaneae2addons:block/research_cable_white_core"
+      }
+    },
+    {
+      "apply": {
+        "model": "insaneae2addons:block/research_cable_white_side"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "insaneae2addons:block/research_cable_white_side",
+        "y": 180
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "insaneae2addons:block/research_cable_white_side",
+        "y": 270
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "insaneae2addons:block/research_cable_white_side",
+        "y": 90
+      },
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "insaneae2addons:block/research_cable_white_side_vertical",
+        "uvlock": true
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "insaneae2addons:block/research_cable_white_side_vertical",
+        "uvlock": true,
+        "x": 180
+      },
+      "when": {
+        "down": "true"
+      }
+    }
+  ]
+}

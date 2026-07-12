@@ -1,7 +1,6 @@
 package net.oktawia.insaneae2addons.blocks;
 
 import appeng.block.AEBaseBlock;
-import appeng.block.AEBaseEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -11,10 +10,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
 import net.oktawia.insaneae2addons.entities.ResearchPedestalBottomBE;
 import org.jetbrains.annotations.Nullable;
 
-public class ResearchPedestalBottomBlock extends AEBaseEntityBlock<ResearchPedestalBottomBE> {
+public class ResearchPedestalBottomBlock extends AbstractMenuOpeningBlock<ResearchPedestalBottomBE> {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 

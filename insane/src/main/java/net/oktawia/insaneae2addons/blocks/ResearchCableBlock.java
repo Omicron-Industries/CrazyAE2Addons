@@ -1,5 +1,6 @@
 package net.oktawia.insaneae2addons.blocks;
 
+import appeng.block.AEBaseBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ResearchCableBlock extends Block {
+public class ResearchCableBlock extends AEBaseBlock {
 
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
     public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
@@ -68,6 +69,7 @@ public class ResearchCableBlock extends Block {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(NORTH, SOUTH, WEST, EAST, UP, DOWN);
     }
 

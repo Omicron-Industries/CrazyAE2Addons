@@ -1,6 +1,5 @@
 package net.oktawia.insaneae2addons.blocks;
 
-import appeng.block.AEBaseEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -9,10 +8,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
 import net.oktawia.insaneae2addons.entities.ResearchUnitFrameBE;
 import org.jetbrains.annotations.Nullable;
 
-public class ResearchUnitFrameBlock extends AEBaseEntityBlock<ResearchUnitFrameBE> {
+public class ResearchUnitFrameBlock extends AbstractMenuOpeningBlock<ResearchUnitFrameBE> {
 
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 

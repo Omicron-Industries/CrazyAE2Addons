@@ -34,6 +34,10 @@ public abstract class AbstractMenuOpeningBlock<T extends AEBaseBlockEntity & IMe
             return InteractionResult.PASS;
         }
 
+        if (!menuBe.canOpenMenu()) {
+            return InteractionResult.PASS;
+        }
+
         if (!level.isClientSide()) {
             menuBe.openMenu(player, MenuLocators.forBlockEntity(be));
         }

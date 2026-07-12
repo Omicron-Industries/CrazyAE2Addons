@@ -24,6 +24,7 @@ public final class InsaneCreativeTabRegistrar {
     private static void populate(CreativeModeTab.ItemDisplayParameters ignored, CreativeModeTab.Output out) {
         InsaneItemRegistrar.ITEMS.getEntries().forEach(ro -> push(out, ro.get()));
         InsaneBlockRegistrar.BLOCK_ITEMS.getEntries().forEach(ro -> push(out, ro.get()));
+        InsaneFluidRegistrar.ITEMS.getEntries().forEach(ro -> push(out, ro.get()));
     }
 
     private static void push(CreativeModeTab.Output out, Item item) {

@@ -6,21 +6,34 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.oktawia.crazyae2addons.client.renderer.preview.multiblock.MultiblockPreviewHost;
+import net.oktawia.crazyae2addons.client.renderer.preview.multiblock.MultiblockPreviewInfo;
+import net.oktawia.crazyae2addons.client.renderer.preview.multiblock.PreviewRegistry;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
+import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractMultiblockControllerBE
         extends AENetworkBlockEntity
-        implements IGridTickable, IManagedBEHelper {
+        implements IGridTickable, IManagedBEHelper, MenuProvider, IMenuOpeningBlockEntity, MultiblockPreviewHost {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(AbstractMultiblockControllerBE.class);
@@ -73,7 +86,19 @@ public abstract class AbstractMultiblockControllerBE
 
     protected abstract MultiblockDefinition getMultiblockDefinition();
 
+    protected abstract MenuType<?> getMenuType();
+
     protected abstract char frameSymbol();
+
+    @Override
+    public void openMenu(Player player, MenuLocator locator) {
+        MenuOpener.open(getMenuType(), player, locator);
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return getBlockState().getBlock().getName();
+    }
 
     protected abstract void setOwnFormedState(boolean formed);
 
@@ -123,8 +148,77 @@ public abstract class AbstractMultiblockControllerBE
 
     @Override
     public void setRemoved() {
+        unregisterPreviewHost();
         this.multiblockState.destroy();
         super.setRemoved();
+    }
+
+    @Override
+    public void clearRemoved() {
+        super.clearRemoved();
+        Level level = getLevel();
+        if (level != null && level.isClientSide()) {
+            PreviewRegistry.register(this);
+        }
+    }
+
+    @Override
+    public void onChunkUnloaded() {
+        unregisterPreviewHost();
+        super.onChunkUnloaded();
+    }
+
+    private void unregisterPreviewHost() {
+        Level level = getLevel();
+        if (level != null && level.isClientSide()) {
+            PreviewRegistry.unregister(this);
+        }
+    }
+
+    private boolean previewEnabled;
+    private @Nullable MultiblockPreviewInfo previewInfo;
+
+    @Override
+    public boolean isPreviewEnabled() {
+        return this.previewEnabled;
+    }
+
+    public void setPreviewEnabled(boolean previewEnabled) {
+        this.previewEnabled = previewEnabled;
+    }
+
+    @Override
+    public @Nullable MultiblockPreviewInfo getPreviewInfo() {
+        return this.previewInfo;
+    }
+
+    @Override
+    public void setPreviewInfo(@Nullable MultiblockPreviewInfo previewInfo) {
+        this.previewInfo = previewInfo;
+    }
+
+    @Override
+    public MultiblockDefinition getPreviewDefinition() {
+        return getMultiblockDefinition();
+    }
+
+    @Override
+    public BlockPos getPreviewOrigin() {
+        return getBlockPos();
+    }
+
+    @Override
+    public Direction getPreviewFacing() {
+        BlockState state = getBlockState();
+        if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            return state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
+        }
+        return Direction.NORTH;
+    }
+
+    @Override
+    public BlockState getPreviewState(MultiblockDefinition.PatternEntry entry, MultiblockDefinition.SymbolDef symbol) {
+        return symbol.blocks().get(0).defaultBlockState();
     }
 
     private void onFormedInternal() {
