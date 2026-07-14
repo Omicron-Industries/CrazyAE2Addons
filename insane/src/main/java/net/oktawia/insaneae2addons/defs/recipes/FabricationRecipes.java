@@ -44,6 +44,52 @@ public class FabricationRecipes {
                 .output("insaneae2addons:builder_pattern", 1)
                 .requiredKey("insaneae2addons:builder_pattern_research")
                 .register();
+
+        recipe("ticker")
+                .input("ae2:dense_energy_cell", 1)
+                .input("minecraft:nether_star", 1)
+                .output("insaneae2addons:entity_ticker", 1)
+                .requiredKey("insaneae2addons:entity_ticker_research")
+                .register();
+
+        recipe("auto_enchanter")
+                .input("minecraft:enchanting_table", 2)
+                .input("ae2:import_bus", 1)
+                .input("ae2:export_bus", 1)
+                .input("ae2:energy_cell", 1)
+                .output("insaneae2addons:auto_enchanter", 1)
+                .requiredKey("insaneae2addons:auto_enchanter_research")
+                .register();
+
+        recipe("research_fluid")
+                .input("minecraft:lapis_lazuli", 1)
+                .input("minecraft:redstone", 1)
+                .fluidInput("minecraft:water", 1000)
+                .fluidOutput("insaneae2addons:research_fluid", 1000)
+                .register();
+
+        recipe("entropy_cradle_controller")
+                .input("insaneae2addons:entropy_cradle", 4)
+                .input("minecraft:diamond", 1)
+                .output("insaneae2addons:entropy_cradle_controller", 1)
+                .requiredKey("insaneae2addons:entropy_cradle_research")
+                .register();
+
+        // no block yet (mob storage):
+        // recipe("mob_cell")
+        //         .input("ae2:item_cell_housing", 1)
+        //         .input("minecraft:echo_shard", 1)
+        //         .output("insaneae2addons:mob_cell_housing", 1)
+        //         .requiredKey("insaneae2addons:mob_cell_research")
+        //         .register();
+
+        // no block yet (penrose):
+        // recipe("supersingularity_block")
+        //         .input("insaneae2addons:super_singularity", 9)
+        //         .input("ae2:fluix_block", 5)
+        //         .output("insaneae2addons:super_singularity_block", 1)
+        //         .requiredKey("insaneae2addons:super_singularity_research")
+        //         .register();
     }
 
     public static class Builder {

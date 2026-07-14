@@ -1,0 +1,1 @@
+net.oktawia.crazyae2addons.integration.kubejs.CrazyKubeJSPlugin

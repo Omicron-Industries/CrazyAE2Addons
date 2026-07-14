@@ -2,6 +2,7 @@ package net.oktawia.insaneae2addons.defs.regs;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -11,8 +12,10 @@ import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.insaneae2addons.entities.AmpereMeterBE;
 import net.oktawia.insaneae2addons.entities.AutoBuilderBE;
+import net.oktawia.insaneae2addons.entities.AutoEnchanterBE;
 import net.oktawia.insaneae2addons.entities.AutoBuilderCreativeSupplyBE;
 import net.oktawia.insaneae2addons.entities.BrokenPatternProviderBE;
+import net.oktawia.insaneae2addons.entities.EnergyStorageBE;
 import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleCapacitorBE;
 import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleControllerBE;
 import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleWallBE;
@@ -23,6 +26,7 @@ import net.oktawia.insaneae2addons.entities.research.ResearchUnitBE;
 import net.oktawia.insaneae2addons.entities.research.ResearchUnitFrameBE;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -47,6 +51,28 @@ public class InsaneBlockEntityRegistrar {
             BLOCK_ENTITY_SETUP.add(() -> blk.setBlockEntity(
                     (Class) blockEntityClass, (BlockEntityType) type, null, null
             ));
+
+            return type;
+        });
+    }
+
+    @SafeVarargs
+    private static <T extends AEBaseBlockEntity> RegistryObject<BlockEntityType<T>> regMulti(
+            String id,
+            BlockEntityType.BlockEntitySupplier<T> factory,
+            Class<T> blockEntityClass,
+            RegistryObject<? extends AEBaseEntityBlock<?>>... blocks
+    ) {
+        return BLOCK_ENTITIES.register(id, () -> {
+            Block[] resolved = Arrays.stream(blocks).map(RegistryObject::get).toArray(Block[]::new);
+            var type = BlockEntityType.Builder.of(factory, resolved).build(null);
+
+            for (Block blk : resolved) {
+                AEBaseEntityBlock<?> aeBlk = (AEBaseEntityBlock<?>) blk;
+                BLOCK_ENTITY_SETUP.add(() -> aeBlk.setBlockEntity(
+                        (Class) blockEntityClass, (BlockEntityType) type, null, null
+                ));
+            }
 
             return type;
         });
@@ -110,6 +136,9 @@ public class InsaneBlockEntityRegistrar {
     public static final RegistryObject<BlockEntityType<AutoBuilderBE>> AUTO_BUILDER_BE =
             reg("auto_builder_be", InsaneBlockRegistrar.AUTO_BUILDER_BLOCK, AutoBuilderBE::new, AutoBuilderBE.class);
 
+    public static final RegistryObject<BlockEntityType<AutoEnchanterBE>> AUTO_ENCHANTER_BE =
+            reg("auto_enchanter_be", InsaneBlockRegistrar.AUTO_ENCHANTER_BLOCK, AutoEnchanterBE::new, AutoEnchanterBE.class);
+
     public static final RegistryObject<BlockEntityType<AutoBuilderCreativeSupplyBE>> AUTO_BUILDER_CREATIVE_SUPPLY_BE =
             reg("auto_builder_creative_supply_be", InsaneBlockRegistrar.AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK, AutoBuilderCreativeSupplyBE::new, AutoBuilderCreativeSupplyBE.class);
 
@@ -139,6 +168,19 @@ public class InsaneBlockEntityRegistrar {
 
     public static final RegistryObject<BlockEntityType<EntropyCradleCapacitorBE>> ENTROPY_CRADLE_CAPACITOR_BE =
             reg("entropy_cradle_capacitor_be", InsaneBlockRegistrar.ENTROPY_CRADLE_CAPACITOR_BLOCK, EntropyCradleCapacitorBE::new, EntropyCradleCapacitorBE.class);
+
+    public static final RegistryObject<BlockEntityType<EnergyStorageBE>> ENERGY_STORAGE_BE =
+            regMulti("energy_storage_be", EnergyStorageBE::new, EnergyStorageBE.class,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_1K,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_4K,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_16K,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_64K,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_256K,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_1M,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_4M,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_16M,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_64M,
+                    InsaneBlockRegistrar.ENERGY_STORAGE_256M);
 
     private InsaneBlockEntityRegistrar() {
     }

@@ -26,6 +26,7 @@ import net.oktawia.crazyae2addons.compat.CC.CCCompat;
 import net.oktawia.crazyae2addons.logic.wormhole.extensions.GTWormholeCapabilityExtension;
 import net.oktawia.crazyae2addons.parts.p2p.WormholeP2PTunnelPart;
 import net.oktawia.crazyae2addons.defs.Screens;
+import net.oktawia.crazyae2addons.defs.CrazyFeatureGates;
 import net.oktawia.crazyae2addons.defs.UpgradeCards;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
@@ -126,6 +127,7 @@ public class CrazyAddons {
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             new UpgradeCards(event);
+            CrazyFeatureGates.register();
             CrazyBlockEntityRegistrar.setupBlockEntityTypes();
             if (IsModLoaded.GTCEU) {
                 WormholeP2PTunnelPart.registerExtension(GTWormholeCapabilityExtension::new);

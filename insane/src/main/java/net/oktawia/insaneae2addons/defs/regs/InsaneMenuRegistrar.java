@@ -11,6 +11,7 @@ import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.insaneae2addons.entities.AmpereMeterBE;
 import net.oktawia.insaneae2addons.entities.AutoBuilderBE;
+import net.oktawia.insaneae2addons.entities.AutoEnchanterBE;
 import net.oktawia.insaneae2addons.entities.BrokenPatternProviderBE;
 import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleControllerBE;
 import net.oktawia.insaneae2addons.entities.research.ResearchPedestalBottomBE;
@@ -20,6 +21,7 @@ import net.oktawia.insaneae2addons.logic.DataHost;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderPatternHost;
 import net.oktawia.insaneae2addons.menus.block.AmpereMeterMenu;
 import net.oktawia.insaneae2addons.menus.block.AutoBuilderMenu;
+import net.oktawia.insaneae2addons.menus.block.AutoEnchanterMenu;
 import net.oktawia.insaneae2addons.menus.block.BrokenPatternProviderMenu;
 import net.oktawia.insaneae2addons.menus.block.EntropyCradleControllerMenu;
 import net.oktawia.insaneae2addons.menus.block.ResearchPedestalMenu;
@@ -30,8 +32,10 @@ import net.oktawia.insaneae2addons.menus.item.BuilderPatternMenu;
 import net.oktawia.insaneae2addons.menus.item.BuilderPatternSubMenu;
 import net.oktawia.insaneae2addons.menus.item.DataDriveMenu;
 import net.oktawia.insaneae2addons.menus.item.NbtViewCellMenu;
+import net.oktawia.insaneae2addons.menus.part.EntityTickerMenu;
 import net.oktawia.insaneae2addons.menus.part.NbtExportBusMenu;
 import net.oktawia.insaneae2addons.menus.part.NbtStorageBusMenu;
+import net.oktawia.insaneae2addons.parts.EntityTickerPart;
 import net.oktawia.insaneae2addons.parts.NbtExportBusPart;
 import net.oktawia.insaneae2addons.parts.NbtStorageBusPart;
 
@@ -54,6 +58,9 @@ public class InsaneMenuRegistrar {
 
     public static final RegistryObject<MenuType<AutoBuilderMenu>> AUTO_BUILDER_MENU =
             reg("auto_builder_menu", AutoBuilderMenu::new, AutoBuilderBE.class);
+
+    public static final RegistryObject<MenuType<AutoEnchanterMenu>> AUTO_ENCHANTER_MENU =
+            reg("auto_enchanter_menu", AutoEnchanterMenu::new, AutoEnchanterBE.class);
 
     public static final RegistryObject<MenuType<BuilderPatternMenu>> BUILDER_PATTERN_MENU =
             reg("builder_pattern_menu", BuilderPatternMenu::new, BuilderPatternHost.class);
@@ -87,6 +94,9 @@ public class InsaneMenuRegistrar {
 
     public static final RegistryObject<MenuType<NbtStorageBusMenu>> NBT_STORAGE_BUS_MENU =
             reg("nbt_storage_bus_menu", NbtStorageBusMenu::new, NbtStorageBusPart.class);
+
+    public static final RegistryObject<MenuType<EntityTickerMenu>> ENTITY_TICKER_MENU =
+            reg("entity_ticker_menu", EntityTickerMenu::new, EntityTickerPart.class);
 
     private InsaneMenuRegistrar() {
     }

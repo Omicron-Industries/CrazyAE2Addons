@@ -6,6 +6,7 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.network.chat.Component;
+import net.oktawia.crazyae2addons.util.FeatureGates;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
@@ -58,5 +59,7 @@ public class InsaneEmiPlugin implements EmiPlugin {
 
         registry.addRecipeHandler(null, new CradleEmiRecipeHandler());
         registry.addRecipeHandler(null, new ResearchEmiRecipeHandler());
+
+        FeatureGates.forEachDisabled(InsaneAddons.MODID, item -> registry.removeEmiStacks(EmiStack.of(item)));
     }
 }

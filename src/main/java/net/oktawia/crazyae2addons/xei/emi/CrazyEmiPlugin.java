@@ -9,11 +9,10 @@ import dev.emi.emi.api.widget.Bounds;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.client.screens.part.DisplayScreen;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
-import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.crazyae2addons.util.FeatureGates;
 import net.oktawia.crazyae2addons.xei.common.CrazyRecipes;
 
 import java.util.function.Consumer;
@@ -51,70 +50,7 @@ public class CrazyEmiPlugin implements EmiPlugin {
 
         registry.addRecipeHandler(null, new FabricationEmiRecipeHandler());
 
-        if (!CrazyConfig.COMMON.DISPLAY_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.DISPLAY.get()));
-        }
-        if (!CrazyConfig.COMMON.EMITTER_TERMINAL_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.EMITTER_TERMINAL.get()));
-        }
-        if (!CrazyConfig.COMMON.EMITTER_TERMINAL_ENABLED.get()
-                || !CrazyConfig.COMMON.WIRELESS_EMITTER_TERMINAL_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.WIRELESS_EMITTER_TERMINAL.get()));
-        }
-        if (!CrazyConfig.COMMON.WIRELESS_NOTIFICATION_TERMINAL_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.WIRELESS_NOTIFICATION_TERMINAL.get()));
-        }
-        if (!CrazyConfig.COMMON.MULTI_LEVEL_EMITTER_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.MULTI_LEVEL_EMITTER.get()));
-        }
-        if (!CrazyConfig.COMMON.TAG_LEVEL_EMITTER_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.TAG_LEVEL_EMITTER.get()));
-        }
-        if (!CrazyConfig.COMMON.REDSTONE_EMITTER_TERMINAL_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.REDSTONE_TERMINAL.get()));
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.REDSTONE_EMITTER.get()));
-        }
-        if (!CrazyConfig.COMMON.REDSTONE_EMITTER_TERMINAL_ENABLED.get()
-                || !CrazyConfig.COMMON.WIRELESS_REDSTONE_TERMINAL_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get()));
-        }
-        if (!CrazyConfig.COMMON.WORMHOLE_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.WORMHOLE.get()));
-        }
-        if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.CPU_PRIO_TUNER.get()));
-        }
-        if (!CrazyConfig.COMMON.RR_ITEM_P2P_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.RR_ITEM_P2P.get()));
-        }
-        if (!CrazyConfig.COMMON.RR_FLUID_P2P_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.RR_FLUID_P2P.get()));
-        }
-        if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.CPU_PRIO_TUNER.get()));
-        }
-        if (!CrazyConfig.COMMON.TAG_VIEW_CELL_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.TAG_VIEW_CELL.get()));
-        }
-        if (!CrazyConfig.COMMON.PATTERN_MULTIPLIER_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.PATTERN_MULTIPLIER.get()));
-        }
-        if (!CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_PART_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.CRAZY_PATTERN_PROVIDER_PART.get()));
-        }
-        if (!CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_BLOCK_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get()));
-        }
-        if (!CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_BLOCK_ENABLED.get()
-                && !CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_PART_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.CRAZY_UPGRADE.get()));
-        }
-        if (!CrazyConfig.COMMON.EJECTOR_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyBlockRegistrar.EJECTOR_BLOCK.get()));
-        }
-        if (!CrazyConfig.COMMON.RESOURCE_TRACKING_TERMINAL_ENABLED.get()) {
-            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.RESOURCE_TRACKING_TERMINAL.get()));
-        }
+        FeatureGates.forEachDisabled(CrazyAddons.MODID, item -> registry.removeEmiStacks(EmiStack.of(item)));
     }
 
     private static void addDisplayScreenExclusions(

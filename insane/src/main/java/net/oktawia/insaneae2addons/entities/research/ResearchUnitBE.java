@@ -48,12 +48,16 @@ import java.util.function.Predicate;
 
 public class ResearchUnitBE extends AbstractMultiblockControllerBE implements ICableMachine {
 
-    public static final int FLUID_BUFFER_CAPACITY = 64_000;
-    public static final double POWER_BUFFER_CAPACITY = 200_000.0;
-    private static final int COMPUTATION_POWER_COST = 64;
-    private static final int FLUID_COST_DIVISOR = 4;
     private static final int FLUID_LOW_FACTOR = 8;
     private static final String AE2 = "ae2";
+
+    public static int fluidBufferCapacity() {
+        return InsaneConfig.COMMON.RESEARCH_UNIT_FLUID_BUFFER.get();
+    }
+
+    public static double powerBufferCapacity() {
+        return InsaneConfig.COMMON.RESEARCH_UNIT_POWER_BUFFER.get();
+    }
 
     private static final Predicate<FluidStack> RESEARCH_FLUID_ONLY = stack ->
             !stack.isEmpty()
@@ -69,7 +73,7 @@ public class ResearchUnitBE extends AbstractMultiblockControllerBE implements IC
     @Persisted
     @LazyManaged
     @Getter
-    private final FluidTank fluidBuffer = new FluidTank(FLUID_BUFFER_CAPACITY, RESEARCH_FLUID_ONLY);
+    private final FluidTank fluidBuffer = new FluidTank(fluidBufferCapacity(), RESEARCH_FLUID_ONLY);
 
     @Persisted
     @DescSynced
@@ -178,7 +182,7 @@ public class ResearchUnitBE extends AbstractMultiblockControllerBE implements IC
             }
         }
 
-        long computation = tierSum / 16 + extra;
+        long computation = tierSum / InsaneConfig.COMMON.RESEARCH_UNIT_COMPUTATION_DIVISOR.get() + extra;
         return (int) Math.min(Integer.MAX_VALUE, computation);
     }
 
@@ -215,12 +219,12 @@ public class ResearchUnitBE extends AbstractMultiblockControllerBE implements IC
             return false;
         }
 
-        double powerCost = (double) computation * COMPUTATION_POWER_COST;
+        double powerCost = (double) computation * InsaneConfig.COMMON.RESEARCH_UNIT_COMPUTATION_POWER_COST.get();
         if (this.storedPower < powerCost) {
             return false;
         }
 
-        int fluidNeed = computation / FLUID_COST_DIVISOR;
+        int fluidNeed = computation / InsaneConfig.COMMON.RESEARCH_UNIT_FLUID_DIVISOR.get();
         if (fluidNeed > 0 && this.fluidBuffer.getFluidAmount() < fluidNeed) {
             return false;
         }
@@ -243,11 +247,11 @@ public class ResearchUnitBE extends AbstractMultiblockControllerBE implements IC
             return ResearchStatus.NOT_ENOUGH_COMPUTATION;
         }
 
-        if (this.storedPower < (double) computation * COMPUTATION_POWER_COST) {
+        if (this.storedPower < (double) computation * InsaneConfig.COMMON.RESEARCH_UNIT_COMPUTATION_POWER_COST.get()) {
             return ResearchStatus.NOT_ENOUGH_POWER;
         }
 
-        int fluidNeed = computation / FLUID_COST_DIVISOR;
+        int fluidNeed = computation / InsaneConfig.COMMON.RESEARCH_UNIT_FLUID_DIVISOR.get();
         if (fluidNeed > 0 && this.fluidBuffer.getFluidAmount() < fluidNeed) {
             return ResearchStatus.OUT_OF_RESEARCH_FLUID;
         }
@@ -273,7 +277,7 @@ public class ResearchUnitBE extends AbstractMultiblockControllerBE implements IC
             return;
         }
 
-        double room = POWER_BUFFER_CAPACITY - this.storedPower;
+        double room = powerBufferCapacity() - this.storedPower;
         if (room <= 0) {
             return;
         }

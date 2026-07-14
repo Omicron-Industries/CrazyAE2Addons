@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.provider.CrazyProviderTooltip;
 import net.oktawia.crazyae2addons.parts.CrazyPatternProviderPart;
@@ -25,10 +24,6 @@ public class CrazyPatternProviderPartItem extends PartItem<CrazyPatternProviderP
                                 TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, tooltip, advancedTooltips);
 
-        if (!CrazyConfig.COMMON.CRAZY_PATTERN_PROVIDER_PART_ENABLED.get()) {
-            tooltip.add(Component.translatable(LangDefs.FEATURE_DISABLED.getTranslationKey()).withStyle(ChatFormatting.RED));
-            tooltip.add(Component.translatable(LangDefs.FEATURE_DISABLED_CONFIG.getTranslationKey()).withStyle(ChatFormatting.GRAY));
-        }
 
         CrazyProviderTooltip.Data data = CrazyProviderTooltip.read(stack);
 

@@ -2,23 +2,20 @@ package net.oktawia.insaneae2addons.menus.block;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
-import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.AppEngSlot;
+import lombok.Getter;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.entities.research.ResearchStationBE;
-import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
 
 public class ResearchStationMenu extends AEBaseMenu {
 
     private static final String ACT_UNLOCK_ALL = "unlock_all";
 
+    @Getter
     private final ResearchStationBE host;
     private final Inventory playerInv;
-
-    @GuiSync(880) public int progressPct;
-    @GuiSync(881) public int statusOrdinal;
 
     public final RecipeProgress recipeBar = new RecipeProgress();
 
@@ -26,8 +23,6 @@ public class ResearchStationMenu extends AEBaseMenu {
         super(InsaneMenuRegistrar.RESEARCH_STATION_MENU.get(), id, playerInventory, host);
         this.host = host;
         this.playerInv = playerInventory;
-        this.progressPct = host.getProgressPct();
-        this.statusOrdinal = host.getStatus().ordinal();
 
         this.addSlot(new AppEngSlot(host.getDiskInventory(), 0), SlotSemantics.MACHINE_OUTPUT);
 
@@ -43,23 +38,10 @@ public class ResearchStationMenu extends AEBaseMenu {
         }
     }
 
-    public ResearchStatus status() {
-        return ResearchStatus.values()[Math.floorMod(statusOrdinal, ResearchStatus.values().length)];
-    }
-
-    @Override
-    public void broadcastChanges() {
-        if (!isClientSide()) {
-            this.progressPct = host.getProgressPct();
-            this.statusOrdinal = host.getStatus().ordinal();
-        }
-        super.broadcastChanges();
-    }
-
     public class RecipeProgress implements IProgressProvider {
         @Override
         public int getCurrentProgress() {
-            return ResearchStationMenu.this.progressPct;
+            return host.getProgressPct();
         }
 
         @Override

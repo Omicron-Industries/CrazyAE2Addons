@@ -1,7 +1,12 @@
 package net.oktawia.insaneae2addons.defs.recipes;
 
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -32,6 +37,49 @@ public class ItemRecipes {
     }
 
     public static void registerRecipes() {
+        recipe("xpshard_to_experience_bottle")
+                .shapeless(Items.GLASS_BOTTLE,
+                        InsaneItemRegistrar.XP_SHARD.get(),
+                        InsaneItemRegistrar.XP_SHARD.get())
+                .output(Items.EXPERIENCE_BOTTLE)
+                .register();
+
+        recipe("nbt_view_cell")
+                .shaped("DI")
+                .define('D', AEItems.VIEW_CELL.asItem())
+                .define('I', Items.NAME_TAG)
+                .output(InsaneItemRegistrar.NBT_VIEW_CELL.get())
+                .register();
+
+        recipe("nbt_export_bus")
+                .shaped("ET/TL")
+                .define('E', AEParts.EXPORT_BUS.asItem())
+                .define('T', Items.NAME_TAG)
+                .define('L', AEItems.LOGIC_PROCESSOR.asItem())
+                .output(InsaneItemRegistrar.NBT_EXPORT_BUS.get())
+                .register();
+
+        recipe("nbt_storage_bus")
+                .shaped("ET/TL")
+                .define('E', AEParts.STORAGE_BUS.asItem())
+                .define('T', Items.NAME_TAG)
+                .define('L', AEItems.LOGIC_PROCESSOR.asItem())
+                .output(InsaneItemRegistrar.NBT_STORAGE_BUS.get())
+                .register();
+
+        recipe("player_upgrade_card")
+                .shaped("CE")
+                .define('C', AEItems.ADVANCED_CARD.asItem())
+                .define('E', Items.IRON_PICKAXE)
+                .output(InsaneItemRegistrar.PLAYER_UPGRADE_CARD.get())
+                .register();
+
+        recipe("automation_upgrade_card")
+                .shaped("CE")
+                .define('C', AEItems.ADVANCED_CARD.asItem())
+                .define('E', AEBlocks.CRAFTING_UNIT.asItem())
+                .output(InsaneItemRegistrar.AUTOMATION_UPGRADE_CARD.get())
+                .register();
     }
 
     public static class Builder {

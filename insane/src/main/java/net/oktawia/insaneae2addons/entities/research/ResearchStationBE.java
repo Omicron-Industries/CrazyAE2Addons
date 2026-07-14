@@ -20,8 +20,6 @@ import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -39,6 +37,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
+import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
@@ -59,7 +58,6 @@ import java.util.Set;
 public class ResearchStationBE extends AENetworkInvBlockEntity
         implements IGridTickable, IManagedBEHelper, MenuProvider, IMenuOpeningBlockEntity {
 
-    private static final int PEDESTAL_RANGE = 3;
     private static final int[] PEDESTAL_Y_OFFSETS = {0, 1};
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
@@ -77,6 +75,10 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
     @DescSynced
     @Getter
     private ResearchStatus status = ResearchStatus.IDLE;
+
+    @DescSynced
+    @Getter
+    private int progressPct = 0;
 
     @DescSynced
     @Getter
@@ -127,32 +129,6 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveManagedData(tag);
-        return tag;
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        loadManagedData(tag);
-        super.handleUpdateTag(tag);
-    }
-
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        CompoundTag tag = pkt.getTag();
-        if (tag != null) {
-            handleUpdateTag(tag);
-        }
-    }
-
-    @Override
     public TickingRequest getTickingRequest(IGridNode node) {
         return new TickingRequest(1, 5, false, false);
     }
@@ -171,6 +147,7 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
         if (activeRecipe == null) {
             activeRecipe = findMatchingRecipe();
             progressTicks = 0;
+            setProgressPct(0);
 
             if (activeRecipe == null) {
                 setStatus(diagnoseIdle());
@@ -212,6 +189,7 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
 
         progressTicks += tickComputation;
         setStatus(ResearchStatus.WORKING);
+        setProgressPct(computeProgressPct());
 
         if (progressTicks >= activeRecipe.duration) {
             ResearchRecipe done = activeRecipe;
@@ -231,12 +209,14 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
         this.progressTicks = 0;
         this.activeRecipe = null;
         this.activePedestals.clear();
+        setProgressPct(0);
         setChanged();
     }
 
     private void setStatus(ResearchStatus newStatus) {
         if (this.status != newStatus) {
             this.status = newStatus;
+            syncManaged();
         }
         setChanged();
     }
@@ -274,8 +254,9 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
         BlockPos base = this.worldPosition;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
-        for (int dx = -PEDESTAL_RANGE; dx <= PEDESTAL_RANGE; dx++) {
-            for (int dz = -PEDESTAL_RANGE; dz <= PEDESTAL_RANGE; dz++) {
+        int range = InsaneConfig.COMMON.RESEARCH_STATION_PEDESTAL_RANGE.get();
+        for (int dx = -range; dx <= range; dx++) {
+            for (int dz = -range; dz <= range; dz++) {
                 for (int dy : PEDESTAL_Y_OFFSETS) {
                     pos.set(base.getX() + dx, base.getY() + dy, base.getZ() + dz);
                     if (level.getBlockEntity(pos) instanceof ResearchPedestalTopBE) {
@@ -579,12 +560,19 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
         }
     }
 
-    public int getProgressPct() {
+    private int computeProgressPct() {
         if (activeRecipe == null) {
             return 0;
         }
         int duration = Math.max(1, activeRecipe.duration);
         return Math.max(0, Math.min(1000, (int) Math.round(1000.0 * progressTicks / duration)));
+    }
+
+    private void setProgressPct(int pct) {
+        if (this.progressPct != pct) {
+            this.progressPct = pct;
+            syncManaged();
+        }
     }
 
     public InternalInventory getDiskInventory() {
@@ -593,6 +581,9 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
 
     @Override
     public void openMenu(Player player, MenuLocator locator) {
+        if (getLevel() != null && !getLevel().isClientSide()) {
+            forceSyncManaged();
+        }
         MenuOpener.open(InsaneMenuRegistrar.RESEARCH_STATION_MENU.get(), player, locator);
     }
 
@@ -650,6 +641,7 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
         String[] arr = out.toArray(new String[0]);
         if (!Arrays.equals(arr, this.diagnostics)) {
             this.diagnostics = arr;
+            syncManaged();
             setChanged();
         }
     }

@@ -1,6 +1,7 @@
 package net.oktawia.insaneae2addons.defs.regs;
 
 import appeng.block.AEBaseBlockItem;
+import appeng.block.networking.EnergyCellBlockItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -10,11 +11,13 @@ import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.blocks.AmpereMeterBlock;
 import net.oktawia.insaneae2addons.blocks.AutoBuilderBlock;
+import net.oktawia.insaneae2addons.blocks.AutoEnchanterBlock;
 import net.oktawia.insaneae2addons.blocks.AutoBuilderCreativeSupplyBlock;
 import net.oktawia.insaneae2addons.blocks.BrokenPatternProviderBlock;
 import net.oktawia.insaneae2addons.blocks.EntropyCradleBlock;
 import net.oktawia.insaneae2addons.blocks.EntropyCradleCapacitorBlock;
 import net.oktawia.insaneae2addons.blocks.EntropyCradleControllerBlock;
+import net.oktawia.insaneae2addons.blocks.EnergyStorageBlock;
 import net.oktawia.insaneae2addons.blocks.ResearchCableBlock;
 import net.oktawia.insaneae2addons.blocks.ResearchPedestalBottomBlock;
 import net.oktawia.insaneae2addons.blocks.ResearchPedestalTopBlock;
@@ -40,6 +43,30 @@ public class InsaneBlockRegistrar {
                 .toList();
     }
 
+    private static final long MB = 1024L * 1024;
+    private static final long GB = 1024L * MB;
+
+    private static RegistryObject<EnergyStorageBlock> energyStorage(String id, long maxEnergy) {
+        RegistryObject<EnergyStorageBlock> block = BLOCKS.register(id, () -> new EnergyStorageBlock(maxEnergy));
+        BLOCK_ITEMS.register(id, () -> new EnergyCellBlockItem(block.get(), new Item.Properties()));
+        return block;
+    }
+
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_1K = energyStorage("energy_storage_1k", 8 * MB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_4K = energyStorage("energy_storage_4k", 32 * MB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_16K = energyStorage("energy_storage_16k", 128 * MB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_64K = energyStorage("energy_storage_64k", 512 * MB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_256K = energyStorage("energy_storage_256k", 2048 * MB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_1M = energyStorage("energy_storage_1m", 8 * GB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_4M = energyStorage("energy_storage_4m", 32 * GB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_16M = energyStorage("energy_storage_16m", 128 * GB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_64M = energyStorage("energy_storage_64m", 512 * GB);
+    public static final RegistryObject<EnergyStorageBlock> ENERGY_STORAGE_256M = energyStorage("energy_storage_256m", 2048 * GB);
+
+    public static final List<RegistryObject<EnergyStorageBlock>> ENERGY_STORAGES = List.of(
+            ENERGY_STORAGE_1K, ENERGY_STORAGE_4K, ENERGY_STORAGE_16K, ENERGY_STORAGE_64K, ENERGY_STORAGE_256K,
+            ENERGY_STORAGE_1M, ENERGY_STORAGE_4M, ENERGY_STORAGE_16M, ENERGY_STORAGE_64M, ENERGY_STORAGE_256M);
+
     public static final RegistryObject<AmpereMeterBlock> AMPERE_METER_BLOCK =
             BLOCKS.register("ampere_meter", AmpereMeterBlock::new);
 
@@ -60,6 +87,13 @@ public class InsaneBlockRegistrar {
     public static final RegistryObject<BlockItem> AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK_ITEM =
             BLOCK_ITEMS.register("auto_builder_creative_supply",
                     () -> new AEBaseBlockItem(AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<AutoEnchanterBlock> AUTO_ENCHANTER_BLOCK =
+            BLOCKS.register("auto_enchanter", AutoEnchanterBlock::new);
+
+    public static final RegistryObject<BlockItem> AUTO_ENCHANTER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("auto_enchanter",
+                    () -> new AEBaseBlockItem(AUTO_ENCHANTER_BLOCK.get(), new Item.Properties()));
 
     public static final RegistryObject<BrokenPatternProviderBlock> BROKEN_PATTERN_PROVIDER_BLOCK =
             BLOCKS.register("broken_pattern_provider", BrokenPatternProviderBlock::new);

@@ -12,6 +12,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.insaneae2addons.InsaneAddons;
+import net.oktawia.insaneae2addons.blocks.EnergyStorageBlock;
 import net.oktawia.insaneae2addons.blocks.ResearchCableBlock;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import org.jetbrains.annotations.Nullable;
@@ -43,8 +44,17 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
                     && block != InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get()
                     && block != InsaneBlockRegistrar.ENTROPY_CRADLE_BLOCK.get()
                     && block != InsaneBlockRegistrar.ENTROPY_CRADLE_CAPACITOR_BLOCK.get()
+                    && !(block instanceof EnergyStorageBlock)
             ) {
                 simpleBlock(block, cubeAll(block));
+            }
+        }
+
+        for (var block : InsaneBlockRegistrar.getBlocks()) {
+            if (block instanceof EnergyStorageBlock) {
+                String name = ForgeRegistries.BLOCKS.getKey(block).getPath();
+                ModelFile model = models().cubeAll(name, modLoc("block/energy/" + name));
+                getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder().modelFile(model).build());
             }
         }
 

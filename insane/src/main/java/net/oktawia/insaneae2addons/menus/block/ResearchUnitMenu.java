@@ -57,7 +57,7 @@ public class ResearchUnitMenu extends AbstractMultiblockControllerMenu {
 
         @Override
         public int getMaxProgress() {
-            return (int) ResearchUnitBE.FLUID_BUFFER_CAPACITY;
+            return ResearchUnitBE.fluidBufferCapacity();
         }
     }
 
@@ -69,7 +69,7 @@ public class ResearchUnitMenu extends AbstractMultiblockControllerMenu {
 
         @Override
         public int getMaxProgress() {
-            return (int) ResearchUnitBE.POWER_BUFFER_CAPACITY;
+            return (int) ResearchUnitBE.powerBufferCapacity();
         }
     }
 }

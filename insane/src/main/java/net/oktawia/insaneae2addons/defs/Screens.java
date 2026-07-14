@@ -3,6 +3,7 @@ package net.oktawia.insaneae2addons.defs;
 import appeng.init.client.InitScreens;
 import net.oktawia.insaneae2addons.client.screens.block.AmpereMeterScreen;
 import net.oktawia.insaneae2addons.client.screens.block.AutoBuilderScreen;
+import net.oktawia.insaneae2addons.client.screens.block.AutoEnchanterScreen;
 import net.oktawia.insaneae2addons.client.screens.block.BrokenPatternProviderScreen;
 import net.oktawia.insaneae2addons.client.screens.block.EntropyCradleControllerScreen;
 import net.oktawia.insaneae2addons.client.screens.block.ResearchPedestalScreen;
@@ -12,9 +13,11 @@ import net.oktawia.insaneae2addons.client.screens.item.BuilderPatternScreen;
 import net.oktawia.insaneae2addons.client.screens.item.BuilderPatternSubScreen;
 import net.oktawia.insaneae2addons.client.screens.item.DataDriveScreen;
 import net.oktawia.insaneae2addons.client.screens.item.NbtViewCellScreen;
+import net.oktawia.insaneae2addons.client.screens.part.EntityTickerScreen;
 import net.oktawia.insaneae2addons.client.screens.part.NbtExportBusScreen;
 import net.oktawia.insaneae2addons.client.screens.part.NbtStorageBusScreen;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
+import net.oktawia.insaneae2addons.menus.part.EntityTickerMenu;
 import net.oktawia.insaneae2addons.menus.part.NbtExportBusMenu;
 import net.oktawia.insaneae2addons.menus.part.NbtStorageBusMenu;
 import net.oktawia.insaneae2addons.menus.block.AmpereMeterMenu;
@@ -41,6 +44,11 @@ public final class Screens {
                 InsaneMenuRegistrar.AUTO_BUILDER_MENU.get(),
                 AutoBuilderScreen<AutoBuilderMenu>::new,
                 "/screens/auto_builder.json"
+        );
+        InitScreens.register(
+                InsaneMenuRegistrar.AUTO_ENCHANTER_MENU.get(),
+                AutoEnchanterScreen::new,
+                "/screens/auto_enchanter.json"
         );
         InitScreens.register(
                 InsaneMenuRegistrar.BUILDER_PATTERN_MENU.get(),
@@ -96,6 +104,11 @@ public final class Screens {
                 InsaneMenuRegistrar.NBT_STORAGE_BUS_MENU.get(),
                 NbtStorageBusScreen<NbtStorageBusMenu>::new,
                 "/screens/nbt_storage_bus.json"
+        );
+        InitScreens.register(
+                InsaneMenuRegistrar.ENTITY_TICKER_MENU.get(),
+                EntityTickerScreen<EntityTickerMenu>::new,
+                "/screens/entity_ticker.json"
         );
     }
 

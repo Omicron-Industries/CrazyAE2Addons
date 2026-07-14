@@ -1,0 +1,18 @@
+{
+  "type": "crazyae2addons:fabrication",
+  "input": [
+    {
+      "count": 1,
+      "item": "ae2:dense_energy_cell"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:nether_star"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "insaneae2addons:entity_ticker"
+  },
+  "required_key": "insaneae2addons:entity_ticker_research"
+}

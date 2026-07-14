@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "fullness=0": {
+      "model": "insaneae2addons:block/energy_storage_256m"
+    },
+    "fullness=1": {
+      "model": "insaneae2addons:block/energy_storage_256m"
+    },
+    "fullness=2": {
+      "model": "insaneae2addons:block/energy_storage_256m"
+    },
+    "fullness=3": {
+      "model": "insaneae2addons:block/energy_storage_256m"
+    },
+    "fullness=4": {
+      "model": "insaneae2addons:block/energy_storage_256m"
+    }
+  }
+}

@@ -40,6 +40,19 @@ public class ResearchDiskHookImpl implements ResearchDiskHook {
     }
 
     @Override
+    public boolean wouldAddResearch(ItemStack source, ItemStack target) {
+        if (!isResearchDisk(source) || !isResearchDisk(target)) {
+            return false;
+        }
+        for (ResourceLocation key : DataDrive.getUnlockedKeys(source)) {
+            if (!DataDrive.hasKey(target, key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public List<Component> researchSlotTooltip() {
         return List.of(Component.translatable(LangDefs.RECIPE_FABRICATOR_RESEARCH_DISK.getTranslationKey()));
     }

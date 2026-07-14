@@ -86,8 +86,6 @@ public class ResearchRecipes {
                 .register();
         */
 
-        // item nie istnieje jeszcze w insane (entity ticker - TODO)
-        /*
         recipe("ticker")
                 .duration(1206400)
                 .energyPerTick(500)
@@ -97,20 +95,16 @@ public class ResearchRecipes {
                 .consumable("minecraft:nether_star", 4, 256)
                 .unlock("insaneae2addons:entity_ticker_research", "Entity ticker", "insaneae2addons:entity_ticker")
                 .register();
-        */
 
-        // gate cradla - entropy cradle jeszcze nie istnieje (TODO insane); cradle nie produkuje nic do setupu researchu wiec mozna gate'owac
-        /*
-        recipe("entropy_cradle")
+        recipe("entropy_cradle_controller")
                 .duration(1728000)
                 .energyPerTick(440)
                 .consumable("ae2:dense_energy_cell", 8, 128)
                 .consumable("minecraft:obsidian", 16, 96)
                 .consumable("ae2:fluix_block", 8, 128)
                 .consumable("minecraft:netherite_block", 1, 256)
-                .unlock("insaneae2addons:entropy_cradle_research", "Entropy Cradle", "insaneae2addons:entropy_cradle")
+                .unlock("insaneae2addons:entropy_cradle_research", "Entropy Cradle", "insaneae2addons:entropy_cradle_controller")
                 .register();
-        */
     }
 
     public static class Builder {

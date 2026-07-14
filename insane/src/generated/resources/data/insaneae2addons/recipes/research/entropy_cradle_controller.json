@@ -1,0 +1,32 @@
+{
+  "type": "insaneae2addons:research",
+  "consumables": [
+    {
+      "computation": 128,
+      "count": 8,
+      "item": "ae2:dense_energy_cell"
+    },
+    {
+      "computation": 96,
+      "count": 16,
+      "item": "minecraft:obsidian"
+    },
+    {
+      "computation": 128,
+      "count": 8,
+      "item": "ae2:fluix_block"
+    },
+    {
+      "computation": 256,
+      "count": 1,
+      "item": "minecraft:netherite_block"
+    }
+  ],
+  "duration": 1728000,
+  "energy_per_tick": 440,
+  "unlock": {
+    "item": "insaneae2addons:entropy_cradle_controller",
+    "key": "insaneae2addons:entropy_cradle_research",
+    "label": "Entropy Cradle"
+  }
+}

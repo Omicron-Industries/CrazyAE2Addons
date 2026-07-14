@@ -1,0 +1,1 @@
+net.oktawia.insaneae2addons.integration.kubejs.InsaneKubeJSPlugin

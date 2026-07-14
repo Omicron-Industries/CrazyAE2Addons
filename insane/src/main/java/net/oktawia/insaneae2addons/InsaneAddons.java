@@ -22,6 +22,7 @@ import net.oktawia.insaneae2addons.integration.ResearchDiskHookImpl;
 import net.oktawia.insaneae2addons.client.InsaneConnectedTextures;
 import net.oktawia.insaneae2addons.client.renderer.ResearchPedestalTopRenderer;
 import net.oktawia.insaneae2addons.client.screens.InsaneConfigScreen;
+import net.oktawia.insaneae2addons.defs.InsaneFeatureGates;
 import net.oktawia.insaneae2addons.defs.Screens;
 import net.oktawia.insaneae2addons.defs.UpgradeCards;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
@@ -78,6 +79,7 @@ public class InsaneAddons {
             InsaneBlockEntityRegistrar.setupBlockEntityTypes();
             NetworkHandler.registerMessages();
             ResearchDiskHooks.register(new ResearchDiskHookImpl());
+            InsaneFeatureGates.register();
         });
         new UpgradeCards(event);
     }

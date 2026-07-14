@@ -15,6 +15,7 @@ import appeng.parts.automation.IOBusPart;
 import appeng.parts.automation.StackWorldBehaviors;
 import appeng.util.ConfigInventory;
 import appeng.util.prioritylist.DefaultPriorityList;
+import net.oktawia.insaneae2addons.InsaneConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,7 +40,6 @@ public class NbtExportBusPart extends IOBusPart {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/export_bus_has_channel"));
 
-    private static final int TRANSFER_FACTOR = 4;
     private static final String NBT_STATE = "state";
 
     public final ConfigInventory inv = ConfigInventory.configTypes(1, () -> {});
@@ -90,6 +90,9 @@ public class NbtExportBusPart extends IOBusPart {
 
     @Override
     protected boolean doBusWork(IGrid grid) {
+        if (!InsaneConfig.COMMON.NBT_EXPORT_BUS_ENABLED.get()) {
+            return false;
+        }
         var storageService = grid.getStorageService();
         var context = new InsaneStackTransferContext(
                 storageService, grid.getEnergyService(), this.source,
@@ -108,10 +111,11 @@ public class NbtExportBusPart extends IOBusPart {
                 continue;
             }
 
-            long amount = (long) context.getOperationsRemaining() * TRANSFER_FACTOR;
+            int transferFactor = InsaneConfig.COMMON.NBT_EXPORT_BUS_TRANSFER_FACTOR.get();
+            long amount = (long) context.getOperationsRemaining() * transferFactor;
             long transferred = getExportStrategy().transfer(context, itemKey, amount);
             if (transferred > 0) {
-                context.reduceOperationsRemaining(Math.max(1, transferred / TRANSFER_FACTOR));
+                context.reduceOperationsRemaining(Math.max(1, transferred / transferFactor));
                 didWork = true;
             }
             if (!context.hasOperationsLeft()) {

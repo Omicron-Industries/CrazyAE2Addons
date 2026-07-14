@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:obsidian"
+    },
+    "Q": {
+      "item": "minecraft:quartz_block"
+    }
+  },
+  "pattern": [
+    "BQB",
+    "QBQ",
+    "BQB"
+  ],
+  "result": {
+    "item": "insaneae2addons:entropy_cradle"
+  },
+  "show_notification": true
+}

@@ -15,6 +15,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +35,7 @@ import net.oktawia.insaneae2addons.recipes.CradlePattern;
 import net.oktawia.insaneae2addons.recipes.CradleRecipe;
 import net.minecraft.core.Direction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -113,11 +116,19 @@ public class CradlePreview extends WidgetGroup {
         var font = Minecraft.getInstance().font;
         int lineHeight = font.lineHeight;
         int spacing = 2;
-        String[] lines = Component.translatable(description).getString().split("\n");
-        int totalTextHeight = (lines.length * lineHeight) + ((lines.length - 1) * spacing);
+        int maxTextWidth = WIDTH - 10;
+        List<String> lines = new ArrayList<>();
+        for (FormattedText part : font.getSplitter().splitLines(
+                Component.translatable(description), maxTextWidth, Style.EMPTY)) {
+            lines.add(part.getString());
+        }
+        if (lines.isEmpty()) {
+            lines.add("");
+        }
+        int totalTextHeight = (lines.size() * lineHeight) + ((lines.size() - 1) * spacing);
         int cy = (HEIGHT - totalTextHeight) / 2 + 60;
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
             int cx = (WIDTH - font.width(line)) / 2;
             int currentY = cy + (i * (lineHeight + spacing));
             addWidget(new LabelWidget(cx, currentY, line));

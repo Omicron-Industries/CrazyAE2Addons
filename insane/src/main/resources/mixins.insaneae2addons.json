@@ -5,6 +5,10 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "mixins.insaneae2addons.refmap.json",
   "mixins": [
+    "CraftingCalculationAccessor",
+    "MixinCraftingCpuLogic",
+    "MixinCraftingTreeNode",
+    "MixinPatternProviderLogic",
     "MixinRestrictedInputSlot",
     "MixinStorageBusPart",
     "MixinViewCellItem"

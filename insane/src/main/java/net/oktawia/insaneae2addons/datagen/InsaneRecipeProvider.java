@@ -7,7 +7,9 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.recipes.BlockRecipes;
@@ -29,20 +31,24 @@ public class InsaneRecipeProvider extends RecipeProvider implements IConditionBu
         ItemRecipes.registerRecipes();
 
         for (var recipe : BlockRecipes.getRecipes()) {
-            save(writer, recipe.id(), recipe.pattern(), recipe.keys(), recipe.shapelessIngredients(), recipe.output(), recipe.count());
+            save(writer, recipe.id(), recipe.pattern(), recipe.keys(), recipe.shapelessIngredients(), recipe.smeltingInput(), recipe.output(), recipe.count());
         }
         for (var recipe : ItemRecipes.getRecipes()) {
-            save(writer, recipe.id(), recipe.pattern(), recipe.keys(), recipe.shapelessIngredients(), recipe.output(), recipe.count());
+            save(writer, recipe.id(), recipe.pattern(), recipe.keys(), recipe.shapelessIngredients(), null, recipe.output(), recipe.count());
         }
     }
 
     private void save(Consumer<FinishedRecipe> writer, String id, String pattern,
-                      Map<Character, Item> keys, List<Item> shapeless, Item output, int count) {
+                      Map<Character, Item> keys, List<Item> shapeless, Item smeltingInput, Item output, int count) {
         var unlock = has(AEBlocks.CONTROLLER.asItem());
         var unlockName = getHasName(AEBlocks.CONTROLLER.asItem());
         var recipeId = InsaneAddons.makeId(id);
 
-        if (pattern == null) {
+        if (smeltingInput != null) {
+            SimpleCookingRecipeBuilder.smelting(Ingredient.of(smeltingInput), RecipeCategory.MISC, output, 0.1f, 200)
+                    .unlockedBy(unlockName, unlock)
+                    .save(writer, recipeId);
+        } else if (pattern == null) {
             var builder = ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, output, count);
             shapeless.forEach(builder::requires);
             builder.unlockedBy(unlockName, unlock);

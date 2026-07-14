@@ -1,0 +1,18 @@
+{
+  "type": "crazyae2addons:fabrication",
+  "input": [
+    {
+      "count": 4,
+      "item": "insaneae2addons:entropy_cradle"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:diamond"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "insaneae2addons:entropy_cradle_controller"
+  },
+  "required_key": "insaneae2addons:entropy_cradle_research"
+}

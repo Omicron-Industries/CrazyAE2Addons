@@ -1,0 +1,32 @@
+{
+  "type": "insaneae2addons:research",
+  "consumables": [
+    {
+      "computation": 256,
+      "count": 4,
+      "item": "minecraft:nether_star"
+    },
+    {
+      "computation": 256,
+      "count": 4,
+      "item": "minecraft:nether_star"
+    },
+    {
+      "computation": 256,
+      "count": 4,
+      "item": "minecraft:nether_star"
+    },
+    {
+      "computation": 256,
+      "count": 4,
+      "item": "minecraft:nether_star"
+    }
+  ],
+  "duration": 1206400,
+  "energy_per_tick": 500,
+  "unlock": {
+    "item": "insaneae2addons:entity_ticker",
+    "key": "insaneae2addons:entity_ticker_research",
+    "label": "Entity ticker"
+  }
+}

@@ -12,7 +12,6 @@ import appeng.util.ConfigInventory;
 import de.mari_023.ae2wtlib.terminal.IUniversalWirelessTerminalItem;
 import de.mari_023.ae2wtlib.terminal.ItemWT;
 import de.mari_023.ae2wtlib.terminal.WTMenuHost;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -22,17 +21,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.wireless.WirelessNotificationTerminalItemLogicHost;
 import net.oktawia.crazyae2addons.menus.item.WirelessNotificationTerminalMenu;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.NotificationHudPacket;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,25 +70,6 @@ public class WirelessNotificationTerminalItem extends ItemWT implements IUnivers
             return new InteractionResultHolder(InteractionResult.SUCCESS, is);
         } else {
             return new InteractionResultHolder(InteractionResult.FAIL, is);
-        }
-    }
-
-    @Override
-    public void appendHoverText(
-            ItemStack stack,
-            @Nullable Level level,
-            List<net.minecraft.network.chat.Component> tooltip,
-            TooltipFlag advancedTooltips
-    ) {
-        super.appendHoverText(stack, level, tooltip, advancedTooltips);
-
-        if (!CrazyConfig.COMMON.WIRELESS_NOTIFICATION_TERMINAL_ENABLED.get()) {
-            tooltip.add(net.minecraft.network.chat.Component
-                    .translatable(LangDefs.FEATURE_DISABLED.getTranslationKey())
-                    .withStyle(ChatFormatting.RED));
-            tooltip.add(net.minecraft.network.chat.Component
-                    .translatable(LangDefs.FEATURE_DISABLED_CONFIG.getTranslationKey())
-                    .withStyle(ChatFormatting.GRAY));
         }
     }
 

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": {
+    "item": "ae2:pattern_provider"
+  },
+  "result": "insaneae2addons:broken_pattern_provider"
+}

@@ -2,6 +2,7 @@ package net.oktawia.insaneae2addons.defs.regs;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.PartModels;
+import appeng.items.materials.UpgradeCardItem;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import net.minecraft.world.item.Item;
@@ -11,9 +12,11 @@ import net.minecraftforge.registries.RegistryObject;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.items.BuilderPatternItem;
 import net.oktawia.insaneae2addons.items.DataDrive;
+import net.oktawia.insaneae2addons.items.EntityTickerPartItem;
 import net.oktawia.insaneae2addons.items.NbtExportBusPartItem;
 import net.oktawia.insaneae2addons.items.NbtStorageBusPartItem;
 import net.oktawia.insaneae2addons.items.NbtViewCellItem;
+import net.oktawia.insaneae2addons.items.XpShardItem;
 
 import java.util.List;
 
@@ -48,6 +51,22 @@ public class InsaneItemRegistrar {
     public static final RegistryObject<NbtStorageBusPartItem> NBT_STORAGE_BUS =
             ITEMS.register("nbt_storage_bus",
                     () -> new NbtStorageBusPartItem(new Item.Properties()));
+
+    public static final RegistryObject<EntityTickerPartItem> ENTITY_TICKER =
+            ITEMS.register("entity_ticker",
+                    () -> new EntityTickerPartItem(new Item.Properties()));
+
+    public static final RegistryObject<XpShardItem> XP_SHARD =
+            ITEMS.register("xp_shard",
+                    () -> new XpShardItem(new Item.Properties()));
+
+    public static final RegistryObject<UpgradeCardItem> PLAYER_UPGRADE_CARD =
+            ITEMS.register("player_upgrade_card",
+                    () -> new UpgradeCardItem(new Item.Properties()));
+
+    public static final RegistryObject<UpgradeCardItem> AUTOMATION_UPGRADE_CARD =
+            ITEMS.register("automation_upgrade_card",
+                    () -> new UpgradeCardItem(new Item.Properties()));
 
     public static void registerPartModels() {
         for (Item item : getItems()) {

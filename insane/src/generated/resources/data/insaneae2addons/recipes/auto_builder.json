@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "ae2:import_bus"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "N": {
+      "item": "ae2:export_bus"
+    },
+    "P": {
+      "item": "insaneae2addons:builder_pattern"
+    },
+    "R": {
+      "item": "ae2:pattern_provider"
+    }
+  },
+  "pattern": [
+    "EPE",
+    "BRN",
+    "EPE"
+  ],
+  "result": {
+    "item": "insaneae2addons:auto_builder"
+  },
+  "show_notification": true
+}

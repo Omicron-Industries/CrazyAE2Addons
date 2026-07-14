@@ -14,6 +14,8 @@ public interface ResearchDiskHook {
 
     ItemStack copyResearch(ItemStack source, ItemStack target);
 
+    boolean wouldAddResearch(ItemStack source, ItemStack target);
+
     List<Component> researchSlotTooltip();
 
     List<Component> researchGateInfo(ResourceLocation requiredKey);

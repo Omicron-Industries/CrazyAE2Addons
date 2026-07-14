@@ -47,7 +47,7 @@ public class ResearchUnitScreen<C extends ResearchUnitMenu> extends AbstractMult
                 .append(Utils.shortenNumber(computation * 64)).append(" AE/t"));
         setTextContent("buffer", label(LangDefs.RESEARCH_UNIT_BUFFER)
                 .append(Utils.shortenNumber(menu.storedPower)).append("/")
-                .append(Utils.shortenNumber((int) ResearchUnitBE.POWER_BUFFER_CAPACITY)));
+                .append(Utils.shortenNumber((int) ResearchUnitBE.powerBufferCapacity())));
         setTextContent("status", ResearchStatusText.of(menu.status()));
     }
 

@@ -62,6 +62,30 @@ public class InsaneConfigScreen {
                             cfg.RESEARCH_UNIT_EXTRA_Q_BLOCKS::set,
                             LangDefs.CONFIG_DESC_RESEARCH_UNIT_EXTRA_Q_BLOCKS
                     ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_RESEARCH_UNIT_COMPUTATION_DIVISOR, cfg.RESEARCH_UNIT_COMPUTATION_DIVISOR.get(), 16, 1,
+                            cfg.RESEARCH_UNIT_COMPUTATION_DIVISOR::set,
+                            LangDefs.CONFIG_DESC_RESEARCH_UNIT_COMPUTATION_DIVISOR
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_RESEARCH_UNIT_COMPUTATION_POWER_COST, cfg.RESEARCH_UNIT_COMPUTATION_POWER_COST.get(), 64, 0,
+                            cfg.RESEARCH_UNIT_COMPUTATION_POWER_COST::set,
+                            LangDefs.CONFIG_DESC_RESEARCH_UNIT_COMPUTATION_POWER_COST
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_RESEARCH_UNIT_FLUID_DIVISOR, cfg.RESEARCH_UNIT_FLUID_DIVISOR.get(), 4, 1,
+                            cfg.RESEARCH_UNIT_FLUID_DIVISOR::set,
+                            LangDefs.CONFIG_DESC_RESEARCH_UNIT_FLUID_DIVISOR
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_RESEARCH_UNIT_FLUID_BUFFER, cfg.RESEARCH_UNIT_FLUID_BUFFER.get(), 64_000, 1,
+                            cfg.RESEARCH_UNIT_FLUID_BUFFER::set,
+                            LangDefs.CONFIG_DESC_RESEARCH_UNIT_FLUID_BUFFER
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_RESEARCH_UNIT_POWER_BUFFER, cfg.RESEARCH_UNIT_POWER_BUFFER.get(), 200_000, 1,
+                            cfg.RESEARCH_UNIT_POWER_BUFFER::set,
+                            LangDefs.CONFIG_DESC_RESEARCH_UNIT_POWER_BUFFER
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_RESEARCH_STATION_PEDESTAL_RANGE, cfg.RESEARCH_STATION_PEDESTAL_RANGE.get(), 3, 1,
+                            cfg.RESEARCH_STATION_PEDESTAL_RANGE::set,
+                            LangDefs.CONFIG_DESC_RESEARCH_STATION_PEDESTAL_RANGE
+                    ));
                 },
                 LangDefs.CONFIG_SECTION_RESEARCH_DESC
         );
@@ -83,6 +107,28 @@ public class InsaneConfigScreen {
                 LangDefs.CONFIG_SECTION_ENTROPY_CRADLE_DESC
         );
 
+        addSection(root, eb, LangDefs.CONFIG_SECTION_ENTITY_TICKER, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_ENTITY_TICKER_ENABLED, cfg.ENTITY_TICKER_ENABLED.get(), true,
+                            cfg.ENTITY_TICKER_ENABLED::set,
+                            LangDefs.CONFIG_DESC_ENTITY_TICKER_ENABLED
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_ENTITY_TICKER_COST, cfg.ENTITY_TICKER_COST.get(), 512, 0,
+                            cfg.ENTITY_TICKER_COST::set,
+                            LangDefs.CONFIG_DESC_ENTITY_TICKER_COST
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_ENTITY_TICKER_MAX_SPEED_CARDS, cfg.ENTITY_TICKER_MAX_SPEED_CARDS.get(), 8, 0,
+                            cfg.ENTITY_TICKER_MAX_SPEED_CARDS::set,
+                            LangDefs.CONFIG_DESC_ENTITY_TICKER_MAX_SPEED_CARDS
+                    ));
+                    entries.add(stringList(eb, LangDefs.CONFIG_ENTRY_ENTITY_TICKER_BLACKLIST,
+                            cfg.ENTITY_TICKER_BLACKLIST.get(),
+                            cfg.ENTITY_TICKER_BLACKLIST::set,
+                            LangDefs.CONFIG_DESC_ENTITY_TICKER_BLACKLIST
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_ENTITY_TICKER_DESC
+        );
+
         addSection(root, eb, LangDefs.CONFIG_SECTION_NBT_TOOLS, entries -> {
                     entries.add(bool(eb, LangDefs.CONFIG_ENTRY_NBT_VIEW_CELL, cfg.NBT_VIEW_CELL_ENABLED.get(), true,
                             cfg.NBT_VIEW_CELL_ENABLED::set,
@@ -96,8 +142,65 @@ public class InsaneConfigScreen {
                             cfg.NBT_EXPORT_BUS_ENABLED::set,
                             LangDefs.CONFIG_DESC_NBT_EXPORT_BUS
                     ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_NBT_EXPORT_BUS_TRANSFER_FACTOR, cfg.NBT_EXPORT_BUS_TRANSFER_FACTOR.get(), 4, 1,
+                            cfg.NBT_EXPORT_BUS_TRANSFER_FACTOR::set,
+                            LangDefs.CONFIG_DESC_NBT_EXPORT_BUS_TRANSFER_FACTOR
+                    ));
                 },
                 LangDefs.CONFIG_SECTION_NBT_TOOLS_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_AMPERE_METER, entries -> {
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_AMPERE_METER_INACTIVITY_RESET, cfg.AMPERE_METER_INACTIVITY_RESET_TICKS.get(), 10, 0,
+                            cfg.AMPERE_METER_INACTIVITY_RESET_TICKS::set,
+                            LangDefs.CONFIG_DESC_AMPERE_METER_INACTIVITY_RESET
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_AMPERE_METER_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_BROKEN_PATTERN_PROVIDER, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_BROKEN_PATTERN_PROVIDER_ENABLED, cfg.BROKEN_PATTERN_PROVIDER_ENABLED.get(), true,
+                            cfg.BROKEN_PATTERN_PROVIDER_ENABLED::set,
+                            LangDefs.CONFIG_DESC_BROKEN_PATTERN_PROVIDER_ENABLED
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_BROKEN_PATTERN_PROVIDER_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_PROVIDER_CARDS, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_PROVIDER_CARDS_ENABLED, cfg.PROVIDER_CARDS_ENABLED.get(), true,
+                            cfg.PROVIDER_CARDS_ENABLED::set,
+                            LangDefs.CONFIG_DESC_PROVIDER_CARDS_ENABLED
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_PROVIDER_CARDS_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_AUTO_ENCHANTER, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_AUTO_ENCHANTER_ENABLED, cfg.AUTO_ENCHANTER_ENABLED.get(), true,
+                            cfg.AUTO_ENCHANTER_ENABLED::set,
+                            LangDefs.CONFIG_DESC_AUTO_ENCHANTER_ENABLED
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_AUTO_ENCHANTER_COST, cfg.AUTO_ENCHANTER_COST.get(), 10, 0,
+                            cfg.AUTO_ENCHANTER_COST::set,
+                            LangDefs.CONFIG_DESC_AUTO_ENCHANTER_COST
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_AUTO_ENCHANTER_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_ENERGY_STORAGE, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_ENERGY_STORAGE_ENABLED, cfg.ENERGY_STORAGE_ENABLED.get(), true,
+                            cfg.ENERGY_STORAGE_ENABLED::set,
+                            LangDefs.CONFIG_DESC_ENERGY_STORAGE_ENABLED
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_ENERGY_STORAGE_CAPACITY_MULTIPLIER, cfg.ENERGY_STORAGE_CAPACITY_MULTIPLIER.get(), 1, 1,
+                            cfg.ENERGY_STORAGE_CAPACITY_MULTIPLIER::set,
+                            LangDefs.CONFIG_DESC_ENERGY_STORAGE_CAPACITY_MULTIPLIER
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_ENERGY_STORAGE_DESC
         );
 
         return b.build();

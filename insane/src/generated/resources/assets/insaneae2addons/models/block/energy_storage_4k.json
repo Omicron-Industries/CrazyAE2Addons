@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "insaneae2addons:block/energy/energy_storage_4k"
+  }
+}

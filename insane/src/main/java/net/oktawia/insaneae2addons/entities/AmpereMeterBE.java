@@ -25,6 +25,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.menus.block.AmpereMeterMenu;
@@ -77,7 +78,6 @@ public class AmpereMeterBE extends AEBaseBlockEntity
     protected boolean amperesMode = false;
 
     protected long lastActiveTick = -1;
-    private static final long INACTIVITY_RESET_TICKS = 10;
 
     private LazyOptional<IEnergyStorage> inputCap = LazyOptional.empty();
     private LazyOptional<IEnergyStorage> outputCap = LazyOptional.empty();
@@ -308,7 +308,7 @@ public class AmpereMeterBE extends AEBaseBlockEntity
         }
 
         long gameTime = level.getGameTime();
-        if (be.lastActiveTick >= 0 && gameTime - be.lastActiveTick > INACTIVITY_RESET_TICKS) {
+        if (be.lastActiveTick >= 0 && gameTime - be.lastActiveTick > InsaneConfig.COMMON.AMPERE_METER_INACTIVITY_RESET_TICKS.get()) {
             be.clearDisplayedTransfer();
         }
     }

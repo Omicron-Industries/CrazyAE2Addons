@@ -34,9 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -237,32 +235,6 @@ public class AutoBuilderBE extends AENetworkBlockEntity implements
     public void loadTag(net.minecraft.nbt.CompoundTag tag) {
         loadManagedData(tag);
         super.loadTag(tag);
-    }
-
-    @Override
-    public net.minecraft.nbt.CompoundTag getUpdateTag() {
-        var tag = super.getUpdateTag();
-        saveManagedData(tag);
-        return tag;
-    }
-
-    @Override
-    public void handleUpdateTag(net.minecraft.nbt.CompoundTag tag) {
-        loadManagedData(tag);
-        super.handleUpdateTag(tag);
-    }
-
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        var tag = pkt.getTag();
-        if (tag != null) {
-            handleUpdateTag(tag);
-        }
     }
 
     public void clearMissingItem() {

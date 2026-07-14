@@ -26,14 +26,38 @@ public final class InsaneConfig {
 
         public final ForgeConfigSpec.BooleanValue RESEARCH_REQUIRED;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> RESEARCH_UNIT_EXTRA_Q_BLOCKS;
+        public final ForgeConfigSpec.IntValue RESEARCH_UNIT_COMPUTATION_DIVISOR;
+        public final ForgeConfigSpec.IntValue RESEARCH_UNIT_COMPUTATION_POWER_COST;
+        public final ForgeConfigSpec.IntValue RESEARCH_UNIT_FLUID_DIVISOR;
+        public final ForgeConfigSpec.IntValue RESEARCH_UNIT_FLUID_BUFFER;
+        public final ForgeConfigSpec.IntValue RESEARCH_UNIT_POWER_BUFFER;
+        public final ForgeConfigSpec.IntValue RESEARCH_STATION_PEDESTAL_RANGE;
 
         public final ForgeConfigSpec.BooleanValue NBT_VIEW_CELL_ENABLED;
         public final ForgeConfigSpec.BooleanValue NBT_STORAGE_BUS_ENABLED;
         public final ForgeConfigSpec.BooleanValue NBT_EXPORT_BUS_ENABLED;
+        public final ForgeConfigSpec.IntValue NBT_EXPORT_BUS_TRANSFER_FACTOR;
+
+        public final ForgeConfigSpec.IntValue AMPERE_METER_INACTIVITY_RESET_TICKS;
+
+        public final ForgeConfigSpec.BooleanValue BROKEN_PATTERN_PROVIDER_ENABLED;
+
+        public final ForgeConfigSpec.BooleanValue PROVIDER_CARDS_ENABLED;
+
+        public final ForgeConfigSpec.BooleanValue AUTO_ENCHANTER_ENABLED;
+        public final ForgeConfigSpec.IntValue AUTO_ENCHANTER_COST;
+
+        public final ForgeConfigSpec.BooleanValue ENERGY_STORAGE_ENABLED;
+        public final ForgeConfigSpec.IntValue ENERGY_STORAGE_CAPACITY_MULTIPLIER;
 
         public final ForgeConfigSpec.IntValue CRADLE_CAPACITY;
         public final ForgeConfigSpec.IntValue CRADLE_CHARGING_SPEED;
         public final ForgeConfigSpec.IntValue CRADLE_COST;
+
+        public final ForgeConfigSpec.BooleanValue ENTITY_TICKER_ENABLED;
+        public final ForgeConfigSpec.IntValue ENTITY_TICKER_COST;
+        public final ForgeConfigSpec.IntValue ENTITY_TICKER_MAX_SPEED_CARDS;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> ENTITY_TICKER_BLACKLIST;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment(
@@ -90,6 +114,37 @@ public final class InsaneConfig {
                     obj -> obj instanceof String s && isExtraQEntry(s)
             );
 
+            RESEARCH_UNIT_COMPUTATION_DIVISOR = intInRange(builder,
+                    "unitComputationDivisor", 16, 1, Integer.MAX_VALUE,
+                    "Divisor applied to the summed tier value of the core blocks to get base computation.",
+                    "Lower means more computation per core. computation = tierSum / divisor + extra blocks."
+            );
+
+            RESEARCH_UNIT_COMPUTATION_POWER_COST = intInRange(builder,
+                    "unitComputationPowerCost", 64, 0, Integer.MAX_VALUE,
+                    "AE drawn per point of computation per tick while the unit is researching."
+            );
+
+            RESEARCH_UNIT_FLUID_DIVISOR = intInRange(builder,
+                    "unitFluidDivisor", 4, 1, Integer.MAX_VALUE,
+                    "Computation divided by this gives research fluid (mB) consumed per tick."
+            );
+
+            RESEARCH_UNIT_FLUID_BUFFER = intInRange(builder,
+                    "unitFluidBuffer", 64_000, 1, Integer.MAX_VALUE,
+                    "Research fluid buffer capacity (mB) held by the research unit."
+            );
+
+            RESEARCH_UNIT_POWER_BUFFER = intInRange(builder,
+                    "unitPowerBuffer", 200_000, 1, Integer.MAX_VALUE,
+                    "AE power buffer capacity held by the research unit."
+            );
+
+            RESEARCH_STATION_PEDESTAL_RANGE = intInRange(builder,
+                    "stationPedestalRange", 3, 1, 16,
+                    "Radius in blocks around the research station scanned for pedestals."
+            );
+
             builder.pop();
 
             builder.comment(
@@ -108,6 +163,86 @@ public final class InsaneConfig {
             NBT_EXPORT_BUS_ENABLED = builder.comment(
                     "Enables the NBT export bus."
             ).define("nbtExportBusEnabled", true);
+
+            NBT_EXPORT_BUS_TRANSFER_FACTOR = intInRange(builder,
+                    "nbtExportBusTransferFactor", 4, 1, Integer.MAX_VALUE,
+                    "Items moved per operation by the NBT export bus (operations * this factor)."
+            );
+
+            builder.pop();
+
+            builder.comment(
+                    "Ampere meter feature.",
+                    "An inline block that measures FE/EU throughput passing through it and can",
+                    "emit a redstone signal based on the measured transfer rate."
+            ).push("ampereMeter");
+
+            AMPERE_METER_INACTIVITY_RESET_TICKS = intInRange(builder,
+                    "inactivityResetTicks", 10, 0, Integer.MAX_VALUE,
+                    "Ticks without any transfer after which the displayed rate resets to zero."
+            );
+
+            builder.pop();
+
+            builder.comment(
+                    "Broken pattern provider feature.",
+                    "A pattern provider with a single pattern slot.",
+                    "Note: disabling only hides it from JEI/EMI and marks it in the tooltip;",
+                    "already-placed providers keep working (a full functional off would need a mixin)."
+            ).push("brokenPatternProvider");
+
+            BROKEN_PATTERN_PROVIDER_ENABLED = builder.comment(
+                    "Enables the broken pattern provider (hide from JEI/EMI and tooltip when off)."
+            ).define("enabled", true);
+
+            builder.pop();
+
+            builder.comment(
+                    "Crazy pattern provider upgrade cards.",
+                    "Automation card: the provider only serves crafting requests coming from machines.",
+                    "Player card: the provider only serves requests coming from players.",
+                    "Both cards work on the block and the cable part."
+            ).push("providerCards");
+
+            PROVIDER_CARDS_ENABLED = builder.comment(
+                    "Enables the player/automation cards (hide from JEI/EMI, tooltip, and source filtering when off)."
+            ).define("enabled", true);
+
+            builder.pop();
+
+            builder.comment(
+                    "Auto enchanter feature.",
+                    "A machine placed under an enchanting table that enchants items/books pulled from the",
+                    "network, spending lapis and XP stored as xp shards or XP fluids (forge:experience,",
+                    "forge:xpjuice). Uses Apotheosis enchanting stats when Apotheosis is installed."
+            ).push("autoEnchanter");
+
+            AUTO_ENCHANTER_ENABLED = builder.comment(
+                    "Enables the auto enchanter (hide from JEI/EMI, tooltip, and stops working when off)."
+            ).define("enabled", true);
+
+            AUTO_ENCHANTER_COST = intInRange(builder,
+                    "cost", 10, 0, 100,
+                    "XP cost multiplier for the auto enchanter.");
+
+            builder.pop();
+
+            builder.comment(
+                    "Energy storage feature.",
+                    "Standalone AE energy cells in ten tiers (1k to 256m) that store network power.",
+                    "Crafted in the entropy cradle from AE energy cells and crafting storages.",
+                    "Note: disabling only hides them from JEI/EMI and marks them in the tooltip;",
+                    "placed blocks keep storing power."
+            ).push("energyStorage");
+
+            ENERGY_STORAGE_ENABLED = builder.comment(
+                    "Enables the energy storage blocks (hide from JEI/EMI and tooltip when off)."
+            ).define("enabled", true);
+
+            ENERGY_STORAGE_CAPACITY_MULTIPLIER = intInRange(builder,
+                    "capacityMultiplier", 1, 1, Integer.MAX_VALUE,
+                    "Multiplies the stored-energy capacity of every energy storage tier."
+            );
 
             builder.pop();
 
@@ -131,6 +266,32 @@ public final class InsaneConfig {
                     "cost", 600_000_000, 1, Integer.MAX_VALUE,
                     "FE consumed by the entropy cradle per transmutation pulse."
             );
+
+            builder.pop();
+
+            builder.comment(
+                    "Entity ticker feature.",
+                    "A cable part that force-ticks the block entity it faces, multiplying its speed",
+                    "based on installed speed cards at the cost of network power."
+            ).push("entityTicker");
+
+            ENTITY_TICKER_ENABLED = builder.comment(
+                    "Enables the entity ticker part."
+            ).define("enabled", true);
+
+            ENTITY_TICKER_COST = intInRange(builder,
+                    "cost", 512, 0, Integer.MAX_VALUE,
+                    "Base AE cost per tick. Scales by 4^(speed cards)."
+            );
+
+            ENTITY_TICKER_MAX_SPEED_CARDS = intInRange(builder,
+                    "maxSpeedCards", 8, 0, 8,
+                    "Maximum speed cards the entity ticker accepts."
+            );
+
+            ENTITY_TICKER_BLACKLIST = builder.comment(
+                    "Block ids the entity ticker refuses to tick, e.g. minecraft:spawner."
+            ).defineList("blacklist", List.of(), obj -> obj instanceof String);
 
             builder.pop();
 

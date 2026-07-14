@@ -46,7 +46,7 @@ public class ResearchStationScreen<C extends ResearchStationMenu> extends AEBase
 
         this.recipeBar.setProgress(getMenu().recipeBar.getCurrentProgress(), getMenu().recipeBar.getMaxProgress());
 
-        setTextContent("status", ResearchStatusText.of(getMenu().status()));
+        setTextContent("status", ResearchStatusText.of(getMenu().getHost().getStatus()));
 
         boolean loading = getMenu().recipeBar.getCurrentProgress() > 0
                 && (minecraft.level.getGameTime() / 20) % 2 == 0;

@@ -397,6 +397,18 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
     }
 
     private void finish(FabricationRecipe recipe) {
+        ResearchDiskHook hook = ResearchDiskHooks.get();
+        boolean diskCopy = hook != null && !recipe.getOutput().isEmpty() && hook.isResearchDisk(recipe.getOutput());
+
+        ItemStack diskBase = ItemStack.EMPTY;
+        if (diskCopy) {
+            int slot = findInputDiskSlot(hook);
+            if (slot >= 0) {
+                diskBase = input.getStackInSlot(slot).copy();
+                diskBase.setCount(1);
+            }
+        }
+
         for (FabricationRecipe.Entry entry : recipe.getInputs()) {
             int toConsume = entry.count();
 
@@ -424,12 +436,10 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
 
         ItemStack resultItem = recipe.getOutput().copy();
         if (!resultItem.isEmpty()) {
-            ResearchDiskHook hook = ResearchDiskHooks.get();
-            if (hook != null && hook.isResearchDisk(resultItem)) {
+            if (diskCopy) {
+                ItemStack base = diskBase.isEmpty() ? resultItem : diskBase;
                 ItemStack source = gate.getStackInSlot(0);
-                if (!source.isEmpty()) {
-                    resultItem = hook.copyResearch(source, resultItem);
-                }
+                resultItem = source.isEmpty() ? base : hook.copyResearch(source, base);
             }
 
             ItemStack currentOut = output.getStackInSlot(0);
@@ -562,6 +572,10 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
                 continue;
             }
 
+            if (!researchCopyStartable(recipe)) {
+                continue;
+            }
+
             return recipe;
         }
 
@@ -577,7 +591,41 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
         return recipe.matches(container, level)
                 && hasAllOutputsSpaceFor(recipe)
                 && hasAllFluidInputsFor(recipe)
-                && researchSatisfied(recipe);
+                && researchSatisfied(recipe)
+                && researchCopyStartable(recipe);
+    }
+
+    private int findInputDiskSlot(ResearchDiskHook hook) {
+        for (int i = 0; i < input.size(); i++) {
+            if (hook.isResearchDisk(input.getStackInSlot(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean researchCopyStartable(FabricationRecipe recipe) {
+        ResearchDiskHook hook = ResearchDiskHooks.get();
+        if (hook == null) {
+            return true;
+        }
+
+        ItemStack out = recipe.getOutput();
+        if (out.isEmpty() || !hook.isResearchDisk(out)) {
+            return true;
+        }
+
+        ItemStack source = gate.getStackInSlot(0);
+        if (source.isEmpty()) {
+            return false;
+        }
+
+        int slot = findInputDiskSlot(hook);
+        if (slot < 0) {
+            return false;
+        }
+
+        return hook.wouldAddResearch(source, input.getStackInSlot(slot));
     }
 
     private boolean researchSatisfied(FabricationRecipe recipe) {

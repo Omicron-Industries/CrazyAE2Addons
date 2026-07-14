@@ -2,13 +2,18 @@ package net.oktawia.insaneae2addons.xei.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.oktawia.crazyae2addons.util.FeatureGates;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.xei.common.InsaneXeiRecipes;
+
+import java.util.List;
 
 @JeiPlugin
 public class InsaneJeiPlugin implements IModPlugin {
@@ -37,6 +42,11 @@ public class InsaneJeiPlugin implements IModPlugin {
                 ResearchCategory.TYPE,
                 InsaneXeiRecipes.getResearchEntries().stream().map(ResearchWrapper::new).toList()
         );
+
+        FeatureGates.forEachDisabled(InsaneAddons.MODID, item -> registration.getIngredientManager().removeIngredientsAtRuntime(
+                VanillaTypes.ITEM_STACK,
+                List.of(new ItemStack(item))
+        ));
     }
 
     @Override

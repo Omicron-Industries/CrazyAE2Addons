@@ -66,6 +66,43 @@ public class RecipeFabricatorMenu extends AEBaseMenu {
     }
 
     @Override
+    public ItemStack quickMoveStack(Player player, int idx) {
+        if (isClientSide()) {
+            return ItemStack.EMPTY;
+        }
+
+        Slot clickSlot = this.slots.get(idx);
+        if (isPlayerSlot(clickSlot) && clickSlot.hasItem()) {
+            ItemStack stack = clickSlot.getItem();
+            ResearchDiskHook hook = ResearchDiskHooks.get();
+            if (hook != null && hook.isResearchDisk(stack)) {
+                return moveDiskToGate(clickSlot, stack);
+            }
+        }
+
+        return super.quickMoveStack(player, idx);
+    }
+
+    private boolean isPlayerSlot(Slot slot) {
+        SlotSemantic semantic = getSlotSemantic(slot);
+        return semantic == SlotSemantics.PLAYER_INVENTORY || semantic == SlotSemantics.PLAYER_HOTBAR;
+    }
+
+    private ItemStack moveDiskToGate(Slot from, ItemStack stack) {
+        if (!host.gate.getStackInSlot(0).isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+
+        ItemStack remaining = stack.copy();
+        ItemStack one = remaining.split(1);
+        host.gate.setItemDirect(0, one);
+        from.set(remaining.isEmpty() ? ItemStack.EMPTY : remaining);
+        from.setChanged();
+        broadcastChanges();
+        return ItemStack.EMPTY;
+    }
+
+    @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
         if (slotId >= 0 && slotId < this.slots.size() && clickType == ClickType.PICKUP) {
             Slot slot = this.slots.get(slotId);

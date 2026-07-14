@@ -215,6 +215,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:guideme-1173950:6489464")
     runtimeOnly fg.deobf("curse.maven:applied-energistics-2-wireless-terminals-459929:7251206")
     runtimeOnly fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:1.0.45") { transitive = false }
+    compileOnly fg.deobf("curse.maven:kubejs-238086:8020595")
+    compileOnly fg.deobf("curse.maven:rhino-416294:6186971")
 
     // END OF REQUIRED
 
@@ -235,6 +237,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:ftb-library-forge-404465:7296748")
     runtimeOnly fg.deobf("curse.maven:ftb-teams-forge-404468:6130786")
     runtimeOnly fg.deobf("curse.maven:cc-tweaked-282001:5714507")
+    runtimeOnly fg.deobf("curse.maven:kubejs-238086:8020595")
+    runtimeOnly fg.deobf("curse.maven:rhino-416294:6186971")
 
     runtimeOnly fg.deobf("curse.maven:applied-flux-965012:6649403")
     runtimeOnly fg.deobf("curse.maven:glodium-957920:5226922")
