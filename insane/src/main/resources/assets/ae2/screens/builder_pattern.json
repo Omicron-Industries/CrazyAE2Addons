@@ -2,7 +2,7 @@
   "$schema": "schema.json",
   "includes": ["common/common.json"],
   "background": {
-    "texture": "guis/builder_pattern.png",
+    "texture": "guis/background_big.png",
     "srcRect": [0, 0, 256, 256]
   },
   "slots": {

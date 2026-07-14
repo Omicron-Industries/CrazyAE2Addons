@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
-import net.oktawia.insaneae2addons.entities.ResearchUnitFrameBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchUnitFrameBE;
 import org.jetbrains.annotations.Nullable;
 
 public class ResearchUnitFrameBlock extends AbstractMenuOpeningBlock<ResearchUnitFrameBE> {

@@ -8,19 +8,23 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.InterfaceLogicHost;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 public class TrackingMEStorage implements MEStorage {
 
     private final MEStorage delegate;
     private final IGrid grid;
     private final InterfaceLogicHost interfaceHost;
+    private final UsageTarget target;
     private final String description;
 
-    public TrackingMEStorage(MEStorage delegate, IGrid grid, InterfaceLogicHost interfaceHost, BlockPos interfacePos) {
+    public TrackingMEStorage(MEStorage delegate, IGrid grid, InterfaceLogicHost interfaceHost, Level level, BlockPos interfacePos) {
         this.delegate = delegate;
         this.grid = grid;
         this.interfaceHost = interfaceHost;
+        this.target = UsageTarget.interfaceAt(GlobalPos.of(level.dimension(), interfacePos.immutable()));
         this.description = "interface at " + interfacePos.getX() + " " + interfacePos.getY() + " " + interfacePos.getZ();
     }
 
@@ -34,7 +38,7 @@ public class TrackingMEStorage implements MEStorage {
         long extracted = delegate.extract(what, amount, mode, source);
         if (extracted > 0 && mode == Actionable.MODULATE && !isReplenished(what)) {
             var svc = grid.getService(IResourceTrackingService.class);
-            if (svc != null) svc.trackConsumption(what, extracted, description, null);
+            if (svc != null) svc.trackConsumption(what, extracted, target, description, null);
         }
         return extracted;
     }

@@ -249,6 +249,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:botania-225643:7649894")
     runtimeOnly fg.deobf("curse.maven:patchouli-306770:7731017")
     runtimeOnly fg.deobf("curse.maven:framedblocks-441647:7386520")
+    runtimeOnly fg.deobf("curse.maven:spatial-tools-compatible-1528726:8415567")
 }
 
 tasks.named('processResources', ProcessResources).configure {

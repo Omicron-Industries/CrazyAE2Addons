@@ -22,6 +22,8 @@ public class InsaneDataGenerators {
 
         generator.addProvider(event.includeServer(), new InsaneRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), new InsaneFabricationRecipeProvider(packOutput));
+        generator.addProvider(event.includeServer(), new InsaneResearchRecipeProvider(packOutput));
+        generator.addProvider(event.includeServer(), new InsaneCradleRecipeProvider(packOutput));
         generator.addProvider(event.includeServer(), InsaneLootTableProvider.create(packOutput));
 
         generator.addProvider(event.includeClient(), new InsaneBlockStateProvider(packOutput, existingFileHelper));

@@ -36,7 +36,7 @@ public class MixinStorageBusPart {
             if (node != null) {
                 var mainGrid = node.getGrid();
                 if (mainGrid != null) {
-                    mounts.mount(new TrackingMEStorage(handler, mainGrid, interfaceHost, targetPos), priority);
+                    mounts.mount(new TrackingMEStorage(handler, mainGrid, interfaceHost, self.getLevel(), targetPos), priority);
                     return;
                 }
             }

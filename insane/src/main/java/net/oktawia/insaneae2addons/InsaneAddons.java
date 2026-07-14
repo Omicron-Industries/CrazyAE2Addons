@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,7 +17,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.client.textures.ConnectedTextures;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
+import net.oktawia.insaneae2addons.integration.ResearchDiskHookImpl;
 import net.oktawia.insaneae2addons.client.InsaneConnectedTextures;
+import net.oktawia.insaneae2addons.client.renderer.ResearchPedestalTopRenderer;
 import net.oktawia.insaneae2addons.client.screens.InsaneConfigScreen;
 import net.oktawia.insaneae2addons.defs.Screens;
 import net.oktawia.insaneae2addons.defs.UpgradeCards;
@@ -73,6 +77,7 @@ public class InsaneAddons {
         event.enqueueWork(() -> {
             InsaneBlockEntityRegistrar.setupBlockEntityTypes();
             NetworkHandler.registerMessages();
+            ResearchDiskHooks.register(new ResearchDiskHookImpl());
         });
         new UpgradeCards(event);
     }
@@ -96,6 +101,19 @@ public class InsaneAddons {
         @SubscribeEvent
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
             ConnectedTextures.onModifyBakingResult(event);
+        }
+
+        @SubscribeEvent
+        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
+            InsaneItemRegistrar.registerPartModels();
+        }
+
+        @SubscribeEvent
+        public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerBlockEntityRenderer(
+                    InsaneBlockEntityRegistrar.RESEARCH_PEDESTAL_TOP_BE.get(),
+                    ResearchPedestalTopRenderer::new
+            );
         }
     }
 }

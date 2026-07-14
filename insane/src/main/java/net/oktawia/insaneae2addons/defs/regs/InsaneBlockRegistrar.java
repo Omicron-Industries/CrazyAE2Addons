@@ -12,6 +12,9 @@ import net.oktawia.insaneae2addons.blocks.AmpereMeterBlock;
 import net.oktawia.insaneae2addons.blocks.AutoBuilderBlock;
 import net.oktawia.insaneae2addons.blocks.AutoBuilderCreativeSupplyBlock;
 import net.oktawia.insaneae2addons.blocks.BrokenPatternProviderBlock;
+import net.oktawia.insaneae2addons.blocks.EntropyCradleBlock;
+import net.oktawia.insaneae2addons.blocks.EntropyCradleCapacitorBlock;
+import net.oktawia.insaneae2addons.blocks.EntropyCradleControllerBlock;
 import net.oktawia.insaneae2addons.blocks.ResearchCableBlock;
 import net.oktawia.insaneae2addons.blocks.ResearchPedestalBottomBlock;
 import net.oktawia.insaneae2addons.blocks.ResearchPedestalTopBlock;
@@ -100,12 +103,12 @@ public class InsaneBlockRegistrar {
             BLOCK_ITEMS.register("research_cable",
                     () -> new ResearchBlockItem(RESEARCH_CABLE_BLOCK.get(), new Item.Properties()));
 
-    public static final RegistryObject<ResearchCableBlock> RESEARCH_CABLE_BLACK_BLOCK =
-            BLOCKS.register("research_cable_black", () -> new ResearchCableBlock(ResearchCableBlock.CableColor.BLACK));
+    public static final RegistryObject<ResearchCableBlock> RESEARCH_CABLE_PINK_BLOCK =
+            BLOCKS.register("research_cable_pink", () -> new ResearchCableBlock(ResearchCableBlock.CableColor.PINK));
 
-    public static final RegistryObject<BlockItem> RESEARCH_CABLE_BLACK_BLOCK_ITEM =
-            BLOCK_ITEMS.register("research_cable_black",
-                    () -> new ResearchBlockItem(RESEARCH_CABLE_BLACK_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<BlockItem> RESEARCH_CABLE_PINK_BLOCK_ITEM =
+            BLOCK_ITEMS.register("research_cable_pink",
+                    () -> new ResearchBlockItem(RESEARCH_CABLE_PINK_BLOCK.get(), new Item.Properties()));
 
     public static final RegistryObject<ResearchCableBlock> RESEARCH_CABLE_WHITE_BLOCK =
             BLOCKS.register("research_cable_white", () -> new ResearchCableBlock(ResearchCableBlock.CableColor.WHITE));
@@ -120,6 +123,27 @@ public class InsaneBlockRegistrar {
     public static final RegistryObject<BlockItem> RESEARCH_STATION_BLOCK_ITEM =
             BLOCK_ITEMS.register("research_station",
                     () -> new ResearchBlockItem(RESEARCH_STATION_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EntropyCradleControllerBlock> ENTROPY_CRADLE_CONTROLLER_BLOCK =
+            BLOCKS.register("entropy_cradle_controller", EntropyCradleControllerBlock::new);
+
+    public static final RegistryObject<BlockItem> ENTROPY_CRADLE_CONTROLLER_BLOCK_ITEM =
+            BLOCK_ITEMS.register("entropy_cradle_controller",
+                    () -> new AEBaseBlockItem(ENTROPY_CRADLE_CONTROLLER_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EntropyCradleBlock> ENTROPY_CRADLE_BLOCK =
+            BLOCKS.register("entropy_cradle", EntropyCradleBlock::new);
+
+    public static final RegistryObject<BlockItem> ENTROPY_CRADLE_BLOCK_ITEM =
+            BLOCK_ITEMS.register("entropy_cradle",
+                    () -> new AEBaseBlockItem(ENTROPY_CRADLE_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<EntropyCradleCapacitorBlock> ENTROPY_CRADLE_CAPACITOR_BLOCK =
+            BLOCKS.register("entropy_cradle_capacitor", EntropyCradleCapacitorBlock::new);
+
+    public static final RegistryObject<BlockItem> ENTROPY_CRADLE_CAPACITOR_BLOCK_ITEM =
+            BLOCK_ITEMS.register("entropy_cradle_capacitor",
+                    () -> new AEBaseBlockItem(ENTROPY_CRADLE_CAPACITOR_BLOCK.get(), new Item.Properties()));
 
     private InsaneBlockRegistrar() {
     }

@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,13 +32,13 @@ public final class InterfaceHighlighter {
     private static final MultiBufferSource.BufferSource BUFFER =
             MultiBufferSource.immediate(new BufferBuilder(2048));
 
-    private static @Nullable BlockPos highlightedPos;
+    private static @Nullable GlobalPos highlightedPos;
     private static long activatedMs;
 
     private InterfaceHighlighter() {}
 
-    public static void highlight(BlockPos pos) {
-        highlightedPos = pos.immutable();
+    public static void highlight(GlobalPos pos) {
+        highlightedPos = pos;
         activatedMs = System.currentTimeMillis();
     }
 
@@ -49,7 +50,8 @@ public final class InterfaceHighlighter {
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
         if (highlightedPos == null) return;
-        if (Minecraft.getInstance().level == null) return;
+        var level = Minecraft.getInstance().level;
+        if (level == null) return;
 
         long now = System.currentTimeMillis();
 
@@ -58,13 +60,16 @@ public final class InterfaceHighlighter {
             return;
         }
 
+        if (!level.dimension().equals(highlightedPos.dimension())) return;
+
         if ((now % 1000) >= 500) return;
 
         Vec3 cam = event.getCamera().getPosition();
+        BlockPos pos = highlightedPos.pos();
 
-        double minX = highlightedPos.getX() - cam.x - EXPAND;
-        double minY = highlightedPos.getY() - cam.y - EXPAND;
-        double minZ = highlightedPos.getZ() - cam.z - EXPAND;
+        double minX = pos.getX() - cam.x - EXPAND;
+        double minY = pos.getY() - cam.y - EXPAND;
+        double minZ = pos.getZ() - cam.z - EXPAND;
 
         AABB aabb = new AABB(
                 minX,

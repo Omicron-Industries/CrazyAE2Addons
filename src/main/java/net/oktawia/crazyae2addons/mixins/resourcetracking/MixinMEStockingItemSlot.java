@@ -7,7 +7,9 @@ import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEStockingBusPartMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
+import net.oktawia.crazyae2addons.tracking.UsageTarget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -31,7 +33,8 @@ public class MixinMEStockingItemSlot {
                 if (svc == null) return;
                 BlockPos pos = machine.getPos();
                 AEKey icon = AEItemKey.of(machine.getDefinition().asStack());
-                svc.trackConsumption(what, extracted, "at " + pos.getX() + " " + pos.getY() + " " + pos.getZ(), icon, pos);
+                UsageTarget target = UsageTarget.machine(GlobalPos.of(machine.getLevel().dimension(), pos.immutable()));
+                svc.trackConsumption(what, extracted, target, "at " + pos.getX() + " " + pos.getY() + " " + pos.getZ(), icon);
             });
         }
         return extracted;

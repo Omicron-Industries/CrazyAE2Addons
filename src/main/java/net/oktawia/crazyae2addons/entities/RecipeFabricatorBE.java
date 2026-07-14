@@ -46,6 +46,8 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyRecipes;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
 import net.oktawia.crazyae2addons.menus.block.RecipeFabricatorMenu;
 import net.oktawia.crazyae2addons.recipes.FabricationRecipe;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
@@ -83,6 +85,10 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
 
     public final InternalInventory input = inv.getSubInventory(0, INPUT_SLOTS);
     public final InternalInventory output = inv.getSubInventory(OUTPUT_SLOT_INDEX, OUTPUT_SLOT_INDEX + 1);
+
+    @Persisted
+    @LazyManaged
+    public final AppEngInternalInventory gate = new AppEngInternalInventory(this, 1);
 
     @Persisted
     @LazyManaged
@@ -418,6 +424,14 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
 
         ItemStack resultItem = recipe.getOutput().copy();
         if (!resultItem.isEmpty()) {
+            ResearchDiskHook hook = ResearchDiskHooks.get();
+            if (hook != null && hook.isResearchDisk(resultItem)) {
+                ItemStack source = gate.getStackInSlot(0);
+                if (!source.isEmpty()) {
+                    resultItem = hook.copyResearch(source, resultItem);
+                }
+            }
+
             ItemStack currentOut = output.getStackInSlot(0);
             if (currentOut.isEmpty()) {
                 output.setItemDirect(0, resultItem);
@@ -544,6 +558,10 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
                 continue;
             }
 
+            if (!researchSatisfied(recipe)) {
+                continue;
+            }
+
             return recipe;
         }
 
@@ -558,7 +576,22 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
         SimpleContainer container = buildInputContainer();
         return recipe.matches(container, level)
                 && hasAllOutputsSpaceFor(recipe)
-                && hasAllFluidInputsFor(recipe);
+                && hasAllFluidInputsFor(recipe)
+                && researchSatisfied(recipe);
+    }
+
+    private boolean researchSatisfied(FabricationRecipe recipe) {
+        String key = recipe.getRequiredKey();
+        if (key == null) {
+            return true;
+        }
+
+        ResearchDiskHook hook = ResearchDiskHooks.get();
+        if (hook == null) {
+            return true;
+        }
+
+        return hook.hasResearch(gate.getStackInSlot(0), key);
     }
 
     private boolean hasAllFluidInputsFor(FabricationRecipe recipe) {

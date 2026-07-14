@@ -17,7 +17,6 @@ import java.util.List;
 public class ResearchRecipe implements Recipe<Container> {
     public final int duration;
     public final int energyPerTick;
-    public final boolean driveRequired;
     public final List<Consumable> consumables;
     public final Unlock unlock;
 
@@ -25,12 +24,10 @@ public class ResearchRecipe implements Recipe<Container> {
 
     public ResearchRecipe(ResourceLocation id,
                           int duration, int ept,
-                          boolean driveRequired,
                           List<Consumable> consumables, Unlock unlock) {
         this.id = id;
         this.duration = duration;
         this.energyPerTick = ept;
-        this.driveRequired = driveRequired;
         this.consumables = List.copyOf(consumables);
         this.unlock = unlock;
     }

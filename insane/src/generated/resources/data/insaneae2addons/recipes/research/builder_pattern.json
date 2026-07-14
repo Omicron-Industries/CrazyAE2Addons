@@ -1,0 +1,32 @@
+{
+  "type": "insaneae2addons:research",
+  "consumables": [
+    {
+      "computation": 128,
+      "count": 1,
+      "item": "minecraft:lapis_block"
+    },
+    {
+      "computation": 72,
+      "count": 1,
+      "item": "ae2:interface"
+    },
+    {
+      "computation": 96,
+      "count": 1,
+      "item": "ae2:pattern_provider"
+    },
+    {
+      "computation": 128,
+      "count": 1,
+      "item": "crazyae2addons:ejector"
+    }
+  ],
+  "duration": 768000,
+  "energy_per_tick": 200,
+  "unlock": {
+    "item": "insaneae2addons:builder_pattern",
+    "key": "insaneae2addons:builder_pattern_research",
+    "label": "Autobuilder"
+  }
+}

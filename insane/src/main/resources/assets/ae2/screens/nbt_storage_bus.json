@@ -1,0 +1,83 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
+  "background": {
+    "texture": "guis/nbt_bus.png",
+    "srcRect": [
+      0,
+      0,
+      256,
+      256
+    ]
+  },
+  "slots": {
+    "CONFIG": {
+      "left": 211,
+      "top": 5,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_INVENTORY": {
+      "left": 47,
+      "bottom": 82,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 47,
+      "bottom": 24,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "item.insaneae2addons.nbt_storage_bus"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
+      },
+      "position": {
+        "left": 47,
+        "bottom": 93
+      }
+    }
+  },
+  "widgets": {
+    "confirm": {
+      "left": 151,
+      "top": 5,
+      "width": 16,
+      "height": 16
+    },
+    "load": {
+      "left": 191,
+      "top": 5,
+      "width": 16,
+      "height": 16
+    },
+    "format": {
+      "left": 171,
+      "top": 5,
+      "width": 16,
+      "height": 16
+    },
+    "openPriority": {
+      "right": 22,
+      "top": 0
+    },
+    "data": {
+      "left": 8,
+      "top": 26,
+      "width": 240,
+      "height": 135
+    }
+  }
+}

@@ -1,5 +1,6 @@
 package net.oktawia.insaneae2addons.datagen;
 
+import appeng.items.parts.PartItem;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -18,7 +19,7 @@ public class InsaneItemModelProvider extends ItemModelProvider {
     private static final Set<String> STATIC_ITEM_MODELS =
             Set.of("ampere_meter", "auto_builder", "broken_pattern_provider");
     private static final Set<String> CABLE_ITEMS =
-            Set.of("research_cable", "research_cable_black", "research_cable_white");
+            Set.of("research_cable", "research_cable_pink", "research_cable_white");
 
     public InsaneItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, InsaneAddons.MODID, existingFileHelper);
@@ -27,6 +28,9 @@ public class InsaneItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         for (var item : InsaneItemRegistrar.getItems()) {
+            if (item instanceof PartItem) {
+                continue;
+            }
             simpleItem(item);
         }
 

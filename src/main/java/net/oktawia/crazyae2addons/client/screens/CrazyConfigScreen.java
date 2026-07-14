@@ -265,6 +265,16 @@ public class CrazyConfigScreen {
                 LangDefs.CONFIG_SECTION_EJECTOR_DESC_4,
                 LangDefs.CONFIG_SECTION_EJECTOR_DESC_5
         );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_RESOURCE_TRACKING_TERMINAL, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_ENABLED, cfg.RESOURCE_TRACKING_TERMINAL_ENABLED.get(), true,
+                            cfg.RESOURCE_TRACKING_TERMINAL_ENABLED::set,
+                            LangDefs.CONFIG_DESC_RESOURCE_TRACKING_TERMINAL_ENABLED
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_RESOURCE_TRACKING_TERMINAL_DESC_1,
+                LangDefs.CONFIG_SECTION_RESOURCE_TRACKING_TERMINAL_DESC_2
+        );
         return b.build();
     }
 

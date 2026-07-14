@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
-import net.oktawia.insaneae2addons.entities.ResearchStationBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchStationBE;
 import org.jetbrains.annotations.Nullable;
 
 public class ResearchStationBlock extends AbstractMenuOpeningBlock<ResearchStationBE> {

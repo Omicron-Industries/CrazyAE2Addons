@@ -8,6 +8,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.inv.ListCraftingInventory;
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
+import net.oktawia.crazyae2addons.tracking.UsageTarget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,9 +30,10 @@ public class MixinCraftingCpuHelper {
         if (svc == null) return;
 
         AEKey outputKey = plan.finalOutput().what();
+        UsageTarget target = UsageTarget.crafting(outputKey);
 
         for (var entry : plan.usedItems()) {
-            svc.trackConsumption(entry.getKey(), entry.getLongValue(), "crafting", outputKey);
+            svc.trackConsumption(entry.getKey(), entry.getLongValue(), target, "crafting", outputKey);
         }
     }
 }

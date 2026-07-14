@@ -4,7 +4,11 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 import net.oktawia.crazyae2addons.client.screens.part.ResourceTrackingTerminalScreen;
@@ -30,7 +34,8 @@ public record ResourceDetailPacket(AEKey key, List<UsageEntry> entries) {
             boolean hasPos = e.pos() != null;
             buf.writeBoolean(hasPos);
             if (hasPos) {
-                buf.writeBlockPos(e.pos());
+                buf.writeResourceLocation(e.pos().dimension().location());
+                buf.writeBlockPos(e.pos().pos());
             }
         }
     }
@@ -50,9 +55,11 @@ public record ResourceDetailPacket(AEKey key, List<UsageEntry> entries) {
                 GenericStack iconGs = GenericStack.fromItemStack(buf.readItem());
                 if (iconGs != null) icon = iconGs.what();
             }
-            BlockPos pos = null;
+            GlobalPos pos = null;
             if (buf.readBoolean()) {
-                pos = buf.readBlockPos();
+                ResourceKey<Level> dim = ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation());
+                BlockPos blockPos = buf.readBlockPos();
+                pos = GlobalPos.of(dim, blockPos);
             }
             entries.add(new UsageEntry(desc, amount, icon, pos));
         }

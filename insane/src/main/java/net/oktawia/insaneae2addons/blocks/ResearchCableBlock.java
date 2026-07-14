@@ -45,7 +45,7 @@ public class ResearchCableBlock extends AEBaseBlock {
 
     public enum CableColor {
         NORMAL,
-        BLACK,
+        PINK,
         WHITE;
 
         public boolean connectsTo(CableColor other) {
@@ -56,7 +56,7 @@ public class ResearchCableBlock extends AEBaseBlock {
     private final CableColor color;
 
     public ResearchCableBlock(CableColor color) {
-        super(BlockBehaviour.Properties.of().strength(0.5F).noOcclusion());
+        super(BlockBehaviour.Properties.of().strength(0.5F).noOcclusion().forceSolidOn());
         this.color = color;
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(NORTH, false)

@@ -11,29 +11,23 @@
       "position": { "left": 8, "top": 6 }
     },
     "status": {
-      "position": { "left": 8, "top": 30 },
-      "align": "LEFT"
+      "position": { "left": 88, "top": 24 },
+      "align": "CENTER"
     },
     "working": {
-      "position": { "left": 34, "top": 64 },
+      "position": { "left": 88, "top": 60 },
       "align": "CENTER"
-    }
-  },
-  "images": {
-    "progressRecipe": {
-      "texture": "guis/research_station.png",
-      "srcRect": [177, 12, 50, 6]
     }
   },
   "slots": {
     "MACHINE_OUTPUT": {
-      "left": 106,
-      "top": 40,
+      "left": 80,
+      "top": 38,
       "grid": "HORIZONTAL"
     }
   },
   "widgets": {
-    "recipeBar": { "left": 8, "top": 50, "width": 50, "height": 6 },
+    "recipeBar": { "left": 13, "top": 76, "width": 150, "height": 8 },
     "devbtn": { "right": 24, "top": 8, "width": 16, "height": 16 }
   }
 }

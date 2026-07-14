@@ -66,6 +66,40 @@ public class InsaneConfigScreen {
                 LangDefs.CONFIG_SECTION_RESEARCH_DESC
         );
 
+        addSection(root, eb, LangDefs.CONFIG_SECTION_ENTROPY_CRADLE, entries -> {
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_CRADLE_CAPACITY, cfg.CRADLE_CAPACITY.get(), 600_000_000, 1,
+                            cfg.CRADLE_CAPACITY::set,
+                            LangDefs.CONFIG_DESC_CRADLE_CAPACITY
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_CRADLE_CHARGING_SPEED, cfg.CRADLE_CHARGING_SPEED.get(), 10_000_000, 1,
+                            cfg.CRADLE_CHARGING_SPEED::set,
+                            LangDefs.CONFIG_DESC_CRADLE_CHARGING_SPEED
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_CRADLE_COST, cfg.CRADLE_COST.get(), 600_000_000, 1,
+                            cfg.CRADLE_COST::set,
+                            LangDefs.CONFIG_DESC_CRADLE_COST
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_ENTROPY_CRADLE_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_NBT_TOOLS, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_NBT_VIEW_CELL, cfg.NBT_VIEW_CELL_ENABLED.get(), true,
+                            cfg.NBT_VIEW_CELL_ENABLED::set,
+                            LangDefs.CONFIG_DESC_NBT_VIEW_CELL
+                    ));
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_NBT_STORAGE_BUS, cfg.NBT_STORAGE_BUS_ENABLED.get(), true,
+                            cfg.NBT_STORAGE_BUS_ENABLED::set,
+                            LangDefs.CONFIG_DESC_NBT_STORAGE_BUS
+                    ));
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_NBT_EXPORT_BUS, cfg.NBT_EXPORT_BUS_ENABLED.get(), true,
+                            cfg.NBT_EXPORT_BUS_ENABLED::set,
+                            LangDefs.CONFIG_DESC_NBT_EXPORT_BUS
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_NBT_TOOLS_DESC
+        );
+
         return b.build();
     }
 

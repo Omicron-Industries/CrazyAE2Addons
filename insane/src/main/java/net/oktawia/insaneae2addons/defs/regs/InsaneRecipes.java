@@ -5,6 +5,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.oktawia.insaneae2addons.recipes.CradleRecipe;
+import net.oktawia.insaneae2addons.recipes.CradleRecipeSerializer;
+import net.oktawia.insaneae2addons.recipes.CradleRecipeType;
 import net.oktawia.insaneae2addons.recipes.ResearchRecipe;
 import net.oktawia.insaneae2addons.recipes.ResearchRecipeSerializer;
 import net.oktawia.insaneae2addons.recipes.ResearchRecipeType;
@@ -24,6 +27,12 @@ public final class InsaneRecipes {
 
     public static final RegistryObject<RecipeType<ResearchRecipe>> RESEARCH_TYPE =
             RECIPE_TYPES.register("research", () -> ResearchRecipeType.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<CradleRecipe>> CRADLE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("cradle", () -> CradleRecipeSerializer.INSTANCE);
+
+    public static final RegistryObject<RecipeType<CradleRecipe>> CRADLE_TYPE =
+            RECIPE_TYPES.register("cradle", () -> CradleRecipeType.INSTANCE);
 
     private InsaneRecipes() {
     }

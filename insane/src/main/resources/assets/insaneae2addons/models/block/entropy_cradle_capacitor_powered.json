@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "insaneae2addons:block/entropy_cradle_capacitor_powered",
+    "down": "insaneae2addons:block/entropy_cradle_capacitor_up",
+    "up": "insaneae2addons:block/entropy_cradle_capacitor_up",
+    "north": "insaneae2addons:block/entropy_cradle_capacitor_powered",
+    "south": "insaneae2addons:block/entropy_cradle_capacitor_powered",
+    "east": "insaneae2addons:block/entropy_cradle_capacitor_powered",
+    "west": "insaneae2addons:block/entropy_cradle_capacitor_powered"
+  }
+}

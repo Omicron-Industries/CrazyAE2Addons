@@ -1,8 +1,8 @@
 package net.oktawia.crazyae2addons.menus.block;
 
 import appeng.menu.AEBaseMenu;
+import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
-import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
 import lombok.Getter;
 import net.minecraft.world.SimpleContainer;
@@ -16,8 +16,12 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.RecipeFabricatorBE;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
 
 public class RecipeFabricatorMenu extends AEBaseMenu {
+
+    public static final SlotSemantic RESEARCH_DISK = SlotSemantics.register("CRAZY_RESEARCH_DISK", false);
 
     private static final int BUCKET_MB = 1000;
 
@@ -47,6 +51,16 @@ public class RecipeFabricatorMenu extends AEBaseMenu {
         }, SlotSemantics.MACHINE_OUTPUT);
 
         this.fluidOutSlot = this.addSlot(new FluidClickSlot(fluidUi, 1), SlotSemantics.MACHINE_OUTPUT);
+
+        ResearchDiskHook hook = ResearchDiskHooks.get();
+        if (hook != null) {
+            this.addSlot(new AppEngSlot(host.gate, 0) {
+                @Override
+                public boolean mayPlace(ItemStack stack) {
+                    return hook.isResearchDisk(stack);
+                }
+            }, RESEARCH_DISK);
+        }
 
         this.createPlayerInventorySlots(playerInventory);
     }

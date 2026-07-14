@@ -14,7 +14,6 @@ import appeng.client.gui.widgets.Scrollbar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.client.misc.IconButton;
@@ -328,8 +327,7 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
 
                 guiGraphics.drawString(font, e.description(), GRID_LEFT + 3, y + 14, 0xFFCCCCCC, false);
 
-                BlockPos ifPos = parseInterfacePos(e.description());
-                if (ifPos != null) {
+                if (e.pos() != null) {
                     int btnX = GRID_LEFT + GRID_WIDTH - 20;
                     int btnY = y - 1 + (rowH - 16) / 2;
                     boolean hovered = relMouseX >= btnX && relMouseX < btnX + 16
@@ -391,14 +389,6 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
                     if (e.pos() != null) {
                         InterfaceHighlighter.highlight(e.pos());
                         return true;
-                    }
-
-                    if (e.icon() == null) {
-                        BlockPos pos = parseInterfacePos(e.description());
-                        if (pos != null) {
-                            InterfaceHighlighter.highlight(pos);
-                            return true;
-                        }
                     }
                 }
             }
@@ -465,22 +455,5 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
         if (display < 1.0 && perUnit > 1) return amount + "m" + unit;
 
         return String.format(display % 1 == 0 ? "%.0f%s" : "%.1f%s", display, unit);
-    }
-
-    private static @Nullable BlockPos parseInterfacePos(String desc) {
-        if (!desc.startsWith("interface at ")) return null;
-
-        String[] parts = desc.substring(13).split(" ");
-        if (parts.length != 3) return null;
-
-        try {
-            return new BlockPos(
-                    Integer.parseInt(parts[0]),
-                    Integer.parseInt(parts[1]),
-                    Integer.parseInt(parts[2])
-            );
-        } catch (NumberFormatException e) {
-            return null;
-        }
     }
 }

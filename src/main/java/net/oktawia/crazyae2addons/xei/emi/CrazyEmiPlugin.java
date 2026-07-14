@@ -112,6 +112,9 @@ public class CrazyEmiPlugin implements EmiPlugin {
         if (!CrazyConfig.COMMON.EJECTOR_ENABLED.get()) {
             registry.removeEmiStacks(EmiStack.of(CrazyBlockRegistrar.EJECTOR_BLOCK.get()));
         }
+        if (!CrazyConfig.COMMON.RESOURCE_TRACKING_TERMINAL_ENABLED.get()) {
+            registry.removeEmiStacks(EmiStack.of(CrazyItemRegistrar.RESOURCE_TRACKING_TERMINAL.get()));
+        }
     }
 
     private static void addDisplayScreenExclusions(

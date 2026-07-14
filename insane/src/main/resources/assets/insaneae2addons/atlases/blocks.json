@@ -7,6 +7,10 @@
     {
       "type": "minecraft:single",
       "resource": "insaneae2addons:block/research_unit_frame_formed"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "insaneae2addons:block/entropy_cradle_formed"
     }
   ]
 }

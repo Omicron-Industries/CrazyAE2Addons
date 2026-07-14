@@ -64,6 +64,8 @@ public final class CrazyConfig {
         public final ForgeConfigSpec.BooleanValue EJECTOR_ENABLED;
         public final ForgeConfigSpec.BooleanValue EJECTOR_CRAFT_MISSING_ENABLED;
 
+        public final ForgeConfigSpec.BooleanValue RESOURCE_TRACKING_TERMINAL_ENABLED;
+
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment(
                     "Crazy AE2 Addons - Common Config",
@@ -367,8 +369,22 @@ public final class CrazyConfig {
             );
 
             EJECTOR_CRAFT_MISSING_ENABLED = bool(builder,
-                    "craftMissingEnabled", true,
+                    "craftMissingEnabled", false,
                     "Allow the ejector to craft missing items."
+            );
+
+            builder.pop();
+
+            builder.comment(
+                    "Resource tracking terminal feature.",
+                    "The resource tracking terminal shows per-minute consumption of every resource",
+                    "in the connected grid, grouped by what consumes it (crafting, machines, interfaces),",
+                    "and can highlight the consuming block in the world."
+            ).push("resourceTrackingTerminal");
+
+            RESOURCE_TRACKING_TERMINAL_ENABLED = bool(builder,
+                    "enabled", true,
+                    "Enable or disable the resource tracking terminal feature."
             );
 
             builder.pop();

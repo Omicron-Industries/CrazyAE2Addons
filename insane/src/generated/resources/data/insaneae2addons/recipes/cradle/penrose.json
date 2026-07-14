@@ -1,0 +1,58 @@
+{
+  "type": "insaneae2addons:cradle",
+  "description": "penrose.xei.description",
+  "pattern": {
+    "layers": [
+      [
+        "A A A A A",
+        "A B B B A",
+        "A B B B A",
+        "A B B B A",
+        "A A A A A"
+      ],
+      [
+        "A B B B A",
+        "B D D D B",
+        "B D D D B",
+        "B D D D B",
+        "A B B B A"
+      ],
+      [
+        "A B B B A",
+        "B D D D B",
+        "B D E D B",
+        "B D D D B",
+        "A B B B A"
+      ],
+      [
+        "A B B B A",
+        "B D D D B",
+        "B D D D B",
+        "B D D D B",
+        "A B B B A"
+      ],
+      [
+        "A A A A A",
+        "A B B B A",
+        "A B B B A",
+        "A B B B A",
+        "A A A A A"
+      ]
+    ],
+    "symbols": {
+      "A": [
+        "ae2:fluix_block"
+      ],
+      "B": [
+        "minecraft:obsidian"
+      ],
+      "D": [
+        "minecraft:iron_block"
+      ],
+      "E": [
+        "insaneae2addons:super_singularity_block"
+      ]
+    }
+  },
+  "result_block": "insaneae2addons:penrose_frame"
+}

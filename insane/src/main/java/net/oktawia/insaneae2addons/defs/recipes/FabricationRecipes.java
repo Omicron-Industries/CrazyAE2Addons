@@ -17,7 +17,8 @@ public class FabricationRecipes {
             @Nullable String outputItem,
             int outputCount,
             @Nullable FluidEntry fluidInput,
-            @Nullable FluidEntry fluidOutput
+            @Nullable FluidEntry fluidOutput,
+            @Nullable String requiredKey
     ) {}
 
     private static final List<RecipeDef> RECIPES = new ArrayList<>();
@@ -31,6 +32,18 @@ public class FabricationRecipes {
     }
 
     public static void registerRecipes() {
+        recipe("copy_data_drive")
+                .input("insaneae2addons:data_drive", 1)
+                .output("insaneae2addons:data_drive", 1)
+                .register();
+
+        recipe("builder_pattern")
+                .input("ae2:view_cell", 1)
+                .input("minecraft:redstone", 4)
+                .input("minecraft:emerald", 1)
+                .output("insaneae2addons:builder_pattern", 1)
+                .requiredKey("insaneae2addons:builder_pattern_research")
+                .register();
     }
 
     public static class Builder {
@@ -40,6 +53,7 @@ public class FabricationRecipes {
         private int outputCount = 1;
         private FluidEntry fluidInput = null;
         private FluidEntry fluidOutput = null;
+        private String requiredKey = null;
 
         private Builder(String id) {
             this.id = id;
@@ -66,8 +80,13 @@ public class FabricationRecipes {
             return this;
         }
 
+        public Builder requiredKey(String requiredKey) {
+            this.requiredKey = requiredKey;
+            return this;
+        }
+
         public void register() {
-            RECIPES.add(new RecipeDef(id, List.copyOf(inputs), outputItem, outputCount, fluidInput, fluidOutput));
+            RECIPES.add(new RecipeDef(id, List.copyOf(inputs), outputItem, outputCount, fluidInput, fluidOutput, requiredKey));
         }
     }
 }

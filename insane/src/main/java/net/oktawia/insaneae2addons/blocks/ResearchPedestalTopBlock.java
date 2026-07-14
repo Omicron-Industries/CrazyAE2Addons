@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.oktawia.insaneae2addons.entities.ResearchPedestalTopBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchPedestalTopBE;
 import org.jetbrains.annotations.Nullable;
 
 public class ResearchPedestalTopBlock extends AEBaseEntityBlock<ResearchPedestalTopBE> {

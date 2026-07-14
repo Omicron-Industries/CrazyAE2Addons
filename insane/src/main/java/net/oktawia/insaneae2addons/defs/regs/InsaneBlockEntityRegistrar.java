@@ -13,11 +13,14 @@ import net.oktawia.insaneae2addons.entities.AmpereMeterBE;
 import net.oktawia.insaneae2addons.entities.AutoBuilderBE;
 import net.oktawia.insaneae2addons.entities.AutoBuilderCreativeSupplyBE;
 import net.oktawia.insaneae2addons.entities.BrokenPatternProviderBE;
-import net.oktawia.insaneae2addons.entities.ResearchPedestalBottomBE;
-import net.oktawia.insaneae2addons.entities.ResearchPedestalTopBE;
-import net.oktawia.insaneae2addons.entities.ResearchStationBE;
-import net.oktawia.insaneae2addons.entities.ResearchUnitBE;
-import net.oktawia.insaneae2addons.entities.ResearchUnitFrameBE;
+import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleCapacitorBE;
+import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleControllerBE;
+import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleWallBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchPedestalBottomBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchPedestalTopBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchStationBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchUnitBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchUnitFrameBE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,6 +130,15 @@ public class InsaneBlockEntityRegistrar {
 
     public static final RegistryObject<BlockEntityType<ResearchStationBE>> RESEARCH_STATION_BE =
             reg("research_station_be", InsaneBlockRegistrar.RESEARCH_STATION_BLOCK, ResearchStationBE::new, ResearchStationBE.class);
+
+    public static final RegistryObject<BlockEntityType<EntropyCradleControllerBE>> ENTROPY_CRADLE_CONTROLLER_BE =
+            reg("entropy_cradle_controller_be", InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK, EntropyCradleControllerBE::new, EntropyCradleControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<EntropyCradleWallBE>> ENTROPY_CRADLE_BE =
+            reg("entropy_cradle_be", InsaneBlockRegistrar.ENTROPY_CRADLE_BLOCK, EntropyCradleWallBE::new, EntropyCradleWallBE.class);
+
+    public static final RegistryObject<BlockEntityType<EntropyCradleCapacitorBE>> ENTROPY_CRADLE_CAPACITOR_BE =
+            reg("entropy_cradle_capacitor_be", InsaneBlockRegistrar.ENTROPY_CRADLE_CAPACITOR_BLOCK, EntropyCradleCapacitorBE::new, EntropyCradleCapacitorBE.class);
 
     private InsaneBlockEntityRegistrar() {
     }

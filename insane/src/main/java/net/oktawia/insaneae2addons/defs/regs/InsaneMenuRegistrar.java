@@ -12,20 +12,28 @@ import net.oktawia.insaneae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.insaneae2addons.entities.AmpereMeterBE;
 import net.oktawia.insaneae2addons.entities.AutoBuilderBE;
 import net.oktawia.insaneae2addons.entities.BrokenPatternProviderBE;
-import net.oktawia.insaneae2addons.entities.ResearchPedestalBottomBE;
-import net.oktawia.insaneae2addons.entities.ResearchStationBE;
-import net.oktawia.insaneae2addons.entities.ResearchUnitBE;
+import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleControllerBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchPedestalBottomBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchStationBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchUnitBE;
 import net.oktawia.insaneae2addons.logic.DataHost;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderPatternHost;
 import net.oktawia.insaneae2addons.menus.block.AmpereMeterMenu;
 import net.oktawia.insaneae2addons.menus.block.AutoBuilderMenu;
 import net.oktawia.insaneae2addons.menus.block.BrokenPatternProviderMenu;
+import net.oktawia.insaneae2addons.menus.block.EntropyCradleControllerMenu;
 import net.oktawia.insaneae2addons.menus.block.ResearchPedestalMenu;
 import net.oktawia.insaneae2addons.menus.block.ResearchStationMenu;
 import net.oktawia.insaneae2addons.menus.block.ResearchUnitMenu;
+import net.oktawia.insaneae2addons.logic.viewcell.ViewCellHost;
 import net.oktawia.insaneae2addons.menus.item.BuilderPatternMenu;
 import net.oktawia.insaneae2addons.menus.item.BuilderPatternSubMenu;
 import net.oktawia.insaneae2addons.menus.item.DataDriveMenu;
+import net.oktawia.insaneae2addons.menus.item.NbtViewCellMenu;
+import net.oktawia.insaneae2addons.menus.part.NbtExportBusMenu;
+import net.oktawia.insaneae2addons.menus.part.NbtStorageBusMenu;
+import net.oktawia.insaneae2addons.parts.NbtExportBusPart;
+import net.oktawia.insaneae2addons.parts.NbtStorageBusPart;
 
 public class InsaneMenuRegistrar {
 
@@ -65,8 +73,20 @@ public class InsaneMenuRegistrar {
     public static final RegistryObject<MenuType<ResearchPedestalMenu>> RESEARCH_PEDESTAL_MENU =
             reg("research_pedestal_menu", ResearchPedestalMenu::new, ResearchPedestalBottomBE.class);
 
+    public static final RegistryObject<MenuType<EntropyCradleControllerMenu>> ENTROPY_CRADLE_CONTROLLER_MENU =
+            reg("entropy_cradle_controller_menu", EntropyCradleControllerMenu::new, EntropyCradleControllerBE.class);
+
     public static final RegistryObject<MenuType<DataDriveMenu>> DATA_DRIVE_MENU =
             reg("data_drive_menu", DataDriveMenu::new, DataHost.class);
+
+    public static final RegistryObject<MenuType<NbtViewCellMenu>> NBT_VIEW_CELL_MENU =
+            reg("nbt_view_cell_menu", NbtViewCellMenu::new, ViewCellHost.class);
+
+    public static final RegistryObject<MenuType<NbtExportBusMenu>> NBT_EXPORT_BUS_MENU =
+            reg("nbt_export_bus_menu", NbtExportBusMenu::new, NbtExportBusPart.class);
+
+    public static final RegistryObject<MenuType<NbtStorageBusMenu>> NBT_STORAGE_BUS_MENU =
+            reg("nbt_storage_bus_menu", NbtStorageBusMenu::new, NbtStorageBusPart.class);
 
     private InsaneMenuRegistrar() {
     }

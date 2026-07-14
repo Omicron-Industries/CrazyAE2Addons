@@ -22,7 +22,6 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
     public ResearchRecipe fromJson(ResourceLocation id, JsonObject json) throws JsonSyntaxException {
         final int duration = reqInt(json, "duration");
         final int ept      = reqInt(json, "energy_per_tick");
-        final boolean driveRequired  = parsePresenceAsBool(json, "drive");
 
         final List<ResearchRecipe.Consumable> consumables = new ArrayList<>();
         if (json.has("consumables")) {
@@ -44,7 +43,6 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
         return new ResearchRecipe(
                 id,
                 duration, ept,
-                driveRequired,
                 consumables,
                 new ResearchRecipe.Unlock(unlockKey, unlockLabel, item)
         );
@@ -54,8 +52,6 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
     public ResearchRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
         int duration = buf.readVarInt();
         int ept      = buf.readVarInt();
-
-        boolean driveRequired  = buf.readBoolean();
 
         int consN = buf.readVarInt();
         List<ResearchRecipe.Consumable> consumables = new ArrayList<>(consN);
@@ -73,7 +69,6 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
         return new ResearchRecipe(
                 id,
                 duration, ept,
-                driveRequired,
                 consumables,
                 new ResearchRecipe.Unlock(unlockKey, unlockLabel, item)
         );
@@ -83,8 +78,6 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
     public void toNetwork(FriendlyByteBuf buf, ResearchRecipe r) {
         buf.writeVarInt(r.duration);
         buf.writeVarInt(r.energyPerTick);
-
-        buf.writeBoolean(r.driveRequired);
 
         buf.writeVarInt(r.consumables.size());
         for (ResearchRecipe.Consumable c : r.consumables) {
@@ -112,13 +105,5 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
         Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
         if (item == null) throw new JsonSyntaxException("Unknown item: " + id);
         return item;
-    }
-
-    private static boolean parsePresenceAsBool(JsonObject json, String key) {
-        if (!json.has(key)) return false;
-        if (json.get(key).isJsonPrimitive() && json.get(key).getAsJsonPrimitive().isBoolean()) {
-            return json.get(key).getAsBoolean();
-        }
-        return json.get(key).isJsonObject();
     }
 }

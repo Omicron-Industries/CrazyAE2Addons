@@ -7,7 +7,7 @@ import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.AppEngSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.entities.ResearchStationBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchStationBE;
 import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
 
 public class ResearchStationMenu extends AEBaseMenu {

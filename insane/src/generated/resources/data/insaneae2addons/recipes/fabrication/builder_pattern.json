@@ -1,0 +1,22 @@
+{
+  "type": "crazyae2addons:fabrication",
+  "input": [
+    {
+      "count": 1,
+      "item": "ae2:view_cell"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:redstone"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:emerald"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "insaneae2addons:builder_pattern"
+  },
+  "required_key": "insaneae2addons:builder_pattern_research"
+}

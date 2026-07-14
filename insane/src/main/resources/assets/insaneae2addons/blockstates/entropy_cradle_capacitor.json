@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "formed=false": { "model": "insaneae2addons:block/entropy_cradle_capacitor" },
+    "formed=true,power=false": { "model": "insaneae2addons:block/entropy_cradle_capacitor_formed" },
+    "formed=true,power=true": { "model": "insaneae2addons:block/entropy_cradle_capacitor_powered" }
+  }
+}

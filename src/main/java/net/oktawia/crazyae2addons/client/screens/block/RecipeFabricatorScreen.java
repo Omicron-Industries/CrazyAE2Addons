@@ -13,7 +13,10 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
+import net.oktawia.crazyae2addons.client.misc.ResearchDiskPanel;
 import net.oktawia.crazyae2addons.client.misc.SimpleProgressBarWidget;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.entities.RecipeFabricatorBE;
 import net.oktawia.crazyae2addons.menus.block.RecipeFabricatorMenu;
@@ -41,6 +44,14 @@ public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBa
                 });
 
         this.widgets.add("crafting_progress", this.craftingProgress);
+
+        List<Slot> diskSlots = menu.getSlots(RecipeFabricatorMenu.RESEARCH_DISK);
+        ResearchDiskHook hook = ResearchDiskHooks.get();
+        List<Component> diskTooltip = hook != null ? hook.researchSlotTooltip() : List.of();
+        this.widgets.add("research_disk", new ResearchDiskPanel(
+                diskSlots.isEmpty() ? null : diskSlots.get(0),
+                diskTooltip
+        ));
     }
 
     @Override

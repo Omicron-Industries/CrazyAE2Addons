@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.MultilineTextField;
+import net.minecraft.client.gui.components.Whence;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -25,6 +26,7 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static net.minecraft.client.gui.screens.Screen.hasControlDown;
 import static net.minecraft.client.gui.screens.Screen.hasShiftDown;
 
 @OnlyIn(Dist.CLIENT)
@@ -639,9 +641,77 @@ public class MultilineTextFieldWidget extends AbstractWidget {
 
         record Selection(int begin, int end) {}
 
+        private static final String WORD_EXTRA = "_.+-*?";
+
         CachedTextField(Font font, int w) {
             super(font, w);
             rebuild();
+        }
+
+        @Override
+        public boolean keyPressed(int key) {
+            if (hasControlDown() && (key == GLFW.GLFW_KEY_LEFT || key == GLFW.GLFW_KEY_RIGHT)) {
+                setSelecting(hasShiftDown());
+                String text = value();
+                int target = key == GLFW.GLFW_KEY_RIGHT
+                        ? nextTokenBoundary(text, cursor())
+                        : prevTokenBoundary(text, cursor());
+                seekCursor(Whence.ABSOLUTE, target);
+                return true;
+            }
+            return super.keyPressed(key);
+        }
+
+        private static int charClass(char c) {
+            if (Character.isWhitespace(c)) {
+                return 0;
+            }
+            if (Character.isLetterOrDigit(c) || WORD_EXTRA.indexOf(c) >= 0) {
+                return 1;
+            }
+            return 2;
+        }
+
+        private static int nextTokenBoundary(String s, int cursor) {
+            int n = s.length();
+            int i = Mth.clamp(cursor, 0, n);
+            if (i >= n) {
+                return n;
+            }
+            int cls = charClass(s.charAt(i));
+            if (cls == 1) {
+                while (i < n && charClass(s.charAt(i)) == 1) {
+                    i++;
+                }
+            } else if (cls == 2) {
+                i++;
+            } else {
+                while (i < n && charClass(s.charAt(i)) == 0) {
+                    i++;
+                }
+            }
+            while (i < n && charClass(s.charAt(i)) == 0) {
+                i++;
+            }
+            return i;
+        }
+
+        private static int prevTokenBoundary(String s, int cursor) {
+            int i = Mth.clamp(cursor, 0, s.length());
+            while (i > 0 && charClass(s.charAt(i - 1)) == 0) {
+                i--;
+            }
+            if (i <= 0) {
+                return 0;
+            }
+            if (charClass(s.charAt(i - 1)) == 1) {
+                while (i > 0 && charClass(s.charAt(i - 1)) == 1) {
+                    i--;
+                }
+            } else {
+                i--;
+            }
+            return i;
         }
 
         int lineCount() {

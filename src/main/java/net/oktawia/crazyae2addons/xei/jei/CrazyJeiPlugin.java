@@ -173,6 +173,12 @@ public class CrazyJeiPlugin implements IModPlugin {
                     List.of(new ItemStack(CrazyBlockRegistrar.EJECTOR_BLOCK.get()))
             );
         }
+        if (!CrazyConfig.COMMON.RESOURCE_TRACKING_TERMINAL_ENABLED.get()) {
+            registration.getIngredientManager().removeIngredientsAtRuntime(
+                    VanillaTypes.ITEM_STACK,
+                    List.of(new ItemStack(CrazyItemRegistrar.RESOURCE_TRACKING_TERMINAL.get()))
+            );
+        }
     }
 
     @Override

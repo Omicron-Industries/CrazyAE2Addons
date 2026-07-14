@@ -6,12 +6,14 @@ import com.glodblock.github.appflux.common.AFItemAndBlock;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 
 public class UpgradeCards {
     public UpgradeCards(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             Upgrades.add(AEItems.SPEED_CARD, InsaneBlockRegistrar.AUTO_BUILDER_BLOCK.get(), 6);
             Upgrades.add(AEItems.CRAFTING_CARD, InsaneBlockRegistrar.AUTO_BUILDER_BLOCK.get(), 1);
+            Upgrades.add(AEItems.VOID_CARD, InsaneItemRegistrar.NBT_STORAGE_BUS.get(), 1);
 
             if (IsModLoaded.APP_FLUX) {
                 Upgrades.add(AFItemAndBlock.INDUCTION_CARD, InsaneBlockRegistrar.BROKEN_PATTERN_PROVIDER_BLOCK.get(), 1);

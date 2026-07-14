@@ -2,6 +2,7 @@ package net.oktawia.insaneae2addons.client.screens.block;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.insaneae2addons.client.screens.ResearchStatusText;
@@ -19,11 +20,19 @@ public class ResearchPedestalScreen<C extends ResearchPedestalMenu> extends AEBa
         super.updateBeforeRender();
 
         C menu = getMenu();
-        if (menu.validConnection) {
-            setTextContent("computation", Component.translatable(LangDefs.RESEARCH_PEDESTAL_COMPUTATION.getTranslationKey())
-                    .append(String.valueOf(menu.computation)).append("/t"));
-        } else {
-            setTextContent("computation", Component.translatable(LangDefs.RESEARCH_PEDESTAL_INVALID.getTranslationKey()));
+        switch (menu.connection()) {
+            case SINGLE -> setTextContent("computation",
+                    Component.translatable(LangDefs.RESEARCH_PEDESTAL_COMPUTATION.getTranslationKey())
+                            .append(String.valueOf(menu.computation)).append("/t"));
+            case MULTIPLE_UNITS -> setTextContent("computation",
+                    Component.translatable(LangDefs.RESEARCH_PEDESTAL_MULTIPLE_UNITS.getTranslationKey())
+                            .withStyle(ChatFormatting.RED));
+            case UNIT_SHARED -> setTextContent("computation",
+                    Component.translatable(LangDefs.RESEARCH_PEDESTAL_UNIT_SHARED.getTranslationKey())
+                            .withStyle(ChatFormatting.RED));
+            default -> setTextContent("computation",
+                    Component.translatable(LangDefs.RESEARCH_PEDESTAL_INVALID.getTranslationKey())
+                            .withStyle(ChatFormatting.RED));
         }
         setTextContent("status", ResearchStatusText.of(menu.status()));
     }

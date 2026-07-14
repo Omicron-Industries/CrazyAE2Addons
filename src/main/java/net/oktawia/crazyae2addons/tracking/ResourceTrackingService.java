@@ -3,7 +3,6 @@ package net.oktawia.crazyae2addons.tracking;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.stacks.AEKey;
-import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.Map;
 public class ResourceTrackingService implements IResourceTrackingService, IGridServiceProvider {
 
     private static final int MAX_KEYS = 10_000;
-    private static final int MAX_DESCS_PER_KEY = 200;
+    private static final int MAX_TARGETS_PER_KEY = 200;
 
     private final HashMap<AEKey, PerKeyData> data = new HashMap<>();
 
@@ -23,7 +22,7 @@ public class ResourceTrackingService implements IResourceTrackingService, IGridS
     }
 
     @Override
-    public void trackConsumption(AEKey key, long amount, String description, @Nullable AEKey icon, @Nullable BlockPos pos) {
+    public void trackConsumption(AEKey key, long amount, UsageTarget target, String description, @Nullable AEKey icon) {
         if (amount <= 0) return;
         PerKeyData d = data.get(key);
         if (d == null) {
@@ -31,8 +30,8 @@ public class ResourceTrackingService implements IResourceTrackingService, IGridS
             d = new PerKeyData();
             data.put(key, d);
         }
-        if (d.descAmounts.size() >= MAX_DESCS_PER_KEY && !d.descAmounts.containsKey(description)) return;
-        d.record(amount, description, icon, pos, System.currentTimeMillis());
+        if (d.targetAmounts.size() >= MAX_TARGETS_PER_KEY && !d.targetAmounts.containsKey(target)) return;
+        d.record(amount, target, description, icon, System.currentTimeMillis());
     }
 
     @Override
@@ -54,11 +53,11 @@ public class ResourceTrackingService implements IResourceTrackingService, IGridS
         PerKeyData d = data.get(key);
         if (d == null) return List.of();
         long now = System.currentTimeMillis();
-        List<UsageEntry> entries = new ArrayList<>(d.descAmounts.size());
-        for (String desc : d.descAmounts.keySet()) {
-            long perMin = d.perMinuteDesc(desc, now);
+        List<UsageEntry> entries = new ArrayList<>(d.targetAmounts.size());
+        for (UsageTarget target : d.targetAmounts.keySet()) {
+            long perMin = d.perMinuteTarget(target, now);
             if (perMin > 0) {
-                entries.add(new UsageEntry(desc, perMin, d.descIcons.get(desc), d.descPositions.get(desc)));
+                entries.add(new UsageEntry(d.targetDescriptions.get(target), perMin, d.targetIcons.get(target), target.pos()));
             }
         }
         entries.sort(Comparator.comparingLong(UsageEntry::totalAmount).reversed());

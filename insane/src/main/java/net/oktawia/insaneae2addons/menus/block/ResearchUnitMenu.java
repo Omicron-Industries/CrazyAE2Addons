@@ -5,7 +5,7 @@ import appeng.menu.interfaces.IProgressProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerMenu;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.entities.ResearchUnitBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchUnitBE;
 import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
 
 public class ResearchUnitMenu extends AbstractMultiblockControllerMenu {

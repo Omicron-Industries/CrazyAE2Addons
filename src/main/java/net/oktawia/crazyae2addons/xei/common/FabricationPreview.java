@@ -12,6 +12,8 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -108,6 +110,27 @@ public class FabricationPreview extends WidgetGroup {
             fout.setIngredientIO(IngredientIO.OUTPUT);
             addWidget(fout);
             addWidget(new LabelWidget(outX, yFluids + tankSize + 2, "Fluid Out"));
+        }
+
+        if (requiredKey != null) {
+            ResearchDiskHook hook = ResearchDiskHooks.get();
+            ItemStack gateIcon = hook != null ? hook.researchGateIcon() : ItemStack.EMPTY;
+            List<Component> info = hook != null
+                    ? hook.researchGateInfo(requiredKey)
+                    : List.of(Component.literal(requiredLabel != null ? requiredLabel : requiredKey.toString()));
+
+            int gx = outX;
+            int gy = yFluids;
+            if (gateIcon != null && !gateIcon.isEmpty()) {
+                addWidget(new SlotWidget(new ItemStackTransfer(gateIcon), 0, gx, gy, false, false)
+                        .setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE)
+                        .setIngredientIO(IngredientIO.RENDER_ONLY));
+                gx += 20;
+            }
+
+            String[] tip = info.stream().map(Component::getString).toArray(String[]::new);
+            addWidget(new ButtonWidget(gx, gy + 3, 12, 12, new TextTexture("!"), b -> {})
+                    .appendHoverTooltips(tip));
         }
 
         String outputName = null;

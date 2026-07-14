@@ -36,17 +36,20 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
                     && block != InsaneBlockRegistrar.RESEARCH_UNIT_FRAME_BLOCK.get()
                     && block != InsaneBlockRegistrar.RESEARCH_UNIT_BLOCK.get()
                     && block != InsaneBlockRegistrar.RESEARCH_CABLE_BLOCK.get()
-                    && block != InsaneBlockRegistrar.RESEARCH_CABLE_BLACK_BLOCK.get()
+                    && block != InsaneBlockRegistrar.RESEARCH_CABLE_PINK_BLOCK.get()
                     && block != InsaneBlockRegistrar.RESEARCH_CABLE_WHITE_BLOCK.get()
                     && block != InsaneBlockRegistrar.RESEARCH_PEDESTAL_BOTTOM_BLOCK.get()
                     && block != InsaneBlockRegistrar.RESEARCH_PEDESTAL_TOP_BLOCK.get()
+                    && block != InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get()
+                    && block != InsaneBlockRegistrar.ENTROPY_CRADLE_BLOCK.get()
+                    && block != InsaneBlockRegistrar.ENTROPY_CRADLE_CAPACITOR_BLOCK.get()
             ) {
                 simpleBlock(block, cubeAll(block));
             }
         }
 
         researchCable(InsaneBlockRegistrar.RESEARCH_CABLE_BLOCK.get(), "research_cable");
-        researchCable(InsaneBlockRegistrar.RESEARCH_CABLE_BLACK_BLOCK.get(), "research_cable_black");
+        researchCable(InsaneBlockRegistrar.RESEARCH_CABLE_PINK_BLOCK.get(), "research_cable_pink");
         researchCable(InsaneBlockRegistrar.RESEARCH_CABLE_WHITE_BLOCK.get(), "research_cable_white");
 
         Block frame = InsaneBlockRegistrar.RESEARCH_UNIT_FRAME_BLOCK.get();
@@ -57,6 +60,12 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
 
         Block station = InsaneBlockRegistrar.RESEARCH_STATION_BLOCK.get();
         orientedBlock(station, ctmModel(station, modLoc("block/research_pedestal_bottom"), false, CONTROLLER_OVERLAY));
+
+        Block cradle = InsaneBlockRegistrar.ENTROPY_CRADLE_BLOCK.get();
+        simpleBlock(cradle, ctmModel(cradle, modLoc("block/entropy_cradle"), true, null));
+
+        Block cradleController = InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get();
+        simpleBlock(cradleController, ctmModel(cradleController, modLoc("block/entropy_cradle"), true, CONTROLLER_OVERLAY));
     }
 
     private void researchCable(Block block, String texture) {

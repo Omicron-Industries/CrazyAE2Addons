@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "insaneae2addons:block/entropy_cradle_controller"
+    }
+  }
+}

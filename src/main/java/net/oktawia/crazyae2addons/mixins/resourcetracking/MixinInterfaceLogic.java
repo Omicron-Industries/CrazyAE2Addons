@@ -7,7 +7,9 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
+import net.minecraft.core.GlobalPos;
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
+import net.oktawia.crazyae2addons.tracking.UsageTarget;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,6 +29,9 @@ public class MixinInterfaceLogic {
     @Unique
     private String crazyAE2Addons$cachedDesc;
 
+    @Unique
+    private UsageTarget crazyAE2Addons$cachedTarget;
+
     @Redirect(
         method = "acquireFromNetwork",
         at = @At(value = "INVOKE",
@@ -44,11 +49,13 @@ public class MixinInterfaceLogic {
             if (grid != null) {
                 var svc = grid.getService(IResourceTrackingService.class);
                 if (svc != null) {
-                    if (crazyAE2Addons$cachedDesc == null) {
-                        var pos = host.getBlockEntity().getBlockPos();
+                    if (crazyAE2Addons$cachedTarget == null) {
+                        var be = host.getBlockEntity();
+                        var pos = be.getBlockPos();
                         crazyAE2Addons$cachedDesc = "interface at " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
+                        crazyAE2Addons$cachedTarget = UsageTarget.interfaceAt(GlobalPos.of(be.getLevel().dimension(), pos.immutable()));
                     }
-                    svc.trackConsumption(what, acquired, crazyAE2Addons$cachedDesc, null);
+                    svc.trackConsumption(what, acquired, crazyAE2Addons$cachedTarget, crazyAE2Addons$cachedDesc, null);
                 }
             }
         }

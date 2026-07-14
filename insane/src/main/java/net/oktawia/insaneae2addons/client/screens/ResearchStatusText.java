@@ -17,7 +17,7 @@ public final class ResearchStatusText {
 
     private static ChatFormatting colorFor(ResearchStatus status) {
         return switch (status) {
-            case READY, WORKING -> ChatFormatting.GREEN;
+            case READY, WORKING, ALREADY_UNLOCKED -> ChatFormatting.GREEN;
             case IDLE -> ChatFormatting.GRAY;
             case FLUID_LOW -> ChatFormatting.YELLOW;
             default -> ChatFormatting.RED;

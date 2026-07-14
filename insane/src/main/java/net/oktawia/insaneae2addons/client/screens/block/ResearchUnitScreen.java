@@ -8,7 +8,7 @@ import net.oktawia.crazyae2addons.client.screens.AbstractMultiblockControllerScr
 import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.client.screens.ResearchStatusText;
 import net.oktawia.insaneae2addons.defs.LangDefs;
-import net.oktawia.insaneae2addons.entities.ResearchUnitBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchUnitBE;
 import net.oktawia.insaneae2addons.menus.block.ResearchUnitMenu;
 
 public class ResearchUnitScreen<C extends ResearchUnitMenu> extends AbstractMultiblockControllerScreen<C> {

@@ -62,6 +62,10 @@ public class InsaneFabricationRecipeProvider implements DataProvider {
                 json.add("fluid_output", fluidOutputObj);
             }
 
+            if (recipe.requiredKey() != null) {
+                json.addProperty("required_key", recipe.requiredKey());
+            }
+
             var path = pathResolver.json(InsaneAddons.makeId(recipe.id()));
             futures.add(DataProvider.saveStable(cache, json, path));
         }

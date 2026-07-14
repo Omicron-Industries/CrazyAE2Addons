@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
-import net.oktawia.insaneae2addons.entities.ResearchPedestalBottomBE;
+import net.oktawia.insaneae2addons.entities.research.ResearchPedestalBottomBE;
 import org.jetbrains.annotations.Nullable;
 
 public class ResearchPedestalBottomBlock extends AbstractMenuOpeningBlock<ResearchPedestalBottomBE> {

@@ -13,6 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IResourceTrackingTerminalHost;
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
@@ -39,6 +40,9 @@ public class ResourceTrackingTerminalPart extends AbstractDisplayPart implements
 
     @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
+        if (!CrazyConfig.COMMON.RESOURCE_TRACKING_TERMINAL_ENABLED.get()) {
+            return true;
+        }
         if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
             MenuOpener.open(CrazyMenuRegistrar.RESOURCE_TRACKING_TERMINAL_MENU.get(), player, MenuLocators.forPart(this));
         }

@@ -1,0 +1,13 @@
+{
+  "type": "crazyae2addons:fabrication",
+  "input": [
+    {
+      "count": 1,
+      "item": "insaneae2addons:data_drive"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "insaneae2addons:data_drive"
+  }
+}
