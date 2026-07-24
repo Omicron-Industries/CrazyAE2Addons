@@ -14,6 +14,18 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public interface IManagedBEHelper extends IManaged, IAsyncAutoSyncBlockEntity, IRPCBlockEntity {
     String MANAGED_TAG = "managed";
 
+    static ManagedFieldHolder inheritedFieldHolder(Class<? extends IManaged> clazz) {
+        ManagedFieldHolder holder = new ManagedFieldHolder(clazz);
+
+        for (Class<?> parent = clazz.getSuperclass();
+             parent != null && IManaged.class.isAssignableFrom(parent);
+             parent = parent.getSuperclass()) {
+            holder.merge(new ManagedFieldHolder(parent.asSubclass(IManaged.class)));
+        }
+
+        return holder;
+    }
+
     FieldManagedStorage getSyncStorage();
 
     @Override

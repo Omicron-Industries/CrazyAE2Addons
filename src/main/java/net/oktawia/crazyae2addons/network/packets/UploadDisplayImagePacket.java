@@ -62,9 +62,38 @@ public record UploadDisplayImagePacket(
                 return;
             }
 
+            if (!isPngWithinBounds(pkt.pngBytes())) {
+                return;
+            }
+
             menu.addImage(pkt.sourceName(), pkt.pngBytes(), pkt.width(), pkt.height());
         });
 
         ctx.setPacketHandled(true);
+    }
+
+    private static boolean isPngWithinBounds(byte[] bytes) {
+        if (bytes.length < 24) {
+            return false;
+        }
+        boolean signature = (bytes[0] & 0xFF) == 0x89 && bytes[1] == 'P' && bytes[2] == 'N' && bytes[3] == 'G'
+                && (bytes[4] & 0xFF) == 0x0D && (bytes[5] & 0xFF) == 0x0A
+                && (bytes[6] & 0xFF) == 0x1A && (bytes[7] & 0xFF) == 0x0A;
+        if (!signature) {
+            return false;
+        }
+        if (bytes[12] != 'I' || bytes[13] != 'H' || bytes[14] != 'D' || bytes[15] != 'R') {
+            return false;
+        }
+        int realWidth = readBigEndianInt(bytes, 16);
+        int realHeight = readBigEndianInt(bytes, 20);
+        return realWidth > 0 && realHeight > 0 && realWidth <= MAX_IMAGE_DIM && realHeight <= MAX_IMAGE_DIM;
+    }
+
+    private static int readBigEndianInt(byte[] bytes, int offset) {
+        return ((bytes[offset] & 0xFF) << 24)
+                | ((bytes[offset + 1] & 0xFF) << 16)
+                | ((bytes[offset + 2] & 0xFF) << 8)
+                | (bytes[offset + 3] & 0xFF);
     }
 }

@@ -3,32 +3,34 @@ package net.oktawia.crazyae2addons.multiblock;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.menu.locator.MenuLocator;
 import appeng.menu.locator.MenuLocators;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
-import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 public abstract class AbstractMultiblockFrameBE<C extends BlockEntity> extends AENetworkBlockEntity
-        implements MultiblockCallback, IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IManaged, IMenuOpeningBlockEntity {
+        implements MultiblockCallback, IManagedBEHelper, IMenuOpeningBlockEntity {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(AbstractMultiblockFrameBE.class);
@@ -38,6 +40,9 @@ public abstract class AbstractMultiblockFrameBE<C extends BlockEntity> extends A
 
     protected @Nullable MultiblockState activeState;
     protected @Nullable C activeController;
+
+    @Getter
+    private final float frameIdlePowerUsage;
 
     @DescSynced
     @Persisted
@@ -52,9 +57,90 @@ public abstract class AbstractMultiblockFrameBE<C extends BlockEntity> extends A
     ) {
         super(type, pos, blockState);
 
+        this.frameIdlePowerUsage = idlePowerUsage;
+
         this.getMainNode()
-                .setIdlePowerUsage(idlePowerUsage)
+                .setIdlePowerUsage(0.0)
                 .setVisualRepresentation(visualRepresentation);
+    }
+
+    @Override
+    protected IManagedGridNode createMainNode() {
+        return new LazyGridNode(super.createMainNode());
+    }
+
+    public static boolean isMultiblockMember(@Nullable BlockEntity be) {
+        return be instanceof AbstractMultiblockFrameBE<?> || be instanceof AbstractMultiblockControllerBE;
+    }
+
+    @Override
+    public @Nullable IGridNode getGridNode(Direction dir) {
+        Level level = getLevel();
+        if (level == null || getResolvedController() == null) {
+            return null;
+        }
+
+        if (isMultiblockMember(level.getBlockEntity(getBlockPos().relative(dir)))) {
+            return null;
+        }
+
+        materializeGridNode();
+        return super.getGridNode(dir);
+    }
+
+    @Override
+    public void onReady() {
+        super.onReady();
+        updateGridExposure(getResolvedController() != null);
+    }
+
+    private void updateGridExposure(boolean formed) {
+        if (formed && hasExternalGridNeighbor()) {
+            materializeGridNode();
+        }
+
+        getMainNode().setExposedOnSides(formed ? EnumSet.allOf(Direction.class) : EnumSet.noneOf(Direction.class));
+    }
+
+    private boolean hasExternalGridNeighbor() {
+        Level level = getLevel();
+        if (level == null || level.isClientSide()) {
+            return false;
+        }
+
+        for (Direction dir : Direction.values()) {
+            BlockPos neighborPos = getBlockPos().relative(dir);
+            if (isMultiblockMember(level.getBlockEntity(neighborPos))) {
+                continue;
+            }
+
+            if (GridHelper.getNodeHost(level, neighborPos) != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public @Nullable IGridNode getActionableNode() {
+        IGridNode ownNode = getMainNode().getNode();
+        if (ownNode != null) {
+            return ownNode;
+        }
+
+        C controller = getResolvedController();
+        if (controller instanceof AENetworkBlockEntity controllerAe) {
+            return controllerAe.getMainNode().getNode();
+        }
+
+        return null;
+    }
+
+    protected void materializeGridNode() {
+        if (getMainNode() instanceof LazyGridNode lazyNode && lazyNode.materialize()) {
+            connectToControllerGrid();
+        }
     }
 
     @Override
@@ -65,6 +151,31 @@ public abstract class AbstractMultiblockFrameBE<C extends BlockEntity> extends A
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        saveManagedData(tag);
+    }
+
+    @Override
+    public void loadTag(CompoundTag tag) {
+        loadManagedData(tag);
+        super.loadTag(tag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveManagedData(tag);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        loadManagedData(tag);
+        super.handleUpdateTag(tag);
     }
 
     @Override
@@ -93,6 +204,7 @@ public abstract class AbstractMultiblockFrameBE<C extends BlockEntity> extends A
         this.activeController = newController;
         this.syncedControllerPos = newController != null ? newController.getBlockPos().immutable() : null;
 
+        updateGridExposure(newController != null);
         onControllerChanged(newController);
         setChanged();
     }

@@ -17,7 +17,7 @@ import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
 import net.oktawia.insaneae2addons.client.utils.NbtMatcherHighlight;
 import net.oktawia.insaneae2addons.defs.LangDefs;
-import net.oktawia.insaneae2addons.logic.viewcell.NBTMatcher;
+import net.oktawia.insaneae2addons.logic.nbt.NBTMatcher;
 import net.oktawia.insaneae2addons.menus.part.NbtStorageBusMenu;
 import net.oktawia.insaneae2addons.util.NbtFormatter;
 

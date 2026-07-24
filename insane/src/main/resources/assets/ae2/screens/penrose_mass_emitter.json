@@ -1,0 +1,83 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
+  "background": {
+    "texture": "guis/blank_background.png",
+    "srcRect": [
+      0,
+      0,
+      176,
+      205
+    ]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "block.insaneae2addons.penrose_mass_emitter"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "thresholds": {
+      "position": {
+        "left": 8,
+        "top": 22
+      }
+    },
+    "reading": {
+      "position": {
+        "left": 8,
+        "top": 32
+      }
+    },
+    "state": {
+      "position": {
+        "left": 8,
+        "top": 42
+      }
+    },
+    "on_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.penrose.emitter_on_label"
+      },
+      "position": {
+        "left": 52,
+        "top": 56
+      }
+    },
+    "off_label": {
+      "text": {
+        "translate": "gui.insaneae2addons.penrose.emitter_off_label"
+      },
+      "position": {
+        "left": 52,
+        "top": 70
+      }
+    }
+  },
+  "widgets": {
+    "on": {
+      "left": 70,
+      "top": 54,
+      "width": 40,
+      "height": 12
+    },
+    "off": {
+      "left": 70,
+      "top": 68,
+      "width": 40,
+      "height": 12
+    },
+    "curve": {
+      "left": 40,
+      "top": 84,
+      "width": 96,
+      "height": 22
+    }
+  }
+}

@@ -67,6 +67,69 @@ public class ItemRecipes {
                 .output(InsaneItemRegistrar.NBT_STORAGE_BUS.get())
                 .register();
 
+        recipe("mob_key_selector")
+                .shaped("CE")
+                .define('C', AEItems.ADVANCED_CARD.asItem())
+                .define('E', AEItems.ENGINEERING_PROCESSOR.asItem())
+                .output(InsaneItemRegistrar.MOB_KEY_SELECTOR.get())
+                .register();
+
+        recipe("mob_annihilation_plane")
+                .shaped("AE")
+                .define('A', AEParts.ANNIHILATION_PLANE.asItem())
+                .define('E', Items.ECHO_SHARD)
+                .output(InsaneItemRegistrar.MOB_ANNIHILATION_PLANE.get())
+                .register();
+
+        recipe("mob_export_bus")
+                .shaped("XE")
+                .define('X', AEParts.EXPORT_BUS.asItem())
+                .define('E', Items.ECHO_SHARD)
+                .output(InsaneItemRegistrar.MOB_EXPORT_BUS.get())
+                .register();
+
+        recipe("mob_formation_plane")
+                .shaped("FE")
+                .define('F', AEParts.FORMATION_PLANE.asItem())
+                .define('E', Items.ECHO_SHARD)
+                .output(InsaneItemRegistrar.MOB_FORMATION_PLANE.get())
+                .register();
+
+        recipe("mob_storage_cell_1k")
+                .shaped("HC")
+                .define('H', InsaneItemRegistrar.MOB_CELL_HOUSING.get())
+                .define('C', AEItems.CELL_COMPONENT_1K.asItem())
+                .output(InsaneItemRegistrar.MOB_CELL_1K.get())
+                .register();
+
+        recipe("mob_storage_cell_4k")
+                .shaped("HC")
+                .define('H', InsaneItemRegistrar.MOB_CELL_HOUSING.get())
+                .define('C', AEItems.CELL_COMPONENT_4K.asItem())
+                .output(InsaneItemRegistrar.MOB_CELL_4K.get())
+                .register();
+
+        recipe("mob_storage_cell_16k")
+                .shaped("HC")
+                .define('H', InsaneItemRegistrar.MOB_CELL_HOUSING.get())
+                .define('C', AEItems.CELL_COMPONENT_16K.asItem())
+                .output(InsaneItemRegistrar.MOB_CELL_16K.get())
+                .register();
+
+        recipe("mob_storage_cell_64k")
+                .shaped("HC")
+                .define('H', InsaneItemRegistrar.MOB_CELL_HOUSING.get())
+                .define('C', AEItems.CELL_COMPONENT_64K.asItem())
+                .output(InsaneItemRegistrar.MOB_CELL_64K.get())
+                .register();
+
+        recipe("mob_storage_cell_256k")
+                .shaped("HC")
+                .define('H', InsaneItemRegistrar.MOB_CELL_HOUSING.get())
+                .define('C', AEItems.CELL_COMPONENT_256K.asItem())
+                .output(InsaneItemRegistrar.MOB_CELL_256K.get())
+                .register();
+
         recipe("player_upgrade_card")
                 .shaped("CE")
                 .define('C', AEItems.ADVANCED_CARD.asItem())
@@ -79,6 +142,22 @@ public class ItemRecipes {
                 .define('C', AEItems.ADVANCED_CARD.asItem())
                 .define('E', AEBlocks.CRAFTING_UNIT.asItem())
                 .output(InsaneItemRegistrar.AUTOMATION_UPGRADE_CARD.get())
+                .register();
+
+        recipe("looting_upgrade_card")
+                .shaped("CDS")
+                .define('C', AEItems.ADVANCED_CARD.asItem())
+                .define('D', Items.DIAMOND)
+                .define('S', Items.IRON_SWORD)
+                .output(InsaneItemRegistrar.LOOTING_UPGRADE_CARD.get())
+                .register();
+
+        recipe("experience_upgrade_card")
+                .shaped("CEG")
+                .define('C', AEItems.ADVANCED_CARD.asItem())
+                .define('E', Items.EXPERIENCE_BOTTLE)
+                .define('G', Items.GOLD_INGOT)
+                .output(InsaneItemRegistrar.EXPERIENCE_UPGRADE_CARD.get())
                 .register();
     }
 

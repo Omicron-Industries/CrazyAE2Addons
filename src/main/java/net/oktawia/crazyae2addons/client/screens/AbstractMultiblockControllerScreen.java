@@ -1,6 +1,5 @@
 package net.oktawia.crazyae2addons.client.screens;
 
-import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import net.minecraft.client.gui.components.Tooltip;
@@ -10,7 +9,7 @@ import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerMenu;
 
 public abstract class AbstractMultiblockControllerScreen<C extends AbstractMultiblockControllerMenu>
-        extends AEBaseScreen<C> {
+        extends CrazyBaseScreen<C> {
 
     private final IconButton previewButton;
 

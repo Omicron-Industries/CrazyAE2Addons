@@ -6,6 +6,7 @@
   "plugin": "net.oktawia.crazyae2addons.mixins.Plugin",
   "refmap": "mixins.crazyae2addons.refmap.json",
   "mixins": [
+    "MiscForgeHelperMixin",
     "MixinAbstractLevelEmitterPart",
     "MixinEntity",
     "MixinPatternProviderLogic",
@@ -30,14 +31,14 @@
     "cpupriority.MixinCraftingCpuListEntryPrio",
     "cpupriority.MixinCraftingService",
     "cpupriority.MixinCraftingStatusMenu",
-    "resourcetracking.MixinInitGridServices",
     "resourcetracking.MixinCraftingCpuHelper",
+    "resourcetracking.MixinExportBusPart",
     "resourcetracking.MixinInterfaceLogic",
-    "resourcetracking.MixinStorageBusPart",
     "resourcetracking.MixinMEInputBusPartMachine",
     "resourcetracking.MixinMEInputHatchPartMachine",
+    "resourcetracking.MixinMEStockingFluidSlot",
     "resourcetracking.MixinMEStockingItemSlot",
-    "resourcetracking.MixinMEStockingFluidSlot"
+    "resourcetracking.MixinStorageBusPart"
   ],
   "client": [
     "analogemitter.MixinStorageLevelEmitterScreenAnalog",

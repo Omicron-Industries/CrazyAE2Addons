@@ -2,7 +2,6 @@ package net.oktawia.crazyae2addons.client.renderer.display;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,6 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.logic.display.DisplayGrid;
 import net.oktawia.crazyae2addons.parts.Display;
+import org.joml.Matrix4f;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -29,7 +29,7 @@ import java.util.Set;
 public final class DisplayWorldRenderer {
 
     private static final float RENDER_DIST_SQ = 256f * 256f;
-    private static final float DISPLAY_SURFACE_OFFSET = 0.501f;
+    private static final float DISPLAY_SURFACE_OFFSET = 0.53225f;
     private static final int DISPLAY_BUFFER_SIZE = 262_144;
     private static final int MAX_RENDERED_GROUPS_PER_FRAME = 256;
     private static final int MAX_COMMANDS_PER_GROUP = 16_384;
@@ -187,13 +187,60 @@ public final class DisplayWorldRenderer {
             return false;
         }
 
+        DisplayGrid.PlaneAxes axes = DisplayGrid.surfaceAxes(facing, renderOrigin.getSpin());
+        Vec3 gridRight = toVec(axes.right());
+        Vec3 gridUp = toVec(axes.up());
+        Vec3 normalVec = toVec(facing);
+
+        Vec3 screenRight = gridRight.cross(gridUp).dot(normalVec) > 0 ? gridRight : gridRight.scale(-1.0);
+        Vec3 screenDown = gridUp.scale(-1.0);
+
+        if (facing == Direction.UP) {
+            screenRight = screenRight.scale(-1.0);
+            screenDown = screenDown.scale(-1.0);
+        }
+
+        double minR = Double.MAX_VALUE;
+        double minD = Double.MAX_VALUE;
+        for (Display member : grid) {
+            var mbe = member.getBlockEntity();
+            if (mbe == null) {
+                continue;
+            }
+            BlockPos mp = mbe.getBlockPos();
+            double cx = mp.getX() + 0.5;
+            double cy = mp.getY() + 0.5;
+            double cz = mp.getZ() + 0.5;
+            minR = Math.min(minR, cx * screenRight.x + cy * screenRight.y + cz * screenRight.z);
+            minD = Math.min(minD, cx * screenDown.x + cy * screenDown.y + cz * screenDown.z);
+        }
+        minR -= 0.5;
+        minD -= 0.5;
+
+        double ocx = originPos.getX() + 0.5;
+        double ocy = originPos.getY() + 0.5;
+        double ocz = originPos.getZ() + 0.5;
+        double faceN = ocx * normalVec.x + ocy * normalVec.y + ocz * normalVec.z + DISPLAY_SURFACE_OFFSET;
+
+        Vec3 corner = screenRight.scale(minR).add(screenDown.scale(minD)).add(normalVec.scale(faceN));
+
+        float s = 1f / 64f;
+        Matrix4f basis = new Matrix4f();
+        basis.m00((float) (screenRight.x * s));
+        basis.m01((float) (screenRight.y * s));
+        basis.m02((float) (screenRight.z * s));
+        basis.m10((float) (screenDown.x * s));
+        basis.m11((float) (screenDown.y * s));
+        basis.m12((float) (screenDown.z * s));
+        basis.m20((float) (normalVec.x * s));
+        basis.m21((float) (normalVec.y * s));
+        basis.m22((float) (normalVec.z * s));
+
         ps.pushPose();
 
         try {
-            ps.translate(originPos.getX() - cam.x, originPos.getY() - cam.y, originPos.getZ() - cam.z);
-            applyFacingTransform(ps, renderOrigin);
-            ps.translate(0.0f, 0.0f, DISPLAY_SURFACE_OFFSET);
-            ps.scale(1f / 64f, -1f / 64f, 1f / 64f);
+            ps.translate(corner.x - cam.x, corner.y - cam.y, corner.z - cam.z);
+            ps.mulPoseMatrix(basis);
 
             DisplayRendererCommon.renderPrepared(prepared, ps, buf, font, 0xF000F0);
             return true;
@@ -202,75 +249,7 @@ public final class DisplayWorldRenderer {
         }
     }
 
-    private record Transformation(float tx, float ty, float tz, float yRot, float xRot) {
-    }
-
-    private static void applyFacingTransform(PoseStack ps, Display part) {
-        Transformation t = getFacingTransformation(part.getSide());
-
-        ps.translate(t.tx, t.ty, t.tz);
-        ps.mulPose(Axis.YP.rotationDegrees(t.yRot));
-        ps.mulPose(Axis.XP.rotationDegrees(t.xRot));
-
-        if (t.xRot != 0f) {
-            applySpinTransformation(ps, part, t.xRot);
-        }
-    }
-
-    private static Transformation getFacingTransformation(Direction facing) {
-        return switch (facing) {
-            case SOUTH -> new Transformation(0f, 1f, 0.5f, 0f, 0f);
-            case WEST -> new Transformation(0.5f, 1f, 0f, -90f, 0f);
-            case EAST -> new Transformation(0.5f, 1f, 1f, 90f, 0f);
-            case NORTH -> new Transformation(1f, 1f, 0.5f, 180f, 0f);
-            case UP -> new Transformation(0f, 0.5f, 0f, 0f, -90f);
-            case DOWN -> new Transformation(1f, 0.5f, 0f, 0f, 90f);
-        };
-    }
-
-    private static void applySpinTransformation(PoseStack ps, Display part, float xRot) {
-        float spin = 0f;
-
-        if (xRot == 90f) {
-            switch (part.getSpin()) {
-                case 0 -> {
-                    spin = 0f;
-                    ps.translate(-1f, 1f, 0f);
-                }
-                case 1 -> {
-                    spin = 90f;
-                    ps.translate(-1f, 0f, 0f);
-                }
-                case 2 -> {
-                    spin = 180f;
-                    ps.translate(0f, 0f, 0f);
-                }
-                case 3 -> {
-                    spin = -90f;
-                    ps.translate(0f, 1f, 0f);
-                }
-            }
-        } else {
-            switch (part.getSpin()) {
-                case 0 -> {
-                    spin = 0f;
-                    ps.translate(0f, 0f, 0f);
-                }
-                case 1 -> {
-                    spin = -90f;
-                    ps.translate(1f, 0f, 0f);
-                }
-                case 2 -> {
-                    spin = 180f;
-                    ps.translate(1f, -1f, 0f);
-                }
-                case 3 -> {
-                    spin = 90f;
-                    ps.translate(0f, -1f, 0f);
-                }
-            }
-        }
-
-        ps.mulPose(Axis.ZP.rotationDegrees(spin));
+    private static Vec3 toVec(Direction dir) {
+        return new Vec3(dir.getStepX(), dir.getStepY(), dir.getStepZ());
     }
 }

@@ -1,0 +1,17 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "formation_plane.json"
+  ],
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "item.insaneae2addons.mob_formation_plane"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  }
+}

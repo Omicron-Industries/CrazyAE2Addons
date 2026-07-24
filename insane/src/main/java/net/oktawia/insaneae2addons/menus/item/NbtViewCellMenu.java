@@ -4,7 +4,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.logic.viewcell.ViewCellHost;
+import net.oktawia.insaneae2addons.logic.nbt.ViewCellHost;
 
 public class NbtViewCellMenu extends AEBaseMenu {
     public static final String SEND_DATA = "SendData";

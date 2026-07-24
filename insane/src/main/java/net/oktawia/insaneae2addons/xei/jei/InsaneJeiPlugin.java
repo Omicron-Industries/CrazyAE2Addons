@@ -30,6 +30,7 @@ public class InsaneJeiPlugin implements IModPlugin {
         var guiHelper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(new CradleCategory(guiHelper));
         registration.addRecipeCategories(new ResearchCategory(guiHelper));
+        registration.addRecipeCategories(new MultiblockCategory(guiHelper));
     }
 
     @Override
@@ -41,6 +42,11 @@ public class InsaneJeiPlugin implements IModPlugin {
         registration.addRecipes(
                 ResearchCategory.TYPE,
                 InsaneXeiRecipes.getResearchEntries().stream().map(ResearchWrapper::new).toList()
+        );
+
+        registration.addRecipes(
+                MultiblockCategory.TYPE,
+                InsaneXeiRecipes.getMultiblockEntries().stream().map(MultiblockWrapper::new).toList()
         );
 
         FeatureGates.forEachDisabled(InsaneAddons.MODID, item -> registration.getIngredientManager().removeIngredientsAtRuntime(
@@ -59,5 +65,8 @@ public class InsaneJeiPlugin implements IModPlugin {
                 InsaneBlockRegistrar.RESEARCH_STATION_BLOCK.get(),
                 ResearchCategory.TYPE
         );
+        for (var entry : InsaneXeiRecipes.getMultiblockEntries()) {
+            registration.addRecipeCatalyst(entry.controller(), MultiblockCategory.TYPE);
+        }
     }
 }

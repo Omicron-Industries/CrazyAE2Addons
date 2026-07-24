@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "ae2:dense_energy_cell"
+    },
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "pattern": [
+    "DND",
+    "NEN",
+    "DND"
+  ],
+  "result": {
+    "item": "insaneae2addons:mob_farm_damage"
+  },
+  "show_notification": true
+}

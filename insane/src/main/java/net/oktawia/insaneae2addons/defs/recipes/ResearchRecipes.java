@@ -39,8 +39,6 @@ public class ResearchRecipes {
                 .unlock("insaneae2addons:builder_pattern_research", "Autobuilder", "insaneae2addons:builder_pattern")
                 .register();
 
-        // item nie istnieje jeszcze w insane (auto enchanter - TODO)
-        /*
         recipe("auto_enchanter")
                 .duration(1036800)
                 .energyPerTick(270)
@@ -50,10 +48,7 @@ public class ResearchRecipes {
                 .consumable("minecraft:enchanting_table", 1, 72)
                 .unlock("insaneae2addons:auto_enchanter_research", "Auto enchanter", "insaneae2addons:auto_enchanter")
                 .register();
-        */
 
-        // item nie istnieje jeszcze w insane (mob storage - TODO)
-        /*
         recipe("mob_cell")
                 .duration(3456000)
                 .energyPerTick(500)
@@ -67,10 +62,17 @@ public class ResearchRecipes {
                 .consumable("minecraft:glowstone", 8, 256)
                 .unlock("insaneae2addons:mob_cell_research", "Mob Storage", "insaneae2addons:mob_cell_housing")
                 .register();
-        */
 
-        // item nie istnieje jeszcze w insane (penrose sphere - TODO); consumable super_singularity tez nie istnieje
-        /*
+        recipe("ticker")
+                .duration(1206400)
+                .energyPerTick(500)
+                .consumable("minecraft:nether_star", 4, 256)
+                .consumable("minecraft:nether_star", 4, 256)
+                .consumable("minecraft:nether_star", 4, 256)
+                .consumable("minecraft:nether_star", 4, 256)
+                .unlock("insaneae2addons:entity_ticker_research", "Entity ticker", "insaneae2addons:entity_ticker")
+                .register();
+
         recipe("super_singularity_block")
                 .duration(41472000)
                 .energyPerTick(500)
@@ -82,18 +84,8 @@ public class ResearchRecipes {
                 .consumable("ae2:dense_energy_cell", 64, 432)
                 .consumable("ae2:dense_energy_cell", 64, 432)
                 .consumable("ae2:fluix_block", 8, 432)
-                .unlock("insaneae2addons:super_singularity_research", "Penrose Sphere", "insaneae2addons:super_singularity_block")
-                .register();
-        */
-
-        recipe("ticker")
-                .duration(1206400)
-                .energyPerTick(500)
-                .consumable("minecraft:nether_star", 4, 256)
-                .consumable("minecraft:nether_star", 4, 256)
-                .consumable("minecraft:nether_star", 4, 256)
-                .consumable("minecraft:nether_star", 4, 256)
-                .unlock("insaneae2addons:entity_ticker_research", "Entity ticker", "insaneae2addons:entity_ticker")
+                .unlock("insaneae2addons:super_singularity_research", "Portable Penrose Sphere",
+                        "insaneae2addons:super_singularity_block")
                 .register();
 
         recipe("entropy_cradle_controller")

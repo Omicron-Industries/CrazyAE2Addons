@@ -11,8 +11,17 @@ import java.util.function.Function;
 public record ConnectedTextureEntry(
         Function<BlockState, ResourceLocation> textureSelector,
         ConnectedTextureRule rule,
-        @Nullable BiFunction<BlockState, Direction, ResourceLocation> faceOverlay
+        @Nullable BiFunction<BlockState, Direction, ResourceLocation> faceOverlay,
+        int barThickness
 ) {
+    public ConnectedTextureEntry(
+            Function<BlockState, ResourceLocation> textureSelector,
+            ConnectedTextureRule rule,
+            @Nullable BiFunction<BlockState, Direction, ResourceLocation> faceOverlay
+    ) {
+        this(textureSelector, rule, faceOverlay, 0);
+    }
+
     public ResourceLocation texture(BlockState state) {
         return textureSelector.apply(state);
     }
@@ -28,5 +37,9 @@ public record ConnectedTextureEntry(
 
     public static ConnectedTextureEntry single(ResourceLocation texture, ConnectedTextureRule rule) {
         return new ConnectedTextureEntry(state -> texture, rule, null);
+    }
+
+    public static ConnectedTextureEntry bars(ResourceLocation texture, ConnectedTextureRule rule, int thickness) {
+        return new ConnectedTextureEntry(state -> texture, rule, null, thickness);
     }
 }

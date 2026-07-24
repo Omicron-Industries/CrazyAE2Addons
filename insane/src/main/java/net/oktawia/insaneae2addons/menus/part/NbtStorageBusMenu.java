@@ -14,7 +14,7 @@ import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.parts.NbtStorageBusPart;
+import net.oktawia.insaneae2addons.parts.nbt.NbtStorageBusPart;
 import net.oktawia.insaneae2addons.util.NbtFormatter;
 import org.jetbrains.annotations.Nullable;
 

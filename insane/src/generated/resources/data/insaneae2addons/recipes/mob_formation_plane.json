@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "F": {
+      "item": "ae2:formation_plane"
+    }
+  },
+  "pattern": [
+    "FE"
+  ],
+  "result": {
+    "item": "insaneae2addons:mob_formation_plane"
+  },
+  "show_notification": true
+}

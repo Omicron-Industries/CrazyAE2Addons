@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "insaneae2addons:penrose_frame"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ANA",
+    "AAA"
+  ],
+  "result": {
+    "item": "insaneae2addons:portable_penrose_sphere_controller"
+  },
+  "show_notification": true
+}

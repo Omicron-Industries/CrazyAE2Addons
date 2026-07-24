@@ -5,7 +5,11 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "mixins.insaneae2addons.refmap.json",
   "mixins": [
+    "BaseSpawnerAccessor",
     "CraftingCalculationAccessor",
+    "LivingEntityDropInvoker",
+    "MixinEntityDropCapture",
+    "MiscForgeHelperMixin",
     "MixinCraftingCpuLogic",
     "MixinCraftingTreeNode",
     "MixinPatternProviderLogic",

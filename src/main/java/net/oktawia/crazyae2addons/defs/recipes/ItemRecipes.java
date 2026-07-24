@@ -103,6 +103,10 @@ public class ItemRecipes {
                 .shapeless(AEBlocks.CONTROLLER, AEParts.TERMINAL)
                 .output(CrazyItemRegistrar.RESOURCE_TRACKING_TERMINAL.get())
                 .register();
+        recipe("analog_card")
+                .shapeless(AEItems.BASIC_CARD, Items.COMPARATOR)
+                .output(CrazyItemRegistrar.ANALOG_CARD.get())
+                .register();
     }
 
     public static class Builder {

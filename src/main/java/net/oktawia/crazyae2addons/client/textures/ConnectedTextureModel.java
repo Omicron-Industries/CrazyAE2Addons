@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> {
+public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> implements PreviewQuadProvider {
     private static final ModelProperty<Connections> CONNECTIONS = new ModelProperty<>();
     private static final float OVERLAY_EPS = 0.1f;
 
@@ -38,6 +38,7 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> {
     private final Map<ResourceLocation, TextureAtlasSprite> spriteCache = new ConcurrentHashMap<>();
     private final Map<QuadCacheKey, List<BakedQuad>> quadCache = new ConcurrentHashMap<>();
     private final Map<FullFaceKey, List<BakedQuad>> fullFaceCache = new ConcurrentHashMap<>();
+    private final Map<FullFaceKey, List<BakedQuad>> previewCache = new ConcurrentHashMap<>();
 
     public ConnectedTextureModel(BakedModel originalModel, ConnectedTextureEntry entry) {
         super(originalModel);
@@ -135,6 +136,69 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> {
                 true,
                 rl
         );
+    }
+
+    @Override
+    public List<BakedQuad> previewQuads(BlockState state, Direction face) {
+        if (state == null || face == null) {
+            return List.of();
+        }
+
+        List<BakedQuad> quads = new ArrayList<>(2);
+
+        ResourceLocation texture = entry.texture(state);
+        quads.addAll(previewCache.computeIfAbsent(
+                new FullFaceKey(texture, face),
+                key -> List.of(bakeSingleTile(key.face(), key.texture()))));
+
+        ResourceLocation overlay = entry.faceOverlay(state, face);
+        if (overlay != null) {
+            quads.addAll(fullFaceCache.computeIfAbsent(
+                    new FullFaceKey(overlay, face),
+                    key -> List.of(bakeFullFace(key.face(), key.texture()))));
+        }
+
+        return quads;
+    }
+
+    private BakedQuad bakeSingleTile(Direction face, ResourceLocation texture) {
+        TextureAtlasSprite sprite = spriteCache.computeIfAbsent(
+                texture,
+                tex -> Minecraft.getInstance()
+                        .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                        .apply(tex)
+        );
+
+        Vector3f[] bounds = cubeFaceBounds(face);
+        BlockElementFace elementFace = new BlockElementFace(
+                face,
+                -1,
+                "",
+                new BlockFaceUV(new float[]{0.0f, 0.0f, 16.0f / 5.0f, 16.0f}, 0)
+        );
+
+        return bakery.bakeQuad(
+                bounds[0],
+                bounds[1],
+                elementFace,
+                sprite,
+                face,
+                BlockModelRotation.X0_Y0,
+                null,
+                true,
+                texture
+        );
+    }
+
+    private static Vector3f[] cubeFaceBounds(Direction face) {
+        return switch (face) {
+            case NORTH -> new Vector3f[]{new Vector3f(0, 0, 0), new Vector3f(16, 16, 0)};
+            case SOUTH -> new Vector3f[]{new Vector3f(0, 0, 16), new Vector3f(16, 16, 16)};
+            case WEST -> new Vector3f[]{new Vector3f(0, 0, 0), new Vector3f(0, 16, 16)};
+            case EAST -> new Vector3f[]{new Vector3f(16, 0, 0), new Vector3f(16, 16, 16)};
+            case UP -> new Vector3f[]{new Vector3f(0, 16, 0), new Vector3f(16, 16, 16)};
+            case DOWN -> new Vector3f[]{new Vector3f(0, 0, 0), new Vector3f(16, 0, 16)};
+        };
     }
 
     private BakedQuad bakeFullFace(Direction face, ResourceLocation texture) {

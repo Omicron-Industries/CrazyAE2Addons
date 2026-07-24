@@ -8,6 +8,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +26,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
@@ -78,6 +80,20 @@ public class AmpereMeterBE extends AEBaseBlockEntity
     protected boolean amperesMode = false;
 
     protected long lastActiveTick = -1;
+
+    public interface EnergyCompat {
+        <T> LazyOptional<T> getCapability(AmpereMeterBE meter, Capability<T> capability, @Nullable Direction side);
+
+        default void invalidate(AmpereMeterBE meter) {
+        }
+    }
+
+    @Setter
+    private static @Nullable EnergyCompat energyCompat;
+
+    @Getter
+    @Setter
+    private @Nullable Object energyCompatState;
 
     private LazyOptional<IEnergyStorage> inputCap = LazyOptional.empty();
     private LazyOptional<IEnergyStorage> outputCap = LazyOptional.empty();
@@ -261,6 +277,11 @@ public class AmpereMeterBE extends AEBaseBlockEntity
         super.onLoad();
         rebuildCaps();
 
+        if (IsModLoaded.GTCEU && !this.amperesMode) {
+            this.amperesMode = true;
+            clearDisplayedTransfer();
+        }
+
         if (level != null && !level.isClientSide) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
             level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
@@ -272,6 +293,10 @@ public class AmpereMeterBE extends AEBaseBlockEntity
         super.invalidateCaps();
         inputCap.invalidate();
         outputCap.invalidate();
+
+        if (energyCompat != null) {
+            energyCompat.invalidate(this);
+        }
     }
 
     @Override
@@ -290,6 +315,13 @@ public class AmpereMeterBE extends AEBaseBlockEntity
 
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (energyCompat != null) {
+            LazyOptional<T> compatCap = energyCompat.getCapability(this, cap, side);
+            if (compatCap.isPresent()) {
+                return compatCap;
+            }
+        }
+
         if (cap == ForgeCapabilities.ENERGY && side != null) {
             if (side == getInputSide()) {
                 return inputCap.cast();
@@ -313,13 +345,13 @@ public class AmpereMeterBE extends AEBaseBlockEntity
         }
     }
 
-    protected Direction getInputSide() {
+    public Direction getInputSide() {
         return this.direction
                 ? InsaneUtils.getRightDirection(getBlockState())
                 : InsaneUtils.getLeftDirection(getBlockState());
     }
 
-    protected Direction getOutputSide() {
+    public Direction getOutputSide() {
         return !this.direction
                 ? InsaneUtils.getRightDirection(getBlockState())
                 : InsaneUtils.getLeftDirection(getBlockState());
@@ -420,7 +452,7 @@ public class AmpereMeterBE extends AEBaseBlockEntity
         }
     }
 
-    protected void setDisplayedTransfer(int transferValue, String unitLabel, boolean ampsMode) {
+    public void setDisplayedTransfer(int transferValue, String unitLabel, boolean ampsMode) {
         int oldSignal = getComparatorSignal();
 
         this.amperesMode = ampsMode;
@@ -437,7 +469,7 @@ public class AmpereMeterBE extends AEBaseBlockEntity
         }
     }
 
-    protected void clearDisplayedTransfer() {
+    public void clearDisplayedTransfer() {
         int oldSignal = getComparatorSignal();
 
         this.lastActiveTick = -1;

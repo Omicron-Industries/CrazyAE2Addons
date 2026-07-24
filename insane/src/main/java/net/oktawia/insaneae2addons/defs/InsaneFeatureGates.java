@@ -24,6 +24,12 @@ public final class InsaneFeatureGates {
         FeatureGates.gate(InsaneAddons.MODID, () -> !c.PROVIDER_CARDS_ENABLED.get(), InsaneItemRegistrar.AUTOMATION_UPGRADE_CARD);
         FeatureGates.gate(InsaneAddons.MODID, () -> !c.AUTO_ENCHANTER_ENABLED.get(), InsaneBlockRegistrar.AUTO_ENCHANTER_BLOCK_ITEM);
 
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PENROSE_SPHERE_ENABLED.get(), InsaneItemRegistrar.SUPER_SINGULARITY);
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PENROSE_SPHERE_ENABLED.get(),
+                InsaneBlockRegistrar.SUPER_SINGULARITY_BLOCK_ITEM);
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PENROSE_SPHERE_ENABLED.get(),
+                InsaneBlockRegistrar.REINFORCED_MATTER_CONDENSER_BLOCK_ITEM);
+
         for (var block : InsaneBlockRegistrar.ENERGY_STORAGES) {
             FeatureGates.gate(InsaneAddons.MODID, () -> !c.ENERGY_STORAGE_ENABLED.get(), block);
         }

@@ -1,0 +1,52 @@
+{
+  "type": "insaneae2addons:research",
+  "consumables": [
+    {
+      "computation": 432,
+      "count": 8,
+      "item": "insaneae2addons:super_singularity"
+    },
+    {
+      "computation": 432,
+      "count": 8,
+      "item": "insaneae2addons:super_singularity"
+    },
+    {
+      "computation": 432,
+      "count": 8,
+      "item": "insaneae2addons:super_singularity"
+    },
+    {
+      "computation": 432,
+      "count": 8,
+      "item": "minecraft:netherite_block"
+    },
+    {
+      "computation": 432,
+      "count": 8,
+      "item": "minecraft:netherite_block"
+    },
+    {
+      "computation": 432,
+      "count": 64,
+      "item": "ae2:dense_energy_cell"
+    },
+    {
+      "computation": 432,
+      "count": 64,
+      "item": "ae2:dense_energy_cell"
+    },
+    {
+      "computation": 432,
+      "count": 8,
+      "item": "ae2:fluix_block"
+    }
+  ],
+  "duration": 41472000,
+  "energy_per_tick": 500,
+  "unlock": {
+    "item": "insaneae2addons:super_singularity_block",
+    "key": "insaneae2addons:super_singularity_research",
+    "label": "Portable Penrose Sphere"
+  }
+}

@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.items.BuilderPatternItem;
+import net.oktawia.insaneae2addons.items.autobuilder.BuilderPatternItem;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderPatternHost;
 import net.oktawia.insaneae2addons.network.NetworkHandler;
 import net.oktawia.insaneae2addons.network.packets.SendLongStringToClientPacket;

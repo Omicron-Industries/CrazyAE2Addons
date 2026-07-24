@@ -38,8 +38,19 @@ public class InsaneEmiPlugin implements EmiPlugin {
             }
         };
 
+        EmiRecipeCategory multiblockCategory = new EmiRecipeCategory(
+                InsaneAddons.makeId("multiblock"),
+                EmiStack.of(InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get().asItem())
+        ) {
+            @Override
+            public Component getName() {
+                return Component.translatable(LangDefs.MULTIBLOCK_CATEGORY.getTranslationKey());
+            }
+        };
+
         registry.addCategory(cradleCategory);
         registry.addCategory(researchCategory);
+        registry.addCategory(multiblockCategory);
 
         registry.addWorkstation(
                 cradleCategory,
@@ -49,12 +60,18 @@ public class InsaneEmiPlugin implements EmiPlugin {
                 researchCategory,
                 EmiStack.of(InsaneBlockRegistrar.RESEARCH_STATION_BLOCK.get().asItem())
         );
+        for (var entry : InsaneXeiRecipes.getMultiblockEntries()) {
+            registry.addWorkstation(multiblockCategory, EmiStack.of(entry.controller()));
+        }
 
         for (var entry : InsaneXeiRecipes.getCradleEntries()) {
             registry.addRecipe(new CradleEmiRecipe(entry, cradleCategory));
         }
         for (var entry : InsaneXeiRecipes.getResearchEntries()) {
             registry.addRecipe(new ResearchEmiRecipe(entry, researchCategory));
+        }
+        for (var entry : InsaneXeiRecipes.getMultiblockEntries()) {
+            registry.addRecipe(new MultiblockEmiRecipe(entry, multiblockCategory));
         }
 
         registry.addRecipeHandler(null, new CradleEmiRecipeHandler());

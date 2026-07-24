@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:blaze_rod"
+    },
+    "F": {
+      "item": "ae2:fluix_pearl"
+    },
+    "W": {
+      "item": "ae2:smooth_sky_stone_block"
+    }
+  },
+  "pattern": [
+    "WEW",
+    "EFE",
+    "WEW"
+  ],
+  "result": {
+    "item": "insaneae2addons:spawner_extractor_wall"
+  },
+  "show_notification": true
+}

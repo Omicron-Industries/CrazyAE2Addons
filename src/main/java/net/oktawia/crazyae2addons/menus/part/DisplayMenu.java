@@ -174,19 +174,17 @@ public class DisplayMenu extends AEBaseMenu {
             return;
         }
 
-        Map<String, byte[]> imageData = host.getDisplayImageData();
-        if (imageData == null || imageData.isEmpty()) {
+        List<DisplayImageEntry> images = host.getDisplayImages();
+        if (images == null || images.isEmpty()) {
             return;
         }
 
-        for (Map.Entry<String, byte[]> entry : imageData.entrySet()) {
-            NetworkHandler.sendToPlayer(
-                    player,
-                    new SyncDisplayImagePreviewPacket(
-                            entry.getKey(),
-                            entry.getValue() == null ? new byte[0] : entry.getValue()
-                    )
-            );
+        for (DisplayImageEntry entry : images) {
+            byte[] bytes = host.getDisplayImageBytes(entry.id());
+            if (bytes == null || bytes.length == 0) {
+                continue;
+            }
+            NetworkHandler.sendToPlayer(player, new SyncDisplayImagePreviewPacket(entry.id(), bytes));
         }
     }
 

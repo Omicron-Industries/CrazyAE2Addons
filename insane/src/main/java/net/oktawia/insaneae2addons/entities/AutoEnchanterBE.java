@@ -55,16 +55,14 @@ import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.items.XpShardItem;
-import net.oktawia.insaneae2addons.logic.enchant.ApotheosisEnchantStrategy;
-import net.oktawia.insaneae2addons.logic.enchant.EnchantStrategy;
-import net.oktawia.insaneae2addons.logic.enchant.VanillaEnchantStrategy;
+import net.oktawia.insaneae2addons.logic.enchanter.ApotheosisEnchantStrategy;
+import net.oktawia.insaneae2addons.logic.enchanter.EnchantStrategy;
+import net.oktawia.insaneae2addons.logic.enchanter.VanillaEnchantStrategy;
 import net.oktawia.insaneae2addons.menus.block.AutoEnchanterMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

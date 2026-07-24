@@ -3,7 +3,7 @@ package net.oktawia.insaneae2addons.mixins;
 import appeng.menu.slot.RestrictedInputSlot;
 import net.minecraft.world.item.ItemStack;
 import net.oktawia.insaneae2addons.InsaneConfig;
-import net.oktawia.insaneae2addons.items.NbtViewCellItem;
+import net.oktawia.insaneae2addons.items.nbt.NbtViewCellItem;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

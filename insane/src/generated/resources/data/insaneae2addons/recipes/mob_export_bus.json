@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "X": {
+      "item": "ae2:export_bus"
+    }
+  },
+  "pattern": [
+    "XE"
+  ],
+  "result": {
+    "item": "insaneae2addons:mob_export_bus"
+  },
+  "show_notification": true
+}

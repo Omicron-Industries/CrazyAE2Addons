@@ -1,0 +1,18 @@
+{
+  "type": "crazyae2addons:fabrication",
+  "input": [
+    {
+      "count": 1,
+      "item": "ae2:item_cell_housing"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:echo_shard"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "insaneae2addons:mob_cell_housing"
+  },
+  "required_key": "insaneae2addons:mob_cell_research"
+}

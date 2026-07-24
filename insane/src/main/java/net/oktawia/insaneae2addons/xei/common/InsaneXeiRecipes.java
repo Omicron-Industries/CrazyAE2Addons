@@ -6,6 +6,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.oktawia.insaneae2addons.defs.InsaneMultiblocks;
+import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
 import net.oktawia.insaneae2addons.recipes.CradlePattern;
 import net.oktawia.insaneae2addons.recipes.CradleRecipe;
@@ -20,6 +22,26 @@ import java.util.Map;
 public final class InsaneXeiRecipes {
 
     private InsaneXeiRecipes() {
+    }
+
+    public static List<MultiblockEntry> getMultiblockEntries() {
+        return List.of(
+                new MultiblockEntry("research_unit",
+                        new ItemStack(InsaneBlockRegistrar.RESEARCH_UNIT_BLOCK.get()),
+                        InsaneMultiblocks.researchUnit(), true),
+                new MultiblockEntry("entropy_cradle",
+                        new ItemStack(InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get()),
+                        InsaneMultiblocks.entropyCradle(), true),
+                new MultiblockEntry("mob_farm",
+                        new ItemStack(InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get()),
+                        InsaneMultiblocks.mobFarm(), true),
+                new MultiblockEntry("spawner_extractor",
+                        new ItemStack(InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK.get()),
+                        InsaneMultiblocks.spawnerExtractor(), true),
+                new MultiblockEntry("portable_penrose_sphere",
+                        new ItemStack(InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get()),
+                        InsaneMultiblocks.penroseSphere(), true)
+        );
     }
 
     public static List<CradleEntry> getCradleEntries() {

@@ -71,6 +71,7 @@ public final class DisplayImageUploadClient {
 
     public static Result pasteAndUpload() {
         try {
+            System.setProperty("java.awt.headless", "false");
             var clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             var transferable = clipboard.getContents(null);
 

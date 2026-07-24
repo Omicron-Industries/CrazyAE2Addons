@@ -1,0 +1,34 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/background_big.png",
+    "srcRect": [0, 0, 256, 256]
+  },
+  "text": {
+    "dialog_title": {
+      "text": { "translate": "block.insaneae2addons.portable_penrose_sphere_controller" },
+      "position": { "left": 8, "top": 6 }
+    },
+    "player_inventory_title": {
+      "text": { "translate": "container.inventory" },
+      "position": { "left": 47, "bottom": 93 }
+    }
+  },
+  "widgets": {
+    "bh": { "left": 8, "top": 22, "width": 232, "height": 134 },
+    "preview": { "right": 20, "top": 4, "width": 16, "height": 16 }
+  },
+  "slots": {
+    "PLAYER_INVENTORY": {
+      "left": 47,
+      "bottom": 82,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 47,
+      "bottom": 24,
+      "grid": "HORIZONTAL"
+    }
+  }
+}

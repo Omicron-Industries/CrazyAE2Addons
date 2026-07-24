@@ -44,6 +44,8 @@ public abstract class AbstractMultiblockControllerBE
     @Getter
     protected final MultiblockState multiblockState;
 
+    private final float baseIdlePowerUsage;
+
     protected AbstractMultiblockControllerBE(
             BlockEntityType<?> type,
             BlockPos pos,
@@ -52,6 +54,8 @@ public abstract class AbstractMultiblockControllerBE
             float idlePowerUsage
     ) {
         super(type, pos, blockState);
+
+        this.baseIdlePowerUsage = idlePowerUsage;
 
         this.getMainNode()
                 .setIdlePowerUsage(idlePowerUsage)
@@ -82,6 +86,19 @@ public abstract class AbstractMultiblockControllerBE
     public void loadTag(CompoundTag tag) {
         loadManagedData(tag);
         super.loadTag(tag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveManagedData(tag);
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        loadManagedData(tag);
+        super.handleUpdateTag(tag);
     }
 
     protected abstract MultiblockDefinition getMultiblockDefinition();
@@ -229,6 +246,7 @@ public abstract class AbstractMultiblockControllerBE
 
         setOwnFormedState(true);
         setAllMemberFormedStates(true);
+        applyStructureIdlePowerUsage();
         afterFormed();
         invalidateMemberCapabilities();
         invalidateOwnCapabilities();
@@ -243,10 +261,38 @@ public abstract class AbstractMultiblockControllerBE
 
         setOwnFormedState(false);
         setAllMemberFormedStates(false);
+        setNodeIdlePowerUsage(this.baseIdlePowerUsage);
         afterDisformed();
         invalidateMemberCapabilities();
         invalidateOwnCapabilities();
         setChanged();
+    }
+
+    private void applyStructureIdlePowerUsage() {
+        double total = this.baseIdlePowerUsage;
+        for (MultiblockCallback callback : this.multiblockState.getRegisteredCallbacks()) {
+            if (callback instanceof AbstractMultiblockFrameBE<?> frame) {
+                total += frame.getFrameIdlePowerUsage();
+            }
+        }
+
+        setNodeIdlePowerUsage(total);
+    }
+
+    private void setNodeIdlePowerUsage(double usagePerTick) {
+        if (getMainNode().getNode() != null) {
+            getMainNode().setIdlePowerUsage(usagePerTick);
+        }
+    }
+
+    @Override
+    public @Nullable IGridNode getGridNode(Direction dir) {
+        Level level = getLevel();
+        if (level != null && AbstractMultiblockFrameBE.isMultiblockMember(level.getBlockEntity(getBlockPos().relative(dir)))) {
+            return null;
+        }
+
+        return super.getGridNode(dir);
     }
 
     private void setAllMemberFormedStates(boolean formed) {

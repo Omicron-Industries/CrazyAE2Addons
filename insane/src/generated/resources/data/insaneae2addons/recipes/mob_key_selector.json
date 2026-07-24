@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "ae2:advanced_card"
+    },
+    "E": {
+      "item": "ae2:engineering_processor"
+    }
+  },
+  "pattern": [
+    "CE"
+  ],
+  "result": {
+    "item": "insaneae2addons:mob_key_selector"
+  },
+  "show_notification": true
+}

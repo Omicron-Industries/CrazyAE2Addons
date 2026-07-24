@@ -54,6 +54,31 @@ public final class InsaneConfig {
         public final ForgeConfigSpec.IntValue CRADLE_CHARGING_SPEED;
         public final ForgeConfigSpec.IntValue CRADLE_COST;
 
+        public final ForgeConfigSpec.BooleanValue SPAWNER_EXTRACTOR_PEACEFUL;
+
+        public final ForgeConfigSpec.BooleanValue PENROSE_SPHERE_ENABLED;
+        public final ForgeConfigSpec.BooleanValue PENROSE_FE_OUTPUT_ENABLED;
+        public final ForgeConfigSpec.BooleanValue PENROSE_EU_OUTPUT_ENABLED;
+        public final ForgeConfigSpec.BooleanValue PENROSE_MELTDOWN_EXPLOSIONS;
+        public final ForgeConfigSpec.IntValue PENROSE_MELTDOWN_FIELD_RADIUS;
+        public final ForgeConfigSpec.IntValue PENROSE_MELTDOWN_FIELD_BUDGET_MICROS;
+        public final ForgeConfigSpec.LongValue PENROSE_CREATION_COST_SINGU;
+        public final ForgeConfigSpec.LongValue PENROSE_INITIAL_MASS_MU;
+        public final ForgeConfigSpec.LongValue PENROSE_MASS_WINDOW_MU;
+        public final ForgeConfigSpec.DoubleValue PENROSE_MASS_FACTOR_MAX;
+        public final ForgeConfigSpec.DoubleValue PENROSE_DUTY_COMPENSATION;
+        public final ForgeConfigSpec.DoubleValue PENROSE_FE_BASE_PER_SINGU_FLOW;
+        public final ForgeConfigSpec.DoubleValue PENROSE_HEAT_PER_SINGU_FLOW;
+        public final ForgeConfigSpec.DoubleValue PENROSE_HEAT_PEAK_GK;
+        public final ForgeConfigSpec.DoubleValue PENROSE_MAX_HEAT_GK;
+        public final ForgeConfigSpec.IntValue PENROSE_MAX_FEED_PER_TICK;
+        public final ForgeConfigSpec.ConfigValue<String> PENROSE_COOLANT_FLUID;
+        public final ForgeConfigSpec.DoubleValue PENROSE_COOLANT_MB_PER_GK;
+        public final ForgeConfigSpec.IntValue PENROSE_COOLANT_VENT_CAPACITY;
+
+        public final ForgeConfigSpec.IntValue MOB_FARM_BASE_SPEED;
+        public final ForgeConfigSpec.IntValue MOB_FARM_SPEED_PER_CARD;
+
         public final ForgeConfigSpec.BooleanValue ENTITY_TICKER_ENABLED;
         public final ForgeConfigSpec.IntValue ENTITY_TICKER_COST;
         public final ForgeConfigSpec.IntValue ENTITY_TICKER_MAX_SPEED_CARDS;
@@ -270,6 +295,166 @@ public final class InsaneConfig {
             builder.pop();
 
             builder.comment(
+                    "Portable Penrose Sphere feature.",
+                    "A multiblock that feeds matter into a black hole and taps the accretion disc for power.",
+                    "Note: disabling only hides its items from JEI/EMI and marks them in the tooltip;",
+                    "placed spheres keep running."
+            ).push("penroseSphere");
+
+            PENROSE_SPHERE_ENABLED = builder.comment(
+                    "Enables the Portable Penrose Sphere (hide from JEI/EMI and tooltip when off)."
+            ).define("enabled", true);
+
+            PENROSE_FE_OUTPUT_ENABLED = builder.comment(
+                    "Lets the sphere expose its FE buffer through the controller and its output ports."
+            ).define("feOutputEnabled", true);
+
+            PENROSE_EU_OUTPUT_ENABLED = builder.comment(
+                    "Lets GregTech energy output hatches count as sphere ports and drain its FE buffer as EU (1:1).",
+                    "Has no effect without GregTech."
+            ).define("euOutputEnabled", true);
+
+            PENROSE_MAX_FEED_PER_TICK = intInRange(builder,
+                    "maxFeedPerTick", 4_096, 0, Integer.MAX_VALUE,
+                    "Hard cap on singularities injected into the accretion disc per tick.",
+                    "Units: items/t."
+            );
+
+            builder.comment(
+                    "Mass, heat and power curves. Changing these rebalances the whole feature."
+            ).push("balance");
+
+            PENROSE_CREATION_COST_SINGU = longInRange(builder,
+                    "creationCostSingularities", 32_512L, 0L, Long.MAX_VALUE,
+                    "Super singularities that must sit in the disk on the central research pedestal to create the black hole.",
+                    "Units: items."
+            );
+
+            PENROSE_INITIAL_MASS_MU = longInRange(builder,
+                    "initialMass", 32_768L * 8_192L, 0L, Long.MAX_VALUE,
+                    "Black hole mass right after ignition. Units: MU (internal mass unit)."
+            );
+
+            PENROSE_MASS_WINDOW_MU = longInRange(builder,
+                    "massWindow", 1_113_600L, 0L, Long.MAX_VALUE,
+                    "How far above the initial mass the black hole may grow before meltdown.",
+                    "Max mass = initialMass + massWindow, sweet spot sits in the middle. Units: MU."
+            );
+
+            PENROSE_MASS_FACTOR_MAX = doubleInRange(builder,
+                    "massFactorMax", 2.0, 1.0, 64.0,
+                    "Output multiplier at the sweet spot. Falls off linearly to 1.0 at the window edges."
+            );
+
+            PENROSE_DUTY_COMPENSATION = doubleInRange(builder,
+                    "dutyCompensation", 4.0 / 3.0, 0.0, 1000.0,
+                    "Duty-cycle compensation applied to generated power."
+            );
+
+            PENROSE_FE_BASE_PER_SINGU_FLOW = doubleInRange(builder,
+                    "feBasePerSinguFlow", (double) (1L << 27) * 0.5, 0.0, 1.0e18,
+                    "FE per tick produced per 1.0 singu/t of disc flow at full heat efficiency",
+                    "and mass factor 1.0."
+            );
+
+            PENROSE_HEAT_PER_SINGU_FLOW = doubleInRange(builder,
+                    "heatPerSinguFlow", 0.5, 0.0, 1.0e12,
+                    "Heat added per tick per 1.0 singu/t of disc flow at mass factor 1.0. Units: GK/t."
+            );
+
+            PENROSE_HEAT_PEAK_GK = doubleInRange(builder,
+                    "heatPeak", 50_000.0, 1.0, 1.0e12,
+                    "Heat at which efficiency peaks. Efficiency curve is 2x-x^2 for x=heat/peak,",
+                    "clamped to [0..1], so running colder or hotter than the peak both cost output.",
+                    "Units: GK."
+            );
+
+            PENROSE_MAX_HEAT_GK = doubleInRange(builder,
+                    "maxHeat", 100_000.0, 0.0, 1.0e12,
+                    "Meltdown threshold. Reaching this heat destroys the black hole. Units: GK."
+            );
+
+            builder.pop();
+
+            builder.comment(
+                    "Coolant consumed by heat vents. Swap the fluid for anything the pack provides -",
+                    "the vent only cares that the fluid id resolves and that it is fed enough of it."
+            ).push("coolant");
+
+            PENROSE_COOLANT_FLUID = builder.comment(
+                    "Fluid the heat vents accept, as a registry id."
+            ).define("fluid", "insaneae2addons:penrose_coolant");
+
+            PENROSE_COOLANT_MB_PER_GK = doubleInRange(builder,
+                    "mbPerGK", 125.0, 0.0001, 1.0e6,
+                    "Millibuckets of coolant needed to remove 1 GK of heat.",
+                    "Default 125 makes the 16 singu/t optimum (8 GK/t) draw ~1 B/t; overfeeding scales the",
+                    "coolant demand into the unproducible range as an intentional noob trap."
+            );
+
+            PENROSE_COOLANT_VENT_CAPACITY = intInRange(builder,
+                    "ventCapacity", 64_000, 1, Integer.MAX_VALUE,
+                    "Coolant buffer of a single heat vent, in millibuckets."
+            );
+
+            builder.pop();
+
+            builder.comment(
+                    "What happens when the sphere melts down."
+            ).push("meltdown");
+
+            PENROSE_MELTDOWN_EXPLOSIONS = builder.comment(
+                    "Lets a meltdown explode and spawn the black hole field. Turn off for a silent reset."
+            ).define("explosionsEnabled", true);
+
+            PENROSE_MELTDOWN_FIELD_RADIUS = intInRange(builder,
+                    "fieldRadius", 768, 0, 4096,
+                    "Radius of the block-eating black hole field left behind by a meltdown.",
+                    "0 disables the field but keeps the explosion."
+            );
+
+            PENROSE_MELTDOWN_FIELD_BUDGET_MICROS = intInRange(builder,
+                    "fieldBudgetMicros", 100000, 100, 200000,
+                    "Server time per tick the black hole field may spend eating blocks, in microseconds.",
+                    "Shared between all active fields. The default deliberately exceeds a full tick (50000 us):",
+                    "a meltdown is meant to hurt, and the field should carve the sphere out fast."
+            );
+
+            builder.pop();
+
+            builder.pop();
+
+            builder.comment(
+                    "Spawner extractor feature.",
+                    "A multiblock built around a vanilla spawner. It suppresses the spawner and",
+                    "inserts the mob it would spawn into the network as a mob key instead."
+            ).push("spawnerExtractor");
+
+            SPAWNER_EXTRACTOR_PEACEFUL = builder.comment(
+                    "Lets the spawner extractor keep working on peaceful difficulty."
+            ).define("worksOnPeaceful", true);
+
+            builder.pop();
+
+            builder.comment(
+                    "Mob farm feature.",
+                    "A multiblock that consumes mob keys from the network and inserts the loot and",
+                    "experience shards those mobs would drop when killed by a player."
+            ).push("mobFarm");
+
+            MOB_FARM_BASE_SPEED = intInRange(builder,
+                    "baseSpeed", 16, 1, Integer.MAX_VALUE,
+                    "Mobs killed per cycle (every 20 ticks) without any speed cards."
+            );
+
+            MOB_FARM_SPEED_PER_CARD = intInRange(builder,
+                    "speedPerCard", 12, 0, Integer.MAX_VALUE,
+                    "Extra mobs killed per cycle for each installed speed card."
+            );
+
+            builder.pop();
+
+            builder.comment(
                     "Entity ticker feature.",
                     "A cable part that force-ticks the block entity it faces, multiplying its speed",
                     "based on installed speed cards at the cost of network power."
@@ -313,6 +498,28 @@ public final class InsaneConfig {
                 int defaultValue,
                 int min,
                 int max,
+                String... comment
+        ) {
+            return builder.comment(comment).defineInRange(key, defaultValue, min, max);
+        }
+
+        private static ForgeConfigSpec.LongValue longInRange(
+                ForgeConfigSpec.Builder builder,
+                String key,
+                long defaultValue,
+                long min,
+                long max,
+                String... comment
+        ) {
+            return builder.comment(comment).defineInRange(key, defaultValue, min, max);
+        }
+
+        private static ForgeConfigSpec.DoubleValue doubleInRange(
+                ForgeConfigSpec.Builder builder,
+                String key,
+                double defaultValue,
+                double min,
+                double max,
                 String... comment
         ) {
             return builder.comment(comment).defineInRange(key, defaultValue, min, max);

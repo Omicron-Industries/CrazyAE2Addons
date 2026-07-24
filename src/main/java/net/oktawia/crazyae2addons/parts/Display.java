@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -40,6 +41,7 @@ import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.display.DisplayGrid;
 import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
+import net.oktawia.crazyae2addons.logic.display.DisplayImageStore;
 import net.oktawia.crazyae2addons.logic.display.DisplayTokenResolver;
 import net.oktawia.crazyae2addons.logic.display.SampleRing;
 import net.oktawia.crazyae2addons.menus.part.DisplayMenu;
@@ -74,6 +76,8 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_CHASSIS_HAS_CHANNEL, FRONT_MODEL_ON);
 
     public static final List<Display> CLIENT_INSTANCES = new CopyOnWriteArrayList<>();
+
+    public static final int MAX_DISPLAY_IMAGES = 50;
 
     private final PartState state = new PartState();
 
@@ -233,7 +237,7 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
 
     @Override
     public void getBoxes(IPartCollisionHelper bch) {
-        bch.addBox(0, 0, 15, 16, 16, 15.5);
+        bch.addBox(0, 0, 15.5, 16, 16, 16);
     }
 
     @Override
@@ -307,10 +311,6 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         return state.displayImages;
     }
 
-    public Map<String, byte[]> getDisplayImageData() {
-        return state.displayImageData;
-    }
-
     @Nullable
     public DisplayImageEntry getSelectedDisplayImage() {
         state.normalizeSelectedImage();
@@ -339,10 +339,18 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             return;
         }
 
+        if (!(getLevel() instanceof ServerLevel)) {
+            return;
+        }
+
+        if (state.displayImages.size() >= MAX_DISPLAY_IMAGES) {
+            return;
+        }
+
         String id = UUID.randomUUID().toString();
         String normalizedName = (sourceName == null || sourceName.isBlank()) ? "image.png" : sourceName;
 
-        state.displayImageData.put(id, pngBytes);
+        DisplayImageStore.get(getLevel()).putImage(id, pngBytes);
         state.displayImages.add(new DisplayImageEntry(id, normalizedName, 0, 0, 100, 100));
         state.selectedDisplayImageId = id;
 
@@ -355,7 +363,9 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         }
 
         boolean removed = state.displayImages.removeIf(entry -> entry.id().equals(id));
-        state.displayImageData.remove(id);
+        if (removed && getLevel() instanceof ServerLevel) {
+            DisplayImageStore.get(getLevel()).removeImage(id);
+        }
 
         if (removed && id.equals(state.selectedDisplayImageId)) {
             state.selectedDisplayImageId = state.displayImages.isEmpty() ? "" : state.displayImages.get(0).id();
@@ -427,8 +437,12 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         markDirtyAndSync();
     }
 
+    @Nullable
     public byte[] getDisplayImageBytes(String id) {
-        return state.displayImageData.get(id);
+        if (id == null || id.isEmpty() || !(getLevel() instanceof ServerLevel)) {
+            return null;
+        }
+        return DisplayImageStore.get(getLevel()).getImage(id);
     }
 
     private void markDirtyAndSync() {
@@ -447,7 +461,8 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             return;
         }
 
-        output.put(NBT_MEMORY_DISPLAY, state.saveMemoryCardSettings());
+        Display master = resolveMaster();
+        output.put(NBT_MEMORY_DISPLAY, master.state.saveMemoryCardSettings());
     }
 
     @Override
@@ -462,8 +477,47 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             return;
         }
 
-        state.loadMemoryCardSettings(input.getCompound(NBT_MEMORY_DISPLAY));
-        markDirtyAndSync();
+        Display master = resolveMaster();
+        CompoundTag memory = input.getCompound(NBT_MEMORY_DISPLAY);
+        master.state.loadMemoryCardSettings(memory);
+        master.importDisplayImagesFromMemoryCard(memory);
+        master.markDirtyAndSync();
+    }
+
+    private Display resolveMaster() {
+        Display master = DisplayGrid.resolveMenuOrigin(this);
+        return master == null ? this : master;
+    }
+
+    private void importDisplayImagesFromMemoryCard(CompoundTag memory) {
+        if (!(getLevel() instanceof ServerLevel)) {
+            return;
+        }
+
+        if (!memory.contains(PartState.NBT_DISPLAY_IMAGES, Tag.TAG_LIST)) {
+            return;
+        }
+
+        DisplayImageStore store = DisplayImageStore.get(getLevel());
+        List<DisplayImageEntry> cardEntries = PartState.readImageEntries(memory.getList(PartState.NBT_DISPLAY_IMAGES, Tag.TAG_COMPOUND));
+
+        List<DisplayImageEntry> imported = new ArrayList<>();
+        for (DisplayImageEntry entry : cardEntries) {
+            String newId = store.copyImage(entry.id());
+            if (newId != null) {
+                imported.add(new DisplayImageEntry(newId, entry.sourceName(), entry.x(), entry.y(), entry.width(), entry.height()));
+            }
+        }
+
+        if (!cardEntries.isEmpty() && imported.isEmpty()) {
+            return;
+        }
+
+        state.displayImages.clear();
+        state.displayImages.addAll(imported);
+
+        state.selectedDisplayImageId = "";
+        state.normalizeSelectedImage();
     }
 
     @Getter
@@ -476,7 +530,6 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         private static final String NBT_MARGIN = "add_margin";
         private static final String NBT_CENTER = "center_text";
         private static final String NBT_DISPLAY_IMAGES = "display_images";
-        private static final String NBT_DISPLAY_IMAGE_DATA = "display_image_data";
         private static final String NBT_SELECTED_DISPLAY_IMAGE = "selected_display_image";
         private static final String NBT_CONNECT_UP    = "connect_up";
         private static final String NBT_CONNECT_DOWN  = "connect_down";
@@ -499,11 +552,38 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
 
         @Getter(AccessLevel.NONE)
         @Setter(AccessLevel.NONE)
-        private final Map<String, byte[]> displayImageData = new HashMap<>();
-
-        @Getter(AccessLevel.NONE)
-        @Setter(AccessLevel.NONE)
         private String selectedDisplayImageId = "";
+
+        private static ListTag writeImageEntries(List<DisplayImageEntry> entries) {
+            ListTag list = new ListTag();
+            for (DisplayImageEntry entry : entries) {
+                CompoundTag img = new CompoundTag();
+                img.putString("id", entry.id());
+                img.putString("source", entry.sourceName());
+                img.putInt("x", entry.x());
+                img.putInt("y", entry.y());
+                img.putInt("width", entry.width());
+                img.putInt("height", entry.height());
+                list.add(img);
+            }
+            return list;
+        }
+
+        private static List<DisplayImageEntry> readImageEntries(ListTag list) {
+            List<DisplayImageEntry> entries = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                CompoundTag img = list.getCompound(i);
+                entries.add(new DisplayImageEntry(
+                        img.getString("id"),
+                        img.getString("source"),
+                        Mth.clamp(img.getInt("x"), 0, 100),
+                        Mth.clamp(img.getInt("y"), 0, 100),
+                        Mth.clamp(img.getInt("width"), 0, 100),
+                        Mth.clamp(img.getInt("height"), 0, 100)
+                ));
+            }
+            return entries;
+        }
 
         public CompoundTag save() {
             CompoundTag tag = new CompoundTag();
@@ -513,24 +593,7 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             tag.putBoolean(NBT_MARGIN, addMargin);
             tag.putBoolean(NBT_CENTER, centerText);
 
-            ListTag imageList = new ListTag();
-            for (DisplayImageEntry entry : displayImages) {
-                CompoundTag img = new CompoundTag();
-                img.putString("id", entry.id());
-                img.putString("source", entry.sourceName());
-                img.putInt("x", entry.x());
-                img.putInt("y", entry.y());
-                img.putInt("width", entry.width());
-                img.putInt("height", entry.height());
-                imageList.add(img);
-            }
-            tag.put(NBT_DISPLAY_IMAGES, imageList);
-
-            CompoundTag imageDataTag = new CompoundTag();
-            for (Map.Entry<String, byte[]> entry : displayImageData.entrySet()) {
-                imageDataTag.putByteArray(entry.getKey(), entry.getValue());
-            }
-            tag.put(NBT_DISPLAY_IMAGE_DATA, imageDataTag);
+            tag.put(NBT_DISPLAY_IMAGES, writeImageEntries(displayImages));
 
             tag.putString(NBT_SELECTED_DISPLAY_IMAGE, selectedDisplayImageId == null ? "" : selectedDisplayImageId);
             tag.putBoolean(NBT_CONNECT_UP,    connectUp);
@@ -549,26 +612,7 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
 
             displayImages.clear();
             if (tag.contains(NBT_DISPLAY_IMAGES, Tag.TAG_LIST)) {
-                ListTag imageList = tag.getList(NBT_DISPLAY_IMAGES, Tag.TAG_COMPOUND);
-                for (int i = 0; i < imageList.size(); i++) {
-                    CompoundTag img = imageList.getCompound(i);
-                    displayImages.add(new DisplayImageEntry(
-                            img.getString("id"),
-                            img.getString("source"),
-                            Mth.clamp(img.getInt("x"), 0, 100),
-                            Mth.clamp(img.getInt("y"), 0, 100),
-                            Mth.clamp(img.getInt("width"), 0, 100),
-                            Mth.clamp(img.getInt("height"), 0, 100)
-                    ));
-                }
-            }
-
-            displayImageData.clear();
-            if (tag.contains(NBT_DISPLAY_IMAGE_DATA, Tag.TAG_COMPOUND)) {
-                CompoundTag imageDataTag = tag.getCompound(NBT_DISPLAY_IMAGE_DATA);
-                for (String key : imageDataTag.getAllKeys()) {
-                    displayImageData.put(key, imageDataTag.getByteArray(key));
-                }
+                displayImages.addAll(readImageEntries(tag.getList(NBT_DISPLAY_IMAGES, Tag.TAG_COMPOUND)));
             }
 
             selectedDisplayImageId = tag.getString(NBT_SELECTED_DISPLAY_IMAGE);
@@ -604,10 +648,10 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             CompoundTag tag = new CompoundTag();
 
             tag.putString(NBT_TEXT, textValue == null ? "" : textValue);
-            tag.putByte(NBT_SPIN, spin);
             tag.putBoolean(NBT_MERGE, mergeMode);
             tag.putBoolean(NBT_MARGIN, addMargin);
             tag.putBoolean(NBT_CENTER, centerText);
+            tag.put(NBT_DISPLAY_IMAGES, writeImageEntries(displayImages));
 
             return tag;
         }
@@ -615,10 +659,6 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         public void loadMemoryCardSettings(CompoundTag tag) {
             if (tag.contains(NBT_TEXT, Tag.TAG_STRING)) {
                 textValue = tag.getString(NBT_TEXT);
-            }
-
-            if (tag.contains(NBT_SPIN, Tag.TAG_BYTE)) {
-                spin = tag.getByte(NBT_SPIN);
             }
 
             if (tag.contains(NBT_MERGE, Tag.TAG_BYTE)) {

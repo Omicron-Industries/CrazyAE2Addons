@@ -34,10 +34,10 @@ public class InsaneItemModelProvider extends ItemModelProvider {
             simpleItem(item);
         }
 
-        withExistingParent(
-                ForgeRegistries.ITEMS.getKey(InsaneFluidRegistrar.RESEARCH_FLUID_BUCKET.get()).getPath(),
-                new ResourceLocation("item/generated"))
-                .texture("layer0", new ResourceLocation(InsaneAddons.MODID, "item/research_bucket"));
+        for (var fluid : InsaneFluidRegistrar.getFluids()) {
+            withExistingParent(fluid.name() + "_bucket", new ResourceLocation("item/generated"))
+                    .texture("layer0", new ResourceLocation(InsaneAddons.MODID, "item/" + fluid.bucketTexture()));
+        }
 
         for (var blockItem : InsaneBlockRegistrar.BLOCK_ITEMS.getEntries()) {
             String name = blockItem.getId().getPath();

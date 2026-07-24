@@ -23,12 +23,16 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
+import net.oktawia.crazyae2addons.tracking.UsageTarget;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -38,6 +42,8 @@ import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 public class ManagedBuffer {
+
+    public static final String DUMMY_MARKER = "crazyae2addons_managed_buffer";
 
     private final Object2LongOpenHashMap<AEKey> items = new Object2LongOpenHashMap<>();
     private final ManagedBufferLogic logic;
@@ -58,6 +64,10 @@ public class ManagedBuffer {
 
     @Setter
     private boolean canCraft = true;
+
+    private UsageTarget trackTarget;
+    private String trackDesc;
+    private AEKey trackIcon;
 
     public ManagedBuffer(IManagedGridNode mainNode, PatternProviderLogicHost logicHost,
                          IActionHost actionHost, Runnable onDirty, Runnable onReady,
@@ -117,7 +127,9 @@ public class ManagedBuffer {
             if (need <= 0) continue;
 
             long pulled = StorageHelper.poweredExtraction(es, storage, key, need, src(), Actionable.MODULATE);
-            if (pulled > 0) add(key, pulled);
+            if (pulled > 0) {
+                add(key, pulled);
+            }
         }
 
         grid.getStorageService().invalidateCache();
@@ -216,7 +228,9 @@ public class ManagedBuffer {
         if (grid == null) return false;
 
         var dummy = logicHost.getBlockEntity().getBlockState().getBlock().asItem().getDefaultInstance();
-        dummy.getOrCreateTag().putUUID("s", UUID.randomUUID());
+        var dummyTag = dummy.getOrCreateTag();
+        dummyTag.putUUID("s", UUID.randomUUID());
+        dummyTag.putBoolean(DUMMY_MARKER, true);
         var dummyOutput = new GenericStack(AEItemKey.of(dummy), 1);
 
         var patternStack = PatternDetailsHelper.encodeProcessingPattern(inputs, new GenericStack[]{dummyOutput});
@@ -438,8 +452,6 @@ public class ManagedBuffer {
             ItemStack patternSlot = ItemStack.of(tag.getCompound("patternSlot"));
             if (!patternSlot.isEmpty()) {
                 logic.getPatternInv().setItemDirect(0, patternSlot);
-                // updatePatterns() nie wołamy tu, bo level może być jeszcze null.
-                // Zostanie zrobione w onLoad().
             }
         }
     }
@@ -474,6 +486,27 @@ public class ManagedBuffer {
 
     private void fireReady() {
         onReady.run();
+    }
+
+    public void trackConsumed(AEKey what, long amount) {
+        if (what == null || amount <= 0) return;
+        var grid = grid();
+        if (grid == null) return;
+        var svc = grid.getService(IResourceTrackingService.class);
+        if (svc == null) return;
+
+        if (trackTarget == null) {
+            var be = logicHost.getBlockEntity();
+            var lvl = be.getLevel();
+            if (lvl == null) return;
+            var pos = be.getBlockPos().immutable();
+            trackTarget = UsageTarget.machine(GlobalPos.of(lvl.dimension(), pos));
+            trackDesc = "at " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
+            var item = be.getBlockState().getBlock().asItem();
+            trackIcon = item == Items.AIR ? null : AEItemKey.of(item);
+        }
+
+        svc.trackConsumption(what, amount, trackTarget, trackDesc, trackIcon);
     }
 
     private IActionSource src() {

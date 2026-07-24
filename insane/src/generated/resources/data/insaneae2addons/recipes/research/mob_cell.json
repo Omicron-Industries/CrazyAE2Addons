@@ -1,0 +1,52 @@
+{
+  "type": "insaneae2addons:research",
+  "consumables": [
+    {
+      "computation": 128,
+      "count": 32,
+      "item": "minecraft:emerald"
+    },
+    {
+      "computation": 128,
+      "count": 32,
+      "item": "minecraft:emerald"
+    },
+    {
+      "computation": 256,
+      "count": 16,
+      "item": "minecraft:soul_sand"
+    },
+    {
+      "computation": 256,
+      "count": 16,
+      "item": "minecraft:soul_sand"
+    },
+    {
+      "computation": 96,
+      "count": 16,
+      "item": "minecraft:obsidian"
+    },
+    {
+      "computation": 96,
+      "count": 16,
+      "item": "minecraft:obsidian"
+    },
+    {
+      "computation": 256,
+      "count": 8,
+      "item": "minecraft:glowstone"
+    },
+    {
+      "computation": 256,
+      "count": 8,
+      "item": "minecraft:glowstone"
+    }
+  ],
+  "duration": 3456000,
+  "energy_per_tick": 500,
+  "unlock": {
+    "item": "insaneae2addons:mob_cell_housing",
+    "key": "insaneae2addons:mob_cell_research",
+    "label": "Mob Storage"
+  }
+}

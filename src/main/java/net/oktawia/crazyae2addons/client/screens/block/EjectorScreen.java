@@ -1,8 +1,13 @@
 package net.oktawia.crazyae2addons.client.screens.block;
 
+import appeng.api.client.AEKeyRendering;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
+import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.menu.SlotSemantics;
 import net.minecraft.ChatFormatting;
@@ -11,7 +16,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.screens.SetConfigAmountScreen;
 import net.oktawia.crazyae2addons.defs.LangDefs;
@@ -35,16 +39,14 @@ public class EjectorScreen<C extends EjectorMenu> extends AEBaseScreen<C> {
         this.widgets.add("load", btn);
 
         this.addRenderableOnly((gg, mouseX, mouseY, partialTicks) -> {
-            ItemStack missingIcon = getHost().getCantCraftStack();
-            if (!missingIcon.isEmpty()) {
+            GenericStack missing = getHost().getCantCraft();
+            if (missing != null && missing.what() != null) {
                 int x = leftPos + MISSING_ICON_X;
                 int y = topPos + MISSING_ICON_Y;
-                gg.renderItem(missingIcon, x, y);
+                AEKeyRendering.drawInGui(minecraft, gg, x, y, missing.what());
 
-                String countText = getHost().getCantCraftCountText();
-                if (countText != null && !countText.isEmpty()) {
-                    gg.renderItemDecorations(font, missingIcon, x, y, countText);
-                }
+                String countText = missing.what().formatAmount(missing.amount(), AmountFormat.SLOT);
+                StackSizeRenderer.renderSizeLabel(gg, font, x, y, countText);
             }
         });
     }
@@ -57,16 +59,10 @@ public class EjectorScreen<C extends EjectorMenu> extends AEBaseScreen<C> {
     public void updateBeforeRender() {
         super.updateBeforeRender();
 
-        if (!getHost().getCantCraftStack().isEmpty()) {
+        if (getHost().getCantCraft() != null) {
             setTextContent("missing", Component.empty());
-            return;
-        }
-
-        String missingText = getHost().getCantCraftText();
-        if (missingText == null || missingText.isBlank()) {
-            setTextContent("missing", Component.translatable(LangDefs.NOTHING.getTranslationKey()));
         } else {
-            setTextContent("missing", Component.literal(missingText));
+            setTextContent("missing", Component.translatable(LangDefs.NOTHING.getTranslationKey()));
         }
     }
 
@@ -113,9 +109,14 @@ public class EjectorScreen<C extends EjectorMenu> extends AEBaseScreen<C> {
 
     @Override
     protected void renderTooltip(GuiGraphics gg, int x, int y) {
-        ItemStack missingIcon = getHost().getCantCraftStack();
-        if (!missingIcon.isEmpty() && isMouseOverMissingIcon(x, y)) {
-            gg.renderTooltip(this.font, missingIcon, x, y);
+        GenericStack missing = getHost().getCantCraft();
+        if (missing != null && missing.what() != null && isMouseOverMissingIcon(x, y)) {
+            AEKey key = missing.what();
+            if (key instanceof AEItemKey itemKey) {
+                gg.renderTooltip(this.font, itemKey.getReadOnlyStack(), x, y);
+            } else {
+                gg.renderComponentTooltip(this.font, AEKeyRendering.getTooltip(key), x, y);
+            }
             return;
         }
 

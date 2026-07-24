@@ -1,0 +1,32 @@
+{
+  "type": "insaneae2addons:research",
+  "consumables": [
+    {
+      "computation": 72,
+      "count": 1,
+      "item": "minecraft:enchanting_table"
+    },
+    {
+      "computation": 72,
+      "count": 1,
+      "item": "minecraft:enchanting_table"
+    },
+    {
+      "computation": 72,
+      "count": 1,
+      "item": "minecraft:enchanting_table"
+    },
+    {
+      "computation": 72,
+      "count": 1,
+      "item": "minecraft:enchanting_table"
+    }
+  ],
+  "duration": 1036800,
+  "energy_per_tick": 270,
+  "unlock": {
+    "item": "insaneae2addons:auto_enchanter",
+    "key": "insaneae2addons:auto_enchanter_research",
+    "label": "Auto enchanter"
+  }
+}

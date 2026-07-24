@@ -39,7 +39,7 @@ public class Utils {
             String suffix = entry.getValue();
 
             if (abs >= threshold) {
-                return formatDecimal(number / threshold, decimals) + " " + suffix;
+                return formatDecimal(number / threshold, decimals) + suffix;
             }
         }
 

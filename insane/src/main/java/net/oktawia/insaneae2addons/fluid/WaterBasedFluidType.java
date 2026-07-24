@@ -16,10 +16,11 @@ public class WaterBasedFluidType extends FluidType {
     private static final ResourceLocation WATER_FLOW = new ResourceLocation(InsaneAddons.MODID, "block/water_flowing");
     private static final ResourceLocation WATER_OVERLAY = new ResourceLocation(InsaneAddons.MODID, "block/water_overlay");
 
-    protected int tintColor = 0xFF47C7FF;
+    private final int tintColor;
 
-    public WaterBasedFluidType(Properties properties) {
+    public WaterBasedFluidType(Properties properties, int tintColor) {
         super(properties);
+        this.tintColor = tintColor;
     }
 
     @Override

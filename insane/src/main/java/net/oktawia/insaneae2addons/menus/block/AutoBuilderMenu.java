@@ -8,7 +8,7 @@ import appeng.menu.slot.AppEngSlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.entities.AutoBuilderBE;
+import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 import net.oktawia.insaneae2addons.util.ProgramExpander;
 
 public class AutoBuilderMenu extends UpgradeableMenu<AutoBuilderBE> {

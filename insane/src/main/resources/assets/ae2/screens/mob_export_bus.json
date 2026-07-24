@@ -1,0 +1,17 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "io_bus.json"
+  ],
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "item.insaneae2addons.mob_export_bus"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    }
+  }
+}

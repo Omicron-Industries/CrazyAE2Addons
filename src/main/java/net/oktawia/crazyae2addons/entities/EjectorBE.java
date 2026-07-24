@@ -12,7 +12,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageHelper;
 import appeng.blockentity.grid.AENetworkBlockEntity;
@@ -96,15 +95,7 @@ public class EjectorBE extends AENetworkBlockEntity implements
 
     @DescSynced
     @Getter
-    private ItemStack cantCraftStack = ItemStack.EMPTY;
-
-    @DescSynced
-    @Getter
-    private String cantCraftCountText = "";
-
-    @DescSynced
-    @Getter
-    private String cantCraftText = "nothing";
+    private GenericStack cantCraft = null;
 
     @Persisted
     @LazyManaged
@@ -339,6 +330,9 @@ public class EjectorBE extends AENetworkBlockEntity implements
             }
 
             long inserted = target.insert(gs.what(), amount, Actionable.MODULATE);
+            if (inserted > 0) {
+                buffer.trackConsumed(gs.what(), inserted);
+            }
             long leftover = amount - inserted;
             if (leftover > 0) {
                 StorageHelper.poweredInsert(energy, storageInv, gs.what(), leftover, src, Actionable.MODULATE);
@@ -367,9 +361,7 @@ public class EjectorBE extends AENetworkBlockEntity implements
     }
 
     public void clearCantCraft() {
-        this.cantCraftStack = ItemStack.EMPTY;
-        this.cantCraftCountText = "";
-        this.cantCraftText = "nothing";
+        this.cantCraft = null;
         setChanged();
 
         if (!isClientSide()) {
@@ -383,19 +375,7 @@ public class EjectorBE extends AENetworkBlockEntity implements
             return;
         }
 
-        this.cantCraftText = String.format(
-                "%sx %s",
-                missing.what().formatAmount(missing.amount(), AmountFormat.SLOT),
-                missing.what()
-        );
-        this.cantCraftCountText = missing.what().formatAmount(missing.amount(), AmountFormat.SLOT);
-
-        if (missing.what() instanceof AEItemKey itemKey) {
-            this.cantCraftStack = itemKey.toStack(1);
-        } else {
-            this.cantCraftStack = ItemStack.EMPTY;
-        }
-
+        this.cantCraft = missing;
         setChanged();
         if (!isClientSide()) {
             syncManaged();

@@ -26,8 +26,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.InsaneConfig;
-import net.oktawia.insaneae2addons.entities.AutoBuilderBE;
-import net.oktawia.insaneae2addons.entities.AutoBuilderCreativeSupplyBE;
+import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
+import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderCreativeSupplyBE;
 import net.oktawia.insaneae2addons.util.ProgramExpander;
 
 import java.util.ArrayList;
@@ -268,9 +268,9 @@ public final class AutoBuilderWorldOps {
 
             boolean creative = hasCreativeSupply(be);
             long extracted = 0;
+            AEItemKey key = AEItemKey.of(block.asItem());
 
             if (!creative) {
-                AEItemKey key = AEItemKey.of(block.asItem());
                 extracted = be.buffer.extract(key, 1);
                 if (extracted <= 0) {
                     be.setMissingItem(new GenericStack(key, 1));
@@ -305,6 +305,9 @@ public final class AutoBuilderWorldOps {
                 );
                 state = BuilderCoordMath.rotateStateByDelta(state, delta);
                 be.getLevel().setBlock(target, state, 3);
+                if (extracted > 0) {
+                    be.buffer.trackConsumed(key, extracted);
+                }
                 be.clearMissingItem();
             }
         } catch (Exception e) {

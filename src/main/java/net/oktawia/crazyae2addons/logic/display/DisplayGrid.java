@@ -26,7 +26,7 @@ public final class DisplayGrid {
 
     public record RenderGroup(Set<Display> parts, Display renderOrigin, AABB aabb) {}
 
-    private record PlaneAxes(Direction right, Direction up) {}
+    public record PlaneAxes(Direction right, Direction up) {}
 
     private static final Map<Display, RenderGroup> CLIENT_RENDER_GROUP_CACHE = new IdentityHashMap<>();
 
@@ -412,13 +412,13 @@ public final class DisplayGrid {
                 .orElse(any);
     }
 
-    private static PlaneAxes axesForWall(Direction side, int spin) {
+    public static PlaneAxes surfaceAxes(Direction side, int spin) {
         PlaneAxes base = switch (side) {
             case NORTH -> new PlaneAxes(Direction.EAST, Direction.UP);
             case SOUTH -> new PlaneAxes(Direction.WEST, Direction.UP);
             case EAST -> new PlaneAxes(Direction.SOUTH, Direction.UP);
             case WEST -> new PlaneAxes(Direction.NORTH, Direction.UP);
-            default -> throw new IllegalStateException("Unexpected side for wall axes: " + side);
+            case UP, DOWN -> new PlaneAxes(Direction.EAST, Direction.SOUTH);
         };
 
         int normalizedSpin = Math.floorMod(spin, 4);
@@ -450,37 +450,13 @@ public final class DisplayGrid {
     }
 
     private static int partCol(Display part) {
-        BlockPos pos = part.getBlockEntity().getBlockPos();
-        Direction side = part.getSide();
-
-        if (side == Direction.UP || side == Direction.DOWN) {
-            return switch (Math.floorMod(part.getSpin(), 4)) {
-                case 0 -> pos.getX();
-                case 1 -> pos.getZ();
-                case 2 -> -pos.getX();
-                default -> -pos.getZ();
-            };
-        }
-
-        PlaneAxes axes = axesForWall(side, part.getSpin());
-        return project(pos, axes.right());
+        PlaneAxes axes = surfaceAxes(part.getSide(), part.getSpin());
+        return project(part.getBlockEntity().getBlockPos(), axes.right());
     }
 
     private static int partRow(Display part) {
-        BlockPos pos = part.getBlockEntity().getBlockPos();
-        Direction side = part.getSide();
-
-        if (side == Direction.UP || side == Direction.DOWN) {
-            return switch (Math.floorMod(part.getSpin(), 4)) {
-                case 0 -> pos.getZ();
-                case 1 -> -pos.getX();
-                case 2 -> -pos.getZ();
-                default -> pos.getX();
-            };
-        }
-
-        PlaneAxes axes = axesForWall(side, part.getSpin());
-        return project(pos, axes.up());
+        PlaneAxes axes = surfaceAxes(part.getSide(), part.getSpin());
+        return project(part.getBlockEntity().getBlockPos(), axes.up());
     }
 
     private static Display.LocalDir oppositeLocal(Display.LocalDir dir) {

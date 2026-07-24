@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.logic.display.DisplayGrid;
+import net.oktawia.crazyae2addons.client.misc.DisplayImageClientCache;
 import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
 import net.oktawia.crazyae2addons.logic.display.DisplayRenderData;
 import net.oktawia.crazyae2addons.logic.display.DisplayRenderData.DrawEntry;
@@ -95,6 +96,14 @@ public final class DisplayRendererCommon {
 
     public static PreparedDisplay prepare(Font font, Display renderOrigin, Set<Display> grid) {
         var dims = DisplayGrid.getGridSize(new ArrayList<>(grid));
+        List<DisplayImageEntry> images = renderOrigin.getDisplayImages();
+        Map<String, byte[]> imageData = new HashMap<>();
+        for (DisplayImageEntry image : images) {
+            byte[] bytes = DisplayImageClientCache.get(image.id());
+            if (bytes != null) {
+                imageData.put(image.id(), bytes);
+            }
+        }
         return prepare(
                 font,
                 renderOrigin.getTextValue(),
@@ -103,8 +112,8 @@ public final class DisplayRendererCommon {
                 renderOrigin.isAddMargin(),
                 dims.getFirst(),
                 dims.getSecond(),
-                renderOrigin.getDisplayImages(),
-                renderOrigin.getDisplayImageData(),
+                images,
+                imageData,
                 renderOrigin.isPowered()
         );
     }

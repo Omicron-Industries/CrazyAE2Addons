@@ -1,6 +1,9 @@
 package net.oktawia.crazyae2addons;
 
 import appeng.api.features.GridLinkables;
+import appeng.api.networking.GridServices;
+import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
+import net.oktawia.crazyae2addons.tracking.ResourceTrackingService;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import com.mojang.logging.LogUtils;
 import de.mari_023.ae2wtlib.terminal.IUniversalWirelessTerminalItem;
@@ -19,6 +22,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import net.oktawia.crazyae2addons.client.screens.CrazyConfigScreen;
@@ -53,6 +57,10 @@ public class CrazyAddons {
 
     public CrazyAddons() {
         LogUtils.getLogger().info("Loading Crazy AE2 Addons");
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            System.setProperty("java.awt.headless", "false");
+        }
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CrazyConfig.COMMON_SPEC);
@@ -127,6 +135,7 @@ public class CrazyAddons {
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             new UpgradeCards(event);
+            GridServices.register(IResourceTrackingService.class, ResourceTrackingService.class);
             CrazyFeatureGates.register();
             CrazyBlockEntityRegistrar.setupBlockEntityTypes();
             if (IsModLoaded.GTCEU) {

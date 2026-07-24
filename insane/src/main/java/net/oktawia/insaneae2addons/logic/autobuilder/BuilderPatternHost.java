@@ -12,7 +12,7 @@ import net.minecraft.world.level.storage.LevelResource;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.items.BuilderPatternItem;
+import net.oktawia.insaneae2addons.items.autobuilder.BuilderPatternItem;
 import net.oktawia.insaneae2addons.util.ProgramExpander;
 
 import java.io.IOException;

@@ -13,8 +13,9 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
+import appeng.menu.interfaces.IProgressProvider;
+import net.oktawia.crazyae2addons.client.misc.GradientProgressBar;
 import net.oktawia.crazyae2addons.client.misc.ResearchDiskPanel;
-import net.oktawia.crazyae2addons.client.misc.SimpleProgressBarWidget;
 import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
 import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
 import net.oktawia.crazyae2addons.defs.LangDefs;
@@ -25,24 +26,16 @@ import java.util.List;
 
 public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBaseScreen<C> {
 
-    private final SimpleProgressBarWidget craftingProgress;
+    private static final int PROGRESS_COLOR_FROM = 0xFF7A5A1E;
+    private static final int PROGRESS_COLOR_TO = 0xFFFFD780;
+
+    private final GradientProgressBar craftingProgress;
 
     public RecipeFabricatorScreen(C menu, Inventory inv, Component title, ScreenStyle style) {
         super(menu, inv, title, style);
 
-        this.craftingProgress = new SimpleProgressBarWidget(0, 0, 64, 10)
-                .setTooltipSupplier(() -> {
-                    RecipeFabricatorBE host = getMenu().getHost();
-                    int progress = host != null ? host.getProgress() : 0;
-                    int duration = host != null ? host.getDuration() : 10;
-                    int pct = duration > 0 ? (int) Math.round(100.0 * progress / duration) : 0;
-
-                    return List.of(Component.translatable(
-                            LangDefs.RECIPE_FABRICATOR_PROGRESS.getTranslationKey(),
-                            pct
-                    ));
-                });
-
+        this.craftingProgress = new GradientProgressBar(new CraftingProgress(),
+                PROGRESS_COLOR_FROM, PROGRESS_COLOR_TO, Component.empty());
         this.widgets.add("crafting_progress", this.craftingProgress);
 
         List<Slot> diskSlots = menu.getSlots(RecipeFabricatorMenu.RESEARCH_DISK);
@@ -61,8 +54,10 @@ public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBa
         RecipeFabricatorBE host = getMenu().getHost();
         int progress = host != null ? host.getProgress() : 0;
         int duration = host != null ? host.getDuration() : 10;
+        int pct = duration > 0 ? (int) Math.round(100.0 * progress / duration) : 0;
 
-        this.craftingProgress.setProgress(progress, duration);
+        this.craftingProgress.setFullMsg(Component.translatable(
+                LangDefs.RECIPE_FABRICATOR_PROGRESS.getTranslationKey(), pct));
     }
 
     @Override
@@ -106,14 +101,20 @@ public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBa
                     Component.translatable(LangDefs.RECIPE_FABRICATOR_FLUID_OUT.getTranslationKey())
             );
         }
+    }
 
-        if (this.craftingProgress.isPointOver(mouseX, mouseY) && this.craftingProgress.hasTooltip()) {
-            gg.renderComponentTooltip(
-                    this.font,
-                    this.craftingProgress.getTooltipToRender(),
-                    mouseX,
-                    mouseY
-            );
+    private final class CraftingProgress implements IProgressProvider {
+
+        @Override
+        public int getCurrentProgress() {
+            RecipeFabricatorBE host = getMenu().getHost();
+            return host != null ? host.getProgress() : 0;
+        }
+
+        @Override
+        public int getMaxProgress() {
+            RecipeFabricatorBE host = getMenu().getHost();
+            return host != null ? Math.max(1, host.getDuration()) : 10;
         }
     }
 

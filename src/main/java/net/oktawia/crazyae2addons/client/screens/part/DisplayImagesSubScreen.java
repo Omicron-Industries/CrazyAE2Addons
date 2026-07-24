@@ -534,7 +534,6 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
                 }
             }
 
-            // --- pasek reorder (dół widgetu) ---
             int ctrlY = y + height - CONTROLS_H;
             g.fill(x, ctrlY - 1, x + width, ctrlY, 0xFF555555);
 
@@ -574,7 +573,6 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
             int mx = (int) mouseX;
             int my = (int) mouseY;
 
-            // Kliknięcie w pasek reorder (dół widgetu)
             int ctrlY = getY() + height - CONTROLS_H;
             if (my >= ctrlY && my < ctrlY + CONTROLS_H) {
                 DisplayImageEntry sel = getMenu().getSelectedImage();

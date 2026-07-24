@@ -25,6 +25,26 @@
     "insaneae2addons:research_station",
     "insaneae2addons:entropy_cradle_controller",
     "insaneae2addons:entropy_cradle",
-    "insaneae2addons:entropy_cradle_capacitor"
+    "insaneae2addons:entropy_cradle_capacitor",
+    "insaneae2addons:mob_farm_controller",
+    "insaneae2addons:mob_farm_wall",
+    "insaneae2addons:mob_farm_collector",
+    "insaneae2addons:mob_farm_input",
+    "insaneae2addons:mob_farm_damage",
+    "insaneae2addons:spawner_extractor_controller",
+    "insaneae2addons:spawner_extractor_wall",
+    "insaneae2addons:super_singularity_block",
+    "insaneae2addons:reinforced_matter_condenser",
+    "insaneae2addons:penrose_frame",
+    "insaneae2addons:penrose_glass",
+    "insaneae2addons:penrose_laser",
+    "insaneae2addons:penrose_coil",
+    "insaneae2addons:penrose_port",
+    "insaneae2addons:portable_penrose_sphere_controller",
+    "insaneae2addons:penrose_injection_port",
+    "insaneae2addons:penrose_heat_vent",
+    "insaneae2addons:penrose_hawking_vent",
+    "insaneae2addons:penrose_mass_emitter",
+    "insaneae2addons:penrose_heat_emitter"
   ]
 }

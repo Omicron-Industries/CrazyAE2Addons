@@ -15,6 +15,7 @@ public final class CrazyLDLibPlugin implements ILDLibPlugin {
         TypedPayloadRegistries.register(NbtTagPayload.class, NbtTagPayload::new, new UpgradeInventoryAccessor(), 1500);
         TypedPayloadRegistries.register(NbtTagPayload.class, NbtTagPayload::new, new ManagedBufferAccessor(), 1500);
         TypedPayloadRegistries.register(NbtTagPayload.class, NbtTagPayload::new, new ConfigInventoryAccessor(), 1500);
+        TypedPayloadRegistries.register(NbtTagPayload.class, NbtTagPayload::new, new GenericStackAccessor(), 1500);
         TypedPayloadRegistries.register(NbtTagPayload.class, NbtTagPayload::new, new CraftingLinkAccessor(), 1000);
         TypedPayloadRegistries.register(NbtTagPayload.class, NbtTagPayload::new, new FluidTankAccessor(), 1000);
     }

@@ -107,6 +107,37 @@ public class InsaneConfigScreen {
                 LangDefs.CONFIG_SECTION_ENTROPY_CRADLE_DESC
         );
 
+        addSection(root, eb, LangDefs.CONFIG_SECTION_PENROSE, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_PENROSE_ENABLED, cfg.PENROSE_SPHERE_ENABLED.get(), true,
+                            cfg.PENROSE_SPHERE_ENABLED::set,
+                            LangDefs.CONFIG_DESC_PENROSE_ENABLED
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_PENROSE_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_MOB_FARM, entries -> {
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_MOB_FARM_BASE_SPEED, cfg.MOB_FARM_BASE_SPEED.get(), 16, 1,
+                            cfg.MOB_FARM_BASE_SPEED::set,
+                            LangDefs.CONFIG_DESC_MOB_FARM_BASE_SPEED
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_MOB_FARM_SPEED_PER_CARD, cfg.MOB_FARM_SPEED_PER_CARD.get(), 12, 0,
+                            cfg.MOB_FARM_SPEED_PER_CARD::set,
+                            LangDefs.CONFIG_DESC_MOB_FARM_SPEED_PER_CARD
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_MOB_FARM_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_SPAWNER_EXTRACTOR, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_SPAWNER_EXTRACTOR_PEACEFUL, cfg.SPAWNER_EXTRACTOR_PEACEFUL.get(), true,
+                            cfg.SPAWNER_EXTRACTOR_PEACEFUL::set,
+                            LangDefs.CONFIG_DESC_SPAWNER_EXTRACTOR_PEACEFUL
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_SPAWNER_EXTRACTOR_DESC
+        );
+
         addSection(root, eb, LangDefs.CONFIG_SECTION_ENTITY_TICKER, entries -> {
                     entries.add(bool(eb, LangDefs.CONFIG_ENTRY_ENTITY_TICKER_ENABLED, cfg.ENTITY_TICKER_ENABLED.get(), true,
                             cfg.ENTITY_TICKER_ENABLED::set,

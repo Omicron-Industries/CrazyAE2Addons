@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "insaneae2addons:penrose_frame"
+    },
+    "E": {
+      "item": "ae2:level_emitter"
+    },
+    "S": {
+      "item": "insaneae2addons:super_singularity"
+    }
+  },
+  "pattern": [
+    "ECS"
+  ],
+  "result": {
+    "item": "insaneae2addons:penrose_mass_emitter"
+  },
+  "show_notification": true
+}

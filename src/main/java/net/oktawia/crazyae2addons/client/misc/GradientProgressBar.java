@@ -14,12 +14,19 @@ public class GradientProgressBar extends ProgressBar {
     private final IProgressProvider provider;
     private final int colorFrom;
     private final int colorTo;
+    private final Direction direction;
 
     public GradientProgressBar(IProgressProvider source, int colorFrom, int colorTo, Component title) {
-        super(source, Blitter.texture("guis/states.png").src(0, 0, 1, 1), Direction.HORIZONTAL, title);
+        this(source, colorFrom, colorTo, Direction.HORIZONTAL, title);
+    }
+
+    public GradientProgressBar(IProgressProvider source, int colorFrom, int colorTo,
+                               Direction direction, Component title) {
+        super(source, Blitter.texture("guis/states.png").src(0, 0, 1, 1), direction, title);
         this.provider = source;
         this.colorFrom = colorFrom;
         this.colorTo = colorTo;
+        this.direction = direction;
     }
 
     @Override
@@ -38,11 +45,20 @@ public class GradientProgressBar extends ProgressBar {
 
         int max = provider.getMaxProgress();
         int current = Math.min(provider.getCurrentProgress(), max);
-        int filled = max > 0 ? Math.round(w * (current / (float) max)) : 0;
 
-        for (int i = 0; i < filled; i++) {
-            float t = w > 1 ? (float) i / (w - 1) : 0f;
-            gg.fill(x + i, y, x + i + 1, y + h, lerpColor(colorFrom, colorTo, t));
+        if (this.direction == Direction.VERTICAL) {
+            int filled = max > 0 ? Math.round(h * (current / (float) max)) : 0;
+            for (int i = 0; i < filled; i++) {
+                float t = h > 1 ? (float) i / (h - 1) : 0f;
+                int row = y + h - 1 - i;
+                gg.fill(x, row, x + w, row + 1, lerpColor(colorFrom, colorTo, t));
+            }
+        } else {
+            int filled = max > 0 ? Math.round(w * (current / (float) max)) : 0;
+            for (int i = 0; i < filled; i++) {
+                float t = w > 1 ? (float) i / (w - 1) : 0f;
+                gg.fill(x + i, y, x + i + 1, y + h, lerpColor(colorFrom, colorTo, t));
+            }
         }
     }
 

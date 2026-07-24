@@ -29,9 +29,9 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerBE;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
-import net.oktawia.insaneae2addons.blocks.ICableMachine;
-import net.oktawia.insaneae2addons.blocks.ResearchUnitBlock;
-import net.oktawia.insaneae2addons.blocks.ResearchUnitFrameBlock;
+import net.oktawia.insaneae2addons.blocks.research.ICableMachine;
+import net.oktawia.insaneae2addons.blocks.research.ResearchUnitBlock;
+import net.oktawia.insaneae2addons.blocks.research.ResearchUnitFrameBlock;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneFluidRegistrar;
@@ -61,7 +61,7 @@ public class ResearchUnitBE extends AbstractMultiblockControllerBE implements IC
 
     private static final Predicate<FluidStack> RESEARCH_FLUID_ONLY = stack ->
             !stack.isEmpty()
-                    && stack.getFluid().getFluidType() == InsaneFluidRegistrar.RESEARCH_FLUID_TYPE.get();
+                    && stack.getFluid().getFluidType() == InsaneFluidRegistrar.RESEARCH_FLUID.type().get();
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(ResearchUnitBE.class);

@@ -7,13 +7,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.insaneae2addons.InsaneAddons;
-import net.oktawia.insaneae2addons.compat.GregTech.GTAmpereMeterBE;
 import net.oktawia.insaneae2addons.entities.AmpereMeterBE;
-import net.oktawia.insaneae2addons.entities.AutoBuilderBE;
+import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 import net.oktawia.insaneae2addons.entities.AutoEnchanterBE;
-import net.oktawia.insaneae2addons.entities.AutoBuilderCreativeSupplyBE;
+import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderCreativeSupplyBE;
 import net.oktawia.insaneae2addons.entities.BrokenPatternProviderBE;
 import net.oktawia.insaneae2addons.entities.EnergyStorageBE;
 import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleCapacitorBE;
@@ -23,13 +21,28 @@ import net.oktawia.insaneae2addons.entities.research.ResearchPedestalBottomBE;
 import net.oktawia.insaneae2addons.entities.research.ResearchPedestalTopBE;
 import net.oktawia.insaneae2addons.entities.research.ResearchStationBE;
 import net.oktawia.insaneae2addons.entities.research.ResearchUnitBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseCoilBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseLaserBE;
+import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControllerBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseFrameBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseGlassBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenrosePortBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseInjectionPortBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseHeatVentBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseHawkingVentBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseMassEmitterBE;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseHeatEmitterBE;
+import net.oktawia.insaneae2addons.entities.penrose.ReinforcedMatterCondenserBE;
+import net.oktawia.insaneae2addons.entities.penrose.SuperSingularityBE;
 import net.oktawia.insaneae2addons.entities.research.ResearchUnitFrameBE;
+import net.oktawia.insaneae2addons.entities.mobstorage.MobFarmControllerBE;
+import net.oktawia.insaneae2addons.entities.mobstorage.MobFarmPartBE;
+import net.oktawia.insaneae2addons.entities.mobstorage.SpawnerExtractorControllerBE;
+import net.oktawia.insaneae2addons.entities.mobstorage.SpawnerExtractorWallBE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 
 public class InsaneBlockEntityRegistrar {
 
@@ -78,40 +91,6 @@ public class InsaneBlockEntityRegistrar {
         });
     }
 
-    private static <T extends AEBaseBlockEntity, S extends T> RegistryObject<BlockEntityType<T>> regConditional(
-            String id,
-            Supplier<? extends AEBaseEntityBlock<?>> block,
-            BooleanSupplier condition,
-            Supplier<BlockEntityType.BlockEntitySupplier<S>> trueFactory,
-            Supplier<Class<S>> trueClass,
-            BlockEntityType.BlockEntitySupplier<T> falseFactory,
-            Class<T> falseClass
-    ) {
-        return BLOCK_ENTITIES.register(id, () -> {
-            var blk = block.get();
-
-            if (condition.getAsBoolean()) {
-                BlockEntityType<S> type = BlockEntityType.Builder.of(trueFactory.get(), blk).build(null);
-                BLOCK_ENTITY_SETUP.add(() -> blk.setBlockEntity(
-                        (Class) trueClass.get(),
-                        (BlockEntityType) type,
-                        null,
-                        null
-                ));
-                return (BlockEntityType<T>) type;
-            } else {
-                BlockEntityType<T> type = BlockEntityType.Builder.of(falseFactory, blk).build(null);
-                BLOCK_ENTITY_SETUP.add(() -> blk.setBlockEntity(
-                        (Class) falseClass,
-                        (BlockEntityType) type,
-                        null,
-                        null
-                ));
-                return type;
-            }
-        });
-    }
-
     public static void setupBlockEntityTypes() {
         for (var runnable : BLOCK_ENTITY_SETUP) {
             runnable.run();
@@ -123,15 +102,7 @@ public class InsaneBlockEntityRegistrar {
     }
 
     public static final RegistryObject<BlockEntityType<AmpereMeterBE>> AMPERE_METER_BE =
-            regConditional(
-                    "ampere_meter_be",
-                    InsaneBlockRegistrar.AMPERE_METER_BLOCK,
-                    () -> IsModLoaded.GTCEU,
-                    () -> GTAmpereMeterBE::new,
-                    () -> AmpereMeterBE.class,
-                    AmpereMeterBE::new,
-                    AmpereMeterBE.class
-            );
+            reg("ampere_meter_be", InsaneBlockRegistrar.AMPERE_METER_BLOCK, AmpereMeterBE::new, AmpereMeterBE.class);
 
     public static final RegistryObject<BlockEntityType<AutoBuilderBE>> AUTO_BUILDER_BE =
             reg("auto_builder_be", InsaneBlockRegistrar.AUTO_BUILDER_BLOCK, AutoBuilderBE::new, AutoBuilderBE.class);
@@ -168,6 +139,62 @@ public class InsaneBlockEntityRegistrar {
 
     public static final RegistryObject<BlockEntityType<EntropyCradleCapacitorBE>> ENTROPY_CRADLE_CAPACITOR_BE =
             reg("entropy_cradle_capacitor_be", InsaneBlockRegistrar.ENTROPY_CRADLE_CAPACITOR_BLOCK, EntropyCradleCapacitorBE::new, EntropyCradleCapacitorBE.class);
+
+    public static final RegistryObject<BlockEntityType<MobFarmControllerBE>> MOB_FARM_CONTROLLER_BE =
+            reg("mob_farm_controller_be", InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK, MobFarmControllerBE::new, MobFarmControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<MobFarmPartBE>> MOB_FARM_PART_BE =
+            regMulti("mob_farm_part_be", MobFarmPartBE::new, MobFarmPartBE.class,
+                    InsaneBlockRegistrar.MOB_FARM_WALL_BLOCK,
+                    InsaneBlockRegistrar.MOB_FARM_COLLECTOR_BLOCK,
+                    InsaneBlockRegistrar.MOB_FARM_INPUT_BLOCK,
+                    InsaneBlockRegistrar.MOB_FARM_DAMAGE_BLOCK);
+
+    public static final RegistryObject<BlockEntityType<SpawnerExtractorControllerBE>> SPAWNER_EXTRACTOR_CONTROLLER_BE =
+            reg("spawner_extractor_controller_be", InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK, SpawnerExtractorControllerBE::new, SpawnerExtractorControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<SpawnerExtractorWallBE>> SPAWNER_EXTRACTOR_WALL_BE =
+            reg("spawner_extractor_wall_be", InsaneBlockRegistrar.SPAWNER_EXTRACTOR_WALL_BLOCK, SpawnerExtractorWallBE::new, SpawnerExtractorWallBE.class);
+
+    public static final RegistryObject<BlockEntityType<SuperSingularityBE>> SUPER_SINGULARITY_BE =
+            reg("super_singularity_be", InsaneBlockRegistrar.SUPER_SINGULARITY_BLOCK, SuperSingularityBE::new, SuperSingularityBE.class);
+
+    public static final RegistryObject<BlockEntityType<ReinforcedMatterCondenserBE>> REINFORCED_MATTER_CONDENSER_BE =
+            reg("reinforced_matter_condenser_be", InsaneBlockRegistrar.REINFORCED_MATTER_CONDENSER_BLOCK,
+                    ReinforcedMatterCondenserBE::new, ReinforcedMatterCondenserBE.class);
+
+    public static final RegistryObject<BlockEntityType<PortablePenroseSphereControllerBE>> PORTABLE_PENROSE_SPHERE_CONTROLLER_BE =
+            reg("portable_penrose_sphere_controller_be", InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK, PortablePenroseSphereControllerBE::new, PortablePenroseSphereControllerBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseFrameBE>> PENROSE_FRAME_BE =
+            reg("penrose_frame_be", InsaneBlockRegistrar.PENROSE_FRAME_BLOCK, PenroseFrameBE::new, PenroseFrameBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseGlassBE>> PENROSE_GLASS_BE =
+            reg("penrose_glass_be", InsaneBlockRegistrar.PENROSE_GLASS_BLOCK, PenroseGlassBE::new, PenroseGlassBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseCoilBE>> PENROSE_COIL_BE =
+            reg("penrose_coil_be", InsaneBlockRegistrar.PENROSE_COIL_BLOCK, PenroseCoilBE::new, PenroseCoilBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseLaserBE>> PENROSE_LASER_BE =
+            reg("penrose_laser_be", InsaneBlockRegistrar.PENROSE_LASER_BLOCK, PenroseLaserBE::new, PenroseLaserBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenrosePortBE>> PENROSE_PORT_BE =
+            reg("penrose_port_be", InsaneBlockRegistrar.PENROSE_PORT_BLOCK, PenrosePortBE::new, PenrosePortBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseInjectionPortBE>> PENROSE_INJECTION_PORT_BE =
+            reg("penrose_injection_port_be", InsaneBlockRegistrar.PENROSE_INJECTION_PORT_BLOCK, PenroseInjectionPortBE::new, PenroseInjectionPortBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseHeatVentBE>> PENROSE_HEAT_VENT_BE =
+            reg("penrose_heat_vent_be", InsaneBlockRegistrar.PENROSE_HEAT_VENT_BLOCK, PenroseHeatVentBE::new, PenroseHeatVentBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseHawkingVentBE>> PENROSE_HAWKING_VENT_BE =
+            reg("penrose_hawking_vent_be", InsaneBlockRegistrar.PENROSE_HAWKING_VENT_BLOCK, PenroseHawkingVentBE::new, PenroseHawkingVentBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseMassEmitterBE>> PENROSE_MASS_EMITTER_BE =
+            reg("penrose_mass_emitter_be", InsaneBlockRegistrar.PENROSE_MASS_EMITTER_BLOCK, PenroseMassEmitterBE::new, PenroseMassEmitterBE.class);
+
+    public static final RegistryObject<BlockEntityType<PenroseHeatEmitterBE>> PENROSE_HEAT_EMITTER_BE =
+            reg("penrose_heat_emitter_be", InsaneBlockRegistrar.PENROSE_HEAT_EMITTER_BLOCK, PenroseHeatEmitterBE::new, PenroseHeatEmitterBE.class);
 
     public static final RegistryObject<BlockEntityType<EnergyStorageBE>> ENERGY_STORAGE_BE =
             regMulti("energy_storage_be", EnergyStorageBE::new, EnergyStorageBE.class,

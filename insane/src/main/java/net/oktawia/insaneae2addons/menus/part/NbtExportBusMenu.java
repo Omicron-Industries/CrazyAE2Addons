@@ -6,7 +6,7 @@ import appeng.menu.SlotSemantics;
 import appeng.menu.slot.FakeSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.parts.NbtExportBusPart;
+import net.oktawia.insaneae2addons.parts.nbt.NbtExportBusPart;
 import net.oktawia.insaneae2addons.util.NbtFormatter;
 import org.jetbrains.annotations.Nullable;
 

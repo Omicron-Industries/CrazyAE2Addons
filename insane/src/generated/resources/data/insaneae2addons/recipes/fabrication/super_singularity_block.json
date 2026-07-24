@@ -1,0 +1,22 @@
+{
+  "type": "crazyae2addons:fabrication",
+  "input": [
+    {
+      "count": 9,
+      "item": "insaneae2addons:super_singularity"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:netherite_ingot"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:nether_star"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "insaneae2addons:super_singularity_block"
+  },
+  "required_key": "insaneae2addons:super_singularity_research"
+}

@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -127,6 +128,10 @@ public final class MultiblockState {
         this.attachedValidateTimer = 0;
         this.cachedFacing = null;
         this.cachedControllerPos = null;
+    }
+
+    public Collection<MultiblockCallback> getRegisteredCallbacks() {
+        return Collections.unmodifiableCollection(this.registeredCallbacks.values());
     }
 
     public List<BlockPos> getBlocksBySymbol(char symbol) {

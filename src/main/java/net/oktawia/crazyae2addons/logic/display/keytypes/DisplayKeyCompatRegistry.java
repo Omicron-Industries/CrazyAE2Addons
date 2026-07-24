@@ -45,7 +45,8 @@ public final class DisplayKeyCompatRegistry {
         }
     }
 
-    private static void register(IDisplayKeyResolver resolver) {
+    public static void register(IDisplayKeyResolver resolver) {
+        ensureInit();
         RESOLVERS.put(resolver.getTypePrefix(), resolver);
     }
 

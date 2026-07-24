@@ -1,0 +1,47 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
+  "background": {
+    "texture": "guis/blank_background.png",
+    "srcRect": [
+      0,
+      0,
+      176,
+      205
+    ]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "block.insaneae2addons.penrose_laser"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "energy": {
+      "position": {
+        "left": 8,
+        "top": 50
+      }
+    },
+    "status": {
+      "position": {
+        "left": 8,
+        "top": 78
+      }
+    }
+  },
+  "widgets": {
+    "charge": {
+      "left": 8,
+      "top": 62,
+      "width": 160,
+      "height": 12
+    }
+  }
+}

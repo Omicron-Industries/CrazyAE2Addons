@@ -13,7 +13,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.blocks.EnergyStorageBlock;
-import net.oktawia.insaneae2addons.blocks.ResearchCableBlock;
+import net.oktawia.insaneae2addons.blocks.research.ResearchCableBlock;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +44,14 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
                     && block != InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get()
                     && block != InsaneBlockRegistrar.ENTROPY_CRADLE_BLOCK.get()
                     && block != InsaneBlockRegistrar.ENTROPY_CRADLE_CAPACITOR_BLOCK.get()
+                    && block != InsaneBlockRegistrar.PENROSE_FRAME_BLOCK.get()
+                    && block != InsaneBlockRegistrar.PENROSE_GLASS_BLOCK.get()
+                    && block != InsaneBlockRegistrar.PENROSE_COIL_BLOCK.get()
+                    && block != InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get()
+                    && block != InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get()
+                    && block != InsaneBlockRegistrar.MOB_FARM_WALL_BLOCK.get()
+                    && block != InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK.get()
+                    && block != InsaneBlockRegistrar.SPAWNER_EXTRACTOR_WALL_BLOCK.get()
                     && !(block instanceof EnergyStorageBlock)
             ) {
                 simpleBlock(block, cubeAll(block));
@@ -76,6 +84,31 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
 
         Block cradleController = InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get();
         simpleBlock(cradleController, ctmModel(cradleController, modLoc("block/entropy_cradle"), true, CONTROLLER_OVERLAY));
+
+        Block penroseFrame = InsaneBlockRegistrar.PENROSE_FRAME_BLOCK.get();
+        simpleBlock(penroseFrame, ctmModel(penroseFrame, modLoc("block/penrose_frame"), true, null));
+
+        Block penroseGlass = InsaneBlockRegistrar.PENROSE_GLASS_BLOCK.get();
+        simpleBlock(penroseGlass, ctmModel(penroseGlass, modLoc("block/penrose_glass"), true, null)
+                .renderType("cutout"));
+
+        Block penroseCoil = InsaneBlockRegistrar.PENROSE_COIL_BLOCK.get();
+        simpleBlock(penroseCoil, ctmModel(penroseCoil, modLoc("block/penrose_coil"), true, null));
+
+        Block penroseController = InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get();
+        simpleBlock(penroseController, ctmModel(penroseController, modLoc("block/penrose_frame"), true, CONTROLLER_OVERLAY));
+
+        Block mobFarmWall = InsaneBlockRegistrar.MOB_FARM_WALL_BLOCK.get();
+        simpleBlock(mobFarmWall, ctmModel(mobFarmWall, modLoc("block/mob_farm_wall"), true, null));
+
+        Block mobFarmController = InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get();
+        simpleBlock(mobFarmController, ctmModel(mobFarmController, modLoc("block/mob_farm_wall"), true, CONTROLLER_OVERLAY));
+
+        Block spawnerWall = InsaneBlockRegistrar.SPAWNER_EXTRACTOR_WALL_BLOCK.get();
+        simpleBlock(spawnerWall, ctmModel(spawnerWall, modLoc("block/spawner_extractor_wall"), true, null));
+
+        Block spawnerController = InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK.get();
+        simpleBlock(spawnerController, ctmModel(spawnerController, modLoc("block/spawner_extractor_wall"), true, CONTROLLER_OVERLAY));
     }
 
     private void researchCable(Block block, String texture) {

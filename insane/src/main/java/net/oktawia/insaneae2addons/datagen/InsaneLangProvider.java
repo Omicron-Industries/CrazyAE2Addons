@@ -27,8 +27,10 @@ public class InsaneLangProvider extends LanguageProvider {
             this.add(entry.getTranslationKey(), entry.getEnglishText());
         }
 
-        this.add("fluid_type.insaneae2addons.research_fluid_type", "Research Fluid");
-        this.add(InsaneFluidRegistrar.RESEARCH_FLUID_BUCKET.get().getDescriptionId(), "Research Fluid Bucket");
-        this.add(InsaneFluidRegistrar.RESEARCH_FLUID_BLOCK.get().getDescriptionId(), "Research Fluid");
+        for (var fluid : InsaneFluidRegistrar.getFluids()) {
+            this.add("fluid_type." + InsaneAddons.MODID + "." + fluid.name() + "_type", fluid.displayName());
+            this.add(fluid.bucket().get().getDescriptionId(), fluid.displayName() + " Bucket");
+            this.add(fluid.block().get().getDescriptionId(), fluid.displayName());
+        }
     }
 }

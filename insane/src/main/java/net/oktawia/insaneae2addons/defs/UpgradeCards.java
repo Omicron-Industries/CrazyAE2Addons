@@ -20,10 +20,25 @@ public class UpgradeCards {
             Upgrades.add(AEItems.SPEED_CARD, InsaneItemRegistrar.ENTITY_TICKER.get(),
                     InsaneConfig.COMMON.ENTITY_TICKER_MAX_SPEED_CARDS.get());
 
+            Upgrades.add(AEItems.SPEED_CARD, InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK.get(), 4);
+
+            Upgrades.add(AEItems.SPEED_CARD, InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4);
+            Upgrades.add(InsaneItemRegistrar.LOOTING_UPGRADE_CARD.get(), InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4);
+            Upgrades.add(InsaneItemRegistrar.EXPERIENCE_UPGRADE_CARD.get(), InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4);
+
+            Upgrades.add(AEItems.CAPACITY_CARD, InsaneItemRegistrar.MOB_EXPORT_BUS.get(), 5);
+            Upgrades.add(AEItems.REDSTONE_CARD, InsaneItemRegistrar.MOB_EXPORT_BUS.get(), 1);
+            Upgrades.add(AEItems.SPEED_CARD, InsaneItemRegistrar.MOB_EXPORT_BUS.get(), 4);
+
+            Upgrades.add(AEItems.CAPACITY_CARD, InsaneItemRegistrar.MOB_FORMATION_PLANE.get(), 5);
+            Upgrades.add(AEItems.INVERTER_CARD, InsaneItemRegistrar.MOB_FORMATION_PLANE.get(), 1);
+            Upgrades.add(AEItems.REDSTONE_CARD, InsaneItemRegistrar.MOB_FORMATION_PLANE.get(), 1);
+
             Upgrades.add(InsaneItemRegistrar.AUTOMATION_UPGRADE_CARD.get(),
                     CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(), 1);
             Upgrades.add(InsaneItemRegistrar.PLAYER_UPGRADE_CARD.get(),
                     CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(), 1);
+
             Upgrades.add(InsaneItemRegistrar.AUTOMATION_UPGRADE_CARD.get(),
                     CrazyItemRegistrar.CRAZY_PATTERN_PROVIDER_PART.get(), 1);
             Upgrades.add(InsaneItemRegistrar.PLAYER_UPGRADE_CARD.get(),

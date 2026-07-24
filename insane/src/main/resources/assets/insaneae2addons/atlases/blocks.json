@@ -11,6 +11,22 @@
     {
       "type": "minecraft:single",
       "resource": "insaneae2addons:block/entropy_cradle_formed"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "insaneae2addons:block/spawner_extractor_wall_formed"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "insaneae2addons:block/mob_farm_wall_formed"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "insaneae2addons:block/penrose_frame_formed"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "insaneae2addons:block/penrose_coil"
     }
   ]
 }

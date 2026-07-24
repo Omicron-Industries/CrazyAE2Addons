@@ -1,5 +1,8 @@
 package net.oktawia.insaneae2addons;
 
+import appeng.api.features.GridLinkables;
+import appeng.api.stacks.AEKeyTypes;
+import net.oktawia.insaneae2addons.items.MultiblockBuilderItem;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -26,12 +29,22 @@ import net.oktawia.insaneae2addons.defs.InsaneFeatureGates;
 import net.oktawia.insaneae2addons.defs.Screens;
 import net.oktawia.insaneae2addons.defs.UpgradeCards;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneCreativeTabRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneFluidRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
+import net.oktawia.insaneae2addons.client.renderer.EntityTypeRenderer;
+import net.oktawia.crazyae2addons.logic.display.keytypes.DisplayKeyCompatRegistry;
+import net.oktawia.insaneae2addons.mobstorage.MobKeyContainerStrategy;
+import net.oktawia.insaneae2addons.mobstorage.MobKeyResolver;
+import net.oktawia.crazyae2addons.IsModLoaded;
+import net.oktawia.insaneae2addons.compat.CC.InsaneCCCompat;
+import net.oktawia.insaneae2addons.compat.GregTech.GTAmpereMeterCompat;
+import net.oktawia.insaneae2addons.compat.GregTech.GTPenroseEnergyExport;
+import net.oktawia.insaneae2addons.mobstorage.MobKeyType;
 import net.oktawia.insaneae2addons.network.NetworkHandler;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -52,12 +65,18 @@ public class InsaneAddons {
         InsaneBlockRegistrar.BLOCKS.register(modEventBus);
         InsaneBlockRegistrar.BLOCK_ITEMS.register(modEventBus);
         InsaneBlockEntityRegistrar.BLOCK_ENTITIES.register(modEventBus);
+        InsaneEntityRegistrar.ENTITY_TYPES.register(modEventBus);
         InsaneMenuRegistrar.MENU_TYPES.register(modEventBus);
         InsaneFluidRegistrar.register(modEventBus);
         InsaneRecipes.RECIPE_SERIALIZERS.register(modEventBus);
         InsaneRecipes.RECIPE_TYPES.register(modEventBus);
 
         modEventBus.addListener(this::registerCreativeTab);
+        modEventBus.addListener((RegisterEvent event) -> {
+            if (event.getRegistryKey().equals(Registries.BLOCK)) {
+                AEKeyTypes.register(MobKeyType.TYPE);
+            }
+        });
     }
 
     public static @NotNull ResourceLocation makeId(String path) {
@@ -77,9 +96,19 @@ public class InsaneAddons {
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             InsaneBlockEntityRegistrar.setupBlockEntityTypes();
+            GridLinkables.register(InsaneItemRegistrar.MULTIBLOCK_BUILDER.get(), MultiblockBuilderItem.LINKABLE_HANDLER);
             NetworkHandler.registerMessages();
             ResearchDiskHooks.register(new ResearchDiskHookImpl());
             InsaneFeatureGates.register();
+            MobKeyContainerStrategy.register();
+            if (IsModLoaded.GTCEU) {
+                GTAmpereMeterCompat.register();
+                GTPenroseEnergyExport.register();
+            }
+            if (IsModLoaded.COMPUTERCRAFT) {
+                InsaneCCCompat.init();
+            }
+            DisplayKeyCompatRegistry.register(new MobKeyResolver());
         });
         new UpgradeCards(event);
     }
@@ -98,6 +127,7 @@ public class InsaneAddons {
             );
             Screens.register();
             InsaneConnectedTextures.register();
+            EntityTypeRenderer.initialize();
         }
 
         @SubscribeEvent

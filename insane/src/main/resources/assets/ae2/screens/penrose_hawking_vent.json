@@ -1,0 +1,65 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
+  "background": {
+    "texture": "guis/blank_background.png",
+    "srcRect": [
+      0,
+      0,
+      176,
+      205
+    ]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "block.insaneae2addons.penrose_hawking_vent"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "evaporation": {
+      "position": {
+        "left": 8,
+        "top": 22
+      }
+    },
+    "cost": {
+      "position": {
+        "left": 8,
+        "top": 32
+      }
+    },
+    "buffer": {
+      "position": {
+        "left": 8,
+        "top": 42
+      }
+    },
+    "status": {
+      "position": {
+        "left": 8,
+        "top": 52
+      }
+    }
+  },
+  "widgets": {
+    "evaporation": {
+      "left": 56,
+      "top": 68,
+      "width": 64,
+      "height": 12
+    },
+    "curve": {
+      "left": 40,
+      "top": 84,
+      "width": 96,
+      "height": 22
+    }
+  }
+}

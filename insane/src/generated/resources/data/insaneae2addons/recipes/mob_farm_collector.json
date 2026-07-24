@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "ae2:fluix_pearl"
+    },
+    "H": {
+      "item": "ae2:import_bus"
+    },
+    "W": {
+      "item": "insaneae2addons:mob_farm_wall"
+    }
+  },
+  "pattern": [
+    "WHW",
+    "HEH",
+    "WHW"
+  ],
+  "result": {
+    "item": "insaneae2addons:mob_farm_collector"
+  },
+  "show_notification": true
+}

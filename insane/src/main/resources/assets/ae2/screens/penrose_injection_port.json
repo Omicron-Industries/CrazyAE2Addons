@@ -1,0 +1,56 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json"
+  ],
+  "background": {
+    "texture": "guis/blank_background.png",
+    "srcRect": [
+      0,
+      0,
+      176,
+      205
+    ]
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "block.insaneae2addons.penrose_injection_port"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "status": {
+      "position": {
+        "left": 8,
+        "top": 22
+      }
+    },
+    "rate": {
+      "text": {
+        "translate": "gui.insaneae2addons.penrose.port_rate"
+      },
+      "position": {
+        "left": 56,
+        "top": 34
+      }
+    }
+  },
+  "widgets": {
+    "rate": {
+      "left": 56,
+      "top": 46,
+      "width": 64,
+      "height": 12
+    },
+    "curve": {
+      "left": 40,
+      "top": 84,
+      "width": 96,
+      "height": 22
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "ae2:energy_acceptor"
+    },
+    "C": {
+      "item": "insaneae2addons:penrose_heat_emitter"
+    },
+    "E": {
+      "item": "crazyae2addons:redstone_emitter"
+    }
+  },
+  "pattern": [
+    "ECB"
+  ],
+  "result": {
+    "item": "insaneae2addons:penrose_heat_vent"
+  },
+  "show_notification": true
+}

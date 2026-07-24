@@ -61,6 +61,18 @@ public final class NetworkHandler {
                 .consumerMainThread(UploadDisplayImagePacket::handle)
                 .add();
 
+        CHANNEL.messageBuilder(RequestDisplayImagePacket.class, nextId++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(RequestDisplayImagePacket::encode)
+                .decoder(RequestDisplayImagePacket::decode)
+                .consumerMainThread(RequestDisplayImagePacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(DisplayImageDataPacket.class, nextId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(DisplayImageDataPacket::encode)
+                .decoder(DisplayImageDataPacket::decode)
+                .consumerMainThread(DisplayImageDataPacket::handle)
+                .add();
+
         CHANNEL.messageBuilder(NotificationHudPacket.class, nextId++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(NotificationHudPacket::encode)
                 .decoder(NotificationHudPacket::decode)

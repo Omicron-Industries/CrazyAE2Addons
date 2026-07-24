@@ -68,6 +68,22 @@ public class FabricationRecipes {
                 .fluidOutput("insaneae2addons:research_fluid", 1000)
                 .register();
 
+        recipe("penrose_coolant")
+                .input("ae2:certus_quartz_crystal", 8)
+                .input("minecraft:amethyst_shard", 4)
+                .fluidInput("minecraft:water", 1000)
+                .fluidOutput("insaneae2addons:penrose_coolant", 1000)
+                .requiredKey("insaneae2addons:super_singularity_research")
+                .register();
+
+        recipe("super_singularity_block")
+                .input("insaneae2addons:super_singularity", 9)
+                .input("minecraft:netherite_ingot", 4)
+                .input("minecraft:nether_star", 1)
+                .output("insaneae2addons:super_singularity_block", 1)
+                .requiredKey("insaneae2addons:super_singularity_research")
+                .register();
+
         recipe("entropy_cradle_controller")
                 .input("insaneae2addons:entropy_cradle", 4)
                 .input("minecraft:diamond", 1)
@@ -75,21 +91,12 @@ public class FabricationRecipes {
                 .requiredKey("insaneae2addons:entropy_cradle_research")
                 .register();
 
-        // no block yet (mob storage):
-        // recipe("mob_cell")
-        //         .input("ae2:item_cell_housing", 1)
-        //         .input("minecraft:echo_shard", 1)
-        //         .output("insaneae2addons:mob_cell_housing", 1)
-        //         .requiredKey("insaneae2addons:mob_cell_research")
-        //         .register();
-
-        // no block yet (penrose):
-        // recipe("supersingularity_block")
-        //         .input("insaneae2addons:super_singularity", 9)
-        //         .input("ae2:fluix_block", 5)
-        //         .output("insaneae2addons:super_singularity_block", 1)
-        //         .requiredKey("insaneae2addons:super_singularity_research")
-        //         .register();
+        recipe("mob_cell")
+                .input("ae2:item_cell_housing", 1)
+                .input("minecraft:echo_shard", 1)
+                .output("insaneae2addons:mob_cell_housing", 1)
+                .requiredKey("insaneae2addons:mob_cell_research")
+                .register();
     }
 
     public static class Builder {

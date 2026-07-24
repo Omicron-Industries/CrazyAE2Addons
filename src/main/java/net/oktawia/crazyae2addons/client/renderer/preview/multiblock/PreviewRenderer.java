@@ -3,8 +3,8 @@ package net.oktawia.crazyae2addons.client.renderer.preview.multiblock;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -15,20 +15,71 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.model.data.ModelData;
+import net.oktawia.crazyae2addons.client.textures.PreviewQuadProvider;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class PreviewRenderer {
     public static float previewAlpha = 0.38f;
     public static float alphaStep = 0.08f;
+
+    private static final float OUTLINE_HALF_WIDTH = 0.012f;
+
+    private static final float FRONTIER_RED = 1.0f;
+    private static final float FRONTIER_GREEN = 0.15f;
+    private static final float FRONTIER_BLUE = 0.85f;
+
+    private static final int MAX_RENDER_DISTANCE = 48;
+    private static final int MIN_RENDER_DISTANCE = 12;
+    private static final int DISTANCE_STEP = 4;
+    private static final int FPS_FLOOR = 30;
+    private static final int FPS_CEILING = 55;
+    private static final long DISTANCE_ADJUST_INTERVAL_MS = 500L;
+
+    private static final long QUAD_SEED = 42L;
+    private static final double PICK_STEP = 0.05;
+
+    private static final RandomSource QUAD_RANDOM = RandomSource.create();
+    private static final BlockPos.MutableBlockPos PICK_CURSOR = new BlockPos.MutableBlockPos();
+    private static final Map<BlockState, List<BakedQuad>> QUAD_CACHE = new HashMap<>();
+
+    private static int renderDistance = MAX_RENDER_DISTANCE;
+    private static long lastDistanceAdjustMs;
+
+    public static void clearQuadCache() {
+        QUAD_CACHE.clear();
+    }
+
+    public static int getRenderDistance() {
+        return renderDistance;
+    }
+
+    private static int adjustRenderDistance(Minecraft mc) {
+        long now = Util.getMillis();
+        if (now - lastDistanceAdjustMs >= DISTANCE_ADJUST_INTERVAL_MS) {
+            lastDistanceAdjustMs = now;
+
+            int fps = mc.getFps();
+            if (fps < FPS_FLOOR) {
+                renderDistance = Math.max(MIN_RENDER_DISTANCE, renderDistance - DISTANCE_STEP);
+            } else if (fps > FPS_CEILING) {
+                renderDistance = Math.min(MAX_RENDER_DISTANCE, renderDistance + DISTANCE_STEP);
+            }
+        }
+
+        return renderDistance * renderDistance;
+    }
 
     private PreviewRenderer() {
     }
@@ -37,147 +88,72 @@ public final class PreviewRenderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null || previewInfo == null) return;
 
-        float tick = mc.level.getGameTime() + event.getPartialTick();
+        Level level = mc.level;
+        previewInfo.validate(level, level.getGameTime());
 
-        Vec3 playerEyePos = mc.player.getEyePosition();
-        Vec3 lookDirection = mc.player.getLookAngle();
+        float tick = level.getGameTime() + event.getPartialTick();
+        previewInfo.advanceAlpha(tick - previewInfo.lastTick, previewAlpha, alphaStep);
+        previewInfo.lastTick = tick;
+
+        updateTooltip(previewInfo, mc, level);
 
         PoseStack poseStack = event.getPoseStack();
         Vec3 cameraPos = mc.gameRenderer.getMainCamera().getPosition();
         MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
         BlockRenderDispatcher blockRenderer = mc.getBlockRenderer();
         Frustum frustum = event.getFrustum();
+        BlockPos playerPos = mc.player.blockPosition();
+        int renderDistanceSqr = adjustRenderDistance(mc);
 
         poseStack.pushPose();
         poseStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-
-        List<MultiblockPreviewInfo.BlockInfo> visibleBlocks = new ArrayList<>();
-        List<BlockPos> invalidBlocks = new ArrayList<>();
-
-        for (MultiblockPreviewInfo.BlockInfo info : previewInfo.blockInfos) {
-            BlockPos pos = info.pos();
-            AABB bounds = new AABB(pos);
-
-            if (!mc.level.isLoaded(pos)
-                    || pos.distSqr(mc.player.blockPosition()) > 48 * 48
-                    || !frustum.isVisible(bounds)) {
-                continue;
-            }
-
-            BlockState current = mc.level.getBlockState(pos);
-            boolean validHere = info.allowedBlocks().contains(current.getBlock());
-
-            if (validHere) {
-                continue;
-            }
-
-            if (!current.isAir()) {
-                invalidBlocks.add(pos);
-            }
-
-            visibleBlocks.add(info);
-        }
-
-        MultiblockPreviewInfo.BlockInfo pointed = null;
-        float closestDistance = Float.MAX_VALUE;
-
-        for (MultiblockPreviewInfo.BlockInfo info : visibleBlocks) {
-            BlockPos pos = info.pos();
-            AABB bounds = new AABB(pos);
-
-            if (bounds.clip(playerEyePos, playerEyePos.add(lookDirection.scale(12))).isPresent()) {
-                float distance = (float) playerEyePos.distanceTo(Vec3.atCenterOf(pos));
-                if (distance < closestDistance) {
-                    pointed = info;
-                    closestDistance = distance;
-                }
-            }
-        }
-
-        float reach = mc.gameMode != null ? mc.gameMode.getPickRange() : 5.0f;
-        if (pointed != null && closestDistance <= reach) {
-            PreviewTooltipLayer.set(
-                    pointed.state().getBlock().getName().getString(),
-                    null,
-                    PreviewTooltipLayer.DEFAULT_TTL_MS
-            );
-        } else {
-            PreviewTooltipLayer.set(null, null, 0L);
-        }
-
-        float deltaTick = tick - previewInfo.lastTick;
-        for (Map.Entry<Integer, Float> entry : previewInfo.alpha.entrySet()) {
-            int y = entry.getKey();
-            float current = entry.getValue();
-            float target = previewAlpha;
-
-            if (current < target) {
-                previewInfo.alpha.put(y, Math.min(target, current + deltaTick * alphaStep));
-            } else if (current > target) {
-                previewInfo.alpha.put(y, Math.max(target, current - deltaTick * alphaStep));
-            }
-        }
-
-        previewInfo.lastTick = tick;
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
 
-        for (MultiblockPreviewInfo.BlockInfo info : visibleBlocks) {
-            BlockPos pos = info.pos();
-            BlockState state = info.state();
+        VertexConsumer translucentBuffer = buffer.getBuffer(RenderType.translucent());
 
-            float alpha = previewInfo.alpha.computeIfAbsent(pos.getY(), y -> previewAlpha);
-            if (alpha <= 0) {
+        for (MultiblockPreviewInfo.Section section : previewInfo.sections()) {
+            if (section.missing().isEmpty() || !frustum.isVisible(section.bounds())) {
                 continue;
             }
 
-            poseStack.pushPose();
-            poseStack.translate(pos.getX() + 0.06f, pos.getY() + 0.06f, pos.getZ() + 0.06f);
-            poseStack.scale(0.88f, 0.88f, 0.88f);
-
-            BakedModel model = blockRenderer.getBlockModel(state);
-            ModelData modelData = previewModelData(model, mc.level, pos, state);
-            VertexConsumer translucentBuffer = buffer.getBuffer(RenderType.translucent());
-
-            for (RenderType layer : model.getRenderTypes(state, RandomSource.create(42L), modelData)) {
-                for (Direction direction : Direction.values()) {
-                    for (BakedQuad quad : model.getQuads(state, direction, RandomSource.create(42L), modelData, layer)) {
-                        translucentBuffer.putBulkData(
-                                poseStack.last(), quad,
-                                1f, 1f, 1f, alpha,
-                                0x00F000F0, OverlayTexture.NO_OVERLAY, true
-                        );
-                    }
+            for (MultiblockPreviewInfo.BlockInfo info : section.missing()) {
+                BlockPos pos = info.pos();
+                if (pos.distSqr(playerPos) > renderDistanceSqr) {
+                    continue;
                 }
-                for (BakedQuad quad : model.getQuads(state, null, RandomSource.create(42L), modelData, layer)) {
-                    translucentBuffer.putBulkData(
-                            poseStack.last(), quad,
-                            1f, 1f, 1f, alpha,
-                            0x00F000F0, OverlayTexture.NO_OVERLAY, true
-                    );
+
+                float alpha = previewInfo.alphaAt(pos.getY());
+                if (alpha <= 0.0f) {
+                    continue;
                 }
+
+                renderGhost(poseStack, translucentBuffer, blockRenderer, info, alpha);
+            }
+        }
+
+        VertexConsumer outlineBuffer = buffer.getBuffer(PreviewRenderTypes.OVERLAY_OUTLINE);
+        Matrix4f matrix = poseStack.last().pose();
+
+        for (BlockPos pos : previewInfo.frontierBlocks()) {
+            if (pos.distSqr(playerPos) > renderDistanceSqr) {
+                continue;
             }
 
-            poseStack.popPose();
+            renderOutline(outlineBuffer, matrix, cameraPos, pos, FRONTIER_RED, FRONTIER_GREEN, FRONTIER_BLUE);
         }
 
-        VertexConsumer invalidLineBuffer = buffer.getBuffer(RenderType.lines());
-        for (BlockPos pos : invalidBlocks) {
-            poseStack.pushPose();
-            poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+        for (BlockPos pos : previewInfo.invalidBlocks()) {
+            if (pos.distSqr(playerPos) > renderDistanceSqr) {
+                continue;
+            }
 
-            LevelRenderer.renderLineBox(
-                    poseStack,
-                    invalidLineBuffer,
-                    0.0, 0.0, 0.0,
-                    1.0, 1.0, 1.0,
-                    1.0f, 0.15f, 0.15f, 0.95f
-            );
-
-            poseStack.popPose();
+            renderOutline(outlineBuffer, matrix, cameraPos, pos, 1.0f, 0.15f, 0.15f);
         }
+
+        buffer.endBatch(PreviewRenderTypes.OVERLAY_OUTLINE);
 
         RenderSystem.depthMask(true);
         RenderSystem.disableBlend();
@@ -185,14 +161,189 @@ public final class PreviewRenderer {
         poseStack.popPose();
 
         buffer.endBatch(RenderType.translucent());
-        buffer.endBatch(RenderType.lines());
     }
 
-    private static ModelData previewModelData(BakedModel model, BlockAndTintGetter level, BlockPos pos, BlockState state) {
-        try {
-            return model.getModelData(level, pos, state, ModelData.EMPTY);
-        } catch (Throwable t) {
-            return ModelData.EMPTY;
+    private static void renderOutline(
+            VertexConsumer target,
+            Matrix4f matrix,
+            Vec3 camera,
+            BlockPos pos,
+            float red,
+            float green,
+            float blue
+    ) {
+        float x1 = pos.getX();
+        float y1 = pos.getY();
+        float z1 = pos.getZ();
+        float x2 = x1 + 1.0f;
+        float y2 = y1 + 1.0f;
+        float z2 = z1 + 1.0f;
+
+        edge(target, matrix, camera, x1, y1, z1, x2, y1, z1, red, green, blue);
+        edge(target, matrix, camera, x2, y1, z1, x2, y1, z2, red, green, blue);
+        edge(target, matrix, camera, x2, y1, z2, x1, y1, z2, red, green, blue);
+        edge(target, matrix, camera, x1, y1, z2, x1, y1, z1, red, green, blue);
+
+        edge(target, matrix, camera, x1, y2, z1, x2, y2, z1, red, green, blue);
+        edge(target, matrix, camera, x2, y2, z1, x2, y2, z2, red, green, blue);
+        edge(target, matrix, camera, x2, y2, z2, x1, y2, z2, red, green, blue);
+        edge(target, matrix, camera, x1, y2, z2, x1, y2, z1, red, green, blue);
+
+        edge(target, matrix, camera, x1, y1, z1, x1, y2, z1, red, green, blue);
+        edge(target, matrix, camera, x2, y1, z1, x2, y2, z1, red, green, blue);
+        edge(target, matrix, camera, x2, y1, z2, x2, y2, z2, red, green, blue);
+        edge(target, matrix, camera, x1, y1, z2, x1, y2, z2, red, green, blue);
+    }
+
+    private static void edge(
+            VertexConsumer target,
+            Matrix4f matrix,
+            Vec3 camera,
+            float x1, float y1, float z1,
+            float x2, float y2, float z2,
+            float red, float green, float blue
+    ) {
+        Vector3f direction = new Vector3f(x2 - x1, y2 - y1, z2 - z1);
+        if (direction.lengthSquared() < 1.0e-6f) {
+            return;
+        }
+
+        Vector3f toCamera = new Vector3f(
+                (float) (camera.x - (x1 + x2) * 0.5),
+                (float) (camera.y - (y1 + y2) * 0.5),
+                (float) (camera.z - (z1 + z2) * 0.5)
+        );
+
+        Vector3f side = direction.cross(toCamera, new Vector3f());
+        if (side.lengthSquared() < 1.0e-6f) {
+            return;
+        }
+        side.normalize().mul(OUTLINE_HALF_WIDTH);
+
+        vertex(target, matrix, x1 + side.x, y1 + side.y, z1 + side.z, red, green, blue);
+        vertex(target, matrix, x2 + side.x, y2 + side.y, z2 + side.z, red, green, blue);
+        vertex(target, matrix, x2 - side.x, y2 - side.y, z2 - side.z, red, green, blue);
+        vertex(target, matrix, x1 - side.x, y1 - side.y, z1 - side.z, red, green, blue);
+    }
+
+    private static void vertex(
+            VertexConsumer target,
+            Matrix4f matrix,
+            float x, float y, float z,
+            float red, float green, float blue
+    ) {
+        target.vertex(matrix, x, y, z).color(red, green, blue, 1.0f).endVertex();
+    }
+
+    private static void renderGhost(
+            PoseStack poseStack,
+            VertexConsumer target,
+            BlockRenderDispatcher blockRenderer,
+            MultiblockPreviewInfo.BlockInfo info,
+            float alpha
+    ) {
+        BlockPos pos = info.pos();
+
+        poseStack.pushPose();
+        poseStack.translate(pos.getX() + 0.06f, pos.getY() + 0.06f, pos.getZ() + 0.06f);
+        poseStack.scale(0.88f, 0.88f, 0.88f);
+
+        putQuads(poseStack, target, quadsFor(blockRenderer, info.state()), alpha);
+
+        poseStack.popPose();
+    }
+
+    private static List<BakedQuad> quadsFor(BlockRenderDispatcher blockRenderer, BlockState state) {
+        List<BakedQuad> cached = QUAD_CACHE.get(state);
+        if (cached != null) {
+            return cached;
+        }
+
+        BakedModel model = blockRenderer.getBlockModel(state);
+        List<BakedQuad> quads = new ArrayList<>();
+
+        if (model instanceof PreviewQuadProvider provider) {
+            for (Direction direction : Direction.values()) {
+                quads.addAll(provider.previewQuads(state, direction));
+            }
+        } else {
+            QUAD_RANDOM.setSeed(QUAD_SEED);
+            for (RenderType layer : model.getRenderTypes(state, QUAD_RANDOM, ModelData.EMPTY)) {
+                for (Direction direction : Direction.values()) {
+                    QUAD_RANDOM.setSeed(QUAD_SEED);
+                    quads.addAll(model.getQuads(state, direction, QUAD_RANDOM, ModelData.EMPTY, layer));
+                }
+
+                QUAD_RANDOM.setSeed(QUAD_SEED);
+                quads.addAll(model.getQuads(state, null, QUAD_RANDOM, ModelData.EMPTY, layer));
+            }
+        }
+
+        List<BakedQuad> result = List.copyOf(quads);
+        QUAD_CACHE.put(state, result);
+        return result;
+    }
+
+    private static void putQuads(PoseStack poseStack, VertexConsumer target, Iterable<BakedQuad> quads, float alpha) {
+        for (BakedQuad quad : quads) {
+            target.putBulkData(
+                    poseStack.last(), quad,
+                    1f, 1f, 1f, alpha,
+                    0x00F000F0, OverlayTexture.NO_OVERLAY, true
+            );
         }
     }
+
+    private static void updateTooltip(MultiblockPreviewInfo previewInfo, Minecraft mc, Level level) {
+        float reach = mc.gameMode != null ? mc.gameMode.getPickRange() : 5.0f;
+        MultiblockPreviewInfo.BlockInfo pointed = pick(previewInfo, mc, level, reach);
+
+        if (pointed == null) {
+            PreviewTooltipLayer.set(null, null, 0L);
+            return;
+        }
+
+        PreviewTooltipLayer.set(
+                pointed.state().getBlock().getName().getString(),
+                null,
+                PreviewTooltipLayer.DEFAULT_TTL_MS
+        );
+    }
+
+    private static @Nullable MultiblockPreviewInfo.BlockInfo pick(
+            MultiblockPreviewInfo previewInfo,
+            Minecraft mc,
+            Level level,
+            float reach
+    ) {
+        Vec3 eye = mc.player.getEyePosition();
+        Vec3 step = mc.player.getLookAngle().scale(PICK_STEP);
+        double x = eye.x;
+        double y = eye.y;
+        double z = eye.z;
+
+        int steps = (int) Math.ceil(reach / PICK_STEP);
+        long lastKey = Long.MIN_VALUE;
+
+        for (int i = 0; i < steps; i++) {
+            x += step.x;
+            y += step.y;
+            z += step.z;
+
+            PICK_CURSOR.set(Math.floor(x), Math.floor(y), Math.floor(z));
+            long key = PICK_CURSOR.asLong();
+            if (key == lastKey) {
+                continue;
+            }
+            lastKey = key;
+
+            MultiblockPreviewInfo.BlockInfo info = previewInfo.at(PICK_CURSOR);
+            if (info != null && previewInfo.isMissing(level, info)) {
+                return info;
+            }
+        }
+
+        return null;
+    }
+
 }

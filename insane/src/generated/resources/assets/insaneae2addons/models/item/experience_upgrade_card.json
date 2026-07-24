@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "insaneae2addons:item/experience_upgrade_card"
+  }
+}

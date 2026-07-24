@@ -16,7 +16,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.oktawia.insaneae2addons.InsaneAddons;
-import net.oktawia.insaneae2addons.entities.AutoBuilderBE;
+import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderCoordMath;
 
 import java.util.ArrayList;

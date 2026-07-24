@@ -1,0 +1,22 @@
+{
+  "type": "crazyae2addons:fabrication",
+  "fluid_input": {
+    "amount": 1000,
+    "fluid": "minecraft:water"
+  },
+  "fluid_output": {
+    "amount": 1000,
+    "fluid": "insaneae2addons:penrose_coolant"
+  },
+  "input": [
+    {
+      "count": 8,
+      "item": "ae2:certus_quartz_crystal"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:amethyst_shard"
+    }
+  ],
+  "required_key": "insaneae2addons:super_singularity_research"
+}
