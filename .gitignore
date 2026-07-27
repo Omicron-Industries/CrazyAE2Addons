@@ -32,7 +32,5 @@ libs
 1.20.1-2
 features_core.md
 
-*.md
-
 insane/run
 insane/run-data

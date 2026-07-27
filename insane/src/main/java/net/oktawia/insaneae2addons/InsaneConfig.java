@@ -69,11 +69,11 @@ public final class InsaneConfig {
         public final ForgeConfigSpec.DoubleValue PENROSE_DUTY_COMPENSATION;
         public final ForgeConfigSpec.DoubleValue PENROSE_FE_BASE_PER_SINGU_FLOW;
         public final ForgeConfigSpec.DoubleValue PENROSE_HEAT_PER_SINGU_FLOW;
-        public final ForgeConfigSpec.DoubleValue PENROSE_HEAT_PEAK_GK;
-        public final ForgeConfigSpec.DoubleValue PENROSE_MAX_HEAT_GK;
+        public final ForgeConfigSpec.DoubleValue PENROSE_HEAT_PEAK_MK;
+        public final ForgeConfigSpec.DoubleValue PENROSE_MAX_HEAT_MK;
         public final ForgeConfigSpec.IntValue PENROSE_MAX_FEED_PER_TICK;
         public final ForgeConfigSpec.ConfigValue<String> PENROSE_COOLANT_FLUID;
-        public final ForgeConfigSpec.DoubleValue PENROSE_COOLANT_MB_PER_GK;
+        public final ForgeConfigSpec.DoubleValue PENROSE_COOLANT_MB_PER_MK;
         public final ForgeConfigSpec.IntValue PENROSE_COOLANT_VENT_CAPACITY;
 
         public final ForgeConfigSpec.IntValue MOB_FARM_BASE_SPEED;
@@ -310,7 +310,8 @@ public final class InsaneConfig {
             ).define("feOutputEnabled", true);
 
             PENROSE_EU_OUTPUT_ENABLED = builder.comment(
-                    "Lets GregTech energy output hatches count as sphere ports and drain its FE buffer as EU (1:1).",
+                    "Lets GregTech dynamo hatches count as sphere ports and drain its FE buffer as EU.",
+                    "The exchange rate is GregTech's own feToEuRatio, 4 FE per EU by default.",
                     "Has no effect without GregTech."
             ).define("euOutputEnabled", true);
 
@@ -359,19 +360,19 @@ public final class InsaneConfig {
 
             PENROSE_HEAT_PER_SINGU_FLOW = doubleInRange(builder,
                     "heatPerSinguFlow", 0.5, 0.0, 1.0e12,
-                    "Heat added per tick per 1.0 singu/t of disc flow at mass factor 1.0. Units: GK/t."
+                    "Heat added per tick per 1.0 singu/t of disc flow at mass factor 1.0. Units: MK/t."
             );
 
-            PENROSE_HEAT_PEAK_GK = doubleInRange(builder,
+            PENROSE_HEAT_PEAK_MK = doubleInRange(builder,
                     "heatPeak", 50_000.0, 1.0, 1.0e12,
                     "Heat at which efficiency peaks. Efficiency curve is 2x-x^2 for x=heat/peak,",
                     "clamped to [0..1], so running colder or hotter than the peak both cost output.",
-                    "Units: GK."
+                    "Units: MK."
             );
 
-            PENROSE_MAX_HEAT_GK = doubleInRange(builder,
+            PENROSE_MAX_HEAT_MK = doubleInRange(builder,
                     "maxHeat", 100_000.0, 0.0, 1.0e12,
-                    "Meltdown threshold. Reaching this heat destroys the black hole. Units: GK."
+                    "Meltdown threshold. Reaching this heat destroys the black hole. Units: MK."
             );
 
             builder.pop();
@@ -385,10 +386,10 @@ public final class InsaneConfig {
                     "Fluid the heat vents accept, as a registry id."
             ).define("fluid", "insaneae2addons:penrose_coolant");
 
-            PENROSE_COOLANT_MB_PER_GK = doubleInRange(builder,
-                    "mbPerGK", 125.0, 0.0001, 1.0e6,
-                    "Millibuckets of coolant needed to remove 1 GK of heat.",
-                    "Default 125 makes the 16 singu/t optimum (8 GK/t) draw ~1 B/t; overfeeding scales the",
+            PENROSE_COOLANT_MB_PER_MK = doubleInRange(builder,
+                    "mbPerMK", 125.0, 0.0001, 1.0e6,
+                    "Millibuckets of coolant needed to remove 1 MK of heat.",
+                    "Default 125 makes the 16 singu/t optimum (8 MK/t) draw ~1 B/t; overfeeding scales the",
                     "coolant demand into the unproducible range as an intentional noob trap."
             );
 

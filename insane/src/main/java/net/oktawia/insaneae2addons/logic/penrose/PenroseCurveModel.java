@@ -7,8 +7,8 @@ import java.util.function.DoubleUnaryOperator;
 public record PenroseCurveModel(DoubleUnaryOperator curve, double optimum) {
 
     public static PenroseCurveModel heat() {
-        double max = InsaneConfig.COMMON.PENROSE_MAX_HEAT_GK.get();
-        double peak = InsaneConfig.COMMON.PENROSE_HEAT_PEAK_GK.get();
+        double max = InsaneConfig.COMMON.PENROSE_MAX_HEAT_MK.get();
+        double peak = InsaneConfig.COMMON.PENROSE_HEAT_PEAK_MK.get();
 
         if (max <= 0.0) {
             return new PenroseCurveModel(x -> 0.0, -1.0);

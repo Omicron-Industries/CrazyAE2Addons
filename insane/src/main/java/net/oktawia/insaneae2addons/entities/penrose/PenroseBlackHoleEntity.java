@@ -21,6 +21,7 @@ import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.defs.InsaneMultiblocks;
 import net.oktawia.insaneae2addons.events.BlackHoleFieldManager;
 import net.oktawia.insaneae2addons.logic.penrose.AccretionDisk;
+import net.oktawia.insaneae2addons.logic.penrose.PenroseCurves;
 
 public class PenroseBlackHoleEntity extends Entity {
 
@@ -50,7 +51,6 @@ public class PenroseBlackHoleEntity extends Entity {
     @Getter
     private long mass;
 
-    @Getter
     private double massRemainder;
 
     @Getter
@@ -58,6 +58,12 @@ public class PenroseBlackHoleEntity extends Entity {
 
     @Getter
     private final AccretionDisk disk = new AccretionDisk();
+
+    private double pendingInjection;
+
+    private double pendingCooling;
+
+    private boolean meltingDown;
 
     public PenroseBlackHoleEntity(EntityType<PenroseBlackHoleEntity> type, Level level) {
         super(type, level);
@@ -76,13 +82,85 @@ public class PenroseBlackHoleEntity extends Entity {
         this.stateInitialized = true;
     }
 
-    public void storeState(long mass, double massRemainder, double heat) {
-        this.mass = Math.max(0L, mass);
-        this.massRemainder = massRemainder;
-        this.heat = Math.max(0.0, heat);
+    public static long initialMass() {
+        return Math.max(0L, InsaneConfig.COMMON.PENROSE_INITIAL_MASS_MU.get());
+    }
+
+    public static long massWindow() {
+        return Math.max(0L, InsaneConfig.COMMON.PENROSE_MASS_WINDOW_MU.get());
+    }
+
+    public static long maxMass() {
+        long initial = initialMass();
+        long window = massWindow();
+        return (initial > Long.MAX_VALUE - window) ? Long.MAX_VALUE : initial + window;
+    }
+
+    public static long sweetSpotMass() {
+        return initialMass() + massWindow() / 2L;
+    }
+
+    public static double maxHeat() {
+        return InsaneConfig.COMMON.PENROSE_MAX_HEAT_MK.get();
+    }
+
+    public double exactMass() {
+        return this.mass + this.massRemainder;
+    }
+
+    public double massFactor() {
+        return PenroseCurves.massFactor(
+                exactMass(),
+                sweetSpotMass(),
+                massWindow() / 2.0,
+                InsaneConfig.COMMON.PENROSE_MASS_FACTOR_MAX.get());
+    }
+
+    public void injectSingularities(double singularities) {
+        if (singularities > 0.0) {
+            this.pendingInjection += singularities;
+        }
+    }
+
+    public void cool(double heatMK) {
+        if (heatMK > 0.0 && !Double.isNaN(heatMK) && !Double.isInfinite(heatMK)) {
+            this.pendingCooling += heatMK;
+        }
+    }
+
+    public void evaporate(long massMu) {
+        setExactMass(Math.max(initialMass(), exactMass() - massMu));
+    }
+
+    private void tickPhysics() {
+        if (!this.stateInitialized) {
+            return;
+        }
+
+        double injected = this.pendingInjection;
+        this.pendingInjection = 0.0;
+
+        setExactMass(exactMass() + this.disk.advance(injected));
+
+        double cooling = this.pendingCooling;
+        this.pendingCooling = 0.0;
+
+        this.heat += InsaneConfig.COMMON.PENROSE_HEAT_PER_SINGU_FLOW.get() * this.disk.flowPerTick() * massFactor();
+        this.heat = Math.max(0.0, this.heat - cooling);
+
+        if (this.mass >= maxMass() || this.heat >= maxHeat()) {
+            meltdown();
+        }
+    }
+
+    private void setExactMass(double exactMass) {
+        double clamped = Math.max(0.0, exactMass);
+        this.mass = (long) Math.floor(clamped);
+        this.massRemainder = clamped - this.mass;
     }
 
     public void meltdown() {
+        this.meltingDown = true;
         if (level() instanceof ServerLevel serverLevel) {
             if (InsaneConfig.COMMON.PENROSE_MELTDOWN_EXPLOSIONS.get()) {
                 serverLevel.explode(null, getX(), getY(), getZ(), 32.0F, true,
@@ -111,6 +189,10 @@ public class PenroseBlackHoleEntity extends Entity {
     public void tick() {
         super.tick();
         if (!level().isClientSide()) {
+            tickPhysics();
+            if (isRemoved()) {
+                return;
+            }
             applyGravity();
             applyDamage();
             moveIfChunkLoaded();
@@ -234,7 +316,7 @@ public class PenroseBlackHoleEntity extends Entity {
     @Override
     public void remove(RemovalReason reason) {
         if (level() instanceof ServerLevel serverLevel) {
-            PortablePenroseSphereControllerBE.deactivateNearControllers(serverLevel, blockPosition());
+            PortablePenroseSphereControllerBE.deactivateNearControllers(serverLevel, blockPosition(), this.meltingDown);
         }
         super.remove(reason);
     }

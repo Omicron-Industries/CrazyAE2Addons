@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.util.FeatureGates;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.xei.common.InsaneXeiRecipes;
 
 import java.util.List;
@@ -47,6 +48,11 @@ public class InsaneJeiPlugin implements IModPlugin {
         registration.addRecipes(
                 MultiblockCategory.TYPE,
                 InsaneXeiRecipes.getMultiblockEntries().stream().map(MultiblockWrapper::new).toList()
+        );
+
+        registration.addIngredientInfo(
+                InsaneItemRegistrar.SUPER_SINGULARITY.get(),
+                InsaneXeiRecipes.superSingularityInfo()
         );
 
         FeatureGates.forEachDisabled(InsaneAddons.MODID, item -> registration.getIngredientManager().removeIngredientsAtRuntime(

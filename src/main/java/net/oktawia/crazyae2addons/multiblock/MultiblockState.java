@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 public final class MultiblockState {
     private static final int FAST_POLL_INTERVAL_TICKS = 10;
@@ -26,6 +28,7 @@ public final class MultiblockState {
     private final BlockEntity controller;
     private final Runnable onFormed;
     private final Runnable onDisformed;
+    private final BooleanSupplier extraValidation;
 
     @Getter
     private boolean formed;
@@ -46,12 +49,14 @@ public final class MultiblockState {
             MultiblockDefinition definition,
             BlockEntity controller,
             Runnable onFormed,
-            Runnable onDisformed
+            Runnable onDisformed,
+            BooleanSupplier extraValidation
     ) {
         this.definition = definition;
         this.controller = controller;
         this.onFormed = onFormed;
         this.onDisformed = onDisformed;
+        this.extraValidation = extraValidation;
     }
 
     public void tick(Level level, BlockPos controllerPos, BlockState controllerState) {
@@ -92,7 +97,7 @@ public final class MultiblockState {
         registerMissingCallbacks(level);
         boolean callbacksOk = areAllCallbackEntriesRegistered();
 
-        boolean everythingOk = polledOk && callbacksOk;
+        boolean everythingOk = polledOk && callbacksOk && this.extraValidation.getAsBoolean();
 
         if (!this.formed && everythingOk) {
             doForm();
@@ -134,6 +139,16 @@ public final class MultiblockState {
         return Collections.unmodifiableCollection(this.registeredCallbacks.values());
     }
 
+    public int countRegisteredCallbacks(Class<?> type) {
+        int count = 0;
+        for (MultiblockCallback callback : this.registeredCallbacks.values()) {
+            if (type.isInstance(callback)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public List<BlockPos> getBlocksBySymbol(char symbol) {
         List<BlockPos> positions = this.symbolPositions.get(symbol);
         if (positions == null) {
@@ -141,6 +156,39 @@ public final class MultiblockState {
         }
 
         return Collections.unmodifiableList(positions);
+    }
+
+    public record MissingGroup(Block expected, int count) {
+    }
+
+    public List<MissingGroup> collectMissingEntries(Level level) {
+        Map<Block, int[]> counts = new LinkedHashMap<>();
+
+        for (Map.Entry<BlockPos, MultiblockDefinition.PatternEntry> entry : this.entryByWorldPos.entrySet()) {
+            BlockPos worldPos = entry.getKey();
+            MultiblockDefinition.SymbolDef symbolDef = requireSymbol(entry.getValue().symbol());
+
+            if (isEntrySatisfied(level, worldPos, symbolDef)) {
+                continue;
+            }
+
+            Block expected = symbolDef.blocks().isEmpty() ? Blocks.AIR : symbolDef.blocks().get(0);
+            counts.computeIfAbsent(expected, ignored -> new int[1])[0]++;
+        }
+
+        List<MissingGroup> groups = new ArrayList<>(counts.size());
+        for (Map.Entry<Block, int[]> entry : counts.entrySet()) {
+            groups.add(new MissingGroup(entry.getKey(), entry.getValue()[0]));
+        }
+        return groups;
+    }
+
+    private boolean isEntrySatisfied(Level level, BlockPos worldPos, MultiblockDefinition.SymbolDef symbolDef) {
+        if (symbolDef.tracking() == MultiblockDefinition.TrackingMode.CALLBACK) {
+            return this.registeredCallbacks.containsKey(worldPos);
+        }
+
+        return matchesAllowedBlock(level.getBlockState(worldPos).getBlock(), symbolDef);
     }
 
     private boolean rebuildWorldCachesIfNeeded(BlockPos controllerPos, Direction structureFacing) {

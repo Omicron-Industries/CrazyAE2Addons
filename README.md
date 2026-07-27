@@ -1,84 +1,61 @@
-# Crazy AE2 Addons
+![image](https://media.forgecdn.net/attachments/description/1223804/description_58624142-805b-4543-89bb-d35ac3529048.png)
 
-[![CurseForge](https://img.shields.io/badge/CurseForge-Download-orange?logo=curseforge)](https://www.curseforge.com/minecraft/mc-mods/crazy-ae2-addons)
-[![Modrinth](https://img.shields.io/badge/Modrinth-Download-brightgreen?logo=modrinth)](https://modrinth.com/mod/crazy-ae2-addons)
-[![Discord](https://img.shields.io/discord/1223804?logo=discord\&label=Discord)](https://discord.gg/mWy8AVRtwz)
+### Ever wished to see where are your resources going in your ae2 network? Now you can! Tired of running out of pattern slots in your Pattern Provider? Not anymore, and if you want fewer slots, that’s possible too. Analog level emitter? Its there, wireless GUI controlled redstone too. Crazy AE2 Addons brings you features some would maybe imagine.
 
-The most insane Applied Energistics 2 addon for Minecraft 1.20.1 (Forge), and 1.21.1 (NeoForged) ((Soon)).
-Adds features nobody thought AE2 could ever have.
+## For the really insane features, checkout the continuation to this mod, the **Insane AE2 Addons**
 
----
+### Highlights:
 
-## Features
+*   The **BIGGEST** Pattern Provider ever made - upgrade its capacity to hold thousands of patterns! It even keeps them when picked up, making moving your setup effortless.
+*   Custom displays to show your resources in real time, greet you with messages, or form huge multi-block screens. With markdown support, color options, and seamless tiling - your system will never look boring again.
+*   Multi level emitter - no more big emitter contraptions, now everything is in a single part.
 
-* Mob Storage Cells – store thousands of living entities in your ME Network. Works with Pattern Providers & digital mob farms.
-* The BIGGEST Pattern Provider – scale up to thousands of patterns, supports upgrades, keeps patterns when moved.
-* Automatic Builder – replicate entire structures or use programmable scripts.
-* Entity Ticker – supercharge your machines (at the cost of massive power drain).
-* Auto Enchanter – turn liquid XP into guaranteed enchantments (works with Apotheosis).
-* GregTech circuit integration – change programmed circuit numbers directly inside AE2.
-* Custom Displays – markdown text, colors, multi-block tiling, resource counters, interactive signs.
-* Super Singularities – so dense they damage players on contact.
-* Nokia 3310 – rotate, flip, copy & paste builds.
-* Advanced Crafting CPUs – naming, priority, cancel-all button, NBT-agnostic patterns.
+### Prefer the technical side of things?
 
-And much more: tag view cells, NBT-aware Storage Bus, redstone integration, built-in calculator, hologram previews for multiblocks.
+All features are simple to use, but if you want, you can go deep. Crazy AE2 Addons includes:
 
----
+*   Tons of redstone integration - trigger things with a button, integrate signals everywhere.
+*   Tag view cells, tag matchers and more!
 
-## Documentation
+### Everything is documented in-game
 
-Everything is explained in-game:
+No wikis required - the **AE2 Guide** has it all. Recipes are fully integrated into JEI/EMI with detailed previews. And if you ever need more help, just join my [Discord](https://discord.gg/mWy8AVRtwz).
 
-* Integrated into the AE2 Guide.
-* Recipes visible in JEI/EMI.
-* Multiblock controllers include real-time hologram previews.
+### Upgraded Crafting CPUs!
 
-No external wiki required.
+*   Set CPU priority and change their names (instantly).
+*   Sorted by priority directly in your terminal.
+*   Cancel all crafts with one button.
+*   New pattern options - including Ignore NBT, allowing you to craft things like Ad Astra’s oxygen tanks.
 
----
+### Compatibility
 
-## Screenshots
+Crazy AE2 Addons plays nicely with many AE2 expansions and popular mods:
 
-| Automate your GregTech | 1000M FE/t Power | Automatic Enchanting |
-|-------------------------|------------------|----------------------|
-| ![](https://media.forgecdn.net/attachments/description/1223804/description_7239bc76-20e2-4063-8780-ead40726dacd.png) | ![](https://media.forgecdn.net/attachments/description/1223804/description_a809e91f-89a2-4345-8d0a-93799765c005.png) | ![](https://media.forgecdn.net/attachments/description/1223804/description_cd9daa66-aaba-49ea-8910-4496397f6740.png) |
+*   Advanced AE
+*   Extended AE
+*   Expanded AE
+*   Mega Cells
+*   Modern AE2 Additions
+*   Apotheosis (Auto Enchanter supports its enchantments)
+*   Applied Mek/Ars/Bot
 
-| Custom Displays | CPU Priorities | All Documented In Game |
-|-----------------|----------------|-------------------|
-| ![](https://media.forgecdn.net/attachments/description/1223804/description_63641c94-5d4e-4e87-bcdf-7264f0f3a224.png) | ![](https://media.forgecdn.net/attachments/description/1223804/description_b4538114-395e-4e45-a64c-f9dfa097b463.png) | ![](https://media.forgecdn.net/attachments/description/1223804/description_7ff8350c-0008-4b4a-a896-d8d177a64c84.png) |
+***
 
----
+# Screenshots
 
-## Compatibility
+## Very fancy and interactive signs
 
-Crazy AE2 Addons integrates with many mods out-of-the-box:
+![](https://media.forgecdn.net/attachments/description/1223804/description_63641c94-5d4e-4e87-bcdf-7264f0f3a224.png)
 
-* Modern AE2 Additions
-* Advanced AE
-* Extended AE
-* Mega Cells
-* Apotheosis
-* GregTech
-* …and many others.
+## Tired of too big Pattern Providers?
 
----
+![](https://media.forgecdn.net/attachments/description/1223804/description_73f43cb2-2e04-42fe-b9d3-2d8bd16affbd.png)
 
-## Contributing
+## Wireless redstone control
 
-Pull requests and feature suggestions are welcome.
-Feel free to open an [issue](https://github.com/GilbertzRivi/CrazyAE2Addons/issues) if you find a bug or have an idea.
+![](https://media.forgecdn.net/attachments/description/1223804/description_fc78f36e-6ac2-4a23-ae2c-08f2bcf44561.png)
 
----
+## CPU priorities
 
-## License
-
-This project is licensed under the MIT License.
-See the [LICENSE](./LICENSE) file for details.
-
----
-
-## Community
-
-Join the discussion, share setups, or ask questions on our [Discord server](https://discord.gg/mWy8AVRtwz).
-
+![](https://media.forgecdn.net/attachments/description/1223804/description_b4538114-395e-4e45-a64c-f9dfa097b463.png)

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "ae2:dense_energy_cell"
+    },
+    "E": {
+      "item": "ae2:energy_acceptor"
+    },
+    "F": {
+      "item": "insaneae2addons:penrose_frame"
+    }
+  },
+  "pattern": [
+    " D ",
+    "EFE",
+    " D "
+  ],
+  "result": {
+    "item": "insaneae2addons:penrose_laser"
+  },
+  "show_notification": true
+}

@@ -104,7 +104,7 @@ public class ItemRecipes {
                 .output(CrazyItemRegistrar.RESOURCE_TRACKING_TERMINAL.get())
                 .register();
         recipe("analog_card")
-                .shapeless(AEItems.BASIC_CARD, Items.COMPARATOR)
+                .shapeless(AEItems.ADVANCED_CARD, Items.COMPARATOR)
                 .output(CrazyItemRegistrar.ANALOG_CARD.get())
                 .register();
     }

@@ -2,6 +2,7 @@ package net.oktawia.insaneae2addons.compat.GregTech;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -40,12 +41,18 @@ public final class GTPenroseEnergyExport implements PenroseEnergyExport {
             return 0L;
         }
 
+        int feToEu = feToEuRatio();
         long room = Math.max(0L, hatch.energyContainer.getEnergyCanBeInserted());
-        if (room <= 0L) {
+        long wantedEu = Math.min(available / feToEu, room);
+        if (wantedEu <= 0L) {
             return 0L;
         }
 
-        return Math.max(0L, hatch.energyContainer.changeEnergy(Math.min(available, room)));
+        return Math.max(0L, hatch.energyContainer.changeEnergy(wantedEu)) * feToEu;
+    }
+
+    private static int feToEuRatio() {
+        return Math.max(1, ConfigHolder.INSTANCE.compat.energy.feToEuRatio);
     }
 
     private static boolean isEnergyOutputHatch(ResourceLocation id) {

@@ -17,6 +17,7 @@
   },
   "widgets": {
     "bh": { "left": 8, "top": 22, "width": 232, "height": 134 },
+    "issues": { "left": 8, "top": 22, "width": 232, "height": 134 },
     "preview": { "right": 20, "top": 4, "width": 16, "height": 16 }
   },
   "slots": {

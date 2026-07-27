@@ -112,8 +112,95 @@ public class InsaneConfigScreen {
                             cfg.PENROSE_SPHERE_ENABLED::set,
                             LangDefs.CONFIG_DESC_PENROSE_ENABLED
                     ));
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_PENROSE_FE_OUTPUT, cfg.PENROSE_FE_OUTPUT_ENABLED.get(), true,
+                            cfg.PENROSE_FE_OUTPUT_ENABLED::set,
+                            LangDefs.CONFIG_DESC_PENROSE_FE_OUTPUT
+                    ));
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_PENROSE_EU_OUTPUT, cfg.PENROSE_EU_OUTPUT_ENABLED.get(), true,
+                            cfg.PENROSE_EU_OUTPUT_ENABLED::set,
+                            LangDefs.CONFIG_DESC_PENROSE_EU_OUTPUT
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_PENROSE_MAX_FEED, cfg.PENROSE_MAX_FEED_PER_TICK.get(), 4_096, 0,
+                            cfg.PENROSE_MAX_FEED_PER_TICK::set,
+                            LangDefs.CONFIG_DESC_PENROSE_MAX_FEED
+                    ));
                 },
                 LangDefs.CONFIG_SECTION_PENROSE_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_PENROSE_BALANCE, entries -> {
+                    entries.add(longValue(eb, LangDefs.CONFIG_ENTRY_PENROSE_CREATION_COST, cfg.PENROSE_CREATION_COST_SINGU.get(), 32_512L, 0L, Long.MAX_VALUE,
+                            cfg.PENROSE_CREATION_COST_SINGU::set,
+                            LangDefs.CONFIG_DESC_PENROSE_CREATION_COST
+                    ));
+                    entries.add(longValue(eb, LangDefs.CONFIG_ENTRY_PENROSE_INITIAL_MASS, cfg.PENROSE_INITIAL_MASS_MU.get(), 32_768L * 8_192L, 0L, Long.MAX_VALUE,
+                            cfg.PENROSE_INITIAL_MASS_MU::set,
+                            LangDefs.CONFIG_DESC_PENROSE_INITIAL_MASS
+                    ));
+                    entries.add(longValue(eb, LangDefs.CONFIG_ENTRY_PENROSE_MASS_WINDOW, cfg.PENROSE_MASS_WINDOW_MU.get(), 1_113_600L, 0L, Long.MAX_VALUE,
+                            cfg.PENROSE_MASS_WINDOW_MU::set,
+                            LangDefs.CONFIG_DESC_PENROSE_MASS_WINDOW
+                    ));
+                    entries.add(decimal(eb, LangDefs.CONFIG_ENTRY_PENROSE_MASS_FACTOR_MAX, cfg.PENROSE_MASS_FACTOR_MAX.get(), 2.0, 1.0, 64.0,
+                            cfg.PENROSE_MASS_FACTOR_MAX::set,
+                            LangDefs.CONFIG_DESC_PENROSE_MASS_FACTOR_MAX
+                    ));
+                    entries.add(decimal(eb, LangDefs.CONFIG_ENTRY_PENROSE_DUTY_COMPENSATION, cfg.PENROSE_DUTY_COMPENSATION.get(), 4.0 / 3.0, 0.0, 1000.0,
+                            cfg.PENROSE_DUTY_COMPENSATION::set,
+                            LangDefs.CONFIG_DESC_PENROSE_DUTY_COMPENSATION
+                    ));
+                    entries.add(decimal(eb, LangDefs.CONFIG_ENTRY_PENROSE_FE_BASE, cfg.PENROSE_FE_BASE_PER_SINGU_FLOW.get(), (double) (1L << 27) * 0.5, 0.0, 1.0e18,
+                            cfg.PENROSE_FE_BASE_PER_SINGU_FLOW::set,
+                            LangDefs.CONFIG_DESC_PENROSE_FE_BASE
+                    ));
+                    entries.add(decimal(eb, LangDefs.CONFIG_ENTRY_PENROSE_HEAT_PER_FLOW, cfg.PENROSE_HEAT_PER_SINGU_FLOW.get(), 0.5, 0.0, 1.0e12,
+                            cfg.PENROSE_HEAT_PER_SINGU_FLOW::set,
+                            LangDefs.CONFIG_DESC_PENROSE_HEAT_PER_FLOW
+                    ));
+                    entries.add(decimal(eb, LangDefs.CONFIG_ENTRY_PENROSE_HEAT_PEAK, cfg.PENROSE_HEAT_PEAK_MK.get(), 50_000.0, 1.0, 1.0e12,
+                            cfg.PENROSE_HEAT_PEAK_MK::set,
+                            LangDefs.CONFIG_DESC_PENROSE_HEAT_PEAK
+                    ));
+                    entries.add(decimal(eb, LangDefs.CONFIG_ENTRY_PENROSE_MAX_HEAT, cfg.PENROSE_MAX_HEAT_MK.get(), 100_000.0, 0.0, 1.0e12,
+                            cfg.PENROSE_MAX_HEAT_MK::set,
+                            LangDefs.CONFIG_DESC_PENROSE_MAX_HEAT
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_PENROSE_BALANCE_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_PENROSE_COOLANT, entries -> {
+                    entries.add(text(eb, LangDefs.CONFIG_ENTRY_PENROSE_COOLANT_FLUID, cfg.PENROSE_COOLANT_FLUID.get(), "insaneae2addons:penrose_coolant",
+                            cfg.PENROSE_COOLANT_FLUID::set,
+                            LangDefs.CONFIG_DESC_PENROSE_COOLANT_FLUID
+                    ));
+                    entries.add(decimal(eb, LangDefs.CONFIG_ENTRY_PENROSE_COOLANT_MB_PER_MK, cfg.PENROSE_COOLANT_MB_PER_MK.get(), 125.0, 0.0001, 1.0e6,
+                            cfg.PENROSE_COOLANT_MB_PER_MK::set,
+                            LangDefs.CONFIG_DESC_PENROSE_COOLANT_MB_PER_MK
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_PENROSE_VENT_CAPACITY, cfg.PENROSE_COOLANT_VENT_CAPACITY.get(), 64_000, 1,
+                            cfg.PENROSE_COOLANT_VENT_CAPACITY::set,
+                            LangDefs.CONFIG_DESC_PENROSE_VENT_CAPACITY
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_PENROSE_COOLANT_DESC
+        );
+
+        addSection(root, eb, LangDefs.CONFIG_SECTION_PENROSE_MELTDOWN, entries -> {
+                    entries.add(bool(eb, LangDefs.CONFIG_ENTRY_PENROSE_MELTDOWN_EXPLOSIONS, cfg.PENROSE_MELTDOWN_EXPLOSIONS.get(), true,
+                            cfg.PENROSE_MELTDOWN_EXPLOSIONS::set,
+                            LangDefs.CONFIG_DESC_PENROSE_MELTDOWN_EXPLOSIONS
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_PENROSE_MELTDOWN_FIELD_RADIUS, cfg.PENROSE_MELTDOWN_FIELD_RADIUS.get(), 768, 0, 4096,
+                            cfg.PENROSE_MELTDOWN_FIELD_RADIUS::set,
+                            LangDefs.CONFIG_DESC_PENROSE_MELTDOWN_FIELD_RADIUS
+                    ));
+                    entries.add(integer(eb, LangDefs.CONFIG_ENTRY_PENROSE_MELTDOWN_FIELD_BUDGET, cfg.PENROSE_MELTDOWN_FIELD_BUDGET_MICROS.get(), 100_000, 100, 200_000,
+                            cfg.PENROSE_MELTDOWN_FIELD_BUDGET_MICROS::set,
+                            LangDefs.CONFIG_DESC_PENROSE_MELTDOWN_FIELD_BUDGET
+                    ));
+                },
+                LangDefs.CONFIG_SECTION_PENROSE_MELTDOWN_DESC
         );
 
         addSection(root, eb, LangDefs.CONFIG_SECTION_MOB_FARM, entries -> {
@@ -265,6 +352,78 @@ public class InsaneConfigScreen {
         return eb.startIntField(t(name), value)
                 .setDefaultValue(defaultValue)
                 .setMin(min)
+                .setTooltip(tooltip(tooltip))
+                .setSaveConsumer(saveConsumer)
+                .build();
+    }
+
+    private static AbstractConfigListEntry integer(
+            ConfigEntryBuilder eb,
+            LangDefs name,
+            int value,
+            int defaultValue,
+            int min,
+            int max,
+            Consumer<Integer> saveConsumer,
+            LangDefs... tooltip
+    ) {
+        return eb.startIntField(t(name), value)
+                .setDefaultValue(defaultValue)
+                .setMin(min)
+                .setMax(max)
+                .setTooltip(tooltip(tooltip))
+                .setSaveConsumer(saveConsumer)
+                .build();
+    }
+
+    private static AbstractConfigListEntry longValue(
+            ConfigEntryBuilder eb,
+            LangDefs name,
+            long value,
+            long defaultValue,
+            long min,
+            long max,
+            Consumer<Long> saveConsumer,
+            LangDefs... tooltip
+    ) {
+        return eb.startLongField(t(name), value)
+                .setDefaultValue(defaultValue)
+                .setMin(min)
+                .setMax(max)
+                .setTooltip(tooltip(tooltip))
+                .setSaveConsumer(saveConsumer)
+                .build();
+    }
+
+    private static AbstractConfigListEntry decimal(
+            ConfigEntryBuilder eb,
+            LangDefs name,
+            double value,
+            double defaultValue,
+            double min,
+            double max,
+            Consumer<Double> saveConsumer,
+            LangDefs... tooltip
+    ) {
+        return eb.startDoubleField(t(name), value)
+                .setDefaultValue(defaultValue)
+                .setMin(min)
+                .setMax(max)
+                .setTooltip(tooltip(tooltip))
+                .setSaveConsumer(saveConsumer)
+                .build();
+    }
+
+    private static AbstractConfigListEntry text(
+            ConfigEntryBuilder eb,
+            LangDefs name,
+            String value,
+            String defaultValue,
+            Consumer<String> saveConsumer,
+            LangDefs... tooltip
+    ) {
+        return eb.startStrField(t(name), value)
+                .setDefaultValue(defaultValue)
                 .setTooltip(tooltip(tooltip))
                 .setSaveConsumer(saveConsumer)
                 .build();

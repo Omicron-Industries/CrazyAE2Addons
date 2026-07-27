@@ -43,13 +43,15 @@ public class MobExportBusPart extends IOBusPart {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/export_bus_has_channel"));
 
-    private static final int MAX_SPAWNS_PER_TICK = 8;
+    private static final int MAX_SPAWNS_PER_TICK = 1;
 
     private UsageTarget trackTarget;
     private String trackDesc;
     private AEKey trackIcon;
 
     private int nextSlot = 0;
+
+    private long lastWorkGameTime = Long.MIN_VALUE;
 
     public MobExportBusPart(IPartItem<?> partItem) {
         super(TickRates.ExportBus, what -> what instanceof MobKey, partItem);
@@ -70,13 +72,15 @@ public class MobExportBusPart extends IOBusPart {
         if (!(getLevel() instanceof ServerLevel level)) {
             return false;
         }
+        int elapsedTicks = takeElapsedTicks(level);
+
         var spot = getBlockEntity().getBlockPos().relative(getSide());
         if (!canSpawn(level, spot)) {
             return false;
         }
 
         var schedulingMode = getConfigManager().getSetting(Settings.SCHEDULING_MODE);
-        int budget = Math.min(getOperationsPerTick(), MAX_SPAWNS_PER_TICK);
+        int budget = Math.min(getOperationsPerTick(), elapsedTicks * MAX_SPAWNS_PER_TICK);
         int spawned = 0;
         int x = 0;
         for (; x < availableSlots() && spawned < budget; x++) {
@@ -93,6 +97,14 @@ public class MobExportBusPart extends IOBusPart {
             updateSchedulingMode(schedulingMode, x);
         }
         return spawned > 0;
+    }
+
+    private int takeElapsedTicks(ServerLevel level) {
+        long now = level.getGameTime();
+        long elapsed = this.lastWorkGameTime == Long.MIN_VALUE ? 1L : now - this.lastWorkGameTime;
+        this.lastWorkGameTime = now;
+
+        return (int) Math.max(1L, Math.min(TickRates.ExportBus.getMin(), elapsed));
     }
 
     private boolean trySpawn(IGrid grid, ServerLevel level, BlockPos spot, MobKey mobKey) {

@@ -3,6 +3,7 @@ package net.oktawia.insaneae2addons.xei.emi;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.recipe.EmiInfoRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.network.chat.Component;
@@ -12,6 +13,8 @@ import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.xei.common.InsaneXeiRecipes;
+
+import java.util.List;
 
 @EmiEntrypoint
 public class InsaneEmiPlugin implements EmiPlugin {
@@ -73,6 +76,12 @@ public class InsaneEmiPlugin implements EmiPlugin {
         for (var entry : InsaneXeiRecipes.getMultiblockEntries()) {
             registry.addRecipe(new MultiblockEmiRecipe(entry, multiblockCategory));
         }
+
+        registry.addRecipe(new EmiInfoRecipe(
+                List.of(EmiStack.of(InsaneItemRegistrar.SUPER_SINGULARITY.get())),
+                List.of(InsaneXeiRecipes.superSingularityInfo()),
+                InsaneAddons.makeId("/super_singularity_info")
+        ));
 
         registry.addRecipeHandler(null, new CradleEmiRecipeHandler());
         registry.addRecipeHandler(null, new ResearchEmiRecipeHandler());

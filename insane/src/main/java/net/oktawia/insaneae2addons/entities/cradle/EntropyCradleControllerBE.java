@@ -197,26 +197,7 @@ public class EntropyCradleControllerBE extends AbstractMultiblockControllerBE {
         }
     }
 
-    public void onRedstonePulse() {
-        Level level = getLevel();
-        if (level == null || level.isClientSide() || !this.multiblockState.isFormed()) {
-            return;
-        }
-
-        int cost = InsaneConfig.COMMON.CRADLE_COST.get();
-        if (this.storedEnergy < cost) {
-            return;
-        }
-
-        Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-        BlockPos origin = getBlockPos().relative(facing.getOpposite(), 5).above(3);
-
-        Optional<CradleRecipe> match = level.getRecipeManager()
-                .getRecipeFor(InsaneRecipes.CRADLE_TYPE.get(), new CradleContext(level, origin, facing), level);
-        if (match.isEmpty() || match.get().resultBlock() == null) {
-            return;
-        }
-
+    private void spendCharge(int cost) {
         this.storedEnergy -= cost;
         setChanged();
 
@@ -224,6 +205,33 @@ public class EntropyCradleControllerBE extends AbstractMultiblockControllerBE {
             setCapacitorPower(capPos, false);
         }
         this.lastLitLevels = 0;
+    }
+
+    public void onRedstonePulse() {
+        Level level = getLevel();
+        if (level == null || level.isClientSide() || !this.multiblockState.isFormed()) {
+            return;
+        }
+
+        if (this.storedEnergy <= 0) {
+            return;
+        }
+
+        Direction facing = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+        BlockPos origin = getBlockPos().relative(facing.getOpposite(), 5).above(3);
+
+        int cost = InsaneConfig.COMMON.CRADLE_COST.get();
+        Optional<CradleRecipe> match = this.storedEnergy < cost
+                ? Optional.empty()
+                : level.getRecipeManager()
+                        .getRecipeFor(InsaneRecipes.CRADLE_TYPE.get(), new CradleContext(level, origin, facing), level);
+
+        if (match.isEmpty() || match.get().resultBlock() == null) {
+            spendCharge(this.storedEnergy);
+            return;
+        }
+
+        spendCharge(cost);
 
         clearChamber(level, origin);
         level.setBlock(origin, match.get().resultBlock().defaultBlockState(), Block.UPDATE_ALL);

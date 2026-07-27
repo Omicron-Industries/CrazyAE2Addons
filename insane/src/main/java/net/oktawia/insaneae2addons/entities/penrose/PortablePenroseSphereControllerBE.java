@@ -28,8 +28,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerBE;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
+import net.oktawia.crazyae2addons.multiblock.MultiblockState;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.blocks.penrose.PortablePenroseSphereControllerBlock;
 import net.oktawia.insaneae2addons.blocks.penrose.PenroseFrameBlock;
@@ -48,6 +50,8 @@ import net.oktawia.insaneae2addons.menus.block.PortablePenroseSphereControllerMe
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +60,11 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
 
     private static final long LASER_ARM_TICKS = 8L;
     private static final double BLACK_HOLE_DETECT_RADIUS = 3.0;
+    private static final int MAX_VENTS_PER_TYPE = 1;
+    private static final int ISSUE_SCAN_INTERVAL_TICKS = 20;
+
+    public static final String ISSUE_VENTS = "V";
+    public static final String ISSUE_MISSING = "M";
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(PortablePenroseSphereControllerBE.class);
@@ -113,12 +122,17 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
     @Getter
     private double diskMass;
 
-    private double blackHoleMassRemainder;
-
     private AccretionDisk disk = new AccretionDisk();
 
     @Persisted
     private int ventingLockTicks;
+
+    @Persisted
+    @DescSynced
+    @Getter
+    private String[] structureIssues = new String[0];
+
+    private int issueScanTimer;
 
     private final Set<PenrosePeripheralBE> peripherals = new HashSet<>();
 
@@ -126,7 +140,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
     private PenroseBlackHoleEntity activeHole;
 
     private int pendingFeedSingu;
-    private double pendingCooling;
     private long pendingEvaporation;
 
     private int secondTickCounter;
@@ -168,6 +181,41 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
     }
 
     @Override
+    protected boolean isStructureValid() {
+        return this.multiblockState.countRegisteredCallbacks(PenroseHeatVentBE.class) <= MAX_VENTS_PER_TYPE
+                && this.multiblockState.countRegisteredCallbacks(PenroseHawkingVentBE.class) <= MAX_VENTS_PER_TYPE;
+    }
+
+    private void rebuildStructureIssues(Level level) {
+        List<String> out = new ArrayList<>();
+
+        if (!this.multiblockState.isFormed()) {
+            int heatVents = this.multiblockState.countRegisteredCallbacks(PenroseHeatVentBE.class);
+            if (heatVents > MAX_VENTS_PER_TYPE) {
+                out.add(ISSUE_VENTS + "|" + InsaneBlockRegistrar.PENROSE_HEAT_VENT_BLOCK.getId() + "|" + heatVents);
+            }
+
+            int hawkingVents = this.multiblockState.countRegisteredCallbacks(PenroseHawkingVentBE.class);
+            if (hawkingVents > MAX_VENTS_PER_TYPE) {
+                out.add(ISSUE_VENTS + "|" + InsaneBlockRegistrar.PENROSE_HAWKING_VENT_BLOCK.getId() + "|" + hawkingVents);
+            }
+
+            for (MultiblockState.MissingGroup group : this.multiblockState.collectMissingEntries(level)) {
+                out.add(ISSUE_MISSING
+                        + "|" + ForgeRegistries.BLOCKS.getKey(group.expected())
+                        + "|" + group.count());
+            }
+        }
+
+        String[] issues = out.toArray(new String[0]);
+        if (!Arrays.equals(issues, this.structureIssues)) {
+            this.structureIssues = issues;
+            syncManaged();
+            setChanged();
+        }
+    }
+
+    @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new PortablePenroseSphereControllerMenu(id, inventory, this);
     }
@@ -187,7 +235,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
     @Override
     protected void afterDisformed() {
         this.pendingFeedSingu = 0;
-        this.pendingCooling = 0.0;
         this.pendingEvaporation = 0L;
     }
 
@@ -235,13 +282,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         this.pendingFeedSingu = (int) Math.min(Integer.MAX_VALUE, (long) this.pendingFeedSingu + singularities);
     }
 
-    public void addCooling(double heatGK) {
-        if (heatGK <= 0.0 || Double.isNaN(heatGK) || Double.isInfinite(heatGK)) {
-            return;
-        }
-        this.pendingCooling += heatGK;
-    }
-
     public void addEvaporation(long massMu) {
         if (massMu <= 0L) {
             return;
@@ -262,21 +302,19 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
     }
 
     public long getInitialMass() {
-        return Math.max(0L, InsaneConfig.COMMON.PENROSE_INITIAL_MASS_MU.get());
+        return PenroseBlackHoleEntity.initialMass();
     }
 
     public long getMaxMass() {
-        long initial = getInitialMass();
-        long window = Math.max(0L, InsaneConfig.COMMON.PENROSE_MASS_WINDOW_MU.get());
-        return (initial > Long.MAX_VALUE - window) ? Long.MAX_VALUE : initial + window;
+        return PenroseBlackHoleEntity.maxMass();
     }
 
     public long getSweetSpotMass() {
-        return getInitialMass() + Math.max(0L, InsaneConfig.COMMON.PENROSE_MASS_WINDOW_MU.get()) / 2L;
+        return PenroseBlackHoleEntity.sweetSpotMass();
     }
 
     public double getMaxHeat() {
-        return InsaneConfig.COMMON.PENROSE_MAX_HEAT_GK.get();
+        return PenroseBlackHoleEntity.maxHeat();
     }
 
     public long getDiskMassSingu() {
@@ -295,7 +333,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         this.diskMass = 0.0;
 
         this.pendingFeedSingu = 0;
-        this.pendingCooling = 0.0;
         this.pendingEvaporation = 0L;
 
         this.lastAccretionSingu = 0;
@@ -318,6 +355,12 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
             return TickRateModulation.IDLE;
         }
 
+        this.issueScanTimer += Math.max(1, ticksSinceLastCall);
+        if (this.issueScanTimer >= ISSUE_SCAN_INTERVAL_TICKS) {
+            this.issueScanTimer = 0;
+            rebuildStructureIssues(level);
+        }
+
         int ticks = Math.max(1, ticksSinceLastCall);
         if (this.ventingLockTicks > 0) {
             this.ventingLockTicks = Math.max(0, this.ventingLockTicks - ticks);
@@ -336,7 +379,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
 
         if (!this.blackHoleActive) {
             this.pendingFeedSingu = 0;
-            this.pendingCooling = 0.0;
             this.pendingEvaporation = 0L;
             tickPeripherals();
             return TickRateModulation.IDLE;
@@ -345,7 +387,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         boolean ioEnabled = this.multiblockState.isFormed() && getMainNode().getGrid() != null;
         if (!ioEnabled) {
             this.pendingFeedSingu = 0;
-            this.pendingCooling = 0.0;
             this.pendingEvaporation = 0L;
         }
 
@@ -364,10 +405,8 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
             }
         }
 
-        double coolingPerTick = this.pendingCooling / ticks;
         long evaporationPerTick = this.pendingEvaporation / ticks;
         long evaporationRemainder = this.pendingEvaporation % ticks;
-        this.pendingCooling = 0.0;
         this.pendingEvaporation = 0L;
 
         long generatedAccumulator = 0L;
@@ -385,18 +424,14 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
             }
             this.lastFeedSingu = feed;
 
-            advanceDisk(feed);
+            if (feed > 0 && this.activeHole != null) {
+                this.activeHole.injectSingularities(feed);
+            }
+
+            readHoleState();
 
             double flow = this.disk.flowPerTick();
             double massFactor = computeMassFactor();
-
-            this.heat += InsaneConfig.COMMON.PENROSE_HEAT_PER_SINGU_FLOW.get() * flow * massFactor;
-            this.heat = Math.max(0.0, this.heat - coolingPerTick);
-
-            if (this.heat >= getMaxHeat()) {
-                triggerMeltdown();
-                return TickRateModulation.IDLE;
-            }
 
             long evaporation = evaporationPerTick + (step < evaporationRemainder ? 1L : 0L);
             if (evaporation > 0L) {
@@ -417,16 +452,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
                 consumedAccumulator += payment.paid();
             }
 
-            if (this.heat >= getMaxHeat()) {
-                triggerMeltdown();
-                return TickRateModulation.IDLE;
-            }
-
-            if (this.blackHoleMass >= getMaxMass()) {
-                triggerMeltdown();
-                return TickRateModulation.IDLE;
-            }
-
             addStoredEnergy(budget);
 
             this.secondMassDeltaAccumulator += this.blackHoleMass - massBefore;
@@ -439,7 +464,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
 
         this.lastGeneratedFePerTick = generatedAccumulator / ticks;
         this.lastConsumedFePerTick = consumedAccumulator / ticks;
-        writeBackToHole();
         exportStoredEnergy(level);
         recomputeDiskEnergy();
         tickPeripherals();
@@ -551,7 +575,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         this.activeHole = hole;
         this.disk = hole.getDisk();
         this.blackHoleMass = hole.getMass();
-        this.blackHoleMassRemainder = hole.getMassRemainder();
         this.heat = hole.getHeat();
         this.ventingLockTicks = 0;
         resetTransient();
@@ -559,25 +582,18 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         setChanged();
     }
 
-    private void writeBackToHole() {
-        if (this.activeHole != null && !this.activeHole.isRemoved()) {
-            this.activeHole.storeState(this.blackHoleMass, this.blackHoleMassRemainder, this.heat);
-        }
-    }
-
     private void deactivate() {
         this.blackHoleActive = false;
         this.activeHole = null;
         this.disk = new AccretionDisk();
         this.blackHoleMass = 0L;
-        this.blackHoleMassRemainder = 0.0;
         this.heat = 0.0;
         this.ventingLockTicks = 0;
         resetTransient();
         setChanged();
     }
 
-    public static void deactivateNearControllers(ServerLevel level, BlockPos pos) {
+    public static void deactivateNearControllers(ServerLevel level, BlockPos pos, boolean meltdown) {
         int radius = InsaneMultiblocks.penroseCoreRadius() + 8;
         int radiusSq = radius * radius;
         int minCx = (pos.getX() - radius) >> 4;
@@ -594,7 +610,11 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
                     if (be instanceof PortablePenroseSphereControllerBE controller
                             && controller.blackHoleActive
                             && be.getBlockPos().distSqr(pos) <= radiusSq) {
+                        if (meltdown) {
+                            controller.storedEnergy = 0L;
+                        }
                         controller.deactivate();
+                        controller.tickPeripherals();
                     }
                 }
             }
@@ -640,14 +660,11 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
 
     private void runHeatVent(PenroseHeatVentBE vent) {
         double requested = vent.getDesiredCooling();
-        if (requested <= 0.0 || !vent.isArmed()) {
+        if (requested <= 0.0 || !vent.isArmed() || this.activeHole == null) {
             return;
         }
 
-        double applied = vent.drawCoolantFor(requested);
-        if (applied > 0.0) {
-            this.heat = Math.max(0.0, this.heat - applied);
-        }
+        this.activeHole.cool(vent.drawCoolantFor(requested));
     }
 
     private VentPayment runHawkingVent(PenroseHawkingVentBE vent, long budget) {
@@ -682,12 +699,10 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         return new VentPayment(budget - fromBudget, paid);
     }
 
-    private void advanceDisk(int injectedSingularities) {
-        this.blackHoleMassRemainder += this.disk.advance(injectedSingularities);
-        if (this.blackHoleMassRemainder >= 1.0) {
-            long whole = (long) Math.floor(this.blackHoleMassRemainder);
-            this.blackHoleMass += whole;
-            this.blackHoleMassRemainder -= whole;
+    private void readHoleState() {
+        if (this.activeHole != null) {
+            this.blackHoleMass = this.activeHole.getMass();
+            this.heat = this.activeHole.getHeat();
         }
 
         this.diskMass = this.disk.getMass();
@@ -695,15 +710,11 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
     }
 
     private double computeMassFactor() {
-        return PenroseCurves.massFactor(
-                this.blackHoleMass + this.blackHoleMassRemainder,
-                getSweetSpotMass(),
-                Math.max(0L, InsaneConfig.COMMON.PENROSE_MASS_WINDOW_MU.get()) / 2.0,
-                InsaneConfig.COMMON.PENROSE_MASS_FACTOR_MAX.get());
+        return this.activeHole == null ? 0.0 : this.activeHole.massFactor();
     }
 
     private double computeHeatEfficiency() {
-        return PenroseCurves.heatEfficiency(this.heat, InsaneConfig.COMMON.PENROSE_HEAT_PEAK_GK.get());
+        return PenroseCurves.heatEfficiency(this.heat, InsaneConfig.COMMON.PENROSE_HEAT_PEAK_MK.get());
     }
 
     private long computeGeneratedFe(double flow, double massFactor) {
@@ -726,10 +737,10 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
     }
 
     private void applyEvaporation(long massMu) {
-        double exactMass = Math.max(getInitialMass(), this.blackHoleMass + this.blackHoleMassRemainder - massMu);
-
-        this.blackHoleMass = (long) Math.floor(exactMass);
-        this.blackHoleMassRemainder = exactMass - this.blackHoleMass;
+        if (this.activeHole != null) {
+            this.activeHole.evaporate(massMu);
+            this.blackHoleMass = this.activeHole.getMass();
+        }
         requestVentingLock(2);
     }
 
@@ -740,25 +751,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         this.storedEnergy = (this.storedEnergy > Long.MAX_VALUE - amount)
                 ? Long.MAX_VALUE
                 : this.storedEnergy + amount;
-    }
-
-    private void triggerMeltdown() {
-        if (this.activeHole != null && !this.activeHole.isRemoved()) {
-            this.activeHole.meltdown();
-        }
-
-        this.blackHoleActive = false;
-        this.activeHole = null;
-        this.disk = new AccretionDisk();
-        this.blackHoleMass = 0L;
-        this.blackHoleMassRemainder = 0.0;
-        this.heat = 0.0;
-        this.storedEnergy = 0L;
-        this.ventingLockTicks = 0;
-
-        resetTransient();
-        tickPeripherals();
-        setChanged();
     }
 
     @Override

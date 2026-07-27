@@ -67,7 +67,8 @@ public abstract class AbstractMultiblockControllerBE
                 getMultiblockDefinition(),
                 this,
                 this::onFormedInternal,
-                this::onDisformedInternal
+                this::onDisformedInternal,
+                this::isStructureValid
         );
     }
 
@@ -115,6 +116,10 @@ public abstract class AbstractMultiblockControllerBE
     @Override
     public Component getDisplayName() {
         return getBlockState().getBlock().getName();
+    }
+
+    protected boolean isStructureValid() {
+        return true;
     }
 
     protected abstract void setOwnFormedState(boolean formed);

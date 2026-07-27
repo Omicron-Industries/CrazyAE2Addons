@@ -121,6 +121,26 @@ public class BlockRecipes {
                 .output(InsaneBlockRegistrar.RESEARCH_CABLE_WHITE_BLOCK.get())
                 .register();
 
+        recipe("research_cable_white_from_pink")
+                .shapeless(InsaneBlockRegistrar.RESEARCH_CABLE_PINK_BLOCK.get(), Items.WHITE_DYE)
+                .output(InsaneBlockRegistrar.RESEARCH_CABLE_WHITE_BLOCK.get())
+                .register();
+
+        recipe("research_cable_pink_from_white")
+                .shapeless(InsaneBlockRegistrar.RESEARCH_CABLE_WHITE_BLOCK.get(), Items.PINK_DYE)
+                .output(InsaneBlockRegistrar.RESEARCH_CABLE_PINK_BLOCK.get())
+                .register();
+
+        recipe("research_cable_from_pink")
+                .shapeless(InsaneBlockRegistrar.RESEARCH_CABLE_PINK_BLOCK.get(), Items.BLUE_DYE)
+                .output(InsaneBlockRegistrar.RESEARCH_CABLE_BLOCK.get())
+                .register();
+
+        recipe("research_cable_from_white")
+                .shapeless(InsaneBlockRegistrar.RESEARCH_CABLE_WHITE_BLOCK.get(), Items.BLUE_DYE)
+                .output(InsaneBlockRegistrar.RESEARCH_CABLE_BLOCK.get())
+                .register();
+
         recipe("entropy_cradle")
                 .shaped("BQB/QBQ/BQB")
                 .define('B', Blocks.OBSIDIAN)
@@ -259,6 +279,14 @@ public class BlockRecipes {
         recipe("penrose_glass")
                 .shapeless(Items.GLASS, InsaneBlockRegistrar.PENROSE_FRAME_BLOCK.get())
                 .output(InsaneBlockRegistrar.PENROSE_GLASS_BLOCK.get())
+                .register();
+
+        recipe("penrose_laser")
+                .shaped(" D /EFE/ D ")
+                .define('D', AEBlocks.DENSE_ENERGY_CELL.asItem())
+                .define('E', AEBlocks.ENERGY_ACCEPTOR.asItem())
+                .define('F', InsaneBlockRegistrar.PENROSE_FRAME_BLOCK.get())
+                .output(InsaneBlockRegistrar.PENROSE_LASER_BLOCK.get())
                 .register();
     }
 

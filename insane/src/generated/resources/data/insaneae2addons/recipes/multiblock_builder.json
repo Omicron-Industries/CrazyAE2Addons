@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "ae2:dense_energy_cell"
+    },
+    "M": {
+      "item": "ae2:memory_card"
+    },
+    "R": {
+      "item": "ae2:wireless_receiver"
+    }
+  },
+  "pattern": [
+    "R",
+    "M",
+    "D"
+  ],
+  "result": {
+    "item": "insaneae2addons:multiblock_builder"
+  },
+  "show_notification": true
+}

@@ -446,7 +446,6 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
     }
 
     private void markDirtyAndSync() {
-        getHost().markForSave();
         if (getHost() != null) {
             getHost().markForSave();
             getHost().markForUpdate();

@@ -1,14 +1,17 @@
 package net.oktawia.insaneae2addons.xei.common;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.oktawia.insaneae2addons.defs.InsaneMultiblocks;
+import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
+import net.oktawia.insaneae2addons.entities.penrose.ReinforcedMatterCondenserBE;
 import net.oktawia.insaneae2addons.recipes.CradlePattern;
 import net.oktawia.insaneae2addons.recipes.CradleRecipe;
 import net.oktawia.insaneae2addons.recipes.ResearchRecipe;
@@ -22,6 +25,13 @@ import java.util.Map;
 public final class InsaneXeiRecipes {
 
     private InsaneXeiRecipes() {
+    }
+
+    public static Component superSingularityInfo() {
+        return Component.translatable(
+                LangDefs.SUPER_SINGULARITY_XEI_DESC.getTranslationKey(),
+                ReinforcedMatterCondenserBE.SINGULARITIES_PER_SUPER
+        );
     }
 
     public static List<MultiblockEntry> getMultiblockEntries() {

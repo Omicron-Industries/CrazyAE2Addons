@@ -100,8 +100,8 @@ public class PenroseHeatVentBE extends PenrosePeripheralBE {
             return 0.0;
         }
 
-        double mbPerGK = InsaneConfig.COMMON.PENROSE_COOLANT_MB_PER_GK.get();
-        long needed = (long) Math.ceil(requestedCooling * mbPerGK);
+        double mbPerMK = InsaneConfig.COMMON.PENROSE_COOLANT_MB_PER_MK.get();
+        long needed = (long) Math.ceil(requestedCooling * mbPerMK);
         if (needed <= 0L) {
             return requestedCooling;
         }

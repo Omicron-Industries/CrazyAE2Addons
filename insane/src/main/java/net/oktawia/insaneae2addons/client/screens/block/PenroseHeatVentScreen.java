@@ -47,13 +47,13 @@ public class PenroseHeatVentScreen<C extends PenroseHeatVentMenu> extends Penros
     private List<Component> heatVentTooltip() {
         double heat = getMenu().getHost().getDesiredCooling();
         double perSingu = InsaneConfig.COMMON.PENROSE_HEAT_PER_SINGU_FLOW.get();
-        double mbPerGK = InsaneConfig.COMMON.PENROSE_COOLANT_MB_PER_GK.get();
+        double mbPerMK = InsaneConfig.COMMON.PENROSE_COOLANT_MB_PER_MK.get();
         double massFactorMax = InsaneConfig.COMMON.PENROSE_MASS_FACTOR_MAX.get();
 
         Component throughput = perSingu > 0.0
                 ? Component.translatable(LangDefs.PENROSE_CURVE_VENT_THROUGHPUT_HEAT.getTranslationKey(),
                         Utils.shortenNumber(heat / (perSingu * massFactorMax)),
-                        Utils.shortenNumber(heat * mbPerGK / 1000.0))
+                        Utils.shortenNumber(heat * mbPerMK / 1000.0))
                 : null;
 
         return ventCurveTooltip(throughput);
@@ -75,7 +75,7 @@ public class PenroseHeatVentScreen<C extends PenroseHeatVentMenu> extends Penros
 
         PenroseHeatVentBE host = getMenu().getHost();
         double coolantBuckets =
-                host.getDesiredCooling() * InsaneConfig.COMMON.PENROSE_COOLANT_MB_PER_GK.get() / 1000.0;
+                host.getDesiredCooling() * InsaneConfig.COMMON.PENROSE_COOLANT_MB_PER_MK.get() / 1000.0;
 
         setTextContent("cooling", Component.translatable(LangDefs.PENROSE_VENT_COOLING.getTranslationKey(),
                 Utils.shortenNumber(host.getDesiredCooling())));

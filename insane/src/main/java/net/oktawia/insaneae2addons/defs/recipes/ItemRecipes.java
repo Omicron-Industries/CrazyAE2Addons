@@ -159,6 +159,14 @@ public class ItemRecipes {
                 .define('G', Items.GOLD_INGOT)
                 .output(InsaneItemRegistrar.EXPERIENCE_UPGRADE_CARD.get())
                 .register();
+
+        recipe("multiblock_builder")
+                .shaped("R/M/D")
+                .define('R', AEItems.WIRELESS_RECEIVER.asItem())
+                .define('M', AEItems.MEMORY_CARD.asItem())
+                .define('D', AEBlocks.DENSE_ENERGY_CELL.asItem())
+                .output(InsaneItemRegistrar.MULTIBLOCK_BUILDER.get())
+                .register();
     }
 
     public static class Builder {
