@@ -1,5 +1,6 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -32,6 +33,8 @@ public class PenroseBlackHoleEntity extends Entity {
     private static final double INTERACTION_RANGE = 32.0;
 
     private static final double BLACK_HOLE_DRAG = 1.0;
+
+    private static final double SWALLOW_RADIUS = 1.0;
 
     private static final String INITIALIZED_TAG = "Initialized";
     private static final String MASS_TAG = "Mass";
@@ -110,9 +113,21 @@ public class PenroseBlackHoleEntity extends Entity {
         if (!level().isClientSide()) {
             applyGravity();
             applyDamage();
-            move(MoverType.SELF, getDeltaMovement());
+            moveIfChunkLoaded();
             setDeltaMovement(getDeltaMovement().scale(BLACK_HOLE_DRAG));
         }
+    }
+
+    private void moveIfChunkLoaded() {
+        Vec3 delta = getDeltaMovement();
+        if (delta.lengthSqr() < 1.0e-8) {
+            return;
+        }
+        if (!level().hasChunkAt(BlockPos.containing(position().add(delta)))) {
+            setDeltaMovement(Vec3.ZERO);
+            return;
+        }
+        move(MoverType.SELF, delta);
     }
 
     private static AABB boxAround(Vec3 center, double radius) {
@@ -130,6 +145,10 @@ public class PenroseBlackHoleEntity extends Entity {
             Vec3 toCenter = center.subtract(entity.position());
             double distance = toCenter.length();
             if (distance > pullRadius || distance < 1.0e-4) {
+                continue;
+            }
+            if (!(entity instanceof LivingEntity) && distance <= SWALLOW_RADIUS) {
+                entity.discard();
                 continue;
             }
             double accel = gravityAccel(distance);

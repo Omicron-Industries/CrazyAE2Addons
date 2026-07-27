@@ -55,6 +55,7 @@ import java.util.Set;
 public class PortablePenroseSphereControllerBE extends AbstractMultiblockControllerBE {
 
     private static final long LASER_ARM_TICKS = 8L;
+    private static final double BLACK_HOLE_DETECT_RADIUS = 3.0;
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(PortablePenroseSphereControllerBE.class);
@@ -470,10 +471,19 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         if (center == null) {
             return null;
         }
-        AABB box = new AABB(center.x - 1.5, center.y - 1.5, center.z - 1.5,
-                center.x + 1.5, center.y + 1.5, center.z + 1.5);
-        List<PenroseBlackHoleEntity> holes = level.getEntitiesOfClass(PenroseBlackHoleEntity.class, box);
-        return holes.isEmpty() ? null : holes.get(0);
+        double radius = BLACK_HOLE_DETECT_RADIUS;
+        AABB box = new AABB(center.x - radius, center.y - radius, center.z - radius,
+                center.x + radius, center.y + radius, center.z + radius);
+        PenroseBlackHoleEntity nearest = null;
+        double nearestSq = Double.MAX_VALUE;
+        for (PenroseBlackHoleEntity hole : level.getEntitiesOfClass(PenroseBlackHoleEntity.class, box)) {
+            double distSq = hole.position().distanceToSqr(center);
+            if (distSq <= radius * radius && distSq < nearestSq) {
+                nearest = hole;
+                nearestSq = distSq;
+            }
+        }
+        return nearest;
     }
 
     public void onLaserFired(long gameTime) {

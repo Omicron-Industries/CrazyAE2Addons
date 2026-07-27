@@ -12,9 +12,15 @@ import net.oktawia.insaneae2addons.client.misc.ValueField;
 import net.oktawia.insaneae2addons.logic.penrose.PenroseCurveModel;
 import net.oktawia.insaneae2addons.menus.block.PenroseHeatVentMenu;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 public class PenroseHeatVentScreen<C extends PenroseHeatVentMenu> extends PenrosePeripheralScreen<C> {
+
+    private static final long COOLANT_WINDOW_MS = 1000L;
+
+    private final Deque<long[]> coolantSamples = new ArrayDeque<>();
 
     public PenroseHeatVentScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
@@ -23,6 +29,19 @@ public class PenroseHeatVentScreen<C extends PenroseHeatVentMenu> extends Penros
         cooling.setTooltipMessage(fieldTooltip(
                 LangDefs.PENROSE_VENT_COOLING_TIP_TITLE, LangDefs.PENROSE_VENT_COOLING_TIP));
         addCurve(PenroseCurveModel.heat(), this::heatPosition, () -> new double[0], this::heatVentTooltip);
+    }
+
+    private double smoothedCoolant(int current) {
+        long now = System.currentTimeMillis();
+        this.coolantSamples.addLast(new long[]{now, current});
+        while (!this.coolantSamples.isEmpty() && now - this.coolantSamples.peekFirst()[0] > COOLANT_WINDOW_MS) {
+            this.coolantSamples.removeFirst();
+        }
+        long min = current;
+        for (long[] sample : this.coolantSamples) {
+            min = Math.min(min, sample[1]);
+        }
+        return min;
     }
 
     private List<Component> heatVentTooltip() {
@@ -63,7 +82,7 @@ public class PenroseHeatVentScreen<C extends PenroseHeatVentMenu> extends Penros
         setTextContent("usage", Component.translatable(LangDefs.PENROSE_VENT_COOLANT_USE.getTranslationKey(),
                 Utils.shortenNumber(coolantBuckets)));
         setTextContent("tank", Component.translatable(LangDefs.PENROSE_VENT_TANK.getTranslationKey(),
-                Utils.shortenNumber(host.getCoolantAmount() / 1000.0),
+                Utils.shortenNumber(smoothedCoolant(host.getCoolantAmount()) / 1000.0),
                 Utils.shortenNumber(host.getCoolantCapacity() / 1000.0)));
         setTextContent("status", Component.translatable((host.isArmed()
                 ? LangDefs.PENROSE_PERIPHERAL_ARMED

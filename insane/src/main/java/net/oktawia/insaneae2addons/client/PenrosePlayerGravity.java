@@ -27,7 +27,12 @@ public final class PenrosePlayerGravity {
             return;
         }
 
-        LocalPlayer player = Minecraft.getInstance().player;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.isPaused()) {
+            return;
+        }
+
+        LocalPlayer player = mc.player;
         if (player == null || player.isSpectator()) {
             return;
         }
