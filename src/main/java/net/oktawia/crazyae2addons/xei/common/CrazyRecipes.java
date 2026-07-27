@@ -20,7 +20,7 @@ public final class CrazyRecipes {
             return FluidStack.empty();
         }
 
-        return FluidStack.create(stack.getFluid(), (long) stack.getAmount(), stack.getTag());
+        return FluidStack.create(stack.getFluid(), stack.getAmount(), stack.getTag());
     }
 
     public static List<FabricationEntry> getFabricationEntries() {

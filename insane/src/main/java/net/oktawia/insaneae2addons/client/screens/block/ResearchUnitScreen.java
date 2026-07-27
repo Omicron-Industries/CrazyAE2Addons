@@ -2,6 +2,7 @@ package net.oktawia.insaneae2addons.client.screens.block;
 
 import appeng.client.gui.style.ScreenStyle;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.client.misc.GradientProgressBar;
 import net.oktawia.crazyae2addons.client.screens.AbstractMultiblockControllerScreen;
@@ -51,7 +52,7 @@ public class ResearchUnitScreen<C extends ResearchUnitMenu> extends AbstractMult
         setTextContent("status", ResearchStatusText.of(menu.status()));
     }
 
-    private static net.minecraft.network.chat.MutableComponent label(LangDefs def) {
+    private static MutableComponent label(LangDefs def) {
         return Component.translatable(def.getTranslationKey());
     }
 }

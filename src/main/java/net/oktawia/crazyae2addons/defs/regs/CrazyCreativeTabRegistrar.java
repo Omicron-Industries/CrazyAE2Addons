@@ -6,6 +6,7 @@ import appeng.items.AEBaseItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.defs.LangDefs;
@@ -25,7 +26,7 @@ public final class CrazyCreativeTabRegistrar {
         CrazyBlockRegistrar.BLOCK_ITEMS.getEntries().forEach(ro -> push(out, ro.get()));
     }
 
-    private static void push(CreativeModeTab.Output out, net.minecraft.world.item.Item item) {
+    private static void push(CreativeModeTab.Output out, Item item) {
         if (item instanceof AEBaseBlockItem bItem && bItem.getBlock() instanceof AEBaseBlock blk) {
             blk.addToMainCreativeTab(out);
         } else if (item instanceof AEBaseItem baseItem) {

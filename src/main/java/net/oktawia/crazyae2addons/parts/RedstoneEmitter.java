@@ -9,9 +9,10 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.parts.automation.AbstractLevelEmitterPart;
-import lombok.Getter;
+import appeng.util.SettingsFrom;
 import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
@@ -113,6 +114,25 @@ public class RedstoneEmitter extends AbstractLevelEmitterPart implements MenuPro
     public void writeToNBT(CompoundTag data) {
         super.writeToNBT(data);
         data.putString(NBT_NAME, this.name);
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putString(NBT_NAME, this.name);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD && input.contains(NBT_NAME, Tag.TAG_STRING)) {
+            this.name = input.getString(NBT_NAME);
+            markForSaveAndUpdate();
+        }
     }
 
     @Override

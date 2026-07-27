@@ -348,7 +348,7 @@ public final class DisplayRenderData {
         BigDecimal bd = BigDecimal.valueOf(v);
 
         if (roundedDivision) {
-            bd = bd.setScale(2, java.math.RoundingMode.HALF_UP);
+            bd = bd.setScale(2, RoundingMode.HALF_UP);
         }
 
         bd = bd.setScale(2, RoundingMode.HALF_UP);

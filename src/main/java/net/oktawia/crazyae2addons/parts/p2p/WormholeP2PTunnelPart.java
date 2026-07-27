@@ -17,11 +17,16 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.parts.p2p.P2PModels;
 import appeng.parts.p2p.P2PTunnelPart;
+import appeng.util.SettingsFrom;
 import lombok.Getter;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -97,17 +102,17 @@ public class WormholeP2PTunnelPart extends P2PTunnelPart<WormholeP2PTunnelPart> 
     }
 
     @Override
-    public boolean onPartActivate(Player player, net.minecraft.world.InteractionHand hand, net.minecraft.world.phys.Vec3 pos) {
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         return interactionLogic.onPartActivate(player, hand, pos);
     }
 
     @Override
-    public void importSettings(appeng.util.SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         interactionLogic.importSettings(mode, input, player);
     }
 
     @Override
-    public void exportSettings(appeng.util.SettingsFrom mode, CompoundTag output) {
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
         interactionLogic.exportSettings(mode, output);
     }
 
@@ -189,7 +194,7 @@ public class WormholeP2PTunnelPart extends P2PTunnelPart<WormholeP2PTunnelPart> 
     }
 
     @Override
-    public void onNeighborChanged(net.minecraft.world.level.BlockGetter level, net.minecraft.core.BlockPos pos, net.minecraft.core.BlockPos neighbor) {
+    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
         super.onNeighborChanged(level, pos, neighbor);
         connectionManager.sendBlockUpdateToOppositeSide();
     }

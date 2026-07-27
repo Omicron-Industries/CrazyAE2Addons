@@ -1,5 +1,6 @@
 package net.oktawia.crazyae2addons.defs.regs;
 
+import appeng.api.parts.IPart;
 import appeng.api.parts.PartModels;
 import appeng.items.materials.UpgradeCardItem;
 import appeng.items.parts.PartItem;
@@ -43,7 +44,7 @@ public class CrazyItemRegistrar {
                 Class<?> partClass = partItem.getPartClass();
                 if (partClass != null) {
                     PartModels.registerModels(
-                            PartModelsHelper.createModels(partClass.asSubclass(appeng.api.parts.IPart.class))
+                            PartModelsHelper.createModels(partClass.asSubclass(IPart.class))
                     );
                 }
             }

@@ -1,5 +1,6 @@
 package net.oktawia.insaneae2addons.logic.autobuilder;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -53,7 +54,7 @@ public final class AutoBuilderPreviewOps {
 
         List<BlockPos> newPositions = new ArrayList<>();
         List<String> newPalette = new ArrayList<>();
-        var indices = new it.unimi.dsi.fastutil.ints.IntArrayList();
+        var indices = new IntArrayList();
 
         if (be.code == null || be.code.isEmpty()) {
             be.previewPositions = new BlockPos[0];

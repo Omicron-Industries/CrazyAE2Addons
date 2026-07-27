@@ -14,6 +14,7 @@ import appeng.parts.PartModel;
 import appeng.parts.automation.IOBusPart;
 import appeng.parts.automation.StackWorldBehaviors;
 import appeng.util.ConfigInventory;
+import appeng.util.SettingsFrom;
 import appeng.util.prioritylist.DefaultPriorityList;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +22,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.minecraft.core.GlobalPos;
@@ -44,6 +46,7 @@ public class NbtExportBusPart extends IOBusPart {
             new ResourceLocation(AppEng.MOD_ID, "part/export_bus_has_channel"));
 
     private static final String NBT_STATE = "state";
+    private static final String NBT_FILTER = "nbt_filter";
 
     public final ConfigInventory inv = ConfigInventory.configTypes(1, () -> {});
 
@@ -173,6 +176,24 @@ public class NbtExportBusPart extends IOBusPart {
             return MODELS_ON;
         }
         return MODELS_OFF;
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putString(NBT_FILTER, state.getData());
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD && input.contains(NBT_FILTER, Tag.TAG_STRING)) {
+            setFilter(input.getString(NBT_FILTER));
+        }
     }
 
     @Override

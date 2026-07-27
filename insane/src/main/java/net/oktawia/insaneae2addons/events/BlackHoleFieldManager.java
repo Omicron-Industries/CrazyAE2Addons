@@ -2,7 +2,7 @@ package net.oktawia.insaneae2addons.events;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -83,10 +83,13 @@ public final class BlackHoleFieldManager {
             return;
         }
 
-        ChunkPos pos = event.getChunk().getPos();
+        if (!(event.getChunk() instanceof LevelChunk chunk)) {
+            return;
+        }
+
         for (BlackHoleField field : ACTIVE) {
             if (field.getLevel() == level) {
-                field.chunkLoaded(pos);
+                field.chunkLoaded(chunk);
             }
         }
     }

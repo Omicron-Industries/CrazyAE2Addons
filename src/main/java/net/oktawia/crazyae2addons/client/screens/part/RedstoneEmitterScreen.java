@@ -5,6 +5,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.oktawia.crazyae2addons.client.misc.IconButton;
@@ -30,7 +31,7 @@ public class RedstoneEmitterScreen<C extends RedstoneEmitterMenu> extends AEBase
         this.nameField.setPlaceholder(Component.translatable(LangDefs.NAME.getTranslationKey()));
 
         IconButton confirmButton = new IconButton(Icon.ENTER, button -> save());
-        confirmButton.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
+        confirmButton.setTooltip(Tooltip.create(
                 Component.translatable(LangDefs.APPLY.getTranslationKey())
         ));
 

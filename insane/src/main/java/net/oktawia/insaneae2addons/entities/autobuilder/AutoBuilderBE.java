@@ -21,6 +21,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
+import appeng.util.SettingsFrom;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -34,6 +35,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
@@ -77,6 +79,9 @@ public class AutoBuilderBE extends AENetworkBlockEntity implements
         PatternProviderLogicHost,
         IManagedBEHelper,
         IMenuOpeningBlockEntity {
+
+    private static final String NBT_OFFSET = "offset";
+    private static final String NBT_SKIP_EMPTY = "skip_empty";
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(AutoBuilderBE.class);
@@ -226,15 +231,46 @@ public class AutoBuilderBE extends AENetworkBlockEntity implements
     }
 
     @Override
-    public void saveAdditional(net.minecraft.nbt.CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         saveManagedData(tag);
     }
 
     @Override
-    public void loadTag(net.minecraft.nbt.CompoundTag tag) {
+    public void loadTag(CompoundTag tag) {
         loadManagedData(tag);
         super.loadTag(tag);
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
+        super.exportSettings(mode, output, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putIntArray(NBT_OFFSET, new int[] { offset.getX(), offset.getY(), offset.getZ() });
+            output.putBoolean(NBT_SKIP_EMPTY, this.skipEmpty);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode != SettingsFrom.MEMORY_CARD) {
+            return;
+        }
+
+        int[] savedOffset = input.getIntArray(NBT_OFFSET);
+        if (savedOffset.length != 3) {
+            return;
+        }
+
+        BlockPos oldOffset = this.offset;
+        this.offset = new BlockPos(savedOffset[0], savedOffset[1], savedOffset[2]);
+        this.skipEmpty = input.getBoolean(NBT_SKIP_EMPTY);
+        setChanged();
+        onOffsetChanged(oldOffset);
+        updateSkipEmptyFromCode();
     }
 
     public void clearMissingItem() {

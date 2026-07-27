@@ -3,6 +3,7 @@ package net.oktawia.crazyae2addons.menus.item;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,7 +21,7 @@ public class CpuPrioMenu extends AEBaseMenu {
     public int prio = 0;
 
     private final CpuPrioHost host;
-    private @Nullable appeng.me.cluster.implementations.CraftingCPUCluster targetCpu;
+    private @Nullable CraftingCPUCluster targetCpu;
     @Getter
     private ItemStack targetIcon = ItemStack.EMPTY;
 

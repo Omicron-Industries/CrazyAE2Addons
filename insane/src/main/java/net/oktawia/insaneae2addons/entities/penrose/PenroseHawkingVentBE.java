@@ -1,8 +1,12 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
+import appeng.util.SettingsFrom;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -22,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PenroseHawkingVentBE extends PenrosePeripheralBE {
+
+    private static final String NBT_DESIRED_EVAPORATION = "desired_evaporation";
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             IManagedBEHelper.inheritedFieldHolder(PenroseHawkingVentBE.class);
@@ -61,6 +67,24 @@ public class PenroseHawkingVentBE extends PenrosePeripheralBE {
     public void setDesiredEvaporation(double desiredEvaporation) {
         this.desiredEvaporation = Math.max(0.0, desiredEvaporation);
         setChanged();
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
+        super.exportSettings(mode, output, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putDouble(NBT_DESIRED_EVAPORATION, this.desiredEvaporation);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD && input.contains(NBT_DESIRED_EVAPORATION, Tag.TAG_DOUBLE)) {
+            setDesiredEvaporation(input.getDouble(NBT_DESIRED_EVAPORATION));
+        }
     }
 
     public long drawEnergy(long wanted) {

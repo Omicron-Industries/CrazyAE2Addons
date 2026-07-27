@@ -1,16 +1,19 @@
 package net.oktawia.crazyae2addons.network.packets;
 
 import appeng.api.parts.IPartHost;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 import net.oktawia.crazyae2addons.parts.Display;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public record DisplaySyncPacket(BlockPos pos, Direction side, String packed) {
@@ -39,11 +42,11 @@ public record DisplaySyncPacket(BlockPos pos, Direction side, String packed) {
         ctx.setPacketHandled(true);
     }
 
-    @net.minecraftforge.api.distmarker.OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private static final class Client {
 
         private static void handle(DisplaySyncPacket pkt) {
-            var mc = net.minecraft.client.Minecraft.getInstance();
+            var mc = Minecraft.getInstance();
             if (mc.level == null) {
                 return;
             }
@@ -61,7 +64,7 @@ public record DisplaySyncPacket(BlockPos pos, Direction side, String packed) {
             unpackResolvedTokens(pkt.packed, part.resolvedTokens);
         }
 
-        private static void unpackResolvedTokens(String packed, java.util.Map<String, String> out) {
+        private static void unpackResolvedTokens(String packed, Map<String, String> out) {
             if (packed == null || packed.isEmpty()) {
                 return;
             }

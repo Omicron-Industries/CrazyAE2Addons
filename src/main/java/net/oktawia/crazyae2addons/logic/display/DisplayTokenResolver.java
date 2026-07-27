@@ -6,6 +6,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluids;
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.entities.DisplayDatabaseBE;
@@ -416,12 +418,12 @@ public final class DisplayTokenResolver {
 
             if (prefix.equals("item")) {
                 var item = BuiltInRegistries.ITEM.getOptional(ResourceLocation.parse(rest)).orElse(null);
-                return (item != null && item != net.minecraft.world.item.Items.AIR) ? AEItemKey.of(item) : null;
+                return (item != null && item != Items.AIR) ? AEItemKey.of(item) : null;
             }
 
             if (prefix.equals("fluid")) {
                 var fluid = BuiltInRegistries.FLUID.getOptional(ResourceLocation.parse(rest)).orElse(null);
-                return (fluid != null && fluid != net.minecraft.world.level.material.Fluids.EMPTY) ? AEFluidKey.of(fluid) : null;
+                return (fluid != null && fluid != Fluids.EMPTY) ? AEFluidKey.of(fluid) : null;
             }
 
             if (DisplayKeyCompatRegistry.hasPrefix(prefix)) {
@@ -432,12 +434,12 @@ public final class DisplayTokenResolver {
         ResourceLocation rl = ResourceLocation.parse(rawId);
 
         var item = BuiltInRegistries.ITEM.getOptional(rl).orElse(null);
-        if (item != null && item != net.minecraft.world.item.Items.AIR) {
+        if (item != null && item != Items.AIR) {
             return AEItemKey.of(item);
         }
 
         var fluid = BuiltInRegistries.FLUID.getOptional(rl).orElse(null);
-        return (fluid != null && fluid != net.minecraft.world.level.material.Fluids.EMPTY) ? AEFluidKey.of(fluid) : null;
+        return (fluid != null && fluid != Fluids.EMPTY) ? AEFluidKey.of(fluid) : null;
     }
 
     @Nullable

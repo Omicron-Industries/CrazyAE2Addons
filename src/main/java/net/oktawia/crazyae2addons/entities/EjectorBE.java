@@ -134,26 +134,26 @@ public class EjectorBE extends AENetworkBlockEntity implements
     }
 
     @Override
-    public void saveAdditional(net.minecraft.nbt.CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         saveManagedData(tag);
     }
 
     @Override
-    public void loadTag(net.minecraft.nbt.CompoundTag tag) {
+    public void loadTag(CompoundTag tag) {
         loadManagedData(tag);
         super.loadTag(tag);
     }
 
     @Override
-    public net.minecraft.nbt.CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         var tag = super.getUpdateTag();
         saveManagedData(tag);
         return tag;
     }
 
     @Override
-    public void handleUpdateTag(net.minecraft.nbt.CompoundTag tag) {
+    public void handleUpdateTag(CompoundTag tag) {
         loadManagedData(tag);
         super.handleUpdateTag(tag);
     }

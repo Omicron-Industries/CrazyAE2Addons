@@ -1,8 +1,10 @@
 package net.oktawia.insaneae2addons.logic.penrose;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -26,7 +28,7 @@ public final class BlackHoleField {
     private static final BlockState AIR = Blocks.AIR.defaultBlockState();
     private static final int FLUSH_EVERY_TICKS = 2;
     private static final int PERSIST_EVERY_CHUNKS = 16;
-    private static final int CHUNK_PICK_ATTEMPTS = 8;
+    private static final int RESCAN_EVERY_TICKS = 40;
 
     public record Snapshot(UUID id, BlockPos center, int radius, long[] processedChunks) {}
 
@@ -47,6 +49,7 @@ public final class BlackHoleField {
     private final LongOpenHashSet queuedChunks = new LongOpenHashSet();
     private final ArrayDeque<ChunkPos> workQueue = new ArrayDeque<>();
     private final LongOpenHashSet dirtyChunks = new LongOpenHashSet();
+    private final Long2ObjectOpenHashMap<LevelChunk> justLoaded = new Long2ObjectOpenHashMap<>();
 
     private final BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 
@@ -58,6 +61,7 @@ public final class BlackHoleField {
     private boolean currentChunkModified;
 
     private int flushCountdown;
+    private int rescanCountdown;
     private int processedSincePersist;
 
     @Getter
@@ -101,18 +105,27 @@ public final class BlackHoleField {
         return dirty;
     }
 
-    public void chunkLoaded(ChunkPos pos) {
-        long key = pos.toLong();
+    public void chunkLoaded(LevelChunk chunk) {
+        long key = chunk.getPos().toLong();
         if (!this.targetChunks.contains(key) || this.processedChunks.contains(key)) {
             return;
         }
         if (this.currentChunkPos != null && this.currentChunkPos.toLong() == key) {
             return;
         }
-        enqueue(pos);
+
+        this.justLoaded.put(key, chunk);
+        if (this.queuedChunks.add(key)) {
+            this.workQueue.addFirst(chunk.getPos());
+        }
     }
 
     public void tick(long budgetNanos) {
+        if (--this.rescanCountdown <= 0) {
+            this.rescanCountdown = RESCAN_EVERY_TICKS;
+            rescanLoadedChunks();
+        }
+
         long deadline = System.nanoTime() + budgetNanos;
         while (!this.done && System.nanoTime() < deadline) {
             if (this.processedChunks.size() >= this.targetChunks.size()) {
@@ -127,11 +140,12 @@ public final class BlackHoleField {
             this.flushCountdown = FLUSH_EVERY_TICKS;
             flushDirtyChunks();
         }
+
+        this.justLoaded.clear();
     }
 
     private boolean step() {
-        if (this.currentChunkPos != null && !isLoaded(this.currentChunkPos)) {
-            requeueCurrentChunk();
+        if (this.currentChunkPos != null && resolveChunk(this.currentChunkPos) != this.currentChunk) {
             dropCurrentChunk();
             return true;
         }
@@ -147,7 +161,7 @@ public final class BlackHoleField {
                 continue;
             }
 
-            int bottomY = this.level.getSectionYFromSectionIndex(sectionIndex);
+            int bottomY = SectionPos.sectionToBlockCoord(this.level.getSectionYFromSectionIndex(sectionIndex));
             if (!intersectsSphere(this.currentChunkPos, bottomY)) {
                 continue;
             }
@@ -161,7 +175,7 @@ public final class BlackHoleField {
     }
 
     private boolean pickNextChunk() {
-        for (int attempt = 0; attempt < CHUNK_PICK_ATTEMPTS && !this.workQueue.isEmpty(); attempt++) {
+        while (!this.workQueue.isEmpty()) {
             ChunkPos pos = this.workQueue.pollFirst();
             long key = pos.toLong();
             this.queuedChunks.remove(key);
@@ -170,9 +184,8 @@ public final class BlackHoleField {
                 continue;
             }
 
-            LevelChunk chunk = this.level.getChunkSource().getChunkNow(pos.x, pos.z);
+            LevelChunk chunk = resolveChunk(pos);
             if (chunk == null) {
-                enqueue(pos);
                 continue;
             }
 
@@ -222,6 +235,11 @@ public final class BlackHoleField {
                 }
             }
         }
+
+        if (this.currentChunkModified) {
+            this.currentChunk.setUnsaved(true);
+            this.currentChunk.setLightCorrect(false);
+        }
     }
 
     private void finishCurrentChunk() {
@@ -251,9 +269,6 @@ public final class BlackHoleField {
                 continue;
             }
 
-            chunk.setUnsaved(true);
-            chunk.setLightCorrect(false);
-
             ClientboundLevelChunkWithLightPacket packet =
                     new ClientboundLevelChunkWithLightPacket(chunk, this.level.getLightEngine(), null, null);
             this.level.getChunkSource().chunkMap
@@ -270,20 +285,29 @@ public final class BlackHoleField {
         }
     }
 
-    private void requeueCurrentChunk() {
-        if (this.currentChunkPos != null && !this.processedChunks.contains(this.currentChunkPos.toLong())) {
-            enqueue(this.currentChunkPos);
-        }
-    }
-
     private void dropCurrentChunk() {
         this.currentChunk = null;
         this.currentChunkPos = null;
         this.currentChunkModified = false;
     }
 
-    private boolean isLoaded(ChunkPos pos) {
-        return this.level.getChunkSource().getChunkNow(pos.x, pos.z) != null;
+    private void rescanLoadedChunks() {
+        for (long key : this.targetChunks) {
+            if (this.processedChunks.contains(key) || this.queuedChunks.contains(key)) {
+                continue;
+            }
+
+            ChunkPos pos = new ChunkPos(key);
+            if (this.level.getChunkSource().getChunkNow(pos.x, pos.z) != null) {
+                enqueue(pos);
+            }
+        }
+    }
+
+    @Nullable
+    private LevelChunk resolveChunk(ChunkPos pos) {
+        LevelChunk chunk = this.level.getChunkSource().getChunkNow(pos.x, pos.z);
+        return chunk != null ? chunk : this.justLoaded.get(pos.toLong());
     }
 
     private boolean intersectsSphere(ChunkPos pos, int bottomY) {

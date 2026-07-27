@@ -11,6 +11,7 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.core.AppEng;
+import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
@@ -97,7 +98,7 @@ public class TagLevelEmitter extends AbstractLevelEmitterPart implements IAnalog
                 return;
             }
 
-            long currentTick = appeng.hooks.ticking.TickHandler.instance().getCurrentTick();
+            long currentTick = TickHandler.instance().getCurrentTick();
             if (currentTick == lastUpdateTick) {
                 return;
             }

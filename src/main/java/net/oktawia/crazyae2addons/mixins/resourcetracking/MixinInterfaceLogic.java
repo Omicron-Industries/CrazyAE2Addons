@@ -1,6 +1,7 @@
 package net.oktawia.crazyae2addons.mixins.resourcetracking;
 
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
@@ -38,7 +39,7 @@ public class MixinInterfaceLogic {
             target = "Lappeng/api/storage/StorageHelper;poweredExtraction(Lappeng/api/networking/energy/IEnergySource;Lappeng/api/storage/MEStorage;Lappeng/api/stacks/AEKey;JLappeng/api/networking/security/IActionSource;)J")
     )
     private long crazyAE2Addons$trackActualExtraction(
-            appeng.api.networking.energy.IEnergySource energy,
+            IEnergySource energy,
             MEStorage inv,
             AEKey what,
             long amount,

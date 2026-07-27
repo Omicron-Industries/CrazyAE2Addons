@@ -3,6 +3,7 @@ package net.oktawia.insaneae2addons.entities;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
+import appeng.util.SettingsFrom;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -42,6 +44,10 @@ import java.util.ArrayDeque;
 
 public class AmpereMeterBE extends AEBaseBlockEntity
         implements MenuProvider, IManagedBEHelper, IMenuOpeningBlockEntity {
+
+    private static final String NBT_DIRECTION = "direction";
+    private static final String NBT_MIN_FE = "min_fe_per_tick";
+    private static final String NBT_MAX_FE = "max_fe_per_tick";
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(AmpereMeterBE.class);
@@ -392,6 +398,33 @@ public class AmpereMeterBE extends AEBaseBlockEntity
             getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
         }
         syncManaged();
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
+        super.exportSettings(mode, output, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putBoolean(NBT_DIRECTION, this.direction);
+            output.putInt(NBT_MIN_FE, this.minFePerTick);
+            output.putInt(NBT_MAX_FE, this.maxFePerTick);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode != SettingsFrom.MEMORY_CARD || !input.contains(NBT_MIN_FE, Tag.TAG_INT)) {
+            return;
+        }
+
+        setDirection(input.getBoolean(NBT_DIRECTION));
+
+        // min is clamped against max and vice versa, so drop the floor before applying the new range
+        setMinFePerTick(0);
+        setMaxFePerTick(input.getInt(NBT_MAX_FE));
+        setMinFePerTick(input.getInt(NBT_MIN_FE));
     }
 
     public void setDirection(boolean direction) {

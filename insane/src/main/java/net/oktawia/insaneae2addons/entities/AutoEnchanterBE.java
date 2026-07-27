@@ -15,6 +15,7 @@ import appeng.api.storage.StorageHelper;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
+import appeng.util.SettingsFrom;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -26,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -35,6 +37,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -62,12 +65,17 @@ import net.oktawia.insaneae2addons.menus.block.AutoEnchanterMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class AutoEnchanterBE extends AENetworkInvBlockEntity
         implements MenuProvider, IManagedBEHelper, IMenuOpeningBlockEntity, IGridTickable {
+
+    private static final String NBT_OPTION = "option";
+    private static final String NBT_AUTO_SUPPLY_LAPIS = "auto_supply_lapis";
+    private static final String NBT_AUTO_SUPPLY_BOOKS = "auto_supply_books";
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             new ManagedFieldHolder(AutoEnchanterBE.class);
@@ -228,6 +236,28 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
         return getBlockState().getBlock().getName();
     }
 
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
+        super.exportSettings(mode, output, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putInt(NBT_OPTION, this.option);
+            output.putBoolean(NBT_AUTO_SUPPLY_LAPIS, this.autoSupplyLapis);
+            output.putBoolean(NBT_AUTO_SUPPLY_BOOKS, this.autoSupplyBooks);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD && input.contains(NBT_OPTION, Tag.TAG_INT)) {
+            setOption(input.getInt(NBT_OPTION));
+            setAutoSupplyLapis(input.getBoolean(NBT_AUTO_SUPPLY_LAPIS));
+            setAutoSupplyBooks(input.getBoolean(NBT_AUTO_SUPPLY_BOOKS));
+        }
+    }
+
     public void setOption(int option) {
         this.option = option;
         setChanged();
@@ -289,7 +319,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
         return TickRateModulation.IDLE;
     }
 
-    private void supplyFromNetwork(InternalInventory inv, net.minecraft.world.item.Item item) {
+    private void supplyFromNetwork(InternalInventory inv, Item item) {
         int toSupply = inv.getSlotLimit(0) - inv.getStackInSlot(0).getCount();
         if (toSupply <= 0) {
             return;
@@ -380,12 +410,12 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
         if (node == null || node.getGrid() == null) {
             return Set.of();
         }
-        Set<Fluid> validXpFluids = new java.util.HashSet<>();
+        Set<Fluid> validXpFluids = new HashSet<>();
         for (TagKey<Fluid> tag : XP_FLUID_TAGS) {
             ForgeRegistries.FLUIDS.tags().getTag(tag).forEach(validXpFluids::add);
         }
 
-        Set<AEFluidKey> available = new java.util.HashSet<>();
+        Set<AEFluidKey> available = new HashSet<>();
         node.getGrid().getStorageService().getInventory().getAvailableStacks().forEach(key -> {
             if (key.getKey() instanceof AEFluidKey fkey && validXpFluids.contains(fkey.getFluid())) {
                 available.add(fkey);

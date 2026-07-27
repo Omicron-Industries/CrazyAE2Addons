@@ -5,6 +5,7 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.ByteArrayInputStream;
@@ -39,9 +40,9 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
     private final AETextField yField;
     private final AETextField scaleField;
 
-    private final appeng.client.gui.widgets.Scrollbar xSlider;
-    private final appeng.client.gui.widgets.Scrollbar ySlider;
-    private final appeng.client.gui.widgets.Scrollbar scaleSlider;
+    private final Scrollbar xSlider;
+    private final Scrollbar ySlider;
+    private final Scrollbar scaleSlider;
 
     private final ImageListWidget imageListWidget;
 
@@ -118,9 +119,9 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
         widgets.add("y", yField);
         widgets.add("scale", scaleField);
 
-        xSlider = new appeng.client.gui.widgets.Scrollbar();
-        ySlider = new appeng.client.gui.widgets.Scrollbar();
-        scaleSlider = new appeng.client.gui.widgets.Scrollbar();
+        xSlider = new Scrollbar();
+        ySlider = new Scrollbar();
+        scaleSlider = new Scrollbar();
 
         xSlider.setRange(MIN_PERCENT, MAX_PERCENT, 1);
         xSlider.setCurrentScroll(0);
@@ -248,7 +249,7 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
         }
     }
 
-    private void syncPair(AETextField field, appeng.client.gui.widgets.Scrollbar slider, int min, int max) {
+    private void syncPair(AETextField field, Scrollbar slider, int min, int max) {
         int sliderValue = Mth.clamp(slider.getCurrentScroll(), min, max);
         String fieldValue = field.getValue();
 

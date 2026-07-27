@@ -7,14 +7,17 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.parts.storagebus.StorageBusPart;
 import appeng.util.ConfigInventory;
+import appeng.util.SettingsFrom;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class NbtStorageBusPart extends StorageBusPart {
 
     private static final String NBT_STATE = "state";
     private static final String NBT_UPGRADES = "nbtUpgrades";
+    private static final String NBT_FILTER = "nbt_filter";
 
     public final ConfigInventory inv = ConfigInventory.configTypes(1, () -> {});
 
@@ -90,6 +94,24 @@ public class NbtStorageBusPart extends StorageBusPart {
     public void clearContent() {
         super.clearContent();
         nbtUpgrades.clear();
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putString(NBT_FILTER, state.getData());
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD && input.contains(NBT_FILTER, Tag.TAG_STRING)) {
+            setFilter(input.getString(NBT_FILTER));
+        }
     }
 
     @Override

@@ -220,6 +220,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:framedblocks-441647:7386520")
     runtimeOnly fg.deobf("curse.maven:spatial-tools-compatible-1528726:8415567")
     runtimeOnly fg.deobf("curse.maven:mob-grinding-utils-254241:5131447")
+    runtimeOnly fg.deobf("curse.maven:distant-horizons-508933:8389142")
 }
 
 tasks.named('processResources', ProcessResources).configure {

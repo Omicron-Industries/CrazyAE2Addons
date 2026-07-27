@@ -6,6 +6,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
 import appeng.api.parts.SelectedPart;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.items.AEBaseItem;
@@ -125,9 +126,9 @@ public class PatternMultiplierItem extends AEBaseItem implements IMenuItem {
 
     public static boolean isAllowedInMultiplier(ItemStack stack) {
         return stack.isEmpty()
-                || appeng.core.definitions.AEItems.PROCESSING_PATTERN.isSameAs(stack)
-                || appeng.core.definitions.AEItems.CRAFTING_PATTERN.isSameAs(stack)
-                || appeng.core.definitions.AEItems.BLANK_PATTERN.isSameAs(stack);
+                || AEItems.PROCESSING_PATTERN.isSameAs(stack)
+                || AEItems.CRAFTING_PATTERN.isSameAs(stack)
+                || AEItems.BLANK_PATTERN.isSameAs(stack);
     }
 
     public static void writeConfig(ItemStack stack, double multiplier, int limit) {

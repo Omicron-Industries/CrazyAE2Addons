@@ -1,8 +1,12 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
+import appeng.util.SettingsFrom;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -23,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PenroseHeatVentBE extends PenrosePeripheralBE {
+
+    private static final String NBT_DESIRED_COOLING = "desired_cooling";
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
             IManagedBEHelper.inheritedFieldHolder(PenroseHeatVentBE.class);
@@ -61,6 +67,24 @@ public class PenroseHeatVentBE extends PenrosePeripheralBE {
     public void setDesiredCooling(double desiredCooling) {
         this.desiredCooling = Math.max(0.0, desiredCooling);
         setChanged();
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
+        super.exportSettings(mode, output, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            output.putDouble(NBT_DESIRED_COOLING, this.desiredCooling);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD && input.contains(NBT_DESIRED_COOLING, Tag.TAG_DOUBLE)) {
+            setDesiredCooling(input.getDouble(NBT_DESIRED_COOLING));
+        }
     }
 
     public int getCoolantAmount() {

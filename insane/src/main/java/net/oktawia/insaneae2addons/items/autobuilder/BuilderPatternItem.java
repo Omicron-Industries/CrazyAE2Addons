@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.IntUnaryOperator;
 
 public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
 
@@ -446,7 +447,7 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
         return out.toString();
     }
 
-    private static String applyMapSkippingTokens(String s, java.util.function.IntUnaryOperator mapper) {
+    private static String applyMapSkippingTokens(String s, IntUnaryOperator mapper) {
         StringBuilder out = new StringBuilder(s.length());
         int i = 0;
 

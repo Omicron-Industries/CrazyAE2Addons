@@ -17,6 +17,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -94,7 +95,7 @@ public final class DisplayImageUploadClient {
                 Object data = transferable.getTransferData(DataFlavor.javaFileListFlavor);
                 if (data instanceof List<?> list && !list.isEmpty()) {
                     Object first = list.get(0);
-                    if (first instanceof java.io.File file) {
+                    if (first instanceof File file) {
                         return uploadPath(file.toPath());
                     }
                 }
