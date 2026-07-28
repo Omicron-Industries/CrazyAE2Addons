@@ -42,7 +42,6 @@ import java.util.Optional;
 
 public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends UpgradeableScreen<C> {
 
-    private static final int FILTER_SLOTS = MultiLevelEmitter.FILTER_SLOTS;
     private static final int VISIBLE_ROWS = 6;
 
     private static final int FILTER_SLOT_X = 10;
@@ -89,7 +88,7 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
         this.fuzzyModeButton = new ServerSettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         addToLeftToolbar(this.fuzzyModeButton);
 
-        this.scrollbar.setRange(0, Math.max(0, FILTER_SLOTS - VISIBLE_ROWS), 1);
+        this.scrollbar.setRange(0, Math.max(0, MultiLevelEmitter.filterSlots() - VISIBLE_ROWS), 1);
         this.widgets.add("scrollbar", scrollbar);
 
         createLogicButton();
@@ -175,7 +174,7 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
 
     private void updateControls(boolean craftingCardInstalled) {
         scrollbar.setVisible(true);
-        scrollbar.setRange(0, Math.max(0, FILTER_SLOTS - VISIBLE_ROWS), 1);
+        scrollbar.setRange(0, Math.max(0, MultiLevelEmitter.filterSlots() - VISIBLE_ROWS), 1);
 
         logicButton.visible = true;
         logicButton.active = true;
@@ -198,7 +197,7 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
     private void repositionConfigSlots(int offset) {
         List<Slot> slots = getMenu().getSlots(SlotSemantics.CONFIG);
 
-        for (int i = 0; i < FILTER_SLOTS && i < slots.size(); i++) {
+        for (int i = 0; i < MultiLevelEmitter.filterSlots() && i < slots.size(); i++) {
             int visibleRow = i - offset;
             boolean inView = visibleRow >= 0 && visibleRow < VISIBLE_ROWS;
 
@@ -469,6 +468,6 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
     }
 
     private static boolean isValidSlot(int slot) {
-        return slot >= 0 && slot < FILTER_SLOTS;
+        return slot >= 0 && slot < MultiLevelEmitter.filterSlots();
     }
 }

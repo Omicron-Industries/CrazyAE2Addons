@@ -51,7 +51,14 @@ import java.util.function.Consumer;
 
 public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConfigInvHost, ICraftingProvider {
 
-    public static final int FILTER_SLOTS = CrazyConfig.COMMON.MULTI_LEVEL_EMITTER_CONFIG_SLOT.get();
+    private static int filterSlots = -1;
+
+    public static int filterSlots() {
+        if (filterSlots < 0) {
+            filterSlots = CrazyConfig.COMMON.MULTI_LEVEL_EMITTER_CONFIG_SLOT.get();
+        }
+        return filterSlots;
+    }
 
     private static final String NBT_STATE = "state";
     private static final String NBT_UPGRADES = "upgrades";
@@ -99,7 +106,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
     @Getter
     private final PartState state = new PartState(this);
 
-    private final long[] lastReportedValues = new long[FILTER_SLOTS];
+    private final long[] lastReportedValues = new long[filterSlots()];
 
     @Nullable
     private IStackWatcher storageWatcher;
@@ -137,7 +144,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
             }
 
             boolean touched = false;
-            for (int i = 0; i < FILTER_SLOTS; i++) {
+            for (int i = 0; i < filterSlots(); i++) {
                 AEKey configured = getConfig().getKey(i);
                 if (configured != null && configured.equals(what)) {
                     lastReportedValues[i] = amount;
@@ -284,7 +291,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
     }
 
     private boolean hasAnyConfiguredKey() {
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             if (getConfig().getKey(i) != null) {
                 return true;
             }
@@ -293,7 +300,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
     }
 
     private long pickLegacyDisplayValue() {
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             if (getConfig().getKey(i) != null || isGlobalThresholdSlot(i)) {
                 return lastReportedValues[i];
             }
@@ -311,7 +318,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
         int active = 0;
 
         if (state.logicAnd) {
-            for (int i = 0; i < FILTER_SLOTS; i++) {
+            for (int i = 0; i < filterSlots(); i++) {
                 AEKey key = getConfig().getKey(i);
                 if (key == null && !isGlobalThresholdSlot(i)) {
                     continue;
@@ -326,7 +333,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
             return active != 0 || evaluateStorageSlot(0, lastReportedValue);
         }
 
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             AEKey key = getConfig().getKey(i);
             if (key == null && !isGlobalThresholdSlot(i)) {
                 continue;
@@ -350,7 +357,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
         int active = 0;
 
         if (state.logicAnd) {
-            for (int i = 0; i < FILTER_SLOTS; i++) {
+            for (int i = 0; i < filterSlots(); i++) {
                 AEKey key = getConfig().getKey(i);
                 if (key == null) {
                     continue;
@@ -365,7 +372,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
             return active != 0 || evaluateCraftingSlot(0, crafting.isRequestingAny());
         }
 
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             AEKey key = getConfig().getKey(i);
             if (key == null) {
                 continue;
@@ -449,7 +456,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
         }
 
         Set<AEKey> result = new HashSet<>();
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             AEKey key = getConfig().getKey(i);
             if (key != null) {
                 result.add(key);
@@ -492,7 +499,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
         }
 
         boolean anyConfigured = false;
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             AEKey key = getConfig().getKey(i);
             if (key != null) {
                 anyConfigured = true;
@@ -515,7 +522,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
             return;
         }
 
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             AEKey key = getConfig().getKey(i);
             if (key != null) {
                 storageWatcher.add(key);
@@ -539,7 +546,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
 
             lastReportedValue = total;
 
-            for (int i = 0; i < FILTER_SLOTS; i++) {
+            for (int i = 0; i < filterSlots(); i++) {
                 if (isGlobalThresholdSlot(i)) {
                     lastReportedValues[i] = total;
                 }
@@ -555,7 +562,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
         boolean fuzzy = isUpgradedWith(AEItems.FUZZY_CARD);
         FuzzyMode fuzzyMode = getConfigManager().getSetting(Settings.FUZZY_MODE);
 
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             AEKey key = getConfig().getKey(i);
             if (key == null) {
                 continue;
@@ -703,7 +710,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
     }
 
     private static boolean isValidSlot(int slot) {
-        return slot >= 0 && slot < FILTER_SLOTS;
+        return slot >= 0 && slot < filterSlots();
     }
 
     private static boolean isBitSet(short mask, int slot) {
@@ -735,7 +742,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
         private short craftMask = (short) 0xFFFF;
 
         @Getter
-        private final long[] thresholds = new long[FILTER_SLOTS];
+        private final long[] thresholds = new long[filterSlots()];
 
         @Persisted
         @LazyManaged
@@ -744,7 +751,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
 
         private PartState(MultiLevelEmitter owner) {
             this.owner = owner;
-            this.config = ConfigInventory.configTypes(FILTER_SLOTS, owner::onConfigChanged);
+            this.config = ConfigInventory.configTypes(filterSlots(), owner::onConfigChanged);
         }
 
         public CompoundTag savePersisted() {
@@ -759,7 +766,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
 
             if (tag.contains(NBT_THRESHOLDS, Tag.TAG_LONG_ARRAY)) {
                 long[] saved = tag.getLongArray(NBT_THRESHOLDS);
-                for (int i = 0; i < FILTER_SLOTS; i++) {
+                for (int i = 0; i < filterSlots(); i++) {
                     thresholds[i] = i < saved.length ? Math.max(0L, saved[i]) : 0L;
                 }
             }
@@ -793,7 +800,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
     }
 
     private boolean hasAnyGlobalThresholdSlot() {
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < filterSlots(); i++) {
             if (isGlobalThresholdSlot(i)) {
                 return true;
             }

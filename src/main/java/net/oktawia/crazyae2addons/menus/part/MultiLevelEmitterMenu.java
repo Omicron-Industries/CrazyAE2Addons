@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class MultiLevelEmitterMenu extends UpgradeableMenu<MultiLevelEmitter> {
 
-    private static final int FILTER_SLOTS = MultiLevelEmitter.FILTER_SLOTS;
     private static final int PACKED_BOOL_SLOT_SHIFT = 1;
     private static final int PACKED_THRESHOLD_SHIFT = 60;
     private static final long PACKED_THRESHOLD_MASK = (1L << PACKED_THRESHOLD_SHIFT) - 1L;
@@ -68,7 +67,7 @@ public class MultiLevelEmitterMenu extends UpgradeableMenu<MultiLevelEmitter> {
         compareMask = host.getCompareMask();
         craftMask = host.getCraftMask();
 
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < MultiLevelEmitter.filterSlots(); i++) {
             setThresholdField(i, host.getThreshold(i));
         }
     }
@@ -186,7 +185,7 @@ public class MultiLevelEmitterMenu extends UpgradeableMenu<MultiLevelEmitter> {
     @Override
     protected void setupConfig() {
         var wrapper = getHost().getConfig().createMenuWrapper();
-        for (int i = 0; i < FILTER_SLOTS; i++) {
+        for (int i = 0; i < MultiLevelEmitter.filterSlots(); i++) {
             addSlot(new FakeSlot(wrapper, i), SlotSemantics.CONFIG);
         }
     }
@@ -270,7 +269,7 @@ public class MultiLevelEmitterMenu extends UpgradeableMenu<MultiLevelEmitter> {
     }
 
     private static boolean isValidSlot(int slot) {
-        return slot >= 0 && slot < FILTER_SLOTS;
+        return slot >= 0 && slot < MultiLevelEmitter.filterSlots();
     }
 
     private static boolean isBitSet(int mask, int slot) {
