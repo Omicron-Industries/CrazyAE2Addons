@@ -12,7 +12,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -79,6 +78,8 @@ public class CrazyAddons {
 
         modEventBus.addListener((RegisterEvent event) -> {
             if (event.getRegistryKey().equals(ForgeRegistries.ITEMS.getRegistryKey())) {
+                CrazyItemRegistrar.registerPartModels();
+
                 GridLinkables.register(CrazyItemRegistrar.WIRELESS_NOTIFICATION_TERMINAL.get(), WirelessTerminalItem.LINKABLE_HANDLER);
                 IUniversalWirelessTerminalItem notifTerm = CrazyItemRegistrar.WIRELESS_NOTIFICATION_TERMINAL.get();
                 Objects.requireNonNull(notifTerm);
@@ -161,15 +162,6 @@ public class CrazyAddons {
                     () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> CrazyConfigScreen.create(parent))
             );
             Screens.register();
-        }
-
-        @SubscribeEvent
-        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders evt) {
-            try {
-                CrazyItemRegistrar.registerPartModels();
-            } catch (Exception e) {
-                LOGGER.debug("Register Geometry Loaders failed {}", e.getLocalizedMessage());
-            }
         }
     }
 }

@@ -76,6 +76,9 @@ public class InsaneAddons {
             if (event.getRegistryKey().equals(Registries.BLOCK)) {
                 AEKeyTypes.register(MobKeyType.TYPE);
             }
+            if (event.getRegistryKey().equals(Registries.ITEM)) {
+                InsaneItemRegistrar.registerPartModels();
+            }
         });
     }
 
@@ -133,11 +136,6 @@ public class InsaneAddons {
         @SubscribeEvent
         public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
             ConnectedTextures.onModifyBakingResult(event);
-        }
-
-        @SubscribeEvent
-        public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
-            InsaneItemRegistrar.registerPartModels();
         }
 
         @SubscribeEvent
