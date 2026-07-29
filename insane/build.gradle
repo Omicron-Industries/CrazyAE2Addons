@@ -7,11 +7,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-def insane_mod_id = 'insaneae2addons'
-def insane_group = 'net.oktawia.insaneae2addons'
-
-version = mod_version
-group = insane_group
+version = insane_mod_version
+group = insane_mod_group_id
 
 base {
     archivesName = insane_mod_id
@@ -228,9 +225,10 @@ tasks.named('processResources', ProcessResources).configure {
             minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
             forge_version: forge_version, forge_version_range: forge_version_range,
             loader_version_range: loader_version_range,
-            mod_id: insane_mod_id, mod_name: 'Insane AE2 Addons', mod_license: mod_license,
-            mod_version: mod_version, mod_authors: mod_authors,
-            mod_description: 'Insane extension of Crazy AE2 Addons',
+            mod_id: insane_mod_id, mod_name: insane_mod_name, mod_license: mod_license,
+            mod_version: insane_mod_version, mod_authors: mod_authors,
+            mod_description: insane_mod_description,
+            crazy_version_range: crazy_version_range,
     ]
     inputs.properties replaceProperties
 

@@ -19,9 +19,9 @@ Removal does not need the builder. Remove everything of a type with
 `event.remove({ id: 'insaneae2addons:research/builder_pattern' })`.
 
 Notes:
-- Fabrication inputs/output are plain item ids `{ item, count }`. The typed builder 
-  does not cover tag or fluid recipes; use `event.custom({...})` with
-  the raw JSON for those.
+- Fabrication inputs take `{ item, count }` or `{ tag, count }`, and the recipe can
+  also carry `fluid_input` / `fluid_output`. For a fluid-only recipe pass `Item.empty`
+  as the output.
 - Positional args follow the order shown below; the named setters
   (`.duration(...)`, `.energyPerTick(...)`, ...) also work.
 - Remove recipes by `type` or `id`. Output/input filters are not reliable for

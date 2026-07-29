@@ -30,6 +30,6 @@ config = "mixins.insaneae2addons.json"
 [[dependencies.${mod_id}]]
     modId="crazyae2addons"
     mandatory=true
-    versionRange="[3.0,)"
+    versionRange="${crazy_version_range}"
     ordering="AFTER"
     side="BOTH"
