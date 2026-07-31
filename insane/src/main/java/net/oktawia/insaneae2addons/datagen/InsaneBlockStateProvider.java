@@ -24,6 +24,8 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
     private static final float OVERLAY_OFFSET = 0.02f;
     private static final ResourceLocation CONTROLLER_OVERLAY = new ResourceLocation("crazyae2addons",
             "block/controller");
+    private static final ResourceLocation LASER_OVERLAY = new ResourceLocation("insaneae2addons",
+            "block/penrose_laser");
 
     public InsaneBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, InsaneAddons.MODID, exFileHelper);
@@ -49,6 +51,7 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
                     && block != InsaneBlockRegistrar.PENROSE_FRAME_BLOCK.get()
                     && block != InsaneBlockRegistrar.PENROSE_GLASS_BLOCK.get()
                     && block != InsaneBlockRegistrar.PENROSE_COIL_BLOCK.get()
+                    && block != InsaneBlockRegistrar.PENROSE_LASER_BLOCK.get()
                     && block != InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get()
                     && block != InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get()
                     && block != InsaneBlockRegistrar.MOB_FARM_WALL_BLOCK.get()
@@ -96,6 +99,9 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
 
         Block penroseCoil = InsaneBlockRegistrar.PENROSE_COIL_BLOCK.get();
         simpleBlock(penroseCoil, ctmModel(penroseCoil, modLoc("block/penrose_coil"), true, null));
+
+        Block penroseLaser = InsaneBlockRegistrar.PENROSE_LASER_BLOCK.get();
+        facingBlock(penroseLaser, ctmModel(penroseLaser, modLoc("block/penrose_frame"), true, LASER_OVERLAY));
 
         Block penroseController = InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get();
         simpleBlock(penroseController,
@@ -177,6 +183,28 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
                     .end();
         }
         return model;
+    }
+
+    private void facingBlock(Block block, ModelFile model) {
+        getVariantBuilder(block).forAllStates(state -> {
+            Direction facing = state.getValue(BlockStateProperties.FACING);
+            int rotationX = switch (facing) {
+                case UP -> 270;
+                case DOWN -> 90;
+                default -> 0;
+            };
+            int rotationY = switch (facing) {
+                case EAST -> 90;
+                case SOUTH -> 180;
+                case WEST -> 270;
+                default -> 0;
+            };
+            return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .rotationX(rotationX)
+                    .rotationY(rotationY)
+                    .build();
+        });
     }
 
     private void orientedBlock(Block block, ModelFile model) {

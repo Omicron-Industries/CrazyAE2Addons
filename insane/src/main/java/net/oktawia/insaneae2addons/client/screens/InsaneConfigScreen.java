@@ -171,6 +171,26 @@ public class InsaneConfigScreen {
         },
                 LangDefs.CONFIG_SECTION_PENROSE_COOLANT_DESC);
 
+        addSection(root, eb, LangDefs.CONFIG_SECTION_PENROSE_LASER, entries -> {
+            entries.add(longValue(eb, LangDefs.CONFIG_ENTRY_PENROSE_LASER_FE_PER_HARDNESS,
+                    cfg.PENROSE_LASER_FE_PER_HARDNESS.get(), 10_000_000L, 1L, Long.MAX_VALUE,
+                    cfg.PENROSE_LASER_FE_PER_HARDNESS::set,
+                    LangDefs.CONFIG_DESC_PENROSE_LASER_FE_PER_HARDNESS));
+            entries.add(longValue(eb, LangDefs.CONFIG_ENTRY_PENROSE_LASER_FE_PER_DAMAGE,
+                    cfg.PENROSE_LASER_FE_PER_DAMAGE.get(), 10_000_000L, 1L, Long.MAX_VALUE,
+                    cfg.PENROSE_LASER_FE_PER_DAMAGE::set,
+                    LangDefs.CONFIG_DESC_PENROSE_LASER_FE_PER_DAMAGE));
+            entries.add(decimal(eb, LangDefs.CONFIG_ENTRY_PENROSE_LASER_MAX_DAMAGE,
+                    cfg.PENROSE_LASER_MAX_DAMAGE_PER_ENTITY.get(), 1024.0, 1.0, 1.0e9,
+                    cfg.PENROSE_LASER_MAX_DAMAGE_PER_ENTITY::set,
+                    LangDefs.CONFIG_DESC_PENROSE_LASER_MAX_DAMAGE));
+            entries.add(integer(eb, LangDefs.CONFIG_ENTRY_PENROSE_LASER_MAX_RANGE,
+                    cfg.PENROSE_LASER_MAX_RANGE.get(), 1024, 1, 4096,
+                    cfg.PENROSE_LASER_MAX_RANGE::set,
+                    LangDefs.CONFIG_DESC_PENROSE_LASER_MAX_RANGE));
+        },
+                LangDefs.CONFIG_SECTION_PENROSE_LASER_DESC);
+
         addSection(root, eb, LangDefs.CONFIG_SECTION_PENROSE_MELTDOWN, entries -> {
             entries.add(bool(eb, LangDefs.CONFIG_ENTRY_PENROSE_MELTDOWN_EXPLOSIONS,
                     cfg.PENROSE_MELTDOWN_EXPLOSIONS.get(), true,

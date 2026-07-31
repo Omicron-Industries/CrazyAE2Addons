@@ -1,7 +1,50 @@
 {
   "variants": {
-    "": {
+    "facing=down,formed=false": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "x": 90
+    },
+    "facing=down,formed=true": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "x": 90
+    },
+    "facing=east,formed=false": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "y": 90
+    },
+    "facing=east,formed=true": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "y": 90
+    },
+    "facing=north,formed=false": {
       "model": "insaneae2addons:block/penrose_laser"
+    },
+    "facing=north,formed=true": {
+      "model": "insaneae2addons:block/penrose_laser"
+    },
+    "facing=south,formed=false": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "y": 180
+    },
+    "facing=south,formed=true": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "y": 180
+    },
+    "facing=up,formed=false": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "x": 270
+    },
+    "facing=up,formed=true": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "x": 270
+    },
+    "facing=west,formed=false": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "y": 270
+    },
+    "facing=west,formed=true": {
+      "model": "insaneae2addons:block/penrose_laser",
+      "y": 270
     }
   }
 }

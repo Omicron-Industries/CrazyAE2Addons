@@ -22,6 +22,7 @@ minecraft {
     runs {
         configureEach {
             workingDirectory project.file('run')
+            ideaModule 'crazyae2addons.insane.main'
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -154,9 +155,10 @@ dependencies {
     compileOnly fg.deobf("appeng:appliedenergistics2-forge:15.4.10:api")
 
     compileOnly fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:1.0.45") { transitive = false }
-    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:7.5.2") { transitive = false }
+    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:7.5.3") { transitive = false }
 
     runtimeOnly fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:1.0.45") { transitive = false }
+    runtimeOnly fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:7.5.3") { transitive = false }
 
     compileOnly fg.deobf("curse.maven:applied-energistics-2-wireless-terminals-459929:7251206")
     compileOnly fg.deobf("curse.maven:cc-tweaked-282001:5714507")
@@ -218,7 +220,6 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:framedblocks-441647:7386520")
     runtimeOnly fg.deobf("curse.maven:spatial-tools-compatible-1528726:8415567")
     runtimeOnly fg.deobf("curse.maven:mob-grinding-utils-254241:5131447")
-    runtimeOnly fg.deobf("curse.maven:distant-horizons-508933:8389142")
 }
 
 tasks.named('processResources', ProcessResources).configure {

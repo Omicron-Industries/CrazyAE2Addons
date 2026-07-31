@@ -14,6 +14,7 @@ import net.oktawia.insaneae2addons.blocks.mobstorage.MobFarmWallBlock;
 import net.oktawia.insaneae2addons.blocks.mobstorage.SpawnerExtractorControllerBlock;
 import net.oktawia.insaneae2addons.blocks.mobstorage.SpawnerExtractorWallBlock;
 import net.oktawia.insaneae2addons.blocks.penrose.PenroseFrameBlock;
+import net.oktawia.insaneae2addons.blocks.penrose.PenroseLaserBlock;
 import net.oktawia.insaneae2addons.blocks.penrose.PortablePenroseSphereControllerBlock;
 import net.oktawia.insaneae2addons.blocks.research.ResearchUnitBlock;
 import net.oktawia.insaneae2addons.blocks.research.ResearchUnitFrameBlock;
@@ -39,6 +40,8 @@ public final class InsaneConnectedTextures {
     private static final ResourceLocation PENROSE_GLASS_TEXTURE = new ResourceLocation("insaneae2addons",
             "block/penrose_glass");
     private static final int PENROSE_GLASS_BAR_THICKNESS = 1;
+    private static final ResourceLocation PENROSE_LASER_TEXTURE = new ResourceLocation("insaneae2addons",
+            "block/penrose_laser");
     private static final ResourceLocation PENROSE_COIL_TEXTURE = new ResourceLocation("insaneae2addons",
             "block/penrose_coil");
     private static final ResourceLocation MOB_FARM_WALL_TEXTURE = new ResourceLocation("insaneae2addons",
@@ -105,6 +108,15 @@ public final class InsaneConnectedTextures {
         ConnectedTextureRegistry.register(
                 InsaneBlockRegistrar.PENROSE_COIL_BLOCK,
                 new ConnectedTextureEntry(state -> PENROSE_COIL_TEXTURE, sphereRule, null));
+
+        ConnectedTextureRegistry.register(
+                InsaneBlockRegistrar.PENROSE_LASER_BLOCK,
+                new ConnectedTextureEntry(
+                        state -> penroseFrameTexture(state.getValue(PenroseLaserBlock.FORMED)),
+                        sphereRule,
+                        (state, face) -> face == state.getValue(PenroseLaserBlock.FACING)
+                                ? PENROSE_LASER_TEXTURE
+                                : null));
 
         ConnectedTextureRule glassRule = (level, selfPos, selfState, otherPos, otherState,
                 face) -> selfState.getBlock() == otherState.getBlock();
@@ -186,6 +198,7 @@ public final class InsaneConnectedTextures {
     private static boolean isSpherePart(Block block) {
         return block == InsaneBlockRegistrar.PENROSE_FRAME_BLOCK.get()
                 || block == InsaneBlockRegistrar.PENROSE_COIL_BLOCK.get()
+                || block == InsaneBlockRegistrar.PENROSE_LASER_BLOCK.get()
                 || block == InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get();
     }
 

@@ -77,6 +77,11 @@ public final class InsaneConfig {
         public final ForgeConfigSpec.DoubleValue PENROSE_COOLANT_MB_PER_MK;
         public final ForgeConfigSpec.IntValue PENROSE_COOLANT_VENT_CAPACITY;
 
+        public final ForgeConfigSpec.LongValue PENROSE_LASER_FE_PER_HARDNESS;
+        public final ForgeConfigSpec.LongValue PENROSE_LASER_FE_PER_DAMAGE;
+        public final ForgeConfigSpec.IntValue PENROSE_LASER_MAX_RANGE;
+        public final ForgeConfigSpec.DoubleValue PENROSE_LASER_MAX_DAMAGE_PER_ENTITY;
+
         public final ForgeConfigSpec.IntValue MOB_FARM_BASE_SPEED;
         public final ForgeConfigSpec.IntValue MOB_FARM_SPEED_PER_CARD;
 
@@ -356,6 +361,35 @@ public final class InsaneConfig {
             PENROSE_COOLANT_VENT_CAPACITY = intInRange(builder,
                     "ventCapacity", 64_000, 1, Integer.MAX_VALUE,
                     "Coolant buffer of a single heat vent, in millibuckets.");
+
+            builder.pop();
+
+            builder.comment(
+                    "Penrose lasers standing outside a formed sphere fire a beam on a redstone pulse.",
+                    "The beam carries the charge that was stored at the moment it fired and spends it on",
+                    "whatever it passes through, so a full 2.1 GFE charge reaches a lot further through air",
+                    "than through obsidian. Lasers that are part of a formed sphere never fire a beam.")
+                    .push("laser");
+
+            PENROSE_LASER_FE_PER_HARDNESS = longInRange(builder,
+                    "fePerHardness", 10_000_000L, 1L, Long.MAX_VALUE,
+                    "FE spent per 1.0 block hardness. A full charge clears 140 stone (1.5) or 4 obsidian (50).",
+                    "Blocks costing more than the beam has left stop it instead of breaking.");
+
+            PENROSE_LASER_FE_PER_DAMAGE = longInRange(builder,
+                    "fePerDamage", 10_000_000L, 1L, Long.MAX_VALUE,
+                    "FE spent per point of damage (half a heart) actually absorbed by an entity.",
+                    "A full charge is worth 210 damage.");
+
+            PENROSE_LASER_MAX_DAMAGE_PER_ENTITY = doubleInRange(builder,
+                    "maxDamagePerEntity", 1024.0, 1.0, 1.0e9,
+                    "Upper bound on the damage a single entity can take from one beam, so that one mob",
+                    "with absurd health cannot swallow the whole charge.");
+
+            PENROSE_LASER_MAX_RANGE = intInRange(builder,
+                    "maxRange", 1024, 1, 4096,
+                    "Hard cap on beam length in blocks. The beam also stops at the first unloaded chunk,",
+                    "which in practice is the tighter limit on a server.");
 
             builder.pop();
 

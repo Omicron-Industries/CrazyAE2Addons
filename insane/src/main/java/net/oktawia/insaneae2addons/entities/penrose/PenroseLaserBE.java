@@ -12,7 +12,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -21,9 +24,13 @@ import net.minecraftforge.energy.IEnergyStorage;
 import lombok.Getter;
 
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
+import net.oktawia.insaneae2addons.blocks.penrose.PenroseLaserBlock;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
+import net.oktawia.insaneae2addons.logic.penrose.LaserBeam;
+import net.oktawia.insaneae2addons.network.NetworkHandler;
+import net.oktawia.insaneae2addons.network.packets.PenroseLaserBeamPacket;
 
 public class PenroseLaserBE extends PenrosePeripheralBE {
 
@@ -40,6 +47,7 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
     @Persisted
     private boolean poweredLatch;
 
+    @Getter
     private long firedChargedTick = Long.MIN_VALUE;
 
     private LazyOptional<IEnergyStorage> energyCap = LazyOptional.empty();
@@ -51,6 +59,7 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.PENROSE_LASER_BLOCK.get()),
                 2.0F);
+        rebuildCaps();
     }
 
     @Override
@@ -67,6 +76,20 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
     protected void onControllerChanged(@Nullable PortablePenroseSphereControllerBE newController) {
         super.onControllerChanged(newController);
         rebuildCaps();
+        updateFormedState(newController != null);
+    }
+
+    private void updateFormedState(boolean formed) {
+        Level level = getLevel();
+        if (level == null || level.isClientSide() || isRemoved()) {
+            return;
+        }
+
+        BlockPos pos = getBlockPos();
+        BlockState state = level.getBlockState(pos);
+        if (state.hasProperty(PenroseLaserBlock.FORMED) && state.getValue(PenroseLaserBlock.FORMED) != formed) {
+            level.setBlock(pos, state.setValue(PenroseLaserBlock.FORMED, formed), Block.UPDATE_CLIENTS);
+        }
     }
 
     public boolean isFormed() {
@@ -77,16 +100,12 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
         return this.energy >= CAPACITY;
     }
 
-    public long getFiredChargedTick() {
-        return this.firedChargedTick;
-    }
-
     public void updateRedstone() {
         if (!(getLevel() instanceof ServerLevel level)) {
             return;
         }
         boolean powered = level.hasNeighborSignal(getBlockPos());
-        if (powered && !this.poweredLatch && isFormed()) {
+        if (powered && !this.poweredLatch) {
             fire(level);
         }
         if (powered != this.poweredLatch) {
@@ -97,6 +116,7 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
 
     private void fire(ServerLevel level) {
         boolean charged = isCharged();
+        long power = this.energy;
         this.energy = 0;
         setChanged();
         if (charged) {
@@ -105,7 +125,34 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
         PortablePenroseSphereControllerBE controller = getResolvedController();
         if (controller != null) {
             controller.onLaserFired(level.getGameTime());
+            sendBeamToSphereCenter(level, controller, power);
+            return;
         }
+
+        Direction facing = getBlockState().getValue(PenroseLaserBlock.FACING);
+        sendBeam(level, facing, LaserBeam.fire(level, getBlockPos(), facing, power), power);
+    }
+
+    private void sendBeamToSphereCenter(ServerLevel level, PortablePenroseSphereControllerBE controller, long power) {
+        Vec3 center = controller.sphereCenter();
+        if (center == null) {
+            return;
+        }
+
+        Vec3 toCenter = center.subtract(Vec3.atCenterOf(getBlockPos()));
+        Direction direction = Direction.getNearest(toCenter.x, toCenter.y, toCenter.z);
+        sendBeam(level, direction, (float) toCenter.length() - 0.5f, power);
+    }
+
+    private void sendBeam(ServerLevel level, Direction direction, float length, long power) {
+        if (length <= 0.0f) {
+            return;
+        }
+
+        Vec3 middle = Vec3.atCenterOf(getBlockPos())
+                .add(Vec3.atLowerCornerOf(direction.getNormal()).scale(length * 0.5));
+        NetworkHandler.sendToNear(level, middle, length * 0.5 + 96.0,
+                new PenroseLaserBeamPacket(getBlockPos(), direction, length, (float) power / CAPACITY));
     }
 
     public void drain() {
@@ -116,7 +163,7 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
     }
 
     private int insertEnergy(int max, boolean simulate) {
-        if (!isFormed() || max <= 0) {
+        if (max <= 0) {
             return 0;
         }
         int accepted = (int) Math.min((long) CAPACITY - this.energy, max);
@@ -132,7 +179,7 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
 
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY && isFormed()) {
+        if (cap == ForgeCapabilities.ENERGY) {
             return this.energyCap.cast();
         }
         return super.getCapability(cap, side);
@@ -152,7 +199,7 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
 
     private void rebuildCaps() {
         this.energyCap.invalidate();
-        this.energyCap = (isRemoved() || !isFormed())
+        this.energyCap = isRemoved()
                 ? LazyOptional.empty()
                 : LazyOptional.of(LaserEnergy::new);
     }
