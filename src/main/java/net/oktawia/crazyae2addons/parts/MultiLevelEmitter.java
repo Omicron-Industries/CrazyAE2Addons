@@ -32,6 +32,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -116,6 +117,10 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
 
     private long lastUpdateTick = -1L;
 
+    private final Object2LongOpenHashMap<AEKey> networkAmounts = new Object2LongOpenHashMap<>();
+    private long networkTotal;
+    private boolean networkTotalValid;
+
     private final IStorageWatcherNode storageWatcherNode = new IStorageWatcherNode() {
         @Override
         public void updateWatcher(IStackWatcher newWatcher) {
@@ -130,6 +135,13 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
             }
 
             if (shouldWatchAllStorage()) {
+                if (networkTotalValid) {
+                    long previous = amount == 0L
+                            ? networkAmounts.removeLong(what)
+                            : networkAmounts.put(what, amount);
+                    networkTotal += amount - previous;
+                }
+
                 long currentTick = TickHandler.instance().getCurrentTick();
                 if (currentTick != lastUpdateTick) {
                     lastUpdateTick = currentTick;
@@ -467,6 +479,9 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
 
     @Override
     protected void configureWatchers() {
+        networkTotalValid = false;
+        networkAmounts.clear();
+
         if (storageWatcher != null) {
             storageWatcher.reset();
         }
@@ -530,6 +545,25 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
         }
     }
 
+    private long networkTotal(KeyCounter stacks) {
+        if (!networkTotalValid) {
+            networkAmounts.clear();
+
+            long total = 0L;
+            for (var stack : stacks) {
+                long amount = stack.getLongValue();
+                if (amount != 0L) {
+                    networkAmounts.put(stack.getKey(), amount);
+                    total += amount;
+                }
+            }
+
+            networkTotal = total;
+            networkTotalValid = true;
+        }
+        return networkTotal;
+    }
+
     private void updateReportingValues(IGrid grid) {
         var stacks = grid.getStorageService().getCachedInventory();
         Arrays.fill(lastReportedValues, 0L);
@@ -538,11 +572,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
         boolean hasGlobalThreshold = hasAnyGlobalThresholdSlot();
 
         if (!hasConfiguredKey || hasGlobalThreshold) {
-            long total = 0L;
-
-            for (var stack : stacks) {
-                total += stack.getLongValue();
-            }
+            long total = networkTotal(stacks);
 
             lastReportedValue = total;
 

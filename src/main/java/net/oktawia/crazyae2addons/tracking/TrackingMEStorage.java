@@ -7,10 +7,14 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.InterfaceLogicHost;
+import appeng.hooks.ticking.TickHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class TrackingMEStorage implements MEStorage {
 
@@ -19,6 +23,12 @@ public class TrackingMEStorage implements MEStorage {
     private final InterfaceLogicHost interfaceHost;
     private final UsageTarget target;
     private final String description;
+
+    private IResourceTrackingService service;
+    private boolean serviceResolved;
+
+    private final Set<AEKey> replenishedKeys = new HashSet<>();
+    private long replenishedKeysTick = -1L;
 
     public TrackingMEStorage(MEStorage delegate, IGrid grid, InterfaceLogicHost interfaceHost, Level level, BlockPos interfacePos) {
         this.delegate = delegate;
@@ -36,11 +46,23 @@ public class TrackingMEStorage implements MEStorage {
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         long extracted = delegate.extract(what, amount, mode, source);
-        if (extracted > 0 && mode == Actionable.MODULATE && !isReplenished(what)) {
-            var svc = grid.getService(IResourceTrackingService.class);
-            if (svc != null) svc.trackConsumption(what, extracted, target, description, null);
+        if (extracted <= 0 || mode != Actionable.MODULATE) {
+            return extracted;
+        }
+
+        var svc = service();
+        if (svc != null && !isReplenished(what)) {
+            svc.trackConsumption(what, extracted, target, description, null);
         }
         return extracted;
+    }
+
+    private IResourceTrackingService service() {
+        if (!serviceResolved) {
+            service = grid.getService(IResourceTrackingService.class);
+            serviceResolved = true;
+        }
+        return service;
     }
 
     @Override
@@ -59,10 +81,17 @@ public class TrackingMEStorage implements MEStorage {
     }
 
     private boolean isReplenished(AEKey what) {
-        var config = interfaceHost.getConfig();
-        for (int i = 0; i < config.size(); i++) {
-            if (what.equals(config.getKey(i))) return true;
+        long tick = TickHandler.instance().getCurrentTick();
+        if (tick != replenishedKeysTick) {
+            replenishedKeysTick = tick;
+            replenishedKeys.clear();
+
+            var config = interfaceHost.getConfig();
+            for (int i = 0; i < config.size(); i++) {
+                AEKey key = config.getKey(i);
+                if (key != null) replenishedKeys.add(key);
+            }
         }
-        return false;
+        return replenishedKeys.contains(what);
     }
 }
