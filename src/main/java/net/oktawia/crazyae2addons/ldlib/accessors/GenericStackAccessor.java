@@ -1,6 +1,5 @@
 package net.oktawia.crazyae2addons.ldlib.accessors;
 
-import appeng.api.stacks.GenericStack;
 import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
 import com.lowdragmc.lowdraglib.syncdata.managed.IManagedVar;
@@ -9,7 +8,10 @@ import com.lowdragmc.lowdraglib.syncdata.managed.ManagedRef;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.PrimitiveTypedPayload;
+
 import net.minecraft.nbt.CompoundTag;
+
+import appeng.api.stacks.GenericStack;
 
 public final class GenericStackAccessor implements IAccessor {
     private byte defaultType = -1;

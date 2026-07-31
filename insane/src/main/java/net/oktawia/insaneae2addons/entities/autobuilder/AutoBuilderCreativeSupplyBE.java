@@ -1,9 +1,11 @@
 package net.oktawia.insaneae2addons.entities.autobuilder;
 
-import appeng.blockentity.grid.AENetworkBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.blockentity.grid.AENetworkBlockEntity;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 
@@ -14,7 +16,6 @@ public class AutoBuilderCreativeSupplyBE extends AENetworkBlockEntity {
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .setVisualRepresentation(
-                        new ItemStack(InsaneBlockRegistrar.AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK.get().asItem())
-                );
+                        new ItemStack(InsaneBlockRegistrar.AUTO_BUILDER_CREATIVE_SUPPLY_BLOCK.get().asItem()));
     }
 }

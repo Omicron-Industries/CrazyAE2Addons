@@ -1,10 +1,11 @@
 package net.oktawia.crazyae2addons.network.packets;
 
+import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.menus.block.EjectorMenu;
 
-import java.util.function.Supplier;
+import net.oktawia.crazyae2addons.menus.block.EjectorMenu;
 
 public record SetConfigAmountPacket(int slotIndex, long amount) {
 

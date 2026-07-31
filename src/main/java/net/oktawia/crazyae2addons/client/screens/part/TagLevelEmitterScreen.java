@@ -1,5 +1,17 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.Icon;
@@ -9,23 +21,13 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ConfirmableTextField;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterMenu;
 import net.oktawia.crazyae2addons.menus.part.TagLevelEmitterMenu;
 import net.oktawia.crazyae2addons.util.MathParser;
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.List;
-import java.util.Optional;
 
 public class TagLevelEmitterScreen<C extends TagLevelEmitterMenu> extends UpgradeableScreen<C> {
 
@@ -57,15 +59,13 @@ public class TagLevelEmitterScreen<C extends TagLevelEmitterMenu> extends Upgrad
                 0,
                 160,
                 90,
-                Component.translatable(LangDefs.EXPRESSION_HINT.getTranslationKey())
-        );
+                Component.translatable(LangDefs.EXPRESSION_HINT.getTranslationKey()));
         this.expressionField.setHighlightRules(List.of(
                 new MultilineTextFieldWidget.HighlightRule("[^\\s#!&|^()]+", 0xFF00FFC8),
                 new MultilineTextFieldWidget.HighlightRule("\\*", 0xFF55FF88),
                 new MultilineTextFieldWidget.HighlightRule("&&|\\|\\||[!&|^]", 0xFFFFC800),
                 new MultilineTextFieldWidget.HighlightRule("[()]", 0xFFFFDD55),
-                new MultilineTextFieldWidget.HighlightRule("#[^\\s#!&|^()]*|#", 0xFFFF5555)
-        ));
+                new MultilineTextFieldWidget.HighlightRule("#[^\\s#!&|^()]*|#", 0xFFFF5555)));
 
         this.thresholdField = new ConfirmableTextField(
                 style,
@@ -73,27 +73,24 @@ public class TagLevelEmitterScreen<C extends TagLevelEmitterMenu> extends Upgrad
                 0,
                 0,
                 0,
-                Minecraft.getInstance().font.lineHeight
-        );
+                Minecraft.getInstance().font.lineHeight);
         this.thresholdField.setBordered(false);
         this.thresholdField.setMaxLength(20);
         this.thresholdField.setTextColor(normalTextColor);
         this.thresholdField.setResponder(text -> onThresholdChanged());
         this.thresholdField.setOnConfirm(this::sendData);
         this.thresholdField.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.THRESHOLD_TOOLTIP.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.THRESHOLD_TOOLTIP.getTranslationKey())));
 
         IconButton confirmButton = new IconButton(Icon.ENTER, button -> sendData());
         confirmButton.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.APPLY.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.APPLY.getTranslationKey())));
 
         this.redstoneModeButton = new ServerSettingToggleButton<>(Settings.REDSTONE_EMITTER, RedstoneMode.HIGH_SIGNAL);
 
         this.analogModeButton = new IconButton(Icon.REDSTONE_LOW, button -> {
-                getMenu().crazyAE2Addons$toggleAnalogLogarithmicMode();
-                syncAnalogModeButton(getMenu());
+            getMenu().crazyAE2Addons$toggleAnalogLogarithmicMode();
+            syncAnalogModeButton(getMenu());
         });
         this.analogModeButton.setVisibility(false);
 
@@ -116,7 +113,6 @@ public class TagLevelEmitterScreen<C extends TagLevelEmitterMenu> extends Upgrad
         if (visible) {
             syncAnalogModeButton(getMenu());
         }
-
 
         if (!initialized) {
             this.expressionField.setValue(menu.expression);
@@ -158,8 +154,8 @@ public class TagLevelEmitterScreen<C extends TagLevelEmitterMenu> extends Upgrad
                 .append(Component.translatable(
                         logarithmic
                                 ? LangDefs.ANALOG_OUTPUT_LOGARITHMIC_DESC.getTranslationKey()
-                                : LangDefs.ANALOG_OUTPUT_LINEAR_DESC.getTranslationKey()
-                ).withStyle(ChatFormatting.GRAY));
+                                : LangDefs.ANALOG_OUTPUT_LINEAR_DESC.getTranslationKey())
+                        .withStyle(ChatFormatting.GRAY));
 
         this.analogModeButton.setTooltip(Tooltip.create(message));
     }

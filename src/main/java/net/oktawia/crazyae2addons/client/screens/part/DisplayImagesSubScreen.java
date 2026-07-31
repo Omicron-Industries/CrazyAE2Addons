@@ -1,16 +1,13 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.implementations.AESubScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
-import appeng.client.gui.widgets.Scrollbar;
-import appeng.client.gui.widgets.TabButton;
-import com.mojang.blaze3d.platform.NativeImage;
 import java.io.ByteArrayInputStream;
 import java.nio.file.Path;
 import java.util.List;
+
+import com.mojang.blaze3d.platform.NativeImage;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -22,13 +19,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.implementations.AESubScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.TabButton;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.client.misc.AETextButton;
 import net.oktawia.crazyae2addons.client.misc.DisplayImageUploadClient;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
 import net.oktawia.crazyae2addons.menus.part.DisplayImagesSubMenu;
-import org.jetbrains.annotations.NotNull;
 
 public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
 
@@ -71,14 +76,12 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
         TabButton backBtn = new TabButton(
                 Icon.ARROW_LEFT,
                 Component.translatable(LangDefs.BACK.getTranslationKey()),
-                btn -> AESubScreen.goBack()
-        );
+                btn -> AESubScreen.goBack());
         widgets.add("back", backBtn);
 
         AETextButton pickFileBtn = new AETextButton(
                 Component.translatable(LangDefs.PICK_FILE.getTranslationKey()),
-                btn -> onPickFile()
-        );
+                btn -> onPickFile());
         pickFileBtn.setTooltip(Tooltip.create(Component.translatable(LangDefs.PICK_FILE_TOOLTIP.getTranslationKey())));
         widgets.add("pickFile", pickFileBtn);
 
@@ -90,8 +93,7 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
                         getMenu().removeImage(selected.id());
                         syncControlsFromSelection();
                     }
-                }
-        );
+                });
         removeBtn.setTooltip(Tooltip.create(Component.translatable(LangDefs.REMOVE_IMAGE_TOOLTIP.getTranslationKey())));
         widgets.add("remove", removeBtn);
 
@@ -113,7 +115,8 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
 
         xField.setTooltip(Tooltip.create(Component.translatable(LangDefs.X_PERCENT_TOOLTIP.getTranslationKey())));
         yField.setTooltip(Tooltip.create(Component.translatable(LangDefs.Y_PERCENT_TOOLTIP.getTranslationKey())));
-        scaleField.setTooltip(Tooltip.create(Component.translatable(LangDefs.SCALE_PERCENT_TOOLTIP.getTranslationKey())));
+        scaleField
+                .setTooltip(Tooltip.create(Component.translatable(LangDefs.SCALE_PERCENT_TOOLTIP.getTranslationKey())));
 
         widgets.add("x", xField);
         widgets.add("y", yField);
@@ -194,18 +197,24 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
             return true;
         }
 
-        if (xField != null && xField.keyPressed(key, sc, mod)) return true;
-        if (yField != null && yField.keyPressed(key, sc, mod)) return true;
-        if (scaleField != null && scaleField.keyPressed(key, sc, mod)) return true;
+        if (xField != null && xField.keyPressed(key, sc, mod))
+            return true;
+        if (yField != null && yField.keyPressed(key, sc, mod))
+            return true;
+        if (scaleField != null && scaleField.keyPressed(key, sc, mod))
+            return true;
 
         return super.keyPressed(key, sc, mod);
     }
 
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        if (xField != null && xField.charTyped(codePoint, modifiers)) return true;
-        if (yField != null && yField.charTyped(codePoint, modifiers)) return true;
-        if (scaleField != null && scaleField.charTyped(codePoint, modifiers)) return true;
+        if (xField != null && xField.charTyped(codePoint, modifiers))
+            return true;
+        if (yField != null && yField.charTyped(codePoint, modifiers))
+            return true;
+        if (scaleField != null && scaleField.charTyped(codePoint, modifiers))
+            return true;
         return super.charTyped(codePoint, modifiers);
     }
 
@@ -241,8 +250,7 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
 
             previewTextureLocation = Minecraft.getInstance().getTextureManager().register(
                     "crazyae2addons_display_preview_" + System.nanoTime(),
-                    previewTexture
-            );
+                    previewTexture);
         } catch (Throwable e) {
             CrazyAddons.LOGGER.debug("failed to load display image preview texture", e);
             clearPreviewTexture();
@@ -285,11 +293,10 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
         int y = getLivePercentY();
         int scale = getLivePercentScale();
 
-        boolean changed =
-                !selected.id().equals(lastAutoAppliedImageId)
-                        || x != lastAutoAppliedX
-                        || y != lastAutoAppliedY
-                        || scale != lastAutoAppliedScale;
+        boolean changed = !selected.id().equals(lastAutoAppliedImageId)
+                || x != lastAutoAppliedX
+                || y != lastAutoAppliedY
+                || scale != lastAutoAppliedScale;
 
         if (!changed) {
             return;
@@ -550,18 +557,19 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
                 }
             }
 
-            boolean canUp   = selectedIdx > 0;
+            boolean canUp = selectedIdx > 0;
             boolean canDown = selectedIdx >= 0 && selectedIdx < allImages.size() - 1;
             int halfW = width / 2;
-            boolean hovUp   = mouseX >= x            && mouseX < x + halfW && mouseY >= ctrlY && mouseY < ctrlY + CONTROLS_H;
-            boolean hovDown = mouseX >= x + halfW    && mouseX < x + width  && mouseY >= ctrlY && mouseY < ctrlY + CONTROLS_H;
+            boolean hovUp = mouseX >= x && mouseX < x + halfW && mouseY >= ctrlY && mouseY < ctrlY + CONTROLS_H;
+            boolean hovDown = mouseX >= x + halfW && mouseX < x + width && mouseY >= ctrlY
+                    && mouseY < ctrlY + CONTROLS_H;
 
             g.fill(x + 1, ctrlY, x + halfW - 1, ctrlY + CONTROLS_H,
-                   canUp   ? (hovUp   ? 0xFF3A3A3A : 0xFF2A2A2A) : 0xFF1E1E1E);
+                    canUp ? (hovUp ? 0xFF3A3A3A : 0xFF2A2A2A) : 0xFF1E1E1E);
             g.fill(x + halfW + 1, ctrlY, x + width - 1, ctrlY + CONTROLS_H,
-                   canDown ? (hovDown ? 0xFF3A3A3A : 0xFF2A2A2A) : 0xFF1E1E1E);
+                    canDown ? (hovDown ? 0xFF3A3A3A : 0xFF2A2A2A) : 0xFF1E1E1E);
 
-            g.drawCenteredString(font, "▲", x + halfW / 2,         ctrlY + 3, canUp   ? 0xFFCCCCCC : 0xFF555555);
+            g.drawCenteredString(font, "▲", x + halfW / 2, ctrlY + 3, canUp ? 0xFFCCCCCC : 0xFF555555);
             g.drawCenteredString(font, "▼", x + halfW + halfW / 2, ctrlY + 3, canDown ? 0xFFCCCCCC : 0xFF555555);
         }
 
@@ -685,8 +693,7 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
 
                 float fit = Math.min(
                         previewW / (float) previewTextureWidth,
-                        previewH / (float) previewTextureHeight
-                );
+                        previewH / (float) previewTextureHeight);
 
                 float fitW = previewTextureWidth * fit;
                 float fitH = previewTextureHeight * fit;
@@ -722,8 +729,7 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
                             (int) ((u1 - u0) * previewTextureWidth),
                             (int) ((v1 - v0) * previewTextureHeight),
                             previewTextureWidth,
-                            previewTextureHeight
-                    );
+                            previewTextureHeight);
                 }
             }
 
@@ -734,8 +740,7 @@ public class DisplayImagesSubScreen extends AEBaseScreen<DisplayImagesSubMenu> {
                         getLivePercentScale() + "% @ " + getLivePercentX() + "," + getLivePercentY(),
                         previewAreaX + previewAreaW / 2,
                         textY,
-                        0xFFFFFFFF
-                );
+                        0xFFFFFFFF);
             }
 
             if (statusTimer > 0 && !statusText.getString().isEmpty()) {

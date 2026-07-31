@@ -1,18 +1,20 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.upgrades.Upgrades;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.client.screens.AbstractMultiblockControllerScreen;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.menus.block.SpawnerExtractorControllerMenu;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SpawnerExtractorControllerScreen<C extends SpawnerExtractorControllerMenu>
         extends AbstractMultiblockControllerScreen<C> {

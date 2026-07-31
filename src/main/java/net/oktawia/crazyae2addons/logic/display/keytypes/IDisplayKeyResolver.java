@@ -1,10 +1,12 @@
 package net.oktawia.crazyae2addons.logic.display.keytypes;
 
-import appeng.api.stacks.AEKey;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.stacks.AEKey;
 
 public interface IDisplayKeyResolver {
 

@@ -6,15 +6,16 @@ import java.util.List;
 
 public class CradleRecipes {
 
-    public record SymbolDef(String symbol, List<String> blockIds) {}
+    public record SymbolDef(String symbol, List<String> blockIds) {
+    }
 
     public record RecipeDef(
             String id,
             String resultBlock,
             String description,
             List<SymbolDef> symbols,
-            List<List<String>> layers
-    ) {}
+            List<List<String>> layers) {
+    }
 
     private static final List<RecipeDef> RECIPES = new ArrayList<>();
 
@@ -27,17 +28,27 @@ public class CradleRecipes {
     }
 
     public static void registerRecipes() {
-        energyRecipe("energy1", "ae2:energy_cell", "ae2:1k_crafting_storage", "insaneae2addons:energy_storage_1k", "ec.1k");
-        energyRecipe("energy4k", "ae2:energy_cell", "ae2:4k_crafting_storage", "insaneae2addons:energy_storage_4k", "ec.4k");
-        energyRecipe("energy16k", "ae2:energy_cell", "ae2:16k_crafting_storage", "insaneae2addons:energy_storage_16k", "ec.16k");
-        energyRecipe("energy64k", "ae2:energy_cell", "ae2:64k_crafting_storage", "insaneae2addons:energy_storage_64k", "ec.64k");
-        energyRecipe("energy256k", "ae2:energy_cell", "ae2:256k_crafting_storage", "insaneae2addons:energy_storage_256k", "ec.256k");
+        energyRecipe("energy1", "ae2:energy_cell", "ae2:1k_crafting_storage", "insaneae2addons:energy_storage_1k",
+                "ec.1k");
+        energyRecipe("energy4k", "ae2:energy_cell", "ae2:4k_crafting_storage", "insaneae2addons:energy_storage_4k",
+                "ec.4k");
+        energyRecipe("energy16k", "ae2:energy_cell", "ae2:16k_crafting_storage", "insaneae2addons:energy_storage_16k",
+                "ec.16k");
+        energyRecipe("energy64k", "ae2:energy_cell", "ae2:64k_crafting_storage", "insaneae2addons:energy_storage_64k",
+                "ec.64k");
+        energyRecipe("energy256k", "ae2:energy_cell", "ae2:256k_crafting_storage",
+                "insaneae2addons:energy_storage_256k", "ec.256k");
 
-        energyRecipe("dense1k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_1k", "insaneae2addons:energy_storage_1m", "ec.dense.1k");
-        energyRecipe("dense4k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_4k", "insaneae2addons:energy_storage_4m", "ec.dense.4k");
-        energyRecipe("dense16k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_16k", "insaneae2addons:energy_storage_16m", "ec.dense.16k");
-        energyRecipe("dense64k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_64k", "insaneae2addons:energy_storage_64m", "ec.dense.64k");
-        energyRecipe("dense256k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_256k", "insaneae2addons:energy_storage_256m", "ec.dense.256k");
+        energyRecipe("dense1k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_1k",
+                "insaneae2addons:energy_storage_1m", "ec.dense.1k");
+        energyRecipe("dense4k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_4k",
+                "insaneae2addons:energy_storage_4m", "ec.dense.4k");
+        energyRecipe("dense16k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_16k",
+                "insaneae2addons:energy_storage_16m", "ec.dense.16k");
+        energyRecipe("dense64k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_64k",
+                "insaneae2addons:energy_storage_64m", "ec.dense.64k");
+        energyRecipe("dense256k", "ae2:dense_energy_cell", "insaneae2addons:energy_storage_256k",
+                "insaneae2addons:energy_storage_256m", "ec.dense.256k");
 
         recipe("penrose")
                 .result("insaneae2addons:penrose_frame")

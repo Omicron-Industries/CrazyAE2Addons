@@ -1,12 +1,14 @@
 package net.oktawia.crazyae2addons.network.packets;
 
-import appeng.menu.me.crafting.CraftingCPUMenu;
+import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.logic.interfaces.ICancelAllCraftingMenu;
 
-import java.util.function.Supplier;
+import appeng.menu.me.crafting.CraftingCPUMenu;
+
+import net.oktawia.crazyae2addons.logic.interfaces.ICancelAllCraftingMenu;
 
 public record CancelAllCraftingPacket() {
 

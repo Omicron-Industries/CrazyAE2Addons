@@ -1,24 +1,27 @@
 package net.oktawia.crazyae2addons.mixins.analogemitter;
 
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.parts.IPartItem;
-import appeng.parts.automation.AbstractLevelEmitterPart;
-import appeng.parts.automation.StorageLevelEmitterPart;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
-import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterOutput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.parts.IPartItem;
+import appeng.parts.automation.AbstractLevelEmitterPart;
+import appeng.parts.automation.StorageLevelEmitterPart;
+
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterOutput;
+
 @Mixin(value = StorageLevelEmitterPart.class, remap = false)
-public abstract class MixinStorageLevelEmitterAnalog extends AbstractLevelEmitterPart implements IAnalogLevelEmitterOutput {
+public abstract class MixinStorageLevelEmitterAnalog extends AbstractLevelEmitterPart
+        implements IAnalogLevelEmitterOutput {
 
     @Unique
     private static final String CRAZY_AE2_ADDONS_ANALOG_LOG_MODE = "crazyAnalogLogarithmicMode";

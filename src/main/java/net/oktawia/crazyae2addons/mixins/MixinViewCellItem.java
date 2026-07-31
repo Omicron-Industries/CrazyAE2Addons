@@ -1,34 +1,32 @@
 package net.oktawia.crazyae2addons.mixins;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.items.storage.ViewCellItem;
-import appeng.util.prioritylist.IPartitionList;
-import net.minecraft.world.item.ItemStack;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.items.TagViewCellItem;
-import net.oktawia.crazyae2addons.logic.viewcell.TagPriorityList;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.api.storage.AEKeyFilter;
+import appeng.items.storage.ViewCellItem;
+import appeng.util.prioritylist.IPartitionList;
+
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.items.TagViewCellItem;
+import net.oktawia.crazyae2addons.logic.viewcell.TagPriorityList;
 
 @Mixin(value = ViewCellItem.class, remap = false)
 public abstract class MixinViewCellItem {
 
-    @Inject(
-            method = "createFilter(Lappeng/api/storage/AEKeyFilter;Ljava/util/Collection;)Lappeng/util/prioritylist/IPartitionList;",
-            at = @At("HEAD"),
-            cancellable = true
-    )
+    @Inject(method = "createFilter(Lappeng/api/storage/AEKeyFilter;Ljava/util/Collection;)Lappeng/util/prioritylist/IPartitionList;", at = @At("HEAD"), cancellable = true)
     private static void crazyae2addons$useTagPriorityList(
             AEKeyFilter filter,
             Collection<ItemStack> list,
-            CallbackInfoReturnable<IPartitionList> cir
-    ) {
+            CallbackInfoReturnable<IPartitionList> cir) {
         if (CrazyConfig.COMMON.TAG_VIEW_CELL_ENABLED.get()) {
             List<String> tagFilters = new ArrayList<>();
 

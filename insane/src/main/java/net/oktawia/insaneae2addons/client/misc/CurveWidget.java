@@ -1,20 +1,23 @@
 package net.oktawia.insaneae2addons.client.misc;
 
-import appeng.client.gui.widgets.ITooltip;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+import java.util.List;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.Supplier;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.function.DoubleUnaryOperator;
-import java.util.function.Supplier;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+import appeng.client.gui.widgets.ITooltip;
 
 @Getter
 @Accessors(chain = true)

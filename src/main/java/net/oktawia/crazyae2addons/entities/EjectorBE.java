@@ -1,5 +1,37 @@
 package net.oktawia.crazyae2addons.entities;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
+import com.google.common.collect.ImmutableSet;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
@@ -26,29 +58,7 @@ import appeng.util.SettingsFrom;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
-import com.google.common.collect.ImmutableSet;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.blocks.EjectorBlock;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
@@ -58,11 +68,6 @@ import net.oktawia.crazyae2addons.logic.buffer.ManagedBuffer;
 import net.oktawia.crazyae2addons.menus.block.EjectorMenu;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
 
 public class EjectorBE extends AENetworkBlockEntity implements
         MenuProvider,
@@ -74,8 +79,7 @@ public class EjectorBE extends AENetworkBlockEntity implements
         IMenuOpeningBlockEntity {
 
     private static final String NBT_EJECTOR_CONFIG = "ejectorConfig";
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(EjectorBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(EjectorBE.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -117,8 +121,7 @@ public class EjectorBE extends AENetworkBlockEntity implements
                 this,
                 this::setChanged,
                 this::ejectFromBuffer,
-                this::isCrafting
-        );
+                this::isCrafting);
 
         this.getMainNode()
                 .setIdlePowerUsage(2.0F)
@@ -260,7 +263,8 @@ public class EjectorBE extends AENetworkBlockEntity implements
         if (required.isEmpty()) {
             return;
         }
-        if (buffer.request(required.toArray(new GenericStack[0]), CrazyConfig.COMMON.EJECTOR_CRAFT_MISSING_ENABLED.get())) {
+        if (buffer.request(required.toArray(new GenericStack[0]),
+                CrazyConfig.COMMON.EJECTOR_CRAFT_MISSING_ENABLED.get())) {
             setCraftingState(true);
         }
     }
@@ -298,8 +302,7 @@ public class EjectorBE extends AENetworkBlockEntity implements
                 targetPos,
                 level.getBlockEntity(targetPos),
                 direction.getOpposite(),
-                src
-        );
+                src);
 
         if (target == null) {
             for (var gs : toEject) {

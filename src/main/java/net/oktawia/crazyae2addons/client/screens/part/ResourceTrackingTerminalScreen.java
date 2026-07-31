@@ -1,5 +1,15 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -11,11 +21,7 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.renderer.InterfaceHighlighter;
 import net.oktawia.crazyae2addons.defs.LangDefs;
@@ -24,9 +30,6 @@ import net.oktawia.crazyae2addons.network.packets.ResourceDetailPacket;
 import net.oktawia.crazyae2addons.network.packets.ResourceListPacket;
 import net.oktawia.crazyae2addons.tracking.ResourceSummary;
 import net.oktawia.crazyae2addons.tracking.UsageEntry;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMenu> extends AEBaseScreen<C> {
 
@@ -38,16 +41,11 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
     private static final int GRID_WIDTH = COLS * CELL;
     private static final int GRID_HEIGHT = VISIBLE_ROWS * CELL;
 
-    private static final Blitter TERM_HEADER =
-            Blitter.texture("guis/terminal.png").src(0, 0, 195, 17);
-    private static final Blitter TERM_FIRST_ROW =
-            Blitter.texture("guis/terminal.png").src(0, 17, 195, 18);
-    private static final Blitter TERM_ROW =
-            Blitter.texture("guis/terminal.png").src(0, 35, 195, 18);
-    private static final Blitter TERM_LAST_ROW =
-            Blitter.texture("guis/terminal.png").src(0, 53, 195, 18);
-    private static final Blitter TERM_BOTTOM =
-            Blitter.texture("guis/terminal.png").src(0, 71, 195, 97);
+    private static final Blitter TERM_HEADER = Blitter.texture("guis/terminal.png").src(0, 0, 195, 17);
+    private static final Blitter TERM_FIRST_ROW = Blitter.texture("guis/terminal.png").src(0, 17, 195, 18);
+    private static final Blitter TERM_ROW = Blitter.texture("guis/terminal.png").src(0, 35, 195, 18);
+    private static final Blitter TERM_LAST_ROW = Blitter.texture("guis/terminal.png").src(0, 53, 195, 18);
+    private static final Blitter TERM_BOTTOM = Blitter.texture("guis/terminal.png").src(0, 71, 195, 97);
 
     private final Scrollbar scrollbar = new Scrollbar();
     private final IconButton backButton;
@@ -86,7 +84,8 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
     public void applyList(ResourceListPacket pkt) {
         updateFreezeState();
         getMenu().applyList(pkt);
-        if (!showingDetail && !frozen) updateScrollbar();
+        if (!showingDetail && !frozen)
+            updateScrollbar();
     }
 
     public void applyDetail(ResourceDetailPacket pkt) {
@@ -192,7 +191,8 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
 
     private List<ResourceSummary> filteredSummaries() {
         List<ResourceSummary> all = activeSummaries();
-        if (searchText.isEmpty()) return all;
+        if (searchText.isEmpty())
+            return all;
         return all.stream()
                 .filter(s -> s.key().getDisplayName().getString().toLowerCase().contains(searchText))
                 .toList();
@@ -206,8 +206,7 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
             guiGraphics.fill(GRID_LEFT, GRID_TOP, GRID_LEFT + GRID_WIDTH, GRID_TOP + GRID_HEIGHT, 0xC0000000);
             var lines = font.split(
                     Component.translatable(LangDefs.RESOURCE_TRACKING_NO_DATA.getTranslationKey()),
-                    GRID_WIDTH - 16
-            );
+                    GRID_WIDTH - 16);
             int centerX = GRID_LEFT + GRID_WIDTH / 2;
             int totalH = lines.size() * (font.lineHeight + 2);
             int startY = GRID_TOP + (GRID_HEIGHT - totalH) / 2;
@@ -219,13 +218,13 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
                         centerX - font.width(line) / 2,
                         startY + i * (font.lineHeight + 2),
                         0xFFAAAAAA,
-                        false
-                );
+                        false);
             }
             return;
         }
 
-        if (summaries.isEmpty()) return;
+        if (summaries.isEmpty())
+            return;
 
         int startRow = scrollbar.getCurrentScroll();
         int startIdx = startRow * COLS;
@@ -233,7 +232,8 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
         for (int row = 0; row < VISIBLE_ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 int idx = startIdx + row * COLS + col;
-                if (idx >= summaries.size()) break;
+                if (idx >= summaries.size())
+                    break;
                 ResourceSummary s = summaries.get(idx);
 
                 int x = GRID_LEFT + col * CELL + 1;
@@ -272,7 +272,8 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
 
         for (int row = 0; row < maxRows; row++) {
             int idx = offset + row;
-            if (idx >= details.size()) break;
+            if (idx >= details.size())
+                break;
             UsageEntry e = details.get(idx);
             int y = entryTop + row * rowH;
 
@@ -299,7 +300,8 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
                 boolean hovered = relMouseX >= btnX && relMouseX < btnX + 16
                         && relMouseY >= btnY && relMouseY < btnY + 16;
 
-                if (hovered) guiGraphics.fill(btnX, btnY, btnX + 16, btnY + 16, 0x40FFFFFF);
+                if (hovered)
+                    guiGraphics.fill(btnX, btnY, btnX + 16, btnY + 16, 0x40FFFFFF);
                 Icon.PATTERN_TERMINAL_VISIBLE.getBlitter().dest(btnX, btnY).blit(guiGraphics);
             } else if (e.icon() != null) {
                 int textY = y + (rowH - font.lineHeight) / 2;
@@ -333,7 +335,8 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
                     boolean hovered = relMouseX >= btnX && relMouseX < btnX + 16
                             && relMouseY >= btnY && relMouseY < btnY + 16;
 
-                    if (hovered) guiGraphics.fill(btnX, btnY, btnX + 16, btnY + 16, 0x40FFFFFF);
+                    if (hovered)
+                        guiGraphics.fill(btnX, btnY, btnX + 16, btnY + 16, 0x40FFFFFF);
                     Icon.PATTERN_TERMINAL_VISIBLE.getBlitter().dest(btnX, btnY).blit(guiGraphics);
                 }
             }
@@ -346,7 +349,8 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
 
         if (!showingDetail && hoveredIdx >= 0) {
             List<ResourceSummary> summaries = filteredSummaries();
-            if (hoveredIdx < summaries.size()) tooltipKey = summaries.get(hoveredIdx).key();
+            if (hoveredIdx < summaries.size())
+                tooltipKey = summaries.get(hoveredIdx).key();
         } else if (showingDetail && hoveredDetailKey != null) {
             tooltipKey = hoveredDetailKey;
         }
@@ -379,7 +383,8 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
 
             for (int row = 0; row < maxRows; row++) {
                 int idx = offset + row;
-                if (idx >= details.size()) break;
+                if (idx >= details.size())
+                    break;
 
                 UsageEntry e = details.get(idx);
                 int y = entryTop + row * rowH;
@@ -438,21 +443,25 @@ public class ResourceTrackingTerminalScreen<C extends ResourceTrackingTerminalMe
     public boolean mouseScrolled(double x, double y, double delta) {
         return scrollbar.onMouseWheel(
                 new Point((int) Math.round(x - leftPos), (int) Math.round(y - topPos)),
-                delta
-        );
+                delta);
     }
 
     private static String formatAmount(long amount, @Nullable AEKey key) {
-        if (key == null) return Long.toString(amount);
+        if (key == null)
+            return Long.toString(amount);
 
         int perUnit = key.getAmountPerUnit();
         String unit = key.getUnitSymbol() != null ? key.getUnitSymbol() : "";
         double display = amount / (double) perUnit;
 
-        if (display >= 1_000_000_000.0) return String.format("%.1fG%s", display / 1_000_000_000.0, unit);
-        if (display >= 1_000_000.0) return String.format("%.1fM%s", display / 1_000_000.0, unit);
-        if (display >= 1_000.0) return String.format("%.1fk%s", display / 1_000.0, unit);
-        if (display < 1.0 && perUnit > 1) return amount + "m" + unit;
+        if (display >= 1_000_000_000.0)
+            return String.format("%.1fG%s", display / 1_000_000_000.0, unit);
+        if (display >= 1_000_000.0)
+            return String.format("%.1fM%s", display / 1_000_000.0, unit);
+        if (display >= 1_000.0)
+            return String.format("%.1fk%s", display / 1_000.0, unit);
+        if (display < 1.0 && perUnit > 1)
+            return amount + "m" + unit;
 
         return String.format(display % 1 == 0 ? "%.0f%s" : "%.1f%s", display, unit);
     }

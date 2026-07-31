@@ -1,10 +1,11 @@
 package net.oktawia.crazyae2addons.xei.common;
 
+import java.util.Objects;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import org.jetbrains.annotations.Nullable;
 
 public class PreviewFluidTransfer implements IFluidTransfer {
 
@@ -45,11 +46,10 @@ public class PreviewFluidTransfer implements IFluidTransfer {
     private void setInternal(@Nullable FluidStack newStack, boolean notifyChanges) {
         FluidStack normalized = normalize(newStack);
 
-        boolean changed =
-                this.stack.isEmpty() != normalized.isEmpty()
-                        || (!this.stack.isEmpty() && !normalized.isEmpty()
+        boolean changed = this.stack.isEmpty() != normalized.isEmpty()
+                || (!this.stack.isEmpty() && !normalized.isEmpty()
                         && (!sameFluid(this.stack, normalized)
-                        || this.stack.getAmount() != normalized.getAmount()));
+                                || this.stack.getAmount() != normalized.getAmount()));
 
         this.stack = normalized;
 
@@ -106,10 +106,8 @@ public class PreviewFluidTransfer implements IFluidTransfer {
                         FluidStack.create(
                                 normalizedResource.getFluid(),
                                 inserted,
-                                normalizedResource.getTag()
-                        ),
-                        notifyChanges
-                );
+                                normalizedResource.getTag()),
+                        notifyChanges);
             }
 
             return inserted;
@@ -130,10 +128,8 @@ public class PreviewFluidTransfer implements IFluidTransfer {
                     FluidStack.create(
                             this.stack.getFluid(),
                             this.stack.getAmount() + inserted,
-                            this.stack.getTag()
-                    ),
-                    notifyChanges
-            );
+                            this.stack.getTag()),
+                    notifyChanges);
         }
 
         return inserted;
@@ -181,8 +177,7 @@ public class PreviewFluidTransfer implements IFluidTransfer {
         FluidStack drained = FluidStack.create(
                 this.stack.getFluid(),
                 drainedAmount,
-                this.stack.getTag()
-        );
+                this.stack.getTag());
 
         if (!simulate) {
             long remaining = this.stack.getAmount() - drainedAmount;
@@ -191,8 +186,7 @@ public class PreviewFluidTransfer implements IFluidTransfer {
             } else {
                 setInternal(
                         FluidStack.create(this.stack.getFluid(), remaining, this.stack.getTag()),
-                        notifyChanges
-                );
+                        notifyChanges);
             }
         }
 

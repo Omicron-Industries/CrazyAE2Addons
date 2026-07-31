@@ -1,22 +1,24 @@
 package net.oktawia.crazyae2addons.network.packets;
 
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
+
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+
 import net.oktawia.crazyae2addons.client.screens.part.ResourceTrackingTerminalScreen;
 import net.oktawia.crazyae2addons.tracking.UsageEntry;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public record ResourceDetailPacket(AEKey key, List<UsageEntry> entries) {
 
@@ -53,7 +55,8 @@ public record ResourceDetailPacket(AEKey key, List<UsageEntry> entries) {
             AEKey icon = null;
             if (buf.readBoolean()) {
                 GenericStack iconGs = GenericStack.fromItemStack(buf.readItem());
-                if (iconGs != null) icon = iconGs.what();
+                if (iconGs != null)
+                    icon = iconGs.what();
             }
             GlobalPos pos = null;
             if (buf.readBoolean()) {

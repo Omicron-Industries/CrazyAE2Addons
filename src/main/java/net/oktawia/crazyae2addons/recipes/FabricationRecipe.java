@@ -1,6 +1,11 @@
 package net.oktawia.crazyae2addons.recipes;
 
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleContainer;
@@ -11,12 +16,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
-import net.oktawia.crazyae2addons.defs.regs.CrazyRecipes;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import lombok.Getter;
+
+import net.oktawia.crazyae2addons.defs.regs.CrazyRecipes;
 
 public class FabricationRecipe implements Recipe<SimpleContainer> {
 
@@ -43,8 +46,7 @@ public class FabricationRecipe implements Recipe<SimpleContainer> {
             ResourceLocation id,
             List<Entry> inputs,
             ItemStack output,
-            @Nullable String requiredKey
-    ) {
+            @Nullable String requiredKey) {
         this(id, inputs, output, requiredKey, FluidStack.EMPTY, FluidStack.EMPTY);
     }
 
@@ -54,8 +56,7 @@ public class FabricationRecipe implements Recipe<SimpleContainer> {
             ItemStack output,
             @Nullable String requiredKey,
             FluidStack fluidInput,
-            FluidStack fluidOutput
-    ) {
+            FluidStack fluidOutput) {
         this.id = id;
         this.inputs = Collections.unmodifiableList(new ArrayList<>(inputs));
 

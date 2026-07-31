@@ -1,9 +1,10 @@
 package net.oktawia.crazyae2addons.tracking;
 
-import appeng.api.stacks.AEKey;
+import java.util.HashMap;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import appeng.api.stacks.AEKey;
 
 class PerKeyData {
 
@@ -33,8 +34,10 @@ class PerKeyData {
         }
         da[idx] += amount;
 
-        if (icon != null) targetIcons.putIfAbsent(target, icon);
-        if (description != null) targetDescriptions.putIfAbsent(target, description);
+        if (icon != null)
+            targetIcons.putIfAbsent(target, icon);
+        if (description != null)
+            targetDescriptions.putIfAbsent(target, description);
     }
 
     long perMinute(long now) {
@@ -44,7 +47,8 @@ class PerKeyData {
     long perMinuteTarget(UsageTarget target, long now) {
         long[] da = targetAmounts.get(target);
         long[] ds = targetStartMs.get(target);
-        if (da == null || ds == null) return 0;
+        if (da == null || ds == null)
+            return 0;
         return sumBuckets(da, ds, now);
     }
 
@@ -56,7 +60,8 @@ class PerKeyData {
         long cutoff = now - 60_000L;
         long sum = 0;
         for (int i = 0; i < NUM_BUCKETS; i++) {
-            if (starts[i] > cutoff) sum += amounts[i];
+            if (starts[i] > cutoff)
+                sum += amounts[i];
         }
         return sum;
     }

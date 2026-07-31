@@ -1,5 +1,15 @@
 package net.oktawia.crazyae2addons.parts;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+
+import lombok.Getter;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.networking.IGrid;
@@ -18,19 +28,13 @@ import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.parts.automation.AbstractLevelEmitterPart;
 import appeng.util.SettingsFrom;
-import lombok.Getter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterOutput;
 import net.oktawia.crazyae2addons.util.TagMatcher;
-import org.jetbrains.annotations.Nullable;
 
 public class TagLevelEmitter extends AbstractLevelEmitterPart implements IAnalogLevelEmitterOutput {
 
@@ -40,38 +44,32 @@ public class TagLevelEmitter extends AbstractLevelEmitterPart implements IAnalog
     @PartModels
     public static final PartModel MODEL_OFF_OFF = new PartModel(
             CrazyAddons.makeId("part/tag_level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_off")
-    );
+            AppEng.makeId("part/level_emitter_status_off"));
 
     @PartModels
     public static final PartModel MODEL_OFF_ON = new PartModel(
             CrazyAddons.makeId("part/tag_level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_on")
-    );
+            AppEng.makeId("part/level_emitter_status_on"));
 
     @PartModels
     public static final PartModel MODEL_OFF_HAS_CHANNEL = new PartModel(
             CrazyAddons.makeId("part/tag_level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_has_channel")
-    );
+            AppEng.makeId("part/level_emitter_status_has_channel"));
 
     @PartModels
     public static final PartModel MODEL_ON_OFF = new PartModel(
             CrazyAddons.makeId("part/tag_level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_off")
-    );
+            AppEng.makeId("part/level_emitter_status_off"));
 
     @PartModels
     public static final PartModel MODEL_ON_ON = new PartModel(
             CrazyAddons.makeId("part/tag_level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_on")
-    );
+            AppEng.makeId("part/level_emitter_status_on"));
 
     @PartModels
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(
             CrazyAddons.makeId("part/tag_level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_has_channel")
-    );
+            AppEng.makeId("part/level_emitter_status_has_channel"));
 
     @Getter
     private String expression = "";

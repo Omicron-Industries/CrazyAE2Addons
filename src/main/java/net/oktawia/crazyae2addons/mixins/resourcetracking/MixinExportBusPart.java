@@ -1,27 +1,26 @@
 package net.oktawia.crazyae2addons.mixins.resourcetracking;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import net.minecraft.core.GlobalPos;
+
 import appeng.api.behaviors.StackExportStrategy;
 import appeng.api.behaviors.StackTransferContext;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.parts.automation.ExportBusPart;
-import net.minecraft.core.GlobalPos;
+
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
 import net.oktawia.crazyae2addons.tracking.UsageTarget;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = ExportBusPart.class, remap = false)
 public class MixinExportBusPart {
 
-    @Redirect(
-        method = "doBusWork",
-        at = @At(value = "INVOKE",
-            target = "Lappeng/api/behaviors/StackExportStrategy;transfer(Lappeng/api/behaviors/StackTransferContext;Lappeng/api/stacks/AEKey;J)J")
-    )
+    @Redirect(method = "doBusWork", at = @At(value = "INVOKE", target = "Lappeng/api/behaviors/StackExportStrategy;transfer(Lappeng/api/behaviors/StackTransferContext;Lappeng/api/stacks/AEKey;J)J"))
     private long crazyAe2$trackTransfer(StackExportStrategy strategy, StackTransferContext context, AEKey what,
             long maxAmount) {
         long transferred = strategy.transfer(context, what, maxAmount);
@@ -29,11 +28,7 @@ public class MixinExportBusPart {
         return transferred;
     }
 
-    @Redirect(
-        method = "insertCraftedItems",
-        at = @At(value = "INVOKE",
-            target = "Lappeng/api/behaviors/StackExportStrategy;push(Lappeng/api/stacks/AEKey;JLappeng/api/config/Actionable;)J")
-    )
+    @Redirect(method = "insertCraftedItems", at = @At(value = "INVOKE", target = "Lappeng/api/behaviors/StackExportStrategy;push(Lappeng/api/stacks/AEKey;JLappeng/api/config/Actionable;)J"))
     private long crazyAe2$trackCraftedPush(StackExportStrategy strategy, AEKey what, long maxAmount, Actionable mode) {
         long pushed = strategy.push(what, maxAmount, mode);
         if (mode == Actionable.MODULATE) {

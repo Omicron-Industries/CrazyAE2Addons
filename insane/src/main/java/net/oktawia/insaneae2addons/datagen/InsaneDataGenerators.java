@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.datagen;
 
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -7,9 +9,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.oktawia.insaneae2addons.InsaneAddons;
 
-import java.util.concurrent.CompletableFuture;
+import net.oktawia.insaneae2addons.InsaneAddons;
 
 @Mod.EventBusSubscriber(modid = InsaneAddons.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class InsaneDataGenerators {
@@ -33,6 +34,7 @@ public class InsaneDataGenerators {
         InsaneBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(),
                 new InsaneBlockTagGenerator(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(),
-                new InsaneItemTagGenerator(packOutput, lookupProvider, blockTagGenerator.contentsGetter(), existingFileHelper));
+                new InsaneItemTagGenerator(packOutput, lookupProvider, blockTagGenerator.contentsGetter(),
+                        existingFileHelper));
     }
 }

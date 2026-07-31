@@ -1,5 +1,21 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -7,22 +23,11 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEItems;
 import appeng.util.SettingsFrom;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.player.Player;
+
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import org.jetbrains.annotations.Nullable;
 
 public class PenroseInjectionPortBE extends PenrosePeripheralBE {
 
@@ -30,8 +35,8 @@ public class PenroseInjectionPortBE extends PenrosePeripheralBE {
 
     private static final String NBT_DESIRED_RATE = "desired_rate";
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            IManagedBEHelper.inheritedFieldHolder(PenroseInjectionPortBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = IManagedBEHelper
+            .inheritedFieldHolder(PenroseInjectionPortBE.class);
 
     @Persisted
     @DescSynced
@@ -44,8 +49,7 @@ public class PenroseInjectionPortBE extends PenrosePeripheralBE {
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.PENROSE_INJECTION_PORT_BLOCK.get()),
-                2.0F
-        );
+                2.0F);
     }
 
     @Override

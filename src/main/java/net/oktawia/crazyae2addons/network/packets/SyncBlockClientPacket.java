@@ -1,16 +1,18 @@
 package net.oktawia.crazyae2addons.network.packets;
 
-import appeng.blockentity.networking.CableBusBlockEntity;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
+
+import appeng.blockentity.networking.CableBusBlockEntity;
+
 import net.oktawia.crazyae2addons.entities.CrazyPatternProviderBE;
 import net.oktawia.crazyae2addons.parts.CrazyPatternProviderPart;
-
-import java.util.function.Supplier;
 
 public class SyncBlockClientPacket {
     private final BlockPos pos;
@@ -36,7 +38,8 @@ public class SyncBlockClientPacket {
     public static void handle(SyncBlockClientPacket pkt, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.level == null) return;
+            if (mc.level == null)
+                return;
 
             BlockEntity be = mc.level.getBlockEntity(pkt.pos);
             if (be instanceof CrazyPatternProviderBE myBe) {

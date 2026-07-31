@@ -8,14 +8,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.entities.penrose.PenroseBlackHoleEntity;
 
-@Mod.EventBusSubscriber(
-        modid = InsaneAddons.MODID,
-        bus = Mod.EventBusSubscriber.Bus.FORGE,
-        value = Dist.CLIENT
-)
+@Mod.EventBusSubscriber(modid = InsaneAddons.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class PenrosePlayerGravity {
 
     private PenrosePlayerGravity() {

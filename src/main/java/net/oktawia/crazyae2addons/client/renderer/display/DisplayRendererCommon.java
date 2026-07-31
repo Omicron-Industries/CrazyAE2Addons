@@ -1,9 +1,22 @@
 package net.oktawia.crazyae2addons.client.renderer.display;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,10 +32,11 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.logic.display.DisplayGrid;
 import net.oktawia.crazyae2addons.client.misc.DisplayImageClientCache;
+import net.oktawia.crazyae2addons.logic.display.DisplayGrid;
 import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
 import net.oktawia.crazyae2addons.logic.display.DisplayRenderData;
 import net.oktawia.crazyae2addons.logic.display.DisplayRenderData.DrawEntry;
@@ -36,40 +50,32 @@ import net.oktawia.crazyae2addons.logic.display.DisplayRenderData.TableBlock;
 import net.oktawia.crazyae2addons.logic.display.DisplayRenderData.TableRow;
 import net.oktawia.crazyae2addons.logic.display.DisplayRenderData.TextSeg;
 import net.oktawia.crazyae2addons.parts.Display;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public final class DisplayRendererCommon {
 
     private static final float DISPLAY_OFFSET = 2f;
     private static final float BACKGROUND_LAYER_Z = 0.005f - DISPLAY_OFFSET;
     private static final float TABLE_LINE_LAYER_Z = 0.010f - DISPLAY_OFFSET;
-    private static final float TEXT_LAYER_Z =  0.010f - DISPLAY_OFFSET;
-    private static final float ICON_LAYER_Z =  0.020f - DISPLAY_OFFSET;
+    private static final float TEXT_LAYER_Z = 0.010f - DISPLAY_OFFSET;
+    private static final float ICON_LAYER_Z = 0.020f - DISPLAY_OFFSET;
     private static final float IMAGE_LAYER_Z = 0.025f - DISPLAY_OFFSET;
 
-    private DisplayRendererCommon() {}
+    private DisplayRendererCommon() {
+    }
 
-    private record CachedImage(DynamicTexture texture, ResourceLocation location, int width, int height) {}
+    private record CachedImage(DynamicTexture texture, ResourceLocation location, int width, int height) {
+    }
 
     private static final Map<String, CachedImage> IMAGE_CACHE = new HashMap<>();
 
-    public interface DrawCommand {}
+    public interface DrawCommand {
+    }
 
     public record PreparedDisplay(
             float surfaceWidthPx,
             float surfaceHeightPx,
-            List<DrawCommand> commands
-    ) {}
+            List<DrawCommand> commands) {
+    }
 
     public record TextCommand(Component text, float x, float y, float scale) implements DrawCommand {
     }
@@ -90,8 +96,7 @@ public final class DisplayRendererCommon {
             float y,
             float widthPx,
             float heightPx,
-            float z
-    ) implements DrawCommand {
+            float z) implements DrawCommand {
     }
 
     public static PreparedDisplay prepare(Font font, Display renderOrigin, Set<Display> grid) {
@@ -114,8 +119,7 @@ public final class DisplayRendererCommon {
                 dims.getSecond(),
                 images,
                 imageData,
-                renderOrigin.isPowered()
-        );
+                renderOrigin.isPowered());
     }
 
     public static PreparedDisplay prepare(
@@ -128,8 +132,7 @@ public final class DisplayRendererCommon {
             int heightBlocks,
             List<DisplayImageEntry> images,
             Map<String, byte[]> imageData,
-            boolean powered
-    ) {
+            boolean powered) {
         float pxW = Math.max(1f, 64f * Math.max(1, widthBlocks));
         float pxH = Math.max(1f, 64f * Math.max(1, heightBlocks));
 
@@ -143,8 +146,7 @@ public final class DisplayRendererCommon {
         String raw = textValue == null ? "" : textValue;
         String resolved = DisplayRenderData.resolveTokensClientSide(
                 raw,
-                resolvedTokens == null ? Map.of() : resolvedTokens
-        );
+                resolvedTokens == null ? Map.of() : resolvedTokens);
         RichTextWithColors parsed = DisplayRenderData.parseStyledTextWithIcons(resolved);
         List<RenderLine> renderLines = parsed.lines();
 
@@ -152,8 +154,7 @@ public final class DisplayRendererCommon {
             out.add(new RectCommand(
                     0f, 0f, pxW, pxH,
                     0xFF000000 | parsed.backgroundColor(),
-                    BACKGROUND_LAYER_Z
-            ));
+                    BACKGROUND_LAYER_Z));
         }
 
         if (images != null && imageData != null && CrazyConfig.COMMON.DISPLAY_IMAGES_ENABLED.get()) {
@@ -179,8 +180,7 @@ public final class DisplayRendererCommon {
 
                 float fit = Math.min(
                         pxW / (float) cached.width(),
-                        pxH / (float) cached.height()
-                );
+                        pxH / (float) cached.height());
 
                 float fitW = cached.width() * fit;
                 float fitH = cached.height() * fit;
@@ -200,8 +200,7 @@ public final class DisplayRendererCommon {
                         yPx,
                         imageW,
                         imageH,
-                        imageZ
-                ));
+                        imageZ));
                 imageListIdx++;
             }
         }
@@ -228,8 +227,7 @@ public final class DisplayRendererCommon {
 
         float globalScalePx = Math.min(
                 usableW / Math.max(1f, maxLineWidth),
-                usableH / Math.max(1f, totalTextHeight)
-        );
+                usableH / Math.max(1f, totalTextHeight));
         if (!Float.isFinite(globalScalePx) || globalScalePx <= 0f) {
             globalScalePx = 1f;
         }
@@ -311,8 +309,7 @@ public final class DisplayRendererCommon {
             PoseStack ps,
             MultiBufferSource buf,
             Font font,
-            int light
-    ) {
+            int light) {
         for (DrawCommand cmd : prepared.commands()) {
             if (cmd instanceof RectCommand rc) {
                 drawSolidRect(ps, buf, light, rc.argb(), rc.x0(), rc.y0(), rc.x1(), rc.y1(), rc.z());
@@ -331,8 +328,7 @@ public final class DisplayRendererCommon {
                         buf,
                         Font.DisplayMode.POLYGON_OFFSET,
                         0,
-                        light
-                );
+                        light);
 
                 ps.popPose();
             } else if (cmd instanceof ItemCommand ic) {
@@ -343,8 +339,7 @@ public final class DisplayRendererCommon {
                         light,
                         ic.x(),
                         ic.y(),
-                        Math.max(1, Math.round(ic.sizePx()))
-                );
+                        Math.max(1, Math.round(ic.sizePx())));
             } else if (cmd instanceof FluidCommand fc) {
                 TextureAtlasSprite sprite = getFluidSprite(fc.stack());
                 int tint = getFluidTint(fc.stack());
@@ -363,8 +358,7 @@ public final class DisplayRendererCommon {
                             ic.heightPx(),
                             prepared.surfaceWidthPx(),
                             prepared.surfaceHeightPx(),
-                            ic.z()
-                    );
+                            ic.z());
                 }
             }
         }
@@ -376,8 +370,7 @@ public final class DisplayRendererCommon {
             List<LineSeg> segs,
             float baseX,
             float baseY,
-            float scalePx
-    ) {
+            float scalePx) {
         float cursor = 0f;
         float iconSize = font.lineHeight;
         int iconAdv = font.lineHeight + 1;
@@ -404,8 +397,7 @@ public final class DisplayRendererCommon {
             int rowsToDraw,
             float baseX,
             float baseY,
-            float scalePx
-    ) {
+            float scalePx) {
         var layout = DisplayRenderData.computeTableLayout(font, tb);
         int cols = layout.cols();
         int pad = layout.padPx();
@@ -414,7 +406,8 @@ public final class DisplayRendererCommon {
         float rowH = font.lineHeight;
 
         Component bar = Component.literal("|").withStyle(Style.EMPTY.withColor(0xAAAAAA));
-        @Nullable Component indent = layout.indentText().isEmpty()
+        @Nullable
+        Component indent = layout.indentText().isEmpty()
                 ? null
                 : Component.literal(layout.indentText()).withStyle(Style.EMPTY.withColor(0x888888));
 
@@ -426,8 +419,7 @@ public final class DisplayRendererCommon {
                 baseX + layout.totalW() * scalePx,
                 baseY,
                 lineColor,
-                TABLE_LINE_LAYER_Z
-        ));
+                TABLE_LINE_LAYER_Z));
 
         out.add(new RectCommand(
                 baseX + layout.prefixW() * scalePx,
@@ -435,8 +427,7 @@ public final class DisplayRendererCommon {
                 baseX + layout.totalW() * scalePx,
                 baseY + rowsToDraw * rowH * scalePx,
                 lineColor,
-                TABLE_LINE_LAYER_Z
-        ));
+                TABLE_LINE_LAYER_Z));
 
         if (rowsToDraw > 1) {
             out.add(new RectCommand(
@@ -445,8 +436,7 @@ public final class DisplayRendererCommon {
                     baseX + layout.totalW() * scalePx,
                     baseY + rowH * scalePx,
                     lineColor,
-                    TABLE_LINE_LAYER_Z
-            ));
+                    TABLE_LINE_LAYER_Z));
         }
 
         int drawRows = Math.min(rowsToDraw, tb.rows().size());
@@ -507,8 +497,7 @@ public final class DisplayRendererCommon {
             float y0,
             float x1,
             float y1,
-            float z
-    ) {
+            float z) {
         VertexConsumer buffer = buf.getBuffer(RenderType.textBackground());
         Matrix4f m = ps.last().pose();
 
@@ -531,8 +520,7 @@ public final class DisplayRendererCommon {
             float x,
             float y,
             float sizePx,
-            TextureAtlasSprite sprite
-    ) {
+            TextureAtlasSprite sprite) {
         VertexConsumer buffer = buf.getBuffer(RenderType.textPolygonOffset(InventoryMenu.BLOCK_ATLAS));
         Matrix4f m = ps.last().pose();
 
@@ -568,8 +556,7 @@ public final class DisplayRendererCommon {
             int light,
             float x,
             float y,
-            int iconPx
-    ) {
+            int iconPx) {
         Minecraft mc = Minecraft.getInstance();
 
         ps.pushPose();
@@ -589,8 +576,7 @@ public final class DisplayRendererCommon {
                 ps,
                 buf,
                 mc.level,
-                0
-        );
+                0);
         RenderSystem.enableCull();
         ps.popPose();
     }
@@ -617,8 +603,7 @@ public final class DisplayRendererCommon {
             float height,
             float clipX1,
             float clipY1,
-            float z
-    ) {
+            float z) {
         if (width <= 0f || height <= 0f) {
             return;
         }
@@ -673,8 +658,7 @@ public final class DisplayRendererCommon {
             DynamicTexture texture = new DynamicTexture(image);
             ResourceLocation location = Minecraft.getInstance().getTextureManager().register(
                     "crazyae2addons_display_image_" + cacheKey,
-                    texture
-            );
+                    texture);
 
             CachedImage created = new CachedImage(texture, location, width, height);
             IMAGE_CACHE.put(cacheKey, created);

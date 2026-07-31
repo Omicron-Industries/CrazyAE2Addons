@@ -1,12 +1,13 @@
 package net.oktawia.crazyae2addons.logic.viewcell;
 
+import java.util.Collections;
+
 import appeng.api.config.IncludeExclude;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.util.prioritylist.IPartitionList;
-import net.oktawia.crazyae2addons.util.TagMatcher;
 
-import java.util.Collections;
+import net.oktawia.crazyae2addons.util.TagMatcher;
 
 public class TagPriorityList implements IPartitionList {
 

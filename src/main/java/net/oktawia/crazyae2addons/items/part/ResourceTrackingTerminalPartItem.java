@@ -1,8 +1,8 @@
 package net.oktawia.crazyae2addons.items.part;
 
 import appeng.items.parts.PartItem;
-import net.oktawia.crazyae2addons.parts.ResourceTrackingTerminalPart;
 
+import net.oktawia.crazyae2addons.parts.ResourceTrackingTerminalPart;
 
 public class ResourceTrackingTerminalPartItem extends PartItem<ResourceTrackingTerminalPart> {
 

@@ -1,14 +1,16 @@
 package net.oktawia.insaneae2addons.compat.GregTech;
 
+import java.util.List;
+
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.oktawia.insaneae2addons.logic.penrose.PenroseEnergyExport;
 
-import java.util.List;
+import net.oktawia.insaneae2addons.logic.penrose.PenroseEnergyExport;
 
 public final class GTPenroseEnergyExport implements PenroseEnergyExport {
 
@@ -18,8 +20,7 @@ public final class GTPenroseEnergyExport implements PenroseEnergyExport {
             "_energy_output_hatch",
             "_energy_output_hatch_4a",
             "_energy_output_hatch_16a",
-            "_substation_output_hatch_64a"
-    );
+            "_substation_output_hatch_64a");
 
     public static void register() {
         PenroseEnergyExport.set(new GTPenroseEnergyExport());

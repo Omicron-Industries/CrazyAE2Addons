@@ -1,26 +1,29 @@
 package net.oktawia.crazyae2addons.menus.part;
 
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.guisync.GuiSync;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.network.PacketDistributor;
+
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.GuiSync;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IRedstoneTerminalHost;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.RedstoneWindowPacket;
 import net.oktawia.crazyae2addons.parts.RedstoneTerminal;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 public class RedstoneTerminalMenu extends AEBaseMenu {
 
-    public record EmitterInfo(BlockPos pos, String name, boolean active) {}
+    public record EmitterInfo(BlockPos pos, String name, boolean active) {
+    }
 
     private static final String ACTION_TOGGLE = "redstone_terminal.toggle";
     private static final String ACTION_SEARCH = "redstone_terminal.search";
@@ -154,7 +157,6 @@ public class RedstoneTerminalMenu extends AEBaseMenu {
 
         NetworkHandler.CHANNEL.send(
                 PacketDistributor.PLAYER.with(() -> serverPlayer),
-                new RedstoneWindowPacket(fullList.size(), from, revision, window)
-        );
+                new RedstoneWindowPacket(fullList.size(), from, revision, window));
     }
 }

@@ -1,13 +1,16 @@
 package net.oktawia.crazyae2addons.logic.display.keytypes;
 
-import appeng.api.stacks.AEKey;
 import com.glodblock.github.appflux.common.me.key.FluxKey;
 import com.glodblock.github.appflux.common.me.key.type.EnergyType;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.stacks.AEKey;
 
 public class AppFluxResolver implements IDisplayKeyResolver {
 

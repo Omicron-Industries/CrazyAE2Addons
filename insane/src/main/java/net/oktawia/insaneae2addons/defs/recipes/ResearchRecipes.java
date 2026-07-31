@@ -6,17 +6,19 @@ import java.util.List;
 
 public class ResearchRecipes {
 
-    public record ConsumableEntry(String item, int count, int computation) {}
+    public record ConsumableEntry(String item, int count, int computation) {
+    }
 
-    public record UnlockDef(String key, String label, String item) {}
+    public record UnlockDef(String key, String label, String item) {
+    }
 
     public record RecipeDef(
             String id,
             int duration,
             int energyPerTick,
             List<ConsumableEntry> consumables,
-            UnlockDef unlock
-    ) {}
+            UnlockDef unlock) {
+    }
 
     private static final List<RecipeDef> RECIPES = new ArrayList<>();
 
@@ -95,7 +97,8 @@ public class ResearchRecipes {
                 .consumable("minecraft:obsidian", 16, 96)
                 .consumable("ae2:fluix_block", 8, 128)
                 .consumable("minecraft:netherite_block", 1, 256)
-                .unlock("insaneae2addons:entropy_cradle_research", "Entropy Cradle", "insaneae2addons:entropy_cradle_controller")
+                .unlock("insaneae2addons:entropy_cradle_research", "Entropy Cradle",
+                        "insaneae2addons:entropy_cradle_controller")
                 .register();
     }
 

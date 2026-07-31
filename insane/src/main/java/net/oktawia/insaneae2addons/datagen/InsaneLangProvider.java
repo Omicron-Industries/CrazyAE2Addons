@@ -3,6 +3,7 @@ package net.oktawia.insaneae2addons.datagen;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.registries.ForgeRegistries;
+
 import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.LangDefs;

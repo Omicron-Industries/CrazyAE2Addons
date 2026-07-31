@@ -1,15 +1,17 @@
 package net.oktawia.crazyae2addons.client.screens.item;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.NumberEntryType;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
-import appeng.client.gui.widgets.NumberEntryWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.NumberEntryType;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.NumberEntryWidget;
+
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.menus.item.CpuPrioMenu;
 
@@ -41,8 +43,7 @@ public class CpuPrioScreen<C extends CpuPrioMenu> extends AEBaseScreen<C> {
                 return;
             }
 
-            this.priority.getIntValue().ifPresent(val ->
-                    this.priorityInput.setValue(Integer.toString(val)));
+            this.priority.getIntValue().ifPresent(val -> this.priorityInput.setValue(Integer.toString(val)));
         });
 
         this.widgets.add("priority", this.priority);
@@ -51,8 +52,7 @@ public class CpuPrioScreen<C extends CpuPrioMenu> extends AEBaseScreen<C> {
         this.widgets.addButton(
                 "save",
                 Component.translatable(LangDefs.SAVE.getTranslationKey()),
-                btn -> confirm()
-        );
+                btn -> confirm());
     }
 
     @Override

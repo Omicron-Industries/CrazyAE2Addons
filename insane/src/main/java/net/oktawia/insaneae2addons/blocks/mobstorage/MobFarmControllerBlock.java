@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.blocks.mobstorage;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -12,9 +14,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
 import net.oktawia.insaneae2addons.entities.mobstorage.MobFarmControllerBE;
-import org.jetbrains.annotations.Nullable;
 
 public class MobFarmControllerBlock extends AbstractMenuOpeningBlock<MobFarmControllerBE> {
 

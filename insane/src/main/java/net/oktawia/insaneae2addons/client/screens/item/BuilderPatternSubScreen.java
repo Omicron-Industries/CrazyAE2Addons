@@ -1,25 +1,27 @@
 package net.oktawia.insaneae2addons.client.screens.item;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.implementations.AESubScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.client.misc.IconButton;
-import net.oktawia.insaneae2addons.InsaneAddons;
-import net.oktawia.insaneae2addons.defs.LangDefs;
-import net.oktawia.insaneae2addons.menus.item.BuilderPatternSubMenu;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.implementations.AESubScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+
+import net.oktawia.crazyae2addons.client.misc.IconButton;
+import net.oktawia.insaneae2addons.InsaneAddons;
+import net.oktawia.insaneae2addons.defs.LangDefs;
+import net.oktawia.insaneae2addons.menus.item.BuilderPatternSubMenu;
 
 public class BuilderPatternSubScreen<C extends BuilderPatternSubMenu> extends AEBaseScreen<C> {
 
@@ -27,8 +29,8 @@ public class BuilderPatternSubScreen<C extends BuilderPatternSubMenu> extends AE
     private static final int BLOCK_W = 100;
     private static final int FIELD_H = 18;
 
-    private static final LangDefs[] ACTION_LABELS = {LangDefs.PLACE, LangDefs.BREAK};
-    private static final LangDefs[] COND_LABELS = {LangDefs.ALWAYS, LangDefs.EQUALS, LangDefs.NOT_EQUALS};
+    private static final LangDefs[] ACTION_LABELS = { LangDefs.PLACE, LangDefs.BREAK };
+    private static final LangDefs[] COND_LABELS = { LangDefs.ALWAYS, LangDefs.EQUALS, LangDefs.NOT_EQUALS };
 
     private final AETextField placeField;
     private final AETextField checkField;

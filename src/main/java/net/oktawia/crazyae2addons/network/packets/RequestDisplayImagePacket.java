@@ -1,12 +1,13 @@
 package net.oktawia.crazyae2addons.network.packets;
 
+import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
+
 import net.oktawia.crazyae2addons.logic.display.DisplayImageStore;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
-
-import java.util.function.Supplier;
 
 public record RequestDisplayImagePacket(String imageId) {
 

@@ -1,9 +1,11 @@
 package net.oktawia.insaneae2addons.menus.item;
 
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.guisync.GuiSync;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderPatternHost;
 

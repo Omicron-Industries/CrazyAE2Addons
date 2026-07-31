@@ -1,5 +1,28 @@
 package net.oktawia.crazyae2addons.logic.buffer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Future;
+import java.util.function.Supplier;
+
+import com.google.common.collect.ImmutableSet;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
+
 import appeng.api.config.Actionable;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.networking.IGrid;
@@ -18,28 +41,10 @@ import appeng.api.storage.StorageHelper;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.me.helpers.MachineSource;
-import com.google.common.collect.ImmutableSet;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
 import net.oktawia.crazyae2addons.tracking.UsageTarget;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 public class ManagedBuffer {
 
@@ -70,8 +75,8 @@ public class ManagedBuffer {
     private AEKey trackIcon;
 
     public ManagedBuffer(IManagedGridNode mainNode, PatternProviderLogicHost logicHost,
-                         IActionHost actionHost, Runnable onDirty, Runnable onReady,
-                         Supplier<Boolean> isActive) {
+            IActionHost actionHost, Runnable onDirty, Runnable onReady,
+            Supplier<Boolean> isActive) {
         this.mainNode = mainNode;
         this.logicHost = logicHost;
         this.actionHost = actionHost;
@@ -91,19 +96,24 @@ public class ManagedBuffer {
     }
 
     public void add(AEKey key, long amount) {
-        if (amount <= 0) return;
+        if (amount <= 0)
+            return;
         items.put(key, get(key) + amount);
         onDirty.run();
     }
 
     public long extract(AEKey key, long amount) {
-        if (amount <= 0) return 0;
+        if (amount <= 0)
+            return 0;
         long have = get(key);
         long take = Math.min(have, amount);
-        if (take <= 0) return 0;
+        if (take <= 0)
+            return 0;
         long left = have - take;
-        if (left <= 0) items.removeLong(key);
-        else items.put(key, left);
+        if (left <= 0)
+            items.removeLong(key);
+        else
+            items.put(key, left);
         onDirty.run();
         return take;
     }
@@ -113,18 +123,23 @@ public class ManagedBuffer {
     }
 
     public void collectFromNetwork(GenericStack[] required, Supplier<Boolean> hasCreative) {
-        if (hasCreative.get()) return;
+        if (hasCreative.get())
+            return;
         var grid = grid();
-        if (grid == null) return;
+        if (grid == null)
+            return;
         var storage = grid.getStorageService().getInventory();
         var es = grid.getEnergyService();
 
         for (var stack : required) {
-            if (stack == null) continue;
+            if (stack == null)
+                continue;
             var key = stack.what();
-            if (key == null) continue;
+            if (key == null)
+                continue;
             long need = stack.amount() - get(key);
-            if (need <= 0) continue;
+            if (need <= 0)
+                continue;
 
             long pulled = StorageHelper.poweredExtraction(es, storage, key, need, src(), Actionable.MODULATE);
             if (pulled > 0) {
@@ -136,15 +151,18 @@ public class ManagedBuffer {
     }
 
     public GenericStack[] computeMissing(GenericStack[] required, Supplier<Boolean> hasCreative) {
-        if (hasCreative.get()) return new GenericStack[0];
+        if (hasCreative.get())
+            return new GenericStack[0];
 
         GenericStack[] tmp = new GenericStack[required.length];
         int count = 0;
 
         for (var stack : required) {
-            if (stack == null) continue;
+            if (stack == null)
+                continue;
             var key = stack.what();
-            if (key == null) continue;
+            if (key == null)
+                continue;
             long need = stack.amount() - get(key);
             if (need > 0) {
                 tmp[count++] = new GenericStack(key, need);
@@ -161,8 +179,10 @@ public class ManagedBuffer {
     }
 
     public boolean request(GenericStack[] required, boolean allowedToCraft) {
-        if (flushPending) return false;
-        if (!flushUnneeded(required)) return false;
+        if (flushPending)
+            return false;
+        if (!flushUnneeded(required))
+            return false;
 
         collectFromNetwork(required, () -> false);
         var missing = computeMissing(required, () -> false);
@@ -200,12 +220,15 @@ public class ManagedBuffer {
                 var e = it.next();
                 long have = e.getLongValue();
                 long excess = have - needed.getLong(e.getKey());
-                if (excess <= 0) continue;
+                if (excess <= 0)
+                    continue;
 
                 long inserted = StorageHelper.poweredInsert(es, inv, e.getKey(), excess, src(), Actionable.MODULATE);
                 long remaining = have - inserted;
-                if (remaining <= 0) it.remove();
-                else e.setValue(remaining);
+                if (remaining <= 0)
+                    it.remove();
+                else
+                    e.setValue(remaining);
             }
         }
 
@@ -223,9 +246,11 @@ public class ManagedBuffer {
     }
 
     public boolean requestCrafting(GenericStack[] inputs) {
-        if (!canCraft || hasActiveCrafting()) return false;
+        if (!canCraft || hasActiveCrafting())
+            return false;
         var grid = grid();
-        if (grid == null) return false;
+        if (grid == null)
+            return false;
 
         var dummy = logicHost.getBlockEntity().getBlockState().getBlock().asItem().getDefaultInstance();
         var dummyTag = dummy.getOrCreateTag();
@@ -233,7 +258,7 @@ public class ManagedBuffer {
         dummyTag.putBoolean(DUMMY_MARKER, true);
         var dummyOutput = new GenericStack(AEItemKey.of(dummy), 1);
 
-        var patternStack = PatternDetailsHelper.encodeProcessingPattern(inputs, new GenericStack[]{dummyOutput});
+        var patternStack = PatternDetailsHelper.encodeProcessingPattern(inputs, new GenericStack[] { dummyOutput });
         logic.getPatternInv().setItemDirect(0, patternStack);
         logic.updatePatterns();
 
@@ -242,8 +267,7 @@ public class ManagedBuffer {
                 () -> new MachineSource(actionHost),
                 dummyOutput.what(),
                 dummyOutput.amount(),
-                CalculationStrategy.REPORT_MISSING_ITEMS
-        );
+                CalculationStrategy.REPORT_MISSING_ITEMS);
 
         pendingPlans.add(plan);
         onDirty.run();
@@ -257,7 +281,8 @@ public class ManagedBuffer {
     }
 
     public @Nullable GenericStack tick(int ticksSinceLastCall) {
-        if (!isActive.get() && !hasActiveCrafting() && !items.isEmpty() && !flushPending) beginFlush();
+        if (!isActive.get() && !hasActiveCrafting() && !items.isEmpty() && !flushPending)
+            beginFlush();
         var missing = tickCrafting();
         tickFlush(ticksSinceLastCall);
         return missing;
@@ -272,13 +297,15 @@ public class ManagedBuffer {
             }
             return null;
         }
-        if (pendingPlans.isEmpty() && activeLinks.isEmpty()) return null;
+        if (pendingPlans.isEmpty() && activeLinks.isEmpty())
+            return null;
 
         GenericStack firstMissing = null;
         var it = pendingPlans.iterator();
         while (it.hasNext()) {
             var future = it.next();
-            if (!future.isDone()) continue;
+            if (!future.isDone())
+                continue;
             it.remove();
 
             try {
@@ -295,8 +322,7 @@ public class ManagedBuffer {
                         actionHost instanceof ICraftingRequester r ? r : null,
                         null,
                         true,
-                        src()
-                );
+                        src());
 
                 if (result.successful() && result.link() != null) {
                     activeLinks.add(result.link());
@@ -368,7 +394,8 @@ public class ManagedBuffer {
     }
 
     private void tickFlush(int ticksSinceLastCall) {
-        if (!flushPending) return;
+        if (!flushPending)
+            return;
         flushTickAcc += ticksSinceLastCall;
         if (flushTickAcc >= 20) {
             flushTickAcc = 0;
@@ -378,7 +405,8 @@ public class ManagedBuffer {
 
     private void flushOnce() {
         var grid = grid();
-        if (grid == null) return;
+        if (grid == null)
+            return;
         var inv = grid.getStorageService().getInventory();
         var es = grid.getEnergyService();
         var it = items.object2LongEntrySet().iterator();
@@ -390,10 +418,13 @@ public class ManagedBuffer {
                 continue;
             }
             long inserted = StorageHelper.poweredInsert(es, inv, e.getKey(), amt, src(), Actionable.MODULATE);
-            if (inserted >= amt) it.remove();
-            else e.setValue(amt - inserted);
+            if (inserted >= amt)
+                it.remove();
+            else
+                e.setValue(amt - inserted);
         }
-        if (items.isEmpty()) flushPending = false;
+        if (items.isEmpty())
+            flushPending = false;
         onDirty.run();
     }
 
@@ -404,7 +435,8 @@ public class ManagedBuffer {
 
         ListTag linkTags = new ListTag();
         for (var link : activeLinks) {
-            if (link.isCanceled() || link.isDone()) continue;
+            if (link.isCanceled() || link.isDone())
+                continue;
             CompoundTag lt = new CompoundTag();
             link.writeToNBT(lt);
             linkTags.add(lt);
@@ -427,7 +459,8 @@ public class ManagedBuffer {
 
         GenericStack[] entries = loadGenericStacks(tag.getList("entries", Tag.TAG_COMPOUND));
         for (GenericStack s : entries) {
-            if (s == null || s.amount() <= 0 || s.what() == null) continue;
+            if (s == null || s.amount() <= 0 || s.what() == null)
+                continue;
             items.put(s.what(), s.amount());
         }
 
@@ -489,16 +522,20 @@ public class ManagedBuffer {
     }
 
     public void trackConsumed(AEKey what, long amount) {
-        if (what == null || amount <= 0) return;
+        if (what == null || amount <= 0)
+            return;
         var grid = grid();
-        if (grid == null) return;
+        if (grid == null)
+            return;
         var svc = grid.getService(IResourceTrackingService.class);
-        if (svc == null) return;
+        if (svc == null)
+            return;
 
         if (trackTarget == null) {
             var be = logicHost.getBlockEntity();
             var lvl = be.getLevel();
-            if (lvl == null) return;
+            if (lvl == null)
+                return;
             var pos = be.getBlockPos().immutable();
             trackTarget = UsageTarget.machine(GlobalPos.of(lvl.dimension(), pos));
             trackDesc = "at " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
@@ -544,7 +581,8 @@ public class ManagedBuffer {
         ListTag list = new ListTag();
 
         for (GenericStack stack : stacks) {
-            if (stack == null || stack.what() == null || stack.amount() <= 0) continue;
+            if (stack == null || stack.what() == null || stack.amount() <= 0)
+                continue;
 
             ItemStack wrapped = GenericStack.wrapInItemStack(stack);
             if (!wrapped.isEmpty()) {
@@ -561,10 +599,12 @@ public class ManagedBuffer {
 
         for (int i = 0; i < list.size(); i++) {
             ItemStack wrapped = ItemStack.of(list.getCompound(i));
-            if (wrapped.isEmpty()) continue;
+            if (wrapped.isEmpty())
+                continue;
 
             GenericStack stack = GenericStack.fromItemStack(wrapped);
-            if (stack == null || stack.what() == null || stack.amount() <= 0) continue;
+            if (stack == null || stack.what() == null || stack.amount() <= 0)
+                continue;
 
             tmp[count++] = stack;
         }

@@ -1,8 +1,8 @@
 package net.oktawia.insaneae2addons.entities.research;
 
-import appeng.blockentity.AEBaseBlockEntity;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -10,6 +10,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.blockentity.AEBaseBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import net.oktawia.insaneae2addons.blocks.research.ICableMachine;
 import net.oktawia.insaneae2addons.blocks.research.ResearchCableBlock;
@@ -18,9 +23,6 @@ import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.research.PedestalConnectionState;
 import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
 import net.oktawia.insaneae2addons.menus.block.ResearchPedestalMenu;
-
-import java.util.Collections;
-import java.util.List;
 
 public class ResearchPedestalBottomBE extends AEBaseBlockEntity
         implements ICableMachine, MenuProvider, IMenuOpeningBlockEntity {

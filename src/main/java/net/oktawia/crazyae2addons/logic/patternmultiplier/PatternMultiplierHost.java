@@ -1,14 +1,18 @@
 package net.oktawia.crazyae2addons.logic.patternmultiplier;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
+
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import lombok.Getter;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.items.PatternMultiplierItem;
-import org.jetbrains.annotations.Nullable;
 
 public class PatternMultiplierHost extends ItemMenuHost implements InternalInventoryHost {
 

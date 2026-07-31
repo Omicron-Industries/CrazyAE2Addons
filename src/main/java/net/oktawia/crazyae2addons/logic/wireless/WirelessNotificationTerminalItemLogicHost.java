@@ -1,20 +1,24 @@
 package net.oktawia.crazyae2addons.logic.wireless;
 
+import java.util.function.BiConsumer;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import de.mari_023.ae2wtlib.terminal.WTMenuHost;
+import lombok.Getter;
+
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.menu.ISubMenu;
 import appeng.util.ConfigInventory;
-import de.mari_023.ae2wtlib.terminal.WTMenuHost;
-import lombok.Getter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiConsumer;
 
 public class WirelessNotificationTerminalItemLogicHost extends WTMenuHost implements IUpgradeableObject {
 
@@ -29,8 +33,7 @@ public class WirelessNotificationTerminalItemLogicHost extends WTMenuHost implem
             Player player,
             @Nullable Integer slot,
             ItemStack itemStack,
-            BiConsumer<Player, ISubMenu> returnToMainMenu
-    ) {
+            BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(player, slot, itemStack, returnToMainMenu);
         readFromNbt();
     }

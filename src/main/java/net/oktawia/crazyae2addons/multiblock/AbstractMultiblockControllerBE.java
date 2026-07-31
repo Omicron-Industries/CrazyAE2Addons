@@ -1,16 +1,10 @@
 package net.oktawia.crazyae2addons.multiblock;
 
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,19 +18,30 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
+import lombok.Getter;
+
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+
 import net.oktawia.crazyae2addons.client.renderer.preview.multiblock.MultiblockPreviewHost;
 import net.oktawia.crazyae2addons.client.renderer.preview.multiblock.MultiblockPreviewInfo;
 import net.oktawia.crazyae2addons.client.renderer.preview.multiblock.PreviewRegistry;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractMultiblockControllerBE
         extends AENetworkBlockEntity
         implements IGridTickable, IManagedBEHelper, MenuProvider, IMenuOpeningBlockEntity, MultiblockPreviewHost {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(AbstractMultiblockControllerBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            AbstractMultiblockControllerBE.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -51,8 +56,7 @@ public abstract class AbstractMultiblockControllerBE
             BlockPos pos,
             BlockState blockState,
             ItemStack visualRepresentation,
-            float idlePowerUsage
-    ) {
+            float idlePowerUsage) {
         super(type, pos, blockState);
 
         this.baseIdlePowerUsage = idlePowerUsage;
@@ -68,8 +72,7 @@ public abstract class AbstractMultiblockControllerBE
                 this,
                 this::onFormedInternal,
                 this::onDisformedInternal,
-                this::isStructureValid
-        );
+                this::isStructureValid);
     }
 
     @Override
@@ -293,7 +296,8 @@ public abstract class AbstractMultiblockControllerBE
     @Override
     public @Nullable IGridNode getGridNode(Direction dir) {
         Level level = getLevel();
-        if (level != null && AbstractMultiblockFrameBE.isMultiblockMember(level.getBlockEntity(getBlockPos().relative(dir)))) {
+        if (level != null
+                && AbstractMultiblockFrameBE.isMultiblockMember(level.getBlockEntity(getBlockPos().relative(dir)))) {
             return null;
         }
 

@@ -1,17 +1,11 @@
 package net.oktawia.crazyae2addons.items.wireless;
 
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.stacks.AEKey;
-import appeng.api.util.IConfigManager;
-import appeng.menu.locator.MenuLocators;
-import appeng.util.ConfigInventory;
-import de.mari_023.ae2wtlib.terminal.IUniversalWirelessTerminalItem;
-import de.mari_023.ae2wtlib.terminal.ItemWT;
-import de.mari_023.ae2wtlib.terminal.WTMenuHost;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -22,17 +16,27 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import de.mari_023.ae2wtlib.terminal.IUniversalWirelessTerminalItem;
+import de.mari_023.ae2wtlib.terminal.ItemWT;
+import de.mari_023.ae2wtlib.terminal.WTMenuHost;
+
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.stacks.AEKey;
+import appeng.api.util.IConfigManager;
+import appeng.menu.locator.MenuLocators;
+import appeng.util.ConfigInventory;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.wireless.WirelessNotificationTerminalItemLogicHost;
 import net.oktawia.crazyae2addons.menus.item.WirelessNotificationTerminalMenu;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.NotificationHudPacket;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class WirelessNotificationTerminalItem extends ItemWT implements IUniversalWirelessTerminalItem {
 
@@ -81,8 +85,7 @@ public class WirelessNotificationTerminalItem extends ItemWT implements IUnivers
             if (!level.isClientSide && entity instanceof ServerPlayer player && (player.tickCount % 20) == 0) {
                 NetworkHandler.sendToPlayer(
                         player,
-                        new NotificationHudPacket(List.of(), (byte) 100, (byte) 0, (byte) 100)
-                );
+                        new NotificationHudPacket(List.of(), (byte) 100, (byte) 0, (byte) 100));
             }
             return;
         }
@@ -133,7 +136,8 @@ public class WirelessNotificationTerminalItem extends ItemWT implements IUnivers
         boolean hideAbove = root.getBoolean(NBT_HIDE_ABOVE);
         boolean hideBelow = root.getBoolean(NBT_HIDE_BELOW);
 
-        ConfigInventory cfg = ConfigInventory.configTypes(SLOTS, () -> {});
+        ConfigInventory cfg = ConfigInventory.configTypes(SLOTS, () -> {
+        });
         if (tag.contains(NBT_CONFIG)) {
             cfg.readFromChildTag(tag, NBT_CONFIG);
         }
@@ -175,8 +179,7 @@ public class WirelessNotificationTerminalItem extends ItemWT implements IUnivers
 
         NetworkHandler.sendToPlayer(
                 player,
-                new NotificationHudPacket(out, (byte) hudX, (byte) hudY, (byte) hudScale)
-        );
+                new NotificationHudPacket(out, (byte) hudX, (byte) hudY, (byte) hudScale));
     }
 
     private static int clampPercent(int value, int fallback) {

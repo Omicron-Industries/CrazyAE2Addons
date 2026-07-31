@@ -1,11 +1,14 @@
 package net.oktawia.crazyae2addons.logic.display.keytypes;
 
-import appeng.api.stacks.AEKey;
-import gripe._90.arseng.me.key.SourceKey;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+
+import gripe._90.arseng.me.key.SourceKey;
+
+import appeng.api.stacks.AEKey;
 
 public class ArsEnergistiqueResolver implements IDisplayKeyResolver {
 

@@ -1,13 +1,16 @@
 package net.oktawia.insaneae2addons.mobstorage;
 
-import appeng.api.stacks.AEKey;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import appeng.api.stacks.AEKey;
+
 import net.oktawia.crazyae2addons.logic.display.keytypes.IDisplayKeyResolver;
-import org.jetbrains.annotations.Nullable;
 
 public class MobKeyResolver implements IDisplayKeyResolver {
 

@@ -1,7 +1,8 @@
 package net.oktawia.insaneae2addons.blocks;
 
-import appeng.block.networking.EnergyCellBlock;
 import lombok.Getter;
+
+import appeng.block.networking.EnergyCellBlock;
 
 public class EnergyStorageBlock extends EnergyCellBlock {
 

@@ -1,6 +1,7 @@
 package net.oktawia.insaneae2addons.blocks.research;
 
-import appeng.block.AEBaseEntityBlock;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -11,8 +12,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+
+import appeng.block.AEBaseEntityBlock;
+
 import net.oktawia.insaneae2addons.entities.research.ResearchPedestalTopBE;
-import org.jetbrains.annotations.Nullable;
 
 public class ResearchPedestalTopBlock extends AEBaseEntityBlock<ResearchPedestalTopBE> {
 
@@ -33,7 +36,7 @@ public class ResearchPedestalTopBlock extends AEBaseEntityBlock<ResearchPedestal
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos,
-                                 Player player, InteractionHand hand, BlockHitResult hit) {
+            Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
         }

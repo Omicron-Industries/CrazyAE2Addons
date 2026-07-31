@@ -1,15 +1,16 @@
 package net.oktawia.crazyae2addons.defs.recipes;
 
-import appeng.core.definitions.AEBlocks;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
-import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
-import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import java.util.*;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
+
+import appeng.core.definitions.AEBlocks;
+
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 
 public class BlockRecipes {
 
@@ -19,8 +20,8 @@ public class BlockRecipes {
             Map<Character, Item> keys,
             List<Item> shapelessIngredients,
             Item output,
-            int count
-    ) {}
+            int count) {
+    }
 
     private static final List<RecipeDef> RECIPES = new ArrayList<>();
 
@@ -65,7 +66,8 @@ public class BlockRecipes {
         }
 
         public Builder shapeless(ItemLike... ingredients) {
-            for (var i : ingredients) shapelessIngredients.add(i.asItem());
+            for (var i : ingredients)
+                shapelessIngredients.add(i.asItem());
             return this;
         }
 

@@ -1,15 +1,17 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
-import appeng.client.gui.style.ScreenStyle;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.style.ScreenStyle;
+
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.entities.penrose.PenroseEmitterBE;
 import net.oktawia.insaneae2addons.menus.block.PenroseEmitterMenu;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PenroseEmitterScreen<C extends PenroseEmitterMenu> extends PenrosePeripheralScreen<C> {
 

@@ -1,6 +1,12 @@
 package net.oktawia.insaneae2addons.blocks.research;
 
-import appeng.block.AEBaseBlock;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -17,12 +23,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import appeng.block.AEBaseBlock;
 
 public class ResearchCableBlock extends AEBaseBlock {
 
@@ -89,7 +90,7 @@ public class ResearchCableBlock extends AEBaseBlock {
 
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
-                                  LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
+            LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
         return state.setValue(getProperty(direction), canConnect(level, neighborPos, direction));
     }
 
@@ -117,7 +118,8 @@ public class ResearchCableBlock extends AEBaseBlock {
         return false;
     }
 
-    private static boolean canMachineConnectOnSide(LevelAccessor level, BlockPos machinePos, Direction fromMachineToCable) {
+    private static boolean canMachineConnectOnSide(LevelAccessor level, BlockPos machinePos,
+            Direction fromMachineToCable) {
         BlockState state = level.getBlockState(machinePos);
         if (!(level.getBlockEntity(machinePos) instanceof ICableMachine)) {
             return false;
@@ -135,7 +137,7 @@ public class ResearchCableBlock extends AEBaseBlock {
     }
 
     private static boolean isCableConnectedToMachine(LevelAccessor level, BlockPos cablePos, BlockPos machinePos,
-                                                     Direction dirFromMachineToCable) {
+            Direction dirFromMachineToCable) {
         BlockState cableState = level.getBlockState(cablePos);
         if (!(cableState.getBlock() instanceof ResearchCableBlock)) {
             return false;
@@ -158,7 +160,8 @@ public class ResearchCableBlock extends AEBaseBlock {
 
         for (Direction dir : Direction.values()) {
             BlockPos adj = startMachinePos.relative(dir);
-            if (isCable(level, adj) && isCableConnectedToMachine(level, adj, startMachinePos, dir) && visitedCables.add(adj)) {
+            if (isCable(level, adj) && isCableConnectedToMachine(level, adj, startMachinePos, dir)
+                    && visitedCables.add(adj)) {
                 queue.add(adj);
             }
         }
@@ -188,7 +191,8 @@ public class ResearchCableBlock extends AEBaseBlock {
                         && visitedMachines.add(adj)) {
                     for (Direction d2 : Direction.values()) {
                         BlockPos adjCable = adj.relative(d2);
-                        if (isCable(level, adjCable) && isCableConnectedToMachine(level, adjCable, adj, d2) && visitedCables.add(adjCable)) {
+                        if (isCable(level, adjCable) && isCableConnectedToMachine(level, adjCable, adj, d2)
+                                && visitedCables.add(adjCable)) {
                             queue.add(adjCable);
                         }
                     }
@@ -221,12 +225,18 @@ public class ResearchCableBlock extends AEBaseBlock {
 
     private static VoxelShape buildShape(BlockState state) {
         VoxelShape shape = CORE;
-        if (state.getValue(NORTH)) shape = Shapes.or(shape, SHAPE_NORTH);
-        if (state.getValue(SOUTH)) shape = Shapes.or(shape, SHAPE_SOUTH);
-        if (state.getValue(WEST)) shape = Shapes.or(shape, SHAPE_WEST);
-        if (state.getValue(EAST)) shape = Shapes.or(shape, SHAPE_EAST);
-        if (state.getValue(UP)) shape = Shapes.or(shape, SHAPE_UP);
-        if (state.getValue(DOWN)) shape = Shapes.or(shape, SHAPE_DOWN);
+        if (state.getValue(NORTH))
+            shape = Shapes.or(shape, SHAPE_NORTH);
+        if (state.getValue(SOUTH))
+            shape = Shapes.or(shape, SHAPE_SOUTH);
+        if (state.getValue(WEST))
+            shape = Shapes.or(shape, SHAPE_WEST);
+        if (state.getValue(EAST))
+            shape = Shapes.or(shape, SHAPE_EAST);
+        if (state.getValue(UP))
+            shape = Shapes.or(shape, SHAPE_UP);
+        if (state.getValue(DOWN))
+            shape = Shapes.or(shape, SHAPE_DOWN);
         return shape;
     }
 }

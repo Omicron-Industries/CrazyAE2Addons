@@ -1,11 +1,11 @@
 package net.oktawia.crazyae2addons.network.packets;
 
+import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.nio.charset.StandardCharsets;
-import java.util.function.Supplier;
 
 public class SendLongStringToServerPacket {
     private final String data;
@@ -20,8 +20,7 @@ public class SendLongStringToServerPacket {
 
     public static SendLongStringToServerPacket decode(FriendlyByteBuf buf) {
         return new SendLongStringToServerPacket(
-                new String(buf.readByteArray(), StandardCharsets.UTF_8)
-        );
+                new String(buf.readByteArray(), StandardCharsets.UTF_8));
     }
 
     public static void handle(SendLongStringToServerPacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {

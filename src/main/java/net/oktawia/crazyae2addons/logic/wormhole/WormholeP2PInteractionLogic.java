@@ -1,12 +1,7 @@
 package net.oktawia.crazyae2addons.logic.wormhole;
 
-import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.parts.IPartItem;
-import appeng.me.service.P2PService;
-import appeng.util.Platform;
-import appeng.util.SettingsFrom;
-import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -20,10 +15,19 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+
+import lombok.RequiredArgsConstructor;
+
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.parts.IPartItem;
+import appeng.me.service.P2PService;
+import appeng.util.Platform;
+import appeng.util.SettingsFrom;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.mixins.accessors.P2PTunnelPartAccessor;
 import net.oktawia.crazyae2addons.parts.p2p.WormholeP2PTunnelPart;
-import org.jetbrains.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class WormholeP2PInteractionLogic {
@@ -72,8 +76,7 @@ public class WormholeP2PInteractionLogic {
                     target.pos().getY() + 0.1D,
                     target.pos().getZ() + 0.5D,
                     target.hitFace().getOpposite().toYRot(),
-                    serverPlayer.getXRot()
-            );
+                    serverPlayer.getXRot());
             return true;
         }
 
@@ -129,7 +132,7 @@ public class WormholeP2PInteractionLogic {
             output.putShort("myFreq", part.getFrequency());
 
             var colors = Platform.p2p().toColors(part.getFrequency());
-            int[] colorCode = new int[]{
+            int[] colorCode = new int[] {
                     colors[0].ordinal(), colors[0].ordinal(),
                     colors[1].ordinal(), colors[1].ordinal(),
                     colors[2].ordinal(), colors[2].ordinal(),

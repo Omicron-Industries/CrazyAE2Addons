@@ -1,22 +1,22 @@
 package net.oktawia.crazyae2addons.network.packets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+
 import net.oktawia.crazyae2addons.client.screens.part.RedstoneTerminalScreen;
 import net.oktawia.crazyae2addons.menus.part.RedstoneTerminalMenu;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public record RedstoneWindowPacket(
         int totalCount,
         int windowOffset,
         int revision,
-        List<RedstoneTerminalMenu.EmitterInfo> window
-) {
+        List<RedstoneTerminalMenu.EmitterInfo> window) {
 
     public static void encode(RedstoneWindowPacket packet, FriendlyByteBuf buf) {
         buf.writeVarInt(packet.totalCount());

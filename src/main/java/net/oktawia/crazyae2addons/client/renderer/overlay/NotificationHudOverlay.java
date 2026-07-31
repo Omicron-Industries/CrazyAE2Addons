@@ -1,6 +1,11 @@
 package net.oktawia.crazyae2addons.client.renderer.overlay;
 
-import appeng.api.stacks.GenericStack;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
@@ -9,15 +14,12 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import appeng.api.stacks.GenericStack;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.network.packets.NotificationHudPacket;
 import net.oktawia.crazyae2addons.util.Utils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CrazyAddons.MODID)
 public class NotificationHudOverlay {
@@ -58,26 +60,32 @@ public class NotificationHudOverlay {
 
     @SubscribeEvent
     public static void onRender(RenderGuiOverlayEvent.Post e) {
-        if (!e.getOverlay().id().equals(VanillaGuiOverlay.HOTBAR.id())) return;
+        if (!e.getOverlay().id().equals(VanillaGuiOverlay.HOTBAR.id()))
+            return;
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return;
-        if (mc.screen != null) return;
+        if (mc.player == null)
+            return;
+        if (mc.screen != null)
+            return;
 
         long now = System.currentTimeMillis();
         Iterator<Map.Entry<Integer, State>> it = states.entrySet().iterator();
         while (it.hasNext()) {
             var en = it.next();
-            if (now - en.getValue().lastUpdateMs > TTL_MS) it.remove();
+            if (now - en.getValue().lastUpdateMs > TTL_MS)
+                it.remove();
         }
-        if (states.isEmpty()) return;
+        if (states.isEmpty())
+            return;
 
         GuiGraphics g = e.getGuiGraphics();
         int w = mc.getWindow().getGuiScaledWidth();
         int h = mc.getWindow().getGuiScaledHeight();
 
         for (State st : states.values()) {
-            if (st.entries == null || st.entries.isEmpty()) continue;
+            if (st.entries == null || st.entries.isEmpty())
+                continue;
             renderOne(g, mc, w, h, st);
         }
     }
@@ -143,9 +151,7 @@ public class NotificationHudOverlay {
                 1.0f,
                 Math.min(
                         availableW / (float) Math.max(1, contentW + OVERLAY_PADDING * 2),
-                        availableH / (float) Math.max(1, contentH + OVERLAY_PADDING * 2)
-                )
-        );
+                        availableH / (float) Math.max(1, contentH + OVERLAY_PADDING * 2)));
 
         float manualScale = st.scale / 100.0f;
         float finalScale = autoScale * manualScale;
@@ -202,8 +208,10 @@ public class NotificationHudOverlay {
     }
 
     private static int pickColor(long amount, long threshold) {
-        if (threshold <= 0) return 0xFFFFFFFF;
-        if (amount >= threshold) return 0xFF55FF55;
+        if (threshold <= 0)
+            return 0xFFFFFFFF;
+        if (amount >= threshold)
+            return 0xFF55FF55;
         return 0xFFFF5555;
     }
 }

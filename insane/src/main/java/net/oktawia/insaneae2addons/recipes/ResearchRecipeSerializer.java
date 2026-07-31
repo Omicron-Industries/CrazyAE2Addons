@@ -1,18 +1,19 @@
 package net.oktawia.insaneae2addons.recipes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe> {
 
@@ -21,7 +22,7 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
     @Override
     public ResearchRecipe fromJson(ResourceLocation id, JsonObject json) throws JsonSyntaxException {
         final int duration = reqInt(json, "duration");
-        final int ept      = reqInt(json, "energy_per_tick");
+        final int ept = reqInt(json, "energy_per_tick");
 
         final List<ResearchRecipe.Consumable> consumables = new ArrayList<>();
         if (json.has("consumables")) {
@@ -44,14 +45,13 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
                 id,
                 duration, ept,
                 consumables,
-                new ResearchRecipe.Unlock(unlockKey, unlockLabel, item)
-        );
+                new ResearchRecipe.Unlock(unlockKey, unlockLabel, item));
     }
 
     @Override
     public ResearchRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
         int duration = buf.readVarInt();
-        int ept      = buf.readVarInt();
+        int ept = buf.readVarInt();
 
         int consN = buf.readVarInt();
         List<ResearchRecipe.Consumable> consumables = new ArrayList<>(consN);
@@ -70,8 +70,7 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
                 id,
                 duration, ept,
                 consumables,
-                new ResearchRecipe.Unlock(unlockKey, unlockLabel, item)
-        );
+                new ResearchRecipe.Unlock(unlockKey, unlockLabel, item));
     }
 
     @Override
@@ -92,18 +91,21 @@ public class ResearchRecipeSerializer implements RecipeSerializer<ResearchRecipe
     }
 
     private static String reqString(JsonObject o, String key) {
-        if (!o.has(key)) throw new JsonSyntaxException("Missing '" + key + "'");
+        if (!o.has(key))
+            throw new JsonSyntaxException("Missing '" + key + "'");
         return o.get(key).getAsString();
     }
 
     private static int reqInt(JsonObject o, String key) {
-        if (!o.has(key)) throw new JsonSyntaxException("Missing '" + key + "'");
+        if (!o.has(key))
+            throw new JsonSyntaxException("Missing '" + key + "'");
         return o.get(key).getAsInt();
     }
 
     private static Item readItem(String id) {
         Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
-        if (item == null) throw new JsonSyntaxException("Unknown item: " + id);
+        if (item == null)
+            throw new JsonSyntaxException("Unknown item: " + id);
         return item;
     }
 }

@@ -1,19 +1,20 @@
 package net.oktawia.insaneae2addons.defs;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
-import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition.TrackingMode;
-import net.oktawia.insaneae2addons.InsaneConfig;
-import net.oktawia.insaneae2addons.logic.penrose.PenroseEnergyExport;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
+import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition.TrackingMode;
+import net.oktawia.insaneae2addons.InsaneConfig;
+import net.oktawia.insaneae2addons.logic.penrose.PenroseEnergyExport;
 
 public final class InsaneMultiblocks {
     private InsaneMultiblocks() {
@@ -161,7 +162,6 @@ public final class InsaneMultiblocks {
         return builder.build();
     }
 
-
     private static String[] penrosePortBlockIds() {
         List<String> ids = new ArrayList<>(List.of("insaneae2addons:penrose_port"));
         PenroseEnergyExport export = PenroseEnergyExport.get();
@@ -299,8 +299,7 @@ public final class InsaneMultiblocks {
     }
 
     private static boolean inside(BlockPos pos) {
-        return Math.max(Math.max(Math.abs(pos.getX()), Math.abs(pos.getY())), Math.abs(pos.getZ()))
-                <= SPHERE_HALF_SIZE;
+        return Math.max(Math.max(Math.abs(pos.getX()), Math.abs(pos.getY())), Math.abs(pos.getZ())) <= SPHERE_HALF_SIZE;
     }
 
     private static boolean isAxisTip(int x, int y, int z) {
@@ -379,8 +378,7 @@ public final class InsaneMultiblocks {
                         ".AAAAA.",
                         ".AAAAA.",
                         "..AAA..",
-                        "......."
-                )
+                        ".......")
                 .layer(
                         "..AAA..",
                         ".A...A.",
@@ -388,8 +386,7 @@ public final class InsaneMultiblocks {
                         "A..A..A",
                         "A.....A",
                         ".A...A.",
-                        "..ACA.."
-                )
+                        "..ACA..")
                 .layer(
                         ".ABBBA.",
                         "A.....A",
@@ -397,8 +394,7 @@ public final class InsaneMultiblocks {
                         "B..A..B",
                         "B.....B",
                         "A.....A",
-                        ".ABBBA."
-                )
+                        ".ABBBA.")
                 .layer(
                         ".ABBBA.",
                         "A.....A",
@@ -406,8 +402,7 @@ public final class InsaneMultiblocks {
                         "B..D..B",
                         "B.....B",
                         "A.....A",
-                        ".ABBBA."
-                )
+                        ".ABBBA.")
                 .layer(
                         ".ABBBA.",
                         "A.....A",
@@ -415,8 +410,7 @@ public final class InsaneMultiblocks {
                         "B..A..B",
                         "B.....B",
                         "A.....A",
-                        ".ABBBA."
-                )
+                        ".ABBBA.")
                 .layer(
                         "..AAA..",
                         ".A...A.",
@@ -424,8 +418,7 @@ public final class InsaneMultiblocks {
                         "A..A..A",
                         "A.....A",
                         ".A...A.",
-                        "..AAA.."
-                )
+                        "..AAA..")
                 .layer(
                         ".......",
                         "..AAA..",
@@ -433,8 +426,7 @@ public final class InsaneMultiblocks {
                         ".AAAAA.",
                         ".AAAAA.",
                         "..AAA..",
-                        "......."
-                )
+                        ".......")
                 .build();
     }
 
@@ -453,8 +445,7 @@ public final class InsaneMultiblocks {
                         "BBBBBBBBBBB",
                         "BBBBBBBBBBB",
                         ".BBBBBBBBB.",
-                        "A.BBBCBBB.A"
-                )
+                        "A.BBBCBBB.A")
                 .layer(
                         "A.B.....B.A",
                         ".BB.....BB.",
@@ -466,8 +457,7 @@ public final class InsaneMultiblocks {
                         "...........",
                         "BBB.....BBB",
                         ".BB.....BB.",
-                        "A.B.....B.A"
-                )
+                        "A.B.....B.A")
                 .layer(
                         "A.B.....B.A",
                         ".BB.....BB.",
@@ -479,8 +469,7 @@ public final class InsaneMultiblocks {
                         "...........",
                         "BBB.....BBB",
                         ".BB.....BB.",
-                        "A.B.....B.A"
-                )
+                        "A.B.....B.A")
                 .layer(
                         "A.B.....B.A",
                         ".BB.....BB.",
@@ -492,8 +481,7 @@ public final class InsaneMultiblocks {
                         "...........",
                         "BBB.....BBB",
                         ".BB.....BB.",
-                        "A.B.....B.A"
-                )
+                        "A.B.....B.A")
                 .layer(
                         "A.........A",
                         "..B.....B..",
@@ -505,8 +493,7 @@ public final class InsaneMultiblocks {
                         "...........",
                         ".BB.....BB.",
                         "..B.....B..",
-                        "A.........A"
-                )
+                        "A.........A")
                 .layer(
                         "A.........A",
                         "..B.....B..",
@@ -518,8 +505,7 @@ public final class InsaneMultiblocks {
                         "...........",
                         ".BB.....BB.",
                         "..B.....B..",
-                        "A.........A"
-                )
+                        "A.........A")
                 .layer(
                         "...........",
                         "...........",
@@ -531,8 +517,7 @@ public final class InsaneMultiblocks {
                         "..B.....B..",
                         "..BBB.BBB..",
                         "...........",
-                        "..........."
-                )
+                        "...........")
                 .layer(
                         "...........",
                         "...........",
@@ -544,8 +529,7 @@ public final class InsaneMultiblocks {
                         "...........",
                         "....BBB....",
                         "...........",
-                        "..........."
-                )
+                        "...........")
                 .build();
     }
 

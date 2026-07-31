@@ -1,5 +1,13 @@
 package net.oktawia.crazyae2addons.client.textures;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.joml.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -19,13 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
-import org.joml.Vector3f;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> implements PreviewQuadProvider {
 
@@ -94,7 +95,8 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
     }
 
     @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData modelData, RenderType renderType) {
+    public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData modelData,
+            RenderType renderType) {
         if (state == null) {
             return originalModel.getQuads(state, side, rand, modelData, renderType);
         }
@@ -124,8 +126,8 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
                             .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                             .apply(tex));
 
-            float[] from = {0.0f, 0.0f, 0.0f};
-            float[] to = {16.0f, 16.0f, 16.0f};
+            float[] from = { 0.0f, 0.0f, 0.0f };
+            float[] to = { 16.0f, 16.0f, 16.0f };
             int f = axisIndex(face.getAxis());
             if (face.getAxisDirection() == Direction.AxisDirection.POSITIVE) {
                 from[f] = 16.0f;
@@ -146,8 +148,7 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
                 key.texture(),
                 tex -> Minecraft.getInstance()
                         .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                        .apply(tex)
-        );
+                        .apply(tex));
 
         List<BakedQuad> quads = new ArrayList<>();
 
@@ -169,18 +170,18 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
     }
 
     private void addBar(List<BakedQuad> out,
-                        Direction first,
-                        Direction second,
-                        int mask,
-                        TextureAtlasSprite sprite,
-                        ResourceLocation texture) {
+            Direction first,
+            Direction second,
+            int mask,
+            TextureAtlasSprite sprite,
+            ResourceLocation texture) {
         Direction.Axis length = lengthAxis(first, second);
         Direction positive = Direction.get(Direction.AxisDirection.POSITIVE, length);
         Direction negative = positive.getOpposite();
         int axis = axisIndex(length);
 
-        float[] from = {0.0f, 0.0f, 0.0f};
-        float[] to = {16.0f, 16.0f, 16.0f};
+        float[] from = { 0.0f, 0.0f, 0.0f };
+        float[] to = { 16.0f, 16.0f, 16.0f };
         clampToEdge(from, to, first);
         clampToEdge(from, to, second);
         if (cornerPlacedAt(mask, first, second, negative)) {
@@ -208,8 +209,8 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
 
                     int tile = concaveCorner(mask, x, y, z) ? TILE_INNER : TILE_OUTER;
 
-                    float[] from = {0.0f, 0.0f, 0.0f};
-                    float[] to = {16.0f, 16.0f, 16.0f};
+                    float[] from = { 0.0f, 0.0f, 0.0f };
+                    float[] to = { 16.0f, 16.0f, 16.0f };
                     clampToEdge(from, to, x);
                     clampToEdge(from, to, y);
                     clampToEdge(from, to, z);
@@ -228,8 +229,8 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
                 continue;
             }
 
-            float[] from = {0.0f, 0.0f, 0.0f};
-            float[] to = {16.0f, 16.0f, 16.0f};
+            float[] from = { 0.0f, 0.0f, 0.0f };
+            float[] to = { 16.0f, 16.0f, 16.0f };
             for (Direction.Axis axis : Direction.Axis.values()) {
                 if (axis == face.getAxis()) {
                     continue;
@@ -321,17 +322,16 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
     }
 
     private BakedQuad bakeFace(float[] from,
-                               float[] to,
-                               Direction face,
-                               int tile,
-                               TextureAtlasSprite sprite,
-                               ResourceLocation texture) {
+            float[] to,
+            Direction face,
+            int tile,
+            TextureAtlasSprite sprite,
+            ResourceLocation texture) {
         BlockElementFace elementFace = new BlockElementFace(
                 null,
                 -1,
                 "",
-                new BlockFaceUV(tileUv(tile, autoUv(face, from, to)), 0)
-        );
+                new BlockFaceUV(tileUv(tile, autoUv(face, from, to)), 0));
 
         return bakery.bakeQuad(
                 new Vector3f(from[0], from[1], from[2]),
@@ -342,25 +342,24 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
                 BlockModelRotation.X0_Y0,
                 null,
                 true,
-                texture
-        );
+                texture);
     }
 
     private static float[] autoUv(Direction face, float[] from, float[] to) {
         return switch (face) {
-            case DOWN -> new float[]{from[0], 16.0f - to[2], to[0], 16.0f - from[2]};
-            case UP -> new float[]{from[0], from[2], to[0], to[2]};
-            case NORTH -> new float[]{16.0f - to[0], 16.0f - to[1], 16.0f - from[0], 16.0f - from[1]};
-            case SOUTH -> new float[]{from[0], 16.0f - to[1], to[0], 16.0f - from[1]};
-            case WEST -> new float[]{from[2], 16.0f - to[1], to[2], 16.0f - from[1]};
-            case EAST -> new float[]{16.0f - to[2], 16.0f - to[1], 16.0f - from[2], 16.0f - from[1]};
+            case DOWN -> new float[] { from[0], 16.0f - to[2], to[0], 16.0f - from[2] };
+            case UP -> new float[] { from[0], from[2], to[0], to[2] };
+            case NORTH -> new float[] { 16.0f - to[0], 16.0f - to[1], 16.0f - from[0], 16.0f - from[1] };
+            case SOUTH -> new float[] { from[0], 16.0f - to[1], to[0], 16.0f - from[1] };
+            case WEST -> new float[] { from[2], 16.0f - to[1], to[2], 16.0f - from[1] };
+            case EAST -> new float[] { 16.0f - to[2], 16.0f - to[1], 16.0f - from[2], 16.0f - from[1] };
         };
     }
 
     private static float[] tileUv(int tile, float[] uv) {
         float scale = TILE_U / 16.0f;
         float base = tile * TILE_U;
-        return new float[]{base + uv[0] * scale, uv[1], base + uv[2] * scale, uv[3]};
+        return new float[] { base + uv[0] * scale, uv[1], base + uv[2] * scale, uv[3] };
     }
 
     private void clampToEdge(float[] from, float[] to, Direction dir) {
@@ -391,7 +390,7 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
     }
 
     private static Direction[] axisDirections(Direction.Axis axis) {
-        return new Direction[]{
+        return new Direction[] {
                 Direction.get(Direction.AxisDirection.NEGATIVE, axis),
                 Direction.get(Direction.AxisDirection.POSITIVE, axis)
         };
@@ -435,5 +434,6 @@ public final class ConnectedBarModel extends BakedModelWrapper<BakedModel> imple
         return table;
     }
 
-    private record BarCacheKey(ResourceLocation texture, int mask) {}
+    private record BarCacheKey(ResourceLocation texture, int mask) {
+    }
 }

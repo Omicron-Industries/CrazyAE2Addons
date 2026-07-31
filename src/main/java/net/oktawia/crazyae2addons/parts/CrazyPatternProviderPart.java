@@ -1,5 +1,31 @@
 package net.oktawia.crazyae2addons.parts;
 
+import java.util.List;
+
+import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
+import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.accessor.IManagedAccessor;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
+import lombok.Getter;
+
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
@@ -16,25 +42,7 @@ import appeng.parts.PartModel;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.util.SettingsFrom;
 import appeng.util.inv.AppEngInternalInventory;
-import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.accessor.IManagedAccessor;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
-import lombok.Getter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.LangDefs;
@@ -43,9 +51,6 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IProviderLogicResizable;
 import net.oktawia.crazyae2addons.logic.provider.CrazyProviderNbt;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class CrazyPatternProviderPart extends PatternProviderPart implements IUpgradeableObject {
 
@@ -58,20 +63,17 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(
             CrazyAddons.makeId("part/crazy_pattern_provider_part"),
-            new ResourceLocation("ae2", "part/interface_off")
-    );
+            new ResourceLocation("ae2", "part/interface_off"));
 
     @PartModels
     public static final PartModel MODELS_ON = new PartModel(
             CrazyAddons.makeId("part/crazy_pattern_provider_part"),
-            new ResourceLocation("ae2", "part/interface_on")
-    );
+            new ResourceLocation("ae2", "part/interface_on"));
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(
             CrazyAddons.makeId("part/crazy_pattern_provider_part"),
-            new ResourceLocation("ae2", "part/interface_has_channel")
-    );
+            new ResourceLocation("ae2", "part/interface_has_channel"));
 
     private final PartState state = new PartState(this);
 
@@ -82,8 +84,7 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
                 if (getHost() != null) {
                     getHost().markForSave();
                 }
-            }
-    );
+            });
 
     private boolean pendingPatternUpdate = false;
 
@@ -272,8 +273,7 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
                 if (maxAdd != -1 && state.getAdded() >= maxAdd) {
                     player.displayClientMessage(
                             Component.translatable(LangDefs.PROVIDER_MAX.getTranslationKey()),
-                            true
-                    );
+                            true);
                     return true;
                 }
 
@@ -288,8 +288,7 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
             MenuOpener.open(
                     CrazyMenuRegistrar.CRAZY_PATTERN_PROVIDER_MENU.get(),
                     player,
-                    MenuLocators.forPart(this)
-            );
+                    MenuLocators.forPart(this));
         }
 
         return true;
@@ -444,8 +443,7 @@ public class CrazyPatternProviderPart extends PatternProviderPart implements IUp
             new IManagedAccessor().writeToReadonlyField(
                     AccessorOp.SYNCED,
                     this,
-                    NbtTagPayload.of(tag)
-            );
+                    NbtTagPayload.of(tag));
         }
 
         private void markFieldDirty(String name) {

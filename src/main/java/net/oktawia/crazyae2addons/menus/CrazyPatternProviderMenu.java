@@ -1,15 +1,21 @@
 package net.oktawia.crazyae2addons.menus;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
+
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.slot.RestrictedInputSlot;
-import lombok.Getter;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.client.screens.CrazyPatternProviderScreen;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
@@ -17,10 +23,6 @@ import net.oktawia.crazyae2addons.entities.CrazyPatternProviderBE;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.UpdatePatternsPacket;
 import net.oktawia.crazyae2addons.parts.CrazyPatternProviderPart;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class CrazyPatternProviderMenu extends PatternProviderMenu {
 
@@ -70,7 +72,8 @@ public class CrazyPatternProviderMenu extends PatternProviderMenu {
             return;
         }
         int startIndex = Math.max(0, Math.min(slotNum - 1, startRow * CrazyPatternProviderScreen.COLS));
-        int count = Math.min(CrazyPatternProviderScreen.VISIBLE_ROWS * CrazyPatternProviderScreen.COLS, Math.max(0, slotNum - startIndex));
+        int count = Math.min(CrazyPatternProviderScreen.VISIBLE_ROWS * CrazyPatternProviderScreen.COLS,
+                Math.max(0, slotNum - startIndex));
 
         var inventory = this.host.getLogic().getPatternInv();
         List<ItemStack> visibleStacks = new ArrayList<>(count);

@@ -6,8 +6,7 @@ public record DisplayImageEntry(
         int x,
         int y,
         int width,
-        int height
-) {
+        int height) {
     public DisplayImageEntry withBounds(int x, int y, int width, int height) {
         return new DisplayImageEntry(id, sourceName, x, y, width, height);
     }

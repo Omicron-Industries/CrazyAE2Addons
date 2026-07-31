@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.logic.autobuilder;
 
+import java.util.Optional;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -9,21 +11,41 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.oktawia.insaneae2addons.InsaneAddons;
 
-import java.util.Optional;
+import net.oktawia.insaneae2addons.InsaneAddons;
 
 public final class BuilderCoordMath {
 
-    private BuilderCoordMath() {}
+    private BuilderCoordMath() {
+    }
 
     public static BlockPos localToWorldOffset(BlockPos local, Direction facing) {
         int fx, fz, rx, rz;
         switch (facing) {
-            case SOUTH -> { fx = 0; fz = 1; rx = -1; rz = 0; }
-            case EAST  -> { fx = 1; fz = 0; rx = 0;  rz = 1; }
-            case WEST  -> { fx = -1; fz = 0; rx = 0; rz = -1; }
-            default    -> { fx = 0; fz = -1; rx = 1; rz = 0; }
+            case SOUTH -> {
+                fx = 0;
+                fz = 1;
+                rx = -1;
+                rz = 0;
+            }
+            case EAST -> {
+                fx = 1;
+                fz = 0;
+                rx = 0;
+                rz = 1;
+            }
+            case WEST -> {
+                fx = -1;
+                fz = 0;
+                rx = 0;
+                rz = -1;
+            }
+            default -> {
+                fx = 0;
+                fz = -1;
+                rx = 1;
+                rz = 0;
+            }
         }
         int wx = local.getX() * rx + local.getZ() * fx;
         int wy = local.getY();
@@ -34,10 +56,30 @@ public final class BuilderCoordMath {
     public static BlockPos stepRelative(BlockPos pos, char cmd, Direction facing) {
         int fx, fz, rx, rz;
         switch (facing) {
-            case SOUTH -> { fx = 0; fz = 1; rx = -1; rz = 0; }
-            case EAST  -> { fx = 1; fz = 0; rx = 0;  rz = 1; }
-            case WEST  -> { fx = -1; fz = 0; rx = 0; rz = -1; }
-            default    -> { fx = 0; fz = -1; rx = 1; rz = 0; }
+            case SOUTH -> {
+                fx = 0;
+                fz = 1;
+                rx = -1;
+                rz = 0;
+            }
+            case EAST -> {
+                fx = 1;
+                fz = 0;
+                rx = 0;
+                rz = 1;
+            }
+            case WEST -> {
+                fx = -1;
+                fz = 0;
+                rx = 0;
+                rz = -1;
+            }
+            default -> {
+                fx = 0;
+                fz = -1;
+                rx = 1;
+                rz = 0;
+            }
         }
         return switch (cmd) {
             case 'F' -> pos.offset(fx, 0, fz);
@@ -46,7 +88,7 @@ public final class BuilderCoordMath {
             case 'L' -> pos.offset(-rx, 0, -rz);
             case 'U' -> pos.offset(0, 1, 0);
             case 'D' -> pos.offset(0, -1, 0);
-            default  -> pos;
+            default -> pos;
         };
     }
 
@@ -58,24 +100,25 @@ public final class BuilderCoordMath {
             case 'L' -> pos.offset(-1, 0, 0);
             case 'U' -> pos.offset(0, 1, 0);
             case 'D' -> pos.offset(0, -1, 0);
-            default  -> pos;
+            default -> pos;
         };
     }
 
     public static int yawStepsFromNorth(Direction d) {
         return switch (d) {
             case NORTH -> 0;
-            case EAST  -> 1;
+            case EAST -> 1;
             case SOUTH -> 2;
-            case WEST  -> 3;
-            default    -> 0;
+            case WEST -> 3;
+            default -> 0;
         };
     }
 
     public static Direction rotateHorizontal(Direction dir, int steps) {
         steps = Math.floorMod(steps, 4);
         Direction out = dir;
-        for (int i = 0; i < steps; i++) out = out.getClockWise();
+        for (int i = 0; i < steps; i++)
+            out = out.getClockWise();
         return out;
     }
 
@@ -87,7 +130,8 @@ public final class BuilderCoordMath {
         for (var p : state.getProperties()) {
             if (p instanceof DirectionProperty dp) {
                 Direction d = state.getValue(dp);
-                if (isHorizontal(d)) state = state.setValue(dp, rotateHorizontal(d, steps));
+                if (isHorizontal(d))
+                    state = state.setValue(dp, rotateHorizontal(d, steps));
             }
         }
         if (state.hasProperty(BlockStateProperties.AXIS)) {
@@ -112,7 +156,8 @@ public final class BuilderCoordMath {
         return state;
     }
 
-    public static <T extends Comparable<T>> BlockState applyProperty(BlockState state, Property<T> property, String valueStr) {
+    public static <T extends Comparable<T>> BlockState applyProperty(BlockState state, Property<T> property,
+            String valueStr) {
         try {
             if (property instanceof BooleanProperty bp) {
                 return state.setValue(bp, Boolean.parseBoolean(valueStr));
@@ -121,7 +166,8 @@ public final class BuilderCoordMath {
                 return state.setValue(ip, Integer.parseInt(valueStr));
             }
             Optional<T> value = property.getValue(valueStr);
-            if (value.isPresent()) return state.setValue(property, value.get());
+            if (value.isPresent())
+                return state.setValue(property, value.get());
         } catch (Exception e) {
             InsaneAddons.LOGGER.debug("failed to apply block state property", e);
         }

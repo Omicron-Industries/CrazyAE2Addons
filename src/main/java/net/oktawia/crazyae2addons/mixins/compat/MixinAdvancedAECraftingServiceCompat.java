@@ -1,15 +1,10 @@
 package net.oktawia.crazyae2addons.mixins.compat;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
-import appeng.api.stacks.AEKey;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.me.service.CraftingService;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
-import net.pedroksl.advanced_ae.common.cluster.AdvCraftingCPU;
-import net.pedroksl.advanced_ae.common.cluster.AdvCraftingCPUCluster;
-import net.pedroksl.advanced_ae.common.entities.AdvCraftingBlockEntity;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -17,10 +12,18 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import net.pedroksl.advanced_ae.common.cluster.AdvCraftingCPU;
+import net.pedroksl.advanced_ae.common.cluster.AdvCraftingCPUCluster;
+import net.pedroksl.advanced_ae.common.entities.AdvCraftingBlockEntity;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
+import appeng.api.stacks.AEKey;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.me.service.CraftingService;
+
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
 
 @Mixin(value = CraftingService.class, priority = 1200, remap = false)
 public abstract class MixinAdvancedAECraftingServiceCompat {
@@ -81,13 +84,7 @@ public abstract class MixinAdvancedAECraftingServiceCompat {
         return inserted;
     }
 
-    @Redirect(
-            method = "onServerEndTick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"
-            )
-    )
+    @Redirect(method = "onServerEndTick", at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
     private Iterator<CraftingCPUCluster> crazyae2addons$sortedIteratorOnTick(Set<CraftingCPUCluster> self) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
             return self.iterator();
@@ -95,13 +92,7 @@ public abstract class MixinAdvancedAECraftingServiceCompat {
         return self.stream().sorted(CpuPriorityHelper.clusterComparator()).iterator();
     }
 
-    @Redirect(
-            method = "getCpus",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"
-            )
-    )
+    @Redirect(method = "getCpus", at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
     private Iterator<CraftingCPUCluster> crazyae2addons$sortedIteratorGetCpus(Set<CraftingCPUCluster> self) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
             return self.iterator();

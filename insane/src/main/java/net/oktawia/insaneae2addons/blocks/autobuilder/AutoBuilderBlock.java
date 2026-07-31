@@ -1,6 +1,7 @@
 package net.oktawia.insaneae2addons.blocks.autobuilder;
 
-import appeng.block.AEBaseBlock;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -12,9 +13,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
+
+import appeng.block.AEBaseBlock;
+
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
-import org.jetbrains.annotations.Nullable;
+import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 
 public class AutoBuilderBlock extends AbstractMenuOpeningBlock<AutoBuilderBE> {
 
@@ -49,7 +52,7 @@ public class AutoBuilderBlock extends AbstractMenuOpeningBlock<AutoBuilderBE> {
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos,
-                                Block block, BlockPos fromPos, boolean isMoving) {
+            Block block, BlockPos fromPos, boolean isMoving) {
         if (level.isClientSide) {
             return;
         }

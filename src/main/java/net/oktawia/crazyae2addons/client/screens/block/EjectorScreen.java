@@ -1,5 +1,14 @@
 package net.oktawia.crazyae2addons.client.screens.block;
 
+import java.util.ArrayList;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -10,12 +19,7 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.menu.SlotSemantics;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.screens.SetConfigAmountScreen;
 import net.oktawia.crazyae2addons.defs.LangDefs;
@@ -23,8 +27,6 @@ import net.oktawia.crazyae2addons.entities.EjectorBE;
 import net.oktawia.crazyae2addons.menus.block.EjectorMenu;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.SetConfigAmountPacket;
-
-import java.util.ArrayList;
 
 public class EjectorScreen<C extends EjectorMenu> extends AEBaseScreen<C> {
 
@@ -90,14 +92,14 @@ public class EjectorScreen<C extends EjectorMenu> extends AEBaseScreen<C> {
                                     if (newStack == null) {
                                         NetworkHandler.sendToServer(new SetConfigAmountPacket(slot.index, 0L));
                                     } else {
-                                        NetworkHandler.sendToServer(new SetConfigAmountPacket(slot.index, newStack.amount()));
+                                        NetworkHandler
+                                                .sendToServer(new SetConfigAmountPacket(slot.index, newStack.amount()));
                                     }
 
                                     this.setSlotsHidden(SlotSemantics.CONFIG, false);
                                     this.setSlotsHidden(SlotSemantics.PLAYER_HOTBAR, false);
                                     this.setSlotsHidden(SlotSemantics.PLAYER_INVENTORY, false);
-                                }
-                        ));
+                                }));
                         return true;
                     }
                 }
@@ -122,7 +124,8 @@ public class EjectorScreen<C extends EjectorMenu> extends AEBaseScreen<C> {
 
         if (this.menu.getCarried().isEmpty() && this.menu.canModifyAmountForSlot(this.hoveredSlot)) {
             var lines = new ArrayList<>(getTooltipFromContainerItem(this.hoveredSlot.getItem()));
-            lines.add(Component.translatable(LangDefs.EJECTOR_MIDDLE_CLICK.getTranslationKey()).withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable(LangDefs.EJECTOR_MIDDLE_CLICK.getTranslationKey())
+                    .withStyle(ChatFormatting.GRAY));
             drawTooltip(gg, x, y, lines);
             return;
         }

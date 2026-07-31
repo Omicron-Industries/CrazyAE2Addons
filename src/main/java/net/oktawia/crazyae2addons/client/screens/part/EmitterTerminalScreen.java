@@ -1,5 +1,22 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParsePosition;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
 import appeng.api.inventories.InternalInventory;
@@ -14,26 +31,11 @@ import appeng.client.gui.widgets.ConfirmableTextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.interfaces.IMovableSlot;
 import net.oktawia.crazyae2addons.menus.part.EmitterTerminalMenu;
 import net.oktawia.crazyae2addons.network.packets.EmitterWindowPacket;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParsePosition;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 public class EmitterTerminalScreen<C extends EmitterTerminalMenu> extends AEBaseScreen<C> {
     private static final int VISIBLE_ROWS = EmitterTerminalMenu.VISIBLE_ROWS;
@@ -102,8 +104,7 @@ public class EmitterTerminalScreen<C extends EmitterTerminalMenu> extends AEBase
                     0,
                     0,
                     VALUE_WIDTH,
-                    Minecraft.getInstance().font.lineHeight
-            );
+                    Minecraft.getInstance().font.lineHeight);
             textField.setBordered(false);
             textField.setMaxLength(16);
             textField.setTextColor(normalTextColor);
@@ -365,8 +366,7 @@ public class EmitterTerminalScreen<C extends EmitterTerminalMenu> extends AEBase
 
         tooltip.add(Component.translatable(
                 LangDefs.MULTI_EMITTER_UNIT_LINE.getTranslationKey(),
-                unitArg
-        ));
+                unitArg));
 
         Optional<BigDecimal> internal = getRowValueInternal(row);
         if (internal.isEmpty()) {
@@ -419,8 +419,7 @@ public class EmitterTerminalScreen<C extends EmitterTerminalMenu> extends AEBase
         if (!anyFieldFocused) {
             return scrollbar.onMouseWheel(
                     new Point((int) Math.round(x - leftPos), (int) Math.round(y - topPos)),
-                    delta
-            );
+                    delta);
         }
 
         return true;

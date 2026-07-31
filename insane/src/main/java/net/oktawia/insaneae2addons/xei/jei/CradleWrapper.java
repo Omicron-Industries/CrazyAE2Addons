@@ -1,12 +1,14 @@
 package net.oktawia.insaneae2addons.xei.jei;
 
+import java.util.List;
+
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.insaneae2addons.xei.common.CradleEntry;
 import net.oktawia.insaneae2addons.xei.common.CradlePreview;
-
-import java.util.List;
 
 public class CradleWrapper extends ModularWrapper<CradlePreview> {
 

@@ -1,25 +1,18 @@
 package net.oktawia.crazyae2addons.entities;
 
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.filter.IAEItemFilter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -42,6 +35,24 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+
+import lombok.Getter;
+
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.filter.IAEItemFilter;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
@@ -52,18 +63,11 @@ import net.oktawia.crazyae2addons.menus.block.RecipeFabricatorMenu;
 import net.oktawia.crazyae2addons.recipes.FabricationRecipe;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class RecipeFabricatorBE extends AENetworkInvBlockEntity
         implements MenuProvider, IGridTickable, IUpgradeableObject, IMenuOpeningBlockEntity, IManagedBEHelper {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(RecipeFabricatorBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeFabricatorBE.class);
 
     private static final int FIXED_DURATION = 10;
 
@@ -511,7 +515,8 @@ public class RecipeFabricatorBE extends AENetworkInvBlockEntity
 
             IFluidHandler fluidHandler = null;
             if (!fluid.isEmpty()) {
-                fluidHandler = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite()).orElse(null);
+                fluidHandler = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, dir.getOpposite())
+                        .orElse(null);
                 if (fluidHandler == null) {
                     continue;
                 }

@@ -1,14 +1,23 @@
 package net.oktawia.crazyae2addons.menus.part;
 
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+
+import lombok.Getter;
+
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.locator.MenuLocators;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
@@ -18,15 +27,11 @@ import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.SyncDisplayImagePreviewPacket;
 import net.oktawia.crazyae2addons.parts.Display;
 
-import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 public class DisplayMenu extends AEBaseMenu {
 
     private static final Gson GSON = new Gson();
-    private static final Type IMAGE_LIST_TYPE = new TypeToken<List<DisplayImageEntry>>() {}.getType();
+    private static final Type IMAGE_LIST_TYPE = new TypeToken<List<DisplayImageEntry>>() {
+    }.getType();
 
     public static final String ACTION_SYNC = "syncDisplayValue";
     public static final String ACTION_MODE = "changeMode";
@@ -68,13 +73,13 @@ public class DisplayMenu extends AEBaseMenu {
     public String previewImagesJson = "[]";
 
     @GuiSync(39)
-    public boolean connectUp    = true;
+    public boolean connectUp = true;
 
     @GuiSync(40)
-    public boolean connectDown  = true;
+    public boolean connectDown = true;
 
     @GuiSync(41)
-    public boolean connectLeft  = true;
+    public boolean connectLeft = true;
 
     @GuiSync(42)
     public boolean connectRight = true;
@@ -93,9 +98,9 @@ public class DisplayMenu extends AEBaseMenu {
         this.mode = host.isMergeMode();
         this.margin = host.isAddMargin();
         this.centerText = host.getCenterText();
-        this.connectUp    = host.canConnectLocal(Display.LocalDir.UP);
-        this.connectDown  = host.canConnectLocal(Display.LocalDir.DOWN);
-        this.connectLeft  = host.canConnectLocal(Display.LocalDir.LEFT);
+        this.connectUp = host.canConnectLocal(Display.LocalDir.UP);
+        this.connectDown = host.canConnectLocal(Display.LocalDir.DOWN);
+        this.connectLeft = host.canConnectLocal(Display.LocalDir.LEFT);
         this.connectRight = host.canConnectLocal(Display.LocalDir.RIGHT);
 
         String pending = host.pendingInsert;
@@ -247,8 +252,7 @@ public class DisplayMenu extends AEBaseMenu {
             MenuOpener.open(
                     CrazyMenuRegistrar.DISPLAY_TOKEN_SUBMENU.get(),
                     getPlayer(),
-                    MenuLocators.forPart(host)
-            );
+                    MenuLocators.forPart(host));
         }
 
         if (isClientSide()) {
@@ -269,17 +273,19 @@ public class DisplayMenu extends AEBaseMenu {
 
     private void applyConnectFlag(Display.LocalDir dir, boolean val) {
         switch (dir) {
-            case UP    -> connectUp    = val;
-            case DOWN  -> connectDown  = val;
-            case LEFT  -> connectLeft  = val;
+            case UP -> connectUp = val;
+            case DOWN -> connectDown = val;
+            case LEFT -> connectLeft = val;
             case RIGHT -> connectRight = val;
         }
     }
 
     private void setConnectDirFromPayload(String payload) {
-        if (isClientSide()) return;
+        if (isClientSide())
+            return;
         String[] parts = payload.split("\\|", 2);
-        if (parts.length != 2) return;
+        if (parts.length != 2)
+            return;
         try {
             Display.LocalDir dir = Display.LocalDir.valueOf(parts[0]);
             boolean val = Boolean.parseBoolean(parts[1]);
@@ -298,8 +304,7 @@ public class DisplayMenu extends AEBaseMenu {
             MenuOpener.open(
                     CrazyMenuRegistrar.DISPLAY_IMAGES_SUBMENU.get(),
                     getPlayer(),
-                    MenuLocators.forPart(host)
-            );
+                    MenuLocators.forPart(host));
         }
 
         if (isClientSide()) {

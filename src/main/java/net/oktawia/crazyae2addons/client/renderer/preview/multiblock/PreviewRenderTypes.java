@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.client.renderer.preview.multiblock;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+
 import net.minecraft.client.renderer.RenderType;
 
 public final class PreviewRenderTypes extends RenderType {
@@ -19,8 +20,7 @@ public final class PreviewRenderTypes extends RenderType {
                     .setDepthTestState(NO_DEPTH_TEST)
                     .setCullState(NO_CULL)
                     .setWriteMaskState(COLOR_WRITE)
-                    .createCompositeState(false)
-    );
+                    .createCompositeState(false));
 
     private PreviewRenderTypes(
             String name,
@@ -30,8 +30,7 @@ public final class PreviewRenderTypes extends RenderType {
             boolean affectsCrumbling,
             boolean sortOnUpload,
             Runnable setupState,
-            Runnable clearState
-    ) {
+            Runnable clearState) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
     }
 }

@@ -1,10 +1,12 @@
 package net.oktawia.crazyae2addons.menus.part;
 
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterMenu;
 import net.oktawia.crazyae2addons.parts.TagLevelEmitter;
@@ -37,7 +39,8 @@ public class TagLevelEmitterMenu extends UpgradeableMenu<TagLevelEmitter> implem
 
         registerClientAction(ACTION_SET_EXPRESSION, String.class, this::setExpression);
         registerClientAction(ACTION_SET_THRESHOLD, Long.class, this::setThreshold);
-        registerClientAction(ACTION_SET_ANALOG_LOGARITHMIC_MODE, Boolean.class, this::crazyAE2Addons$setAnalogLogarithmicMode);
+        registerClientAction(ACTION_SET_ANALOG_LOGARITHMIC_MODE, Boolean.class,
+                this::crazyAE2Addons$setAnalogLogarithmicMode);
     }
 
     @Override

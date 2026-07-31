@@ -1,5 +1,9 @@
 package net.oktawia.crazyae2addons.xei.common;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -9,14 +13,13 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
 import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class FabricationPreview extends WidgetGroup {
 
@@ -30,8 +33,7 @@ public class FabricationPreview extends WidgetGroup {
             FluidStack fluidInput,
             FluidStack fluidOutput,
             @Nullable ResourceLocation requiredKey,
-            @Nullable String requiredLabel
-    ) {
+            @Nullable String requiredLabel) {
         super(0, 0, WIDTH, HEIGHT);
         setClientSideWidget();
 
@@ -82,7 +84,8 @@ public class FabricationPreview extends WidgetGroup {
         int middleRowY = yItems + (rowCount - 1) * spacing / 2;
 
         int arrowX = x + perRow * spacing + 10;
-        addWidget(new ButtonWidget(arrowX, middleRowY + 3, 18, 14, new TextTexture("->"), b -> {}));
+        addWidget(new ButtonWidget(arrowX, middleRowY + 3, 18, 14, new TextTexture("->"), b -> {
+        }));
 
         int outX = arrowX + 26;
         addWidget(new LabelWidget(outX, 6, "Output"));
@@ -129,7 +132,8 @@ public class FabricationPreview extends WidgetGroup {
             }
 
             String[] tip = info.stream().map(Component::getString).toArray(String[]::new);
-            addWidget(new ButtonWidget(gx, gy + 3, 12, 12, new TextTexture("!"), b -> {})
+            addWidget(new ButtonWidget(gx, gy + 3, 12, 12, new TextTexture("!"), b -> {
+            })
                     .appendHoverTooltips(tip));
         }
 

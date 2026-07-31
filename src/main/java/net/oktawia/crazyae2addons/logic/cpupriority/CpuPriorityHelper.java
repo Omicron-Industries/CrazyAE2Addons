@@ -1,15 +1,17 @@
 package net.oktawia.crazyae2addons.logic.cpupriority;
 
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuListEntry;
-import lombok.experimental.UtilityClass;
-import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import lombok.experimental.UtilityClass;
+
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuListEntry;
+
+import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
 
 @UtilityClass
 public class CpuPriorityHelper {

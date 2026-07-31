@@ -1,9 +1,10 @@
 package net.oktawia.crazyae2addons.logic.display;
 
-import appeng.api.networking.IGridNodeService;
+import java.util.Map;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
+import appeng.api.networking.IGridNodeService;
 
 public interface DisplayDatabaseProvider extends IGridNodeService {
 

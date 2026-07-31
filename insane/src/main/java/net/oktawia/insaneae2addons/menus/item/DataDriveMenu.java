@@ -1,7 +1,9 @@
 package net.oktawia.insaneae2addons.menus.item;
 
-import appeng.menu.AEBaseMenu;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.menu.AEBaseMenu;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.DataHost;
 

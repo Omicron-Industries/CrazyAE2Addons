@@ -1,9 +1,11 @@
 package net.oktawia.crazyae2addons.client.screens.item;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.style.ScreenStyle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
+
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.menus.item.TagViewCellMenu;
@@ -21,8 +23,7 @@ public class TagViewCellScreen<C extends TagViewCellMenu> extends AEBaseScreen<C
                 this.font,
                 0, 0,
                 50, 80,
-                Component.translatable(LangDefs.TAG_VIEW_CELL_INPUT.getTranslationKey())
-        );
+                Component.translatable(LangDefs.TAG_VIEW_CELL_INPUT.getTranslationKey()));
         this.input.setOnValueChanged(value -> this.getMenu().updateData(value));
         this.widgets.add("data", this.input);
     }

@@ -1,8 +1,9 @@
 package net.oktawia.crazyae2addons.integration.kubejs;
 
+import net.minecraft.resources.ResourceLocation;
+
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
-import net.minecraft.resources.ResourceLocation;
 
 public class CrazyKubeJSPlugin extends KubeJSPlugin {
 

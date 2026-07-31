@@ -2,8 +2,11 @@ package net.oktawia.insaneae2addons.xei.emi;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
+
 import net.minecraft.resources.ResourceLocation;
+
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.xei.common.CradleEntry;
 import net.oktawia.insaneae2addons.xei.common.CradlePreview;
@@ -15,8 +18,7 @@ public class CradleEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     public CradleEmiRecipe(CradleEntry entry, EmiRecipeCategory category) {
         super(() -> new CradlePreview(
-                entry.structureId(), entry.inputs(), entry.output(), entry.description()
-        ));
+                entry.structureId(), entry.inputs(), entry.output(), entry.description()));
         this.category = category;
         this.entry = entry;
     }

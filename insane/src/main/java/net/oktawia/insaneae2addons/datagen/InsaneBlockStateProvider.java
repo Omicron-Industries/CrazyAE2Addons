@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.datagen;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -11,17 +13,17 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.blocks.EnergyStorageBlock;
 import net.oktawia.insaneae2addons.blocks.research.ResearchCableBlock;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
-import org.jetbrains.annotations.Nullable;
 
 public class InsaneBlockStateProvider extends BlockStateProvider {
     private static final float CTM_TILE_U = 16.0f / 5.0f;
     private static final float OVERLAY_OFFSET = 0.02f;
-    private static final ResourceLocation CONTROLLER_OVERLAY =
-            new ResourceLocation("crazyae2addons", "block/controller");
+    private static final ResourceLocation CONTROLLER_OVERLAY = new ResourceLocation("crazyae2addons",
+            "block/controller");
 
     public InsaneBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, InsaneAddons.MODID, exFileHelper);
@@ -52,8 +54,7 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
                     && block != InsaneBlockRegistrar.MOB_FARM_WALL_BLOCK.get()
                     && block != InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK.get()
                     && block != InsaneBlockRegistrar.SPAWNER_EXTRACTOR_WALL_BLOCK.get()
-                    && !(block instanceof EnergyStorageBlock)
-            ) {
+                    && !(block instanceof EnergyStorageBlock)) {
                 simpleBlock(block, cubeAll(block));
             }
         }
@@ -83,7 +84,8 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
         simpleBlock(cradle, ctmModel(cradle, modLoc("block/entropy_cradle"), true, null));
 
         Block cradleController = InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get();
-        simpleBlock(cradleController, ctmModel(cradleController, modLoc("block/entropy_cradle"), true, CONTROLLER_OVERLAY));
+        simpleBlock(cradleController,
+                ctmModel(cradleController, modLoc("block/entropy_cradle"), true, CONTROLLER_OVERLAY));
 
         Block penroseFrame = InsaneBlockRegistrar.PENROSE_FRAME_BLOCK.get();
         simpleBlock(penroseFrame, ctmModel(penroseFrame, modLoc("block/penrose_frame"), true, null));
@@ -96,19 +98,22 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
         simpleBlock(penroseCoil, ctmModel(penroseCoil, modLoc("block/penrose_coil"), true, null));
 
         Block penroseController = InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get();
-        simpleBlock(penroseController, ctmModel(penroseController, modLoc("block/penrose_frame"), true, CONTROLLER_OVERLAY));
+        simpleBlock(penroseController,
+                ctmModel(penroseController, modLoc("block/penrose_frame"), true, CONTROLLER_OVERLAY));
 
         Block mobFarmWall = InsaneBlockRegistrar.MOB_FARM_WALL_BLOCK.get();
         simpleBlock(mobFarmWall, ctmModel(mobFarmWall, modLoc("block/mob_farm_wall"), true, null));
 
         Block mobFarmController = InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get();
-        simpleBlock(mobFarmController, ctmModel(mobFarmController, modLoc("block/mob_farm_wall"), true, CONTROLLER_OVERLAY));
+        simpleBlock(mobFarmController,
+                ctmModel(mobFarmController, modLoc("block/mob_farm_wall"), true, CONTROLLER_OVERLAY));
 
         Block spawnerWall = InsaneBlockRegistrar.SPAWNER_EXTRACTOR_WALL_BLOCK.get();
         simpleBlock(spawnerWall, ctmModel(spawnerWall, modLoc("block/spawner_extractor_wall"), true, null));
 
         Block spawnerController = InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK.get();
-        simpleBlock(spawnerController, ctmModel(spawnerController, modLoc("block/spawner_extractor_wall"), true, CONTROLLER_OVERLAY));
+        simpleBlock(spawnerController,
+                ctmModel(spawnerController, modLoc("block/spawner_extractor_wall"), true, CONTROLLER_OVERLAY));
     }
 
     private void researchCable(Block block, String texture) {
@@ -130,11 +135,12 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
                 .part().modelFile(side).rotationY(270).addModel().condition(ResearchCableBlock.WEST, true).end()
                 .part().modelFile(side).rotationY(90).addModel().condition(ResearchCableBlock.EAST, true).end()
                 .part().modelFile(sideVertical).uvLock(true).addModel().condition(ResearchCableBlock.UP, true).end()
-                .part().modelFile(sideVertical).rotationX(180).uvLock(true).addModel().condition(ResearchCableBlock.DOWN, true).end();
+                .part().modelFile(sideVertical).rotationX(180).uvLock(true).addModel()
+                .condition(ResearchCableBlock.DOWN, true).end();
     }
 
     private BlockModelBuilder cablePart(String name, ResourceLocation tex,
-                                        int x1, int y1, int z1, int x2, int y2, int z2) {
+            int x1, int y1, int z1, int x2, int y2, int z2) {
         BlockModelBuilder model = models().getBuilder(name)
                 .parent(new ModelFile.UncheckedModelFile("block/block"))
                 .texture("particle", tex)
@@ -147,7 +153,8 @@ public class InsaneBlockStateProvider extends BlockStateProvider {
         return model;
     }
 
-    private BlockModelBuilder ctmModel(Block block, ResourceLocation base, boolean connected, @Nullable ResourceLocation overlay) {
+    private BlockModelBuilder ctmModel(Block block, ResourceLocation base, boolean connected,
+            @Nullable ResourceLocation overlay) {
         float uMax = connected ? CTM_TILE_U : 16.0f;
         String name = "block/" + ForgeRegistries.BLOCKS.getKey(block).getPath();
 

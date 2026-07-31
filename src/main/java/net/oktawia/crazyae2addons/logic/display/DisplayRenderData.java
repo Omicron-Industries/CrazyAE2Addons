@@ -1,9 +1,18 @@
 package net.oktawia.crazyae2addons.logic.display;
 
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AmountFormat;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -17,77 +26,82 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
+
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AmountFormat;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.logic.display.keytypes.DisplayKeyCompatRegistry;
 import net.oktawia.crazyae2addons.util.MathParser;
-import org.jetbrains.annotations.Nullable;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @OnlyIn(Dist.CLIENT)
 public final class DisplayRenderData {
 
-    public interface LineSeg {}
+    public interface LineSeg {
+    }
 
-    public record TextSeg(Component c) implements LineSeg {}
+    public record TextSeg(Component c) implements LineSeg {
+    }
 
-    public record ItemIconSeg(ItemStack stack) implements LineSeg {}
+    public record ItemIconSeg(ItemStack stack) implements LineSeg {
+    }
 
-    public record FluidIconSeg(FluidStack stack) implements LineSeg {}
+    public record FluidIconSeg(FluidStack stack) implements LineSeg {
+    }
 
     public interface RenderLine {
         float scaleMul();
     }
 
-    public record StyledLine(List<LineSeg> segs, float scaleMul) implements RenderLine {}
+    public record StyledLine(List<LineSeg> segs, float scaleMul) implements RenderLine {
+    }
 
-    public record TableRow(List<List<LineSeg>> cells) {}
+    public record TableRow(List<List<LineSeg>> cells) {
+    }
 
-    public record TableBlock(List<TableRow> rows, int indentLevel, int[] align, float scaleMul) implements RenderLine {}
+    public record TableBlock(List<TableRow> rows, int indentLevel, int[] align, float scaleMul) implements RenderLine {
+    }
 
-    public record RichTextWithColors(List<RenderLine> lines, @Nullable Integer backgroundColor) {}
+    public record RichTextWithColors(List<RenderLine> lines, @Nullable Integer backgroundColor) {
+    }
 
-    public record DrawEntry(RenderLine line, int tableRowsToDraw) {}
+    public record DrawEntry(RenderLine line, int tableRowsToDraw) {
+    }
 
     public static final class BgBox {
         @Nullable
         public Integer v;
     }
 
-    private record TableCells(String rowPrefix, List<String> cells) {}
+    private record TableCells(String rowPrefix, List<String> cells) {
+    }
 
-    private record TableParseResult(TableBlock block, int endIndex) {}
+    private record TableParseResult(TableBlock block, int endIndex) {
+    }
 
-    private record StructuralLine(String rawForInline, int indentLevel, boolean bullet, float scaleMul) {}
+    private record StructuralLine(String rawForInline, int indentLevel, boolean bullet, float scaleMul) {
+    }
 
     private static final Pattern CLIENT_VAR_TOKEN = Pattern.compile(
             "&(d\\^(?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+)(?:%\\d+[tsm])?@\\d+[tsm]|" +
                     "s\\^(?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+)(?:%\\d+)?|" +
                     "i\\^[a-z0-9_.\\-]+(?::[a-z0-9_./\\-]+)+|" +
                     "(?![cb][0-9A-Fa-f]{6}\\b)(?!tag\\{)[A-Za-z0-9_]+)",
-            Pattern.CASE_INSENSITIVE
-    );
+            Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern CLIENT_STOCK_TOKEN =
-            Pattern.compile("&s\\^([a-z0-9_\\.:]+)(?:%(\\d+))?", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CLIENT_STOCK_TOKEN = Pattern.compile("&s\\^([a-z0-9_\\.:]+)(?:%(\\d+))?",
+            Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern ICON_TOKEN =
-            Pattern.compile("&i\\^([a-z0-9_.\\-]+(?::[a-z0-9_./\\-]+)+)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern ICON_TOKEN = Pattern.compile("&i\\^([a-z0-9_.\\-]+(?::[a-z0-9_./\\-]+)+)",
+            Pattern.CASE_INSENSITIVE);
 
     private static final Pattern LINE_SPLIT = Pattern.compile("&nl|\\r\\n|\\r|\\n");
 
-    private static final Pattern CLIENT_DYNAMIC_TOKEN =
-            Pattern.compile("&d\\^([a-z0-9_\\.:]+)(?:%(\\d+[tsm]))?@(\\d+[tsm])", Pattern.CASE_INSENSITIVE);
+    private static final Pattern CLIENT_DYNAMIC_TOKEN = Pattern
+            .compile("&d\\^([a-z0-9_\\.:]+)(?:%(\\d+[tsm]))?@(\\d+[tsm])", Pattern.CASE_INSENSITIVE);
 
     private DisplayRenderData() {
     }
@@ -295,7 +309,7 @@ public final class DisplayRenderData {
         }
 
         StringBuilder out = new StringBuilder(s.length());
-        for (int i = 0; i < s.length(); ) {
+        for (int i = 0; i < s.length();) {
             if (s.charAt(i) == '&' && i + 1 < s.length() && s.charAt(i + 1) == '(') {
                 int start = i + 2;
                 int depth = 0;
@@ -526,11 +540,11 @@ public final class DisplayRenderData {
     }
 
     private static void parseInlineWithColors(String raw,
-                                              Style initialStyle,
-                                              BgBox bg,
-                                              List<LineSeg> out,
-                                              InlineParseState state,
-                                              int lineIndex) {
+            Style initialStyle,
+            BgBox bg,
+            List<LineSeg> out,
+            InlineParseState state,
+            int lineIndex) {
         if (raw == null || raw.isEmpty()) {
             return;
         }
@@ -595,6 +609,7 @@ public final class DisplayRenderData {
 
         appendStyledChunk(raw, plainStart, raw.length(), currentStyle, out);
     }
+
     private static void appendTextAndIcons(String text, Style baseStyle, List<LineSeg> out) {
         if (text == null || text.isEmpty()) {
             return;
@@ -718,7 +733,8 @@ public final class DisplayRenderData {
         return result;
     }
 
-    private static int consumeLeadingColorTokensAndSpaces(String s, int start, @Nullable StringBuilder collectedColors) {
+    private static int consumeLeadingColorTokensAndSpaces(String s, int start,
+            @Nullable StringBuilder collectedColors) {
         int i = Math.max(0, start);
 
         while (true) {
@@ -919,7 +935,7 @@ public final class DisplayRenderData {
     }
 
     public record TableLayout(int cols, int[] colContentW, int padPx, int barW, int prefixW, String indentText,
-                              int totalW) {
+            int totalW) {
     }
 
     public static int iconAdvancePx(Font font) {
@@ -1023,8 +1039,7 @@ public final class DisplayRenderData {
             scopedTextColors.push(new ScopedTextColorFrame(
                     currentStyle,
                     currentStyle.withColor(rgb),
-                    lineIndex
-            ));
+                    lineIndex));
         }
 
         private void incrementParenDepth() {

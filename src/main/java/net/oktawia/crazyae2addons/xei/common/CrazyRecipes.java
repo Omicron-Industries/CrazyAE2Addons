@@ -1,14 +1,16 @@
 package net.oktawia.crazyae2addons.xei.common;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.oktawia.crazyae2addons.recipes.FabricationRecipe;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+
+import net.oktawia.crazyae2addons.recipes.FabricationRecipe;
 
 public final class CrazyRecipes {
 
@@ -32,8 +34,7 @@ public final class CrazyRecipes {
 
         var recipeManager = level.getRecipeManager();
         var recipes = recipeManager.getAllRecipesFor(
-                net.oktawia.crazyae2addons.defs.regs.CrazyRecipes.FABRICATION_TYPE.get()
-        );
+                net.oktawia.crazyae2addons.defs.regs.CrazyRecipes.FABRICATION_TYPE.get());
 
         return recipes.stream()
                 .map(recipe -> {
@@ -63,8 +64,7 @@ public final class CrazyRecipes {
                             toLDFluid(recipe.getFluidInput()),
                             toLDFluid(recipe.getFluidOutput()),
                             requiredKey,
-                            label
-                    );
+                            label);
                 })
                 .sorted(Comparator.comparing(entry -> {
                     if (!entry.output().isEmpty()) {

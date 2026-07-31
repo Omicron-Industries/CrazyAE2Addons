@@ -1,32 +1,37 @@
 package net.oktawia.crazyae2addons.logic.display;
 
-import appeng.blockentity.networking.CableBusBlockEntity;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.AABB;
-import net.oktawia.crazyae2addons.parts.Display;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.mojang.datafixers.util.Pair;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+
+import appeng.blockentity.networking.CableBusBlockEntity;
+
+import net.oktawia.crazyae2addons.parts.Display;
+
 public final class DisplayGrid {
 
-    public record RenderGroup(Set<Display> parts, Display renderOrigin, AABB aabb) {}
+    public record RenderGroup(Set<Display> parts, Display renderOrigin, AABB aabb) {
+    }
 
-    public record PlaneAxes(Direction right, Direction up) {}
+    public record PlaneAxes(Direction right, Direction up) {
+    }
 
     private static final Map<Display, RenderGroup> CLIENT_RENDER_GROUP_CACHE = new IdentityHashMap<>();
 
@@ -228,8 +233,8 @@ public final class DisplayGrid {
         queue.add(origin);
 
         Direction[] dirs = (side == Direction.UP || side == Direction.DOWN)
-                ? new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST}
-                : new Direction[]{Direction.UP, Direction.DOWN, side.getClockWise(), side.getCounterClockWise()};
+                ? new Direction[] { Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST }
+                : new Direction[] { Direction.UP, Direction.DOWN, side.getClockWise(), side.getCounterClockWise() };
 
         while (!queue.isEmpty()) {
             Display cur = queue.poll();
@@ -282,8 +287,7 @@ public final class DisplayGrid {
                         Display.LocalDir.LEFT,
                         grid.get(Pair.of(col + 1, row)),
                         result,
-                        queue
-                );
+                        queue);
 
                 tryExpand(
                         cur,
@@ -291,8 +295,7 @@ public final class DisplayGrid {
                         Display.LocalDir.RIGHT,
                         grid.get(Pair.of(col - 1, row)),
                         result,
-                        queue
-                );
+                        queue);
             } else {
                 tryExpand(
                         cur,
@@ -300,8 +303,7 @@ public final class DisplayGrid {
                         Display.LocalDir.RIGHT,
                         grid.get(Pair.of(col + 1, row)),
                         result,
-                        queue
-                );
+                        queue);
 
                 tryExpand(
                         cur,
@@ -309,8 +311,7 @@ public final class DisplayGrid {
                         Display.LocalDir.LEFT,
                         grid.get(Pair.of(col - 1, row)),
                         result,
-                        queue
-                );
+                        queue);
             }
 
             if (side == Direction.UP) {
@@ -320,8 +321,7 @@ public final class DisplayGrid {
                         Display.LocalDir.UP,
                         grid.get(Pair.of(col, row + 1)),
                         result,
-                        queue
-                );
+                        queue);
 
                 tryExpand(
                         cur,
@@ -329,8 +329,7 @@ public final class DisplayGrid {
                         Display.LocalDir.DOWN,
                         grid.get(Pair.of(col, row - 1)),
                         result,
-                        queue
-                );
+                        queue);
             } else if (side == Direction.DOWN) {
                 tryExpand(
                         cur,
@@ -338,8 +337,7 @@ public final class DisplayGrid {
                         Display.LocalDir.DOWN,
                         grid.get(Pair.of(col, row + 1)),
                         result,
-                        queue
-                );
+                        queue);
 
                 tryExpand(
                         cur,
@@ -347,8 +345,7 @@ public final class DisplayGrid {
                         Display.LocalDir.UP,
                         grid.get(Pair.of(col, row - 1)),
                         result,
-                        queue
-                );
+                        queue);
             } else {
                 tryExpand(
                         cur,
@@ -356,8 +353,7 @@ public final class DisplayGrid {
                         Display.LocalDir.DOWN,
                         grid.get(Pair.of(col, row + 1)),
                         result,
-                        queue
-                );
+                        queue);
 
                 tryExpand(
                         cur,
@@ -365,8 +361,7 @@ public final class DisplayGrid {
                         Display.LocalDir.UP,
                         grid.get(Pair.of(col, row - 1)),
                         result,
-                        queue
-                );
+                        queue);
             }
         }
 
@@ -374,7 +369,7 @@ public final class DisplayGrid {
     }
 
     private static void tryExpand(Display cur, Display.LocalDir curDir, Display.LocalDir nbDir,
-                                  Display nb, Set<Display> result, Deque<Display> queue) {
+            Display nb, Set<Display> result, Deque<Display> queue) {
         if (nb == null || result.contains(nb)) {
             return;
         }
@@ -434,8 +429,7 @@ public final class DisplayGrid {
     private static PlaneAxes rotateClockwise(PlaneAxes axes) {
         return new PlaneAxes(
                 axes.up(),
-                axes.right().getOpposite()
-        );
+                axes.right().getOpposite());
     }
 
     private static int project(BlockPos pos, Direction dir) {
@@ -563,8 +557,7 @@ public final class DisplayGrid {
                     Set<Display> candidate = new LinkedHashSet<>();
                     boolean valid = true;
 
-                    outer:
-                    for (int r = anchorRow; r <= r1; r++) {
+                    outer: for (int r = anchorRow; r <= r1; r++) {
                         for (int c = anchorCol; c <= c1; c++) {
                             Display p = grid.get(Pair.of(c, r));
                             if (p == null) {
@@ -596,8 +589,7 @@ public final class DisplayGrid {
                     Set<Display> candidate = new LinkedHashSet<>();
                     boolean valid = true;
 
-                    outer:
-                    for (int r = r0; r <= anchorRow; r++) {
+                    outer: for (int r = r0; r <= anchorRow; r++) {
                         for (int c = anchorCol; c <= c1; c++) {
                             Display p = grid.get(Pair.of(c, r));
                             if (p == null) {
@@ -628,8 +620,7 @@ public final class DisplayGrid {
                 Set<Display> candidate = new LinkedHashSet<>();
                 boolean valid = true;
 
-                outer:
-                for (int r = r0; r <= anchorRow; r++) {
+                outer: for (int r = r0; r <= anchorRow; r++) {
                     for (int c = c0; c <= anchorCol; c++) {
                         Display p = grid.get(Pair.of(c, r));
                         if (p == null) {

@@ -1,8 +1,8 @@
 package net.oktawia.insaneae2addons.logic.enchanter;
 
-import dev.shadowsoffire.apotheosis.ench.objects.TreasureShelfBlock;
-import dev.shadowsoffire.apotheosis.ench.table.EnchantingStatRegistry;
-import dev.shadowsoffire.apotheosis.ench.table.RealEnchantmentHelper;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -10,8 +10,9 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.List;
-import java.util.Set;
+import dev.shadowsoffire.apotheosis.ench.objects.TreasureShelfBlock;
+import dev.shadowsoffire.apotheosis.ench.table.EnchantingStatRegistry;
+import dev.shadowsoffire.apotheosis.ench.table.RealEnchantmentHelper;
 
 public class ApotheosisEnchantStrategy implements EnchantStrategy {
 
@@ -32,7 +33,8 @@ public class ApotheosisEnchantStrategy implements EnchantStrategy {
 
     @Override
     public int costLevel(RandomSource random, Level level, BlockPos tablePos, ItemStack input, int option) {
-        return Math.max(0, RealEnchantmentHelper.getEnchantmentCost(random, option, stats(level, tablePos).eterna(), input));
+        return Math.max(0,
+                RealEnchantmentHelper.getEnchantmentCost(random, option, stats(level, tablePos).eterna(), input));
     }
 
     private static Stats stats(Level level, BlockPos tablePos) {

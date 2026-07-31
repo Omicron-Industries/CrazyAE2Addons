@@ -1,8 +1,14 @@
 package net.oktawia.insaneae2addons.recipes;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -10,11 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CradlePattern {
 
@@ -29,24 +30,32 @@ public class CradlePattern {
         this.layers = layers;
     }
 
-    public Map<String, List<Block>> symbolMap() { return symbolMap; }
+    public Map<String, List<Block>> symbolMap() {
+        return symbolMap;
+    }
 
-    public List<String[][]> layers() { return layers; }
+    public List<String[][]> layers() {
+        return layers;
+    }
 
     public boolean matches(Level level, BlockPos center, Direction facing) {
-        if (layers.size() != SIZE) return false;
+        if (layers.size() != SIZE)
+            return false;
 
         for (int y = 0; y < SIZE; y++) {
             String[][] layer = layers.get(y);
-            if (layer.length != SIZE) return false;
+            if (layer.length != SIZE)
+                return false;
 
             for (int z = 0; z < SIZE; z++) {
                 String[] row = layer[z];
-                if (row.length != SIZE) return false;
+                if (row.length != SIZE)
+                    return false;
 
                 for (int x = 0; x < SIZE; x++) {
                     String symbol = row[x];
-                    if (symbol.equals(".")) continue;
+                    if (symbol.equals("."))
+                        continue;
 
                     BlockPos relative = rotateOffset(x - OFFSET, y - OFFSET, z - OFFSET, facing);
                     BlockPos checkPos = center.offset(relative);
@@ -78,7 +87,8 @@ public class CradlePattern {
             List<Block> blocks = new ArrayList<>();
             for (JsonElement el : e.getValue().getAsJsonArray()) {
                 Block b = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(el.getAsString()));
-                if (b != null) blocks.add(b);
+                if (b != null)
+                    blocks.add(b);
             }
             symbolMap.put(e.getKey(), blocks);
         }
@@ -102,7 +112,8 @@ public class CradlePattern {
         JsonObject symbols = new JsonObject();
         symbolMap.forEach((key, blocks) -> {
             JsonArray arr = new JsonArray();
-            for (Block b : blocks) arr.add(ForgeRegistries.BLOCKS.getKey(b).toString());
+            for (Block b : blocks)
+                arr.add(ForgeRegistries.BLOCKS.getKey(b).toString());
             symbols.add(key, arr);
         });
         root.add("symbols", symbols);

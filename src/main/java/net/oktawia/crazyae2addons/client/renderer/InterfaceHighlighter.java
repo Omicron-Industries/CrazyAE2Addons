@@ -1,10 +1,15 @@
 package net.oktawia.crazyae2addons.client.renderer;
 
+import java.util.OptionalDouble;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,10 +23,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.OptionalDouble;
+import net.oktawia.crazyae2addons.CrazyAddons;
 
 @Mod.EventBusSubscriber(modid = CrazyAddons.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class InterfaceHighlighter {
@@ -29,13 +32,13 @@ public final class InterfaceHighlighter {
     private static final long DURATION_MS = 10_000L;
     private static final double EXPAND = 0.005;
 
-    private static final MultiBufferSource.BufferSource BUFFER =
-            MultiBufferSource.immediate(new BufferBuilder(2048));
+    private static final MultiBufferSource.BufferSource BUFFER = MultiBufferSource.immediate(new BufferBuilder(2048));
 
     private static @Nullable GlobalPos highlightedPos;
     private static long activatedMs;
 
-    private InterfaceHighlighter() {}
+    private InterfaceHighlighter() {
+    }
 
     public static void highlight(GlobalPos pos) {
         highlightedPos = pos;
@@ -48,10 +51,13 @@ public final class InterfaceHighlighter {
 
     @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
-        if (highlightedPos == null) return;
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES)
+            return;
+        if (highlightedPos == null)
+            return;
         var level = Minecraft.getInstance().level;
-        if (level == null) return;
+        if (level == null)
+            return;
 
         long now = System.currentTimeMillis();
 
@@ -60,9 +66,11 @@ public final class InterfaceHighlighter {
             return;
         }
 
-        if (!level.dimension().equals(highlightedPos.dimension())) return;
+        if (!level.dimension().equals(highlightedPos.dimension()))
+            return;
 
-        if ((now % 1000) >= 500) return;
+        if ((now % 1000) >= 500)
+            return;
 
         Vec3 cam = event.getCamera().getPosition();
         BlockPos pos = highlightedPos.pos();
@@ -77,8 +85,7 @@ public final class InterfaceHighlighter {
                 minZ,
                 minX + 1.0 + 2.0 * EXPAND,
                 minY + 1.0 + 2.0 * EXPAND,
-                minZ + 1.0 + 2.0 * EXPAND
-        );
+                minZ + 1.0 + 2.0 * EXPAND);
 
         RenderSystem.disableDepthTest();
         VertexConsumer consumer = BUFFER.getBuffer(HighlightLines.TYPE);
@@ -103,8 +110,7 @@ public final class InterfaceHighlighter {
                         .setWriteMaskState(COLOR_WRITE)
                         .setCullState(NO_CULL)
                         .setOutputState(MAIN_TARGET)
-                        .createCompositeState(false)
-        );
+                        .createCompositeState(false));
 
         private HighlightLines(
                 String name,
@@ -114,8 +120,7 @@ public final class InterfaceHighlighter {
                 boolean affectsCrumbling,
                 boolean sortOnUpload,
                 Runnable setupState,
-                Runnable clearState
-        ) {
+                Runnable clearState) {
             super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
             throw new AssertionError();
         }

@@ -16,15 +16,21 @@ public final class InsaneFeatureGates {
 
         FeatureGates.gate(InsaneAddons.MODID, () -> !c.ENTITY_TICKER_ENABLED.get(), InsaneItemRegistrar.ENTITY_TICKER);
         FeatureGates.gate(InsaneAddons.MODID, () -> !c.NBT_VIEW_CELL_ENABLED.get(), InsaneItemRegistrar.NBT_VIEW_CELL);
-        FeatureGates.gate(InsaneAddons.MODID, () -> !c.NBT_STORAGE_BUS_ENABLED.get(), InsaneItemRegistrar.NBT_STORAGE_BUS);
-        FeatureGates.gate(InsaneAddons.MODID, () -> !c.NBT_EXPORT_BUS_ENABLED.get(), InsaneItemRegistrar.NBT_EXPORT_BUS);
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.NBT_STORAGE_BUS_ENABLED.get(),
+                InsaneItemRegistrar.NBT_STORAGE_BUS);
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.NBT_EXPORT_BUS_ENABLED.get(),
+                InsaneItemRegistrar.NBT_EXPORT_BUS);
         FeatureGates.gate(InsaneAddons.MODID, () -> !c.BROKEN_PATTERN_PROVIDER_ENABLED.get(),
                 InsaneBlockRegistrar.BROKEN_PATTERN_PROVIDER_BLOCK_ITEM);
-        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PROVIDER_CARDS_ENABLED.get(), InsaneItemRegistrar.PLAYER_UPGRADE_CARD);
-        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PROVIDER_CARDS_ENABLED.get(), InsaneItemRegistrar.AUTOMATION_UPGRADE_CARD);
-        FeatureGates.gate(InsaneAddons.MODID, () -> !c.AUTO_ENCHANTER_ENABLED.get(), InsaneBlockRegistrar.AUTO_ENCHANTER_BLOCK_ITEM);
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PROVIDER_CARDS_ENABLED.get(),
+                InsaneItemRegistrar.PLAYER_UPGRADE_CARD);
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PROVIDER_CARDS_ENABLED.get(),
+                InsaneItemRegistrar.AUTOMATION_UPGRADE_CARD);
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.AUTO_ENCHANTER_ENABLED.get(),
+                InsaneBlockRegistrar.AUTO_ENCHANTER_BLOCK_ITEM);
 
-        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PENROSE_SPHERE_ENABLED.get(), InsaneItemRegistrar.SUPER_SINGULARITY);
+        FeatureGates.gate(InsaneAddons.MODID, () -> !c.PENROSE_SPHERE_ENABLED.get(),
+                InsaneItemRegistrar.SUPER_SINGULARITY);
         FeatureGates.gate(InsaneAddons.MODID, () -> !c.PENROSE_SPHERE_ENABLED.get(),
                 InsaneBlockRegistrar.SUPER_SINGULARITY_BLOCK_ITEM);
         FeatureGates.gate(InsaneAddons.MODID, () -> !c.PENROSE_SPHERE_ENABLED.get(),

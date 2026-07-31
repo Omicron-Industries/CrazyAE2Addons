@@ -1,11 +1,11 @@
 package net.oktawia.insaneae2addons.logic.nbt;
 
+import java.util.Collections;
+
 import appeng.api.config.IncludeExclude;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.util.prioritylist.IPartitionList;
-
-import java.util.Collections;
 
 public class NBTPriorityList implements IPartitionList {
 

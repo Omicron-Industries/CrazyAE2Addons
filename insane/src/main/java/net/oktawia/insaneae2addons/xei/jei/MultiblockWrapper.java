@@ -1,6 +1,7 @@
 package net.oktawia.insaneae2addons.xei.jei;
 
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;
+
 import net.oktawia.insaneae2addons.xei.common.MultiblockEntry;
 import net.oktawia.insaneae2addons.xei.common.MultiblockStructurePreview;
 

@@ -1,17 +1,21 @@
 package net.oktawia.insaneae2addons.mobstorage;
 
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.AEKeyType;
+import java.util.stream.Stream;
+
 import com.mojang.serialization.DataResult;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
-import net.oktawia.insaneae2addons.InsaneAddons;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.stream.Stream;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.AEKeyType;
+
+import net.oktawia.insaneae2addons.InsaneAddons;
 
 public class MobKeyType extends AEKeyType {
 

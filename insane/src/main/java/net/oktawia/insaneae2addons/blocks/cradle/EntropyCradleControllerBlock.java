@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.blocks.cradle;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -12,9 +14,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
 import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleControllerBE;
-import org.jetbrains.annotations.Nullable;
 
 public class EntropyCradleControllerBlock extends AbstractMenuOpeningBlock<EntropyCradleControllerBE> {
 
@@ -62,7 +64,8 @@ public class EntropyCradleControllerBlock extends AbstractMenuOpeningBlock<Entro
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
+            boolean isMoving) {
         if (level.isClientSide()) {
             return;
         }

@@ -1,28 +1,18 @@
 package net.oktawia.insaneae2addons.entities;
 
-import appeng.api.config.Actionable;
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.storage.StorageHelper;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
-import appeng.util.SettingsFrom;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.filter.IAEItemFilter;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -49,11 +39,33 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import lombok.Getter;
+
+import appeng.api.config.Actionable;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.StorageHelper;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+import appeng.util.SettingsFrom;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.filter.IAEItemFilter;
+
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import net.oktawia.crazyae2addons.util.Utils;
-import net.oktawia.insaneae2addons.IsModLoaded;
 import net.oktawia.insaneae2addons.InsaneConfig;
+import net.oktawia.insaneae2addons.IsModLoaded;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
@@ -62,13 +74,6 @@ import net.oktawia.insaneae2addons.logic.enchanter.ApotheosisEnchantStrategy;
 import net.oktawia.insaneae2addons.logic.enchanter.EnchantStrategy;
 import net.oktawia.insaneae2addons.logic.enchanter.VanillaEnchantStrategy;
 import net.oktawia.insaneae2addons.menus.block.AutoEnchanterMenu;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class AutoEnchanterBE extends AENetworkInvBlockEntity
         implements MenuProvider, IManagedBEHelper, IMenuOpeningBlockEntity, IGridTickable {
@@ -77,8 +82,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
     private static final String NBT_AUTO_SUPPLY_LAPIS = "auto_supply_lapis";
     private static final String NBT_AUTO_SUPPLY_BOOKS = "auto_supply_books";
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(AutoEnchanterBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AutoEnchanterBE.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -108,8 +112,7 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
 
     private static final Set<TagKey<Fluid>> XP_FLUID_TAGS = Set.of(
             TagKey.create(Registries.FLUID, new ResourceLocation("forge", "experience")),
-            TagKey.create(Registries.FLUID, new ResourceLocation("forge", "xpjuice"))
-    );
+            TagKey.create(Registries.FLUID, new ResourceLocation("forge", "xpjuice")));
 
     private final AppEngInternalInventory inventory = new AppEngInternalInventory(this, 3, 64, new IAEItemFilter() {
         @Override
@@ -354,7 +357,8 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
         }
 
         RandomSource random = RandomSource.create();
-        EnchantStrategy.EnchantRoll roll = strategy.roll(random, getLevel(), getBlockPos().above().above(), input, option);
+        EnchantStrategy.EnchantRoll roll = strategy.roll(random, getLevel(), getBlockPos().above().above(), input,
+                option);
         if (roll.isEmpty()) {
             return input;
         }
@@ -439,7 +443,8 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
 
         long shardAvail = storage.extract(shardKey, Long.MAX_VALUE, Actionable.SIMULATE, source);
         long shardsPlanned = Math.min(xpLeft / XpShardItem.XP_VAL, shardAvail);
-        if (StorageHelper.poweredExtraction(energy, storage, shardKey, shardsPlanned, source, Actionable.SIMULATE) < shardsPlanned) {
+        if (StorageHelper.poweredExtraction(energy, storage, shardKey, shardsPlanned, source,
+                Actionable.SIMULATE) < shardsPlanned) {
             return false;
         }
         xpLeft -= shardsPlanned * (long) XpShardItem.XP_VAL;
@@ -455,7 +460,8 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
             if (toExtractMb <= 0) {
                 continue;
             }
-            if (StorageHelper.poweredExtraction(energy, storage, fluid, toExtractMb, source, Actionable.SIMULATE) < toExtractMb) {
+            if (StorageHelper.poweredExtraction(energy, storage, fluid, toExtractMb, source,
+                    Actionable.SIMULATE) < toExtractMb) {
                 return false;
             }
             fluidsPlanned.put(fluid, toExtractMb);
@@ -466,11 +472,13 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
             return false;
         }
 
-        if (StorageHelper.poweredExtraction(energy, storage, shardKey, shardsPlanned, source, Actionable.MODULATE) < shardsPlanned) {
+        if (StorageHelper.poweredExtraction(energy, storage, shardKey, shardsPlanned, source,
+                Actionable.MODULATE) < shardsPlanned) {
             return false;
         }
         for (Map.Entry<AEFluidKey, Long> e : fluidsPlanned.entrySet()) {
-            if (StorageHelper.poweredExtraction(energy, storage, e.getKey(), e.getValue(), source, Actionable.MODULATE) < e.getValue()) {
+            if (StorageHelper.poweredExtraction(energy, storage, e.getKey(), e.getValue(), source,
+                    Actionable.MODULATE) < e.getValue()) {
                 return false;
             }
         }
@@ -486,7 +494,8 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
         var source = IActionSource.ofMachine(this);
 
         long totalXp = safeMul(
-                storage.extract(AEItemKey.of(InsaneItemRegistrar.XP_SHARD.get()), Long.MAX_VALUE, Actionable.SIMULATE, source),
+                storage.extract(AEItemKey.of(InsaneItemRegistrar.XP_SHARD.get()), Long.MAX_VALUE, Actionable.SIMULATE,
+                        source),
                 XpShardItem.XP_VAL);
         for (AEFluidKey fluid : getAvailableXpFluids()) {
             long newTotal = totalXp + storage.extract(fluid, Long.MAX_VALUE, Actionable.SIMULATE, source) / 20L;
@@ -498,8 +507,10 @@ public class AutoEnchanterBE extends AENetworkInvBlockEntity
         if (input.isEmpty() || (!input.isEnchantable() && !input.is(Items.BOOK))) {
             this.levelCost = "0";
         } else {
-            int enchLevel = strategy.costLevel(RandomSource.create(), getLevel(), getBlockPos().above().above(), input, this.option);
-            this.levelCost = Utils.shortenNumber(safeMul(levelToXp(enchLevel), InsaneConfig.COMMON.AUTO_ENCHANTER_COST.get()));
+            int enchLevel = strategy.costLevel(RandomSource.create(), getLevel(), getBlockPos().above().above(), input,
+                    this.option);
+            this.levelCost = Utils
+                    .shortenNumber(safeMul(levelToXp(enchLevel), InsaneConfig.COMMON.AUTO_ENCHANTER_COST.get()));
         }
         syncManaged();
     }

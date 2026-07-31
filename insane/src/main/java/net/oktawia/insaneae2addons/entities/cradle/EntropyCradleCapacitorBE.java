@@ -1,12 +1,14 @@
 package net.oktawia.insaneae2addons.entities.cradle;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockFrameBE;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
-import org.jetbrains.annotations.Nullable;
 
 public class EntropyCradleCapacitorBE extends AbstractMultiblockFrameBE<EntropyCradleControllerBE> {
 
@@ -16,8 +18,7 @@ public class EntropyCradleCapacitorBE extends AbstractMultiblockFrameBE<EntropyC
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.ENTROPY_CRADLE_CAPACITOR_BLOCK.get()),
-                1.0F
-        );
+                1.0F);
     }
 
     @Override

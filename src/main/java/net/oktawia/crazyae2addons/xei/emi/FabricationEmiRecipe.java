@@ -2,8 +2,11 @@ package net.oktawia.crazyae2addons.xei.emi;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
+
 import net.minecraft.resources.ResourceLocation;
+
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.xei.common.FabricationEntry;
 import net.oktawia.crazyae2addons.xei.common.FabricationPreview;
@@ -21,8 +24,7 @@ public class FabricationEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
                 entry.fluidInput(),
                 entry.fluidOutput(),
                 entry.requiredKey(),
-                entry.label()
-        ));
+                entry.label()));
         this.category = category;
         this.entry = entry;
     }

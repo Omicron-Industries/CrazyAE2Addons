@@ -4,6 +4,8 @@ import java.util.UUID;
 
 public interface StorageLevelEmitterUuid {
     UUID getPersistentUuid();
+
     UUID getRawPersistentUuid();
+
     void validatePersistentUuidIfPossible();
 }

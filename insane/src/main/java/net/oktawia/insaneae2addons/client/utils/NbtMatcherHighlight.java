@@ -1,8 +1,8 @@
 package net.oktawia.insaneae2addons.client.utils;
 
-import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget.HighlightRule;
-
 import java.util.List;
+
+import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget.HighlightRule;
 
 public final class NbtMatcherHighlight {
 
@@ -18,7 +18,6 @@ public final class NbtMatcherHighlight {
                 new HighlightRule("\\*", 0xFFFFB74D),
                 new HighlightRule("[A-Za-z_][A-Za-z0-9_]*(?=\\s*:)", 0xFFA5D6A7),
                 new HighlightRule("-?\\d+(?:\\.\\d+)?[bslfdBSLFD]?", 0xFFFFF176),
-                new HighlightRule("[{}()\\[\\],]", 0xFFB0BEC5)
-        );
+                new HighlightRule("[{}()\\[\\],]", 0xFFB0BEC5));
     }
 }

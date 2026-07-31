@@ -1,24 +1,23 @@
 package net.oktawia.crazyae2addons.client.textures;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public record ConnectedTextureEntry(
         Function<BlockState, ResourceLocation> textureSelector,
         ConnectedTextureRule rule,
         @Nullable BiFunction<BlockState, Direction, ResourceLocation> faceOverlay,
-        int barThickness
-) {
+        int barThickness) {
     public ConnectedTextureEntry(
             Function<BlockState, ResourceLocation> textureSelector,
             ConnectedTextureRule rule,
-            @Nullable BiFunction<BlockState, Direction, ResourceLocation> faceOverlay
-    ) {
+            @Nullable BiFunction<BlockState, Direction, ResourceLocation> faceOverlay) {
         this(textureSelector, rule, faceOverlay, 0);
     }
 

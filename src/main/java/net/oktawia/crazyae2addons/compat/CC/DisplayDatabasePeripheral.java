@@ -1,16 +1,18 @@
 package net.oktawia.crazyae2addons.compat.CC;
 
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.lua.LuaFunction;
-import dan200.computercraft.api.peripheral.GenericPeripheral;
-import net.minecraft.resources.ResourceLocation;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.entities.DisplayDatabaseBE;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import net.minecraft.resources.ResourceLocation;
+
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.lua.LuaFunction;
+import dan200.computercraft.api.peripheral.GenericPeripheral;
+
+import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.entities.DisplayDatabaseBE;
 
 public final class DisplayDatabasePeripheral implements GenericPeripheral {
 

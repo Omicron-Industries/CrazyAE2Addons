@@ -1,5 +1,8 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -10,11 +13,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockFrameBE;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PenrosePortBE extends AbstractMultiblockFrameBE<PortablePenroseSphereControllerBE> {
 
@@ -24,8 +26,7 @@ public class PenrosePortBE extends AbstractMultiblockFrameBE<PortablePenroseSphe
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.PENROSE_PORT_BLOCK.get()),
-                2.0F
-        );
+                2.0F);
     }
 
     @Override

@@ -1,5 +1,24 @@
 package net.oktawia.crazyae2addons.menus.item;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
+import de.mari_023.ae2wtlib.AE2wtlibSlotSemantics;
+import de.mari_023.ae2wtlib.wct.WCTMenuHost;
+import de.mari_023.ae2wtlib.wut.ItemWUT;
+import lombok.Getter;
+
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
 import appeng.menu.SlotSemantics;
@@ -8,30 +27,16 @@ import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import de.mari_023.ae2wtlib.AE2wtlibSlotSemantics;
-import de.mari_023.ae2wtlib.wct.WCTMenuHost;
-import de.mari_023.ae2wtlib.wut.ItemWUT;
-import lombok.Getter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.logic.wireless.WirelessNotificationTerminalItemLogicHost;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.WirelessNotificationWindowPacket;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class WirelessNotificationTerminalMenu extends UpgradeableMenu<WirelessNotificationTerminalItemLogicHost> {
 
-    public record NotificationSlotInfo(@Nullable GenericStack config, long threshold) {}
+    public record NotificationSlotInfo(@Nullable GenericStack config, long threshold) {
+    }
 
     public static final int VISIBLE_ROWS = 6;
 
@@ -51,7 +56,6 @@ public class WirelessNotificationTerminalMenu extends UpgradeableMenu<WirelessNo
     private static final String ACTION_SCROLL = "scroll";
     private static final String ACTION_SET_HUD_SCALE = "sendhudscale";
 
-
     public static int getConfiguredSlotCount() {
         return Math.max(0, CrazyConfig.COMMON.WIRELESS_NOTIFICATION_TERMINAL_CONFIG_SLOT.get());
     }
@@ -59,19 +63,24 @@ public class WirelessNotificationTerminalMenu extends UpgradeableMenu<WirelessNo
     public final WirelessNotificationTerminalItemLogicHost host;
 
     @Getter
-    @GuiSync(266) public int hudX = 100;
+    @GuiSync(266)
+    public int hudX = 100;
 
     @Getter
-    @GuiSync(267) public int hudY = 0;
+    @GuiSync(267)
+    public int hudY = 0;
 
     @Getter
-    @GuiSync(268) public boolean hideAbove = false;
+    @GuiSync(268)
+    public boolean hideAbove = false;
 
     @Getter
-    @GuiSync(269) public boolean hideBelow = false;
+    @GuiSync(269)
+    public boolean hideBelow = false;
 
     @Getter
-    @GuiSync(270) public int hudScale = 100;
+    @GuiSync(270)
+    public int hudScale = 100;
 
     public int clientWindowOffset = 0;
     public int clientWindowRevision = 0;
@@ -85,9 +94,9 @@ public class WirelessNotificationTerminalMenu extends UpgradeableMenu<WirelessNo
     private int currentOffset = 0;
     private int windowRevision = 0;
 
-    public static final MenuType<WirelessNotificationTerminalMenu> TYPE =
-            MenuTypeBuilder.create(WirelessNotificationTerminalMenu::new, WirelessNotificationTerminalItemLogicHost.class)
-                    .build("wireless_notification_terminal");
+    public static final MenuType<WirelessNotificationTerminalMenu> TYPE = MenuTypeBuilder
+            .create(WirelessNotificationTerminalMenu::new, WirelessNotificationTerminalItemLogicHost.class)
+            .build("wireless_notification_terminal");
 
     public WirelessNotificationTerminalMenu(int id, Inventory ip, WirelessNotificationTerminalItemLogicHost host) {
         super(TYPE, id, ip, host);
@@ -114,10 +123,8 @@ public class WirelessNotificationTerminalMenu extends UpgradeableMenu<WirelessNo
                 new RestrictedInputSlot(
                         RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,
                         this.host.getSubInventory(WCTMenuHost.INV_SINGULARITY),
-                        0
-                ),
-                AE2wtlibSlotSemantics.SINGULARITY
-        );
+                        0),
+                AE2wtlibSlotSemantics.SINGULARITY);
 
         for (int i = 0; i < VISIBLE_ROWS; i++) {
             this.addSlot(new FakeSlot(windowedInventory, i), SlotSemantics.CONFIG);
@@ -303,7 +310,8 @@ public class WirelessNotificationTerminalMenu extends UpgradeableMenu<WirelessNo
 
         this.totalCount = total;
 
-        NetworkHandler.sendToPlayer(player, new WirelessNotificationWindowPacket(total, from, ++windowRevision, window));
+        NetworkHandler.sendToPlayer(player,
+                new WirelessNotificationWindowPacket(total, from, ++windowRevision, window));
     }
 
     private void loadFromItemNbt() {

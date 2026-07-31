@@ -1,13 +1,10 @@
 package net.oktawia.insaneae2addons.entities.cradle;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.ticking.TickRateModulation;
+import java.util.Optional;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -24,6 +21,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
+import lombok.Getter;
+
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.TickRateModulation;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerBE;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
 import net.oktawia.insaneae2addons.InsaneConfig;
@@ -39,14 +45,12 @@ import net.oktawia.insaneae2addons.menus.block.EntropyCradleControllerMenu;
 import net.oktawia.insaneae2addons.recipes.CradleContext;
 import net.oktawia.insaneae2addons.recipes.CradleRecipe;
 
-import java.util.Optional;
-
 public class EntropyCradleControllerBE extends AbstractMultiblockControllerBE {
 
     private static final int CAPACITOR_LEVELS = 6;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(EntropyCradleControllerBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            EntropyCradleControllerBE.class);
 
     @Persisted
     @Getter
@@ -61,8 +65,7 @@ public class EntropyCradleControllerBE extends AbstractMultiblockControllerBE {
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get()),
-                2.0F
-        );
+                2.0F);
     }
 
     @Override
@@ -100,7 +103,8 @@ public class EntropyCradleControllerBE extends AbstractMultiblockControllerBE {
         BlockState state = getBlockState();
         if (state.hasProperty(EntropyCradleControllerBlock.FORMED)
                 && state.getValue(EntropyCradleControllerBlock.FORMED) != formed) {
-            level.setBlock(getBlockPos(), state.setValue(EntropyCradleControllerBlock.FORMED, formed), Block.UPDATE_CLIENTS);
+            level.setBlock(getBlockPos(), state.setValue(EntropyCradleControllerBlock.FORMED, formed),
+                    Block.UPDATE_CLIENTS);
         }
     }
 

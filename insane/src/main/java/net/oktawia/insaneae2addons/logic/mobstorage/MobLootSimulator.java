@@ -1,9 +1,18 @@
 package net.oktawia.insaneae2addons.logic.mobstorage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.mojang.authlib.GameProfile;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -21,14 +30,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.oktawia.insaneae2addons.mixins.LivingEntityDropInvoker;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import net.oktawia.insaneae2addons.mixins.LivingEntityDropInvoker;
 
 public final class MobLootSimulator {
 
@@ -67,7 +70,7 @@ public final class MobLootSimulator {
     }
 
     private void collectLootTableDrops(LivingEntity sample, EntityType<?> type, ItemStack tool, int looting,
-                                       Map<Item, Integer> collected) {
+            Map<Item, Integer> collected) {
         LootTable lootTable = lootTableOf(type);
         if (lootTable == null) {
             return;
@@ -83,8 +86,8 @@ public final class MobLootSimulator {
 
     private void collectCustomDeathLoot(LivingEntity sample, int looting, Map<Item, Integer> collected) {
         DamageSource source = this.level.damageSources().playerAttack(killer());
-        List<ItemStack> captured = MobDropCapture.collect(() ->
-                ((LivingEntityDropInvoker) sample).invokeDropCustomDeathLoot(source, looting, true));
+        List<ItemStack> captured = MobDropCapture
+                .collect(() -> ((LivingEntityDropInvoker) sample).invokeDropCustomDeathLoot(source, looting, true));
 
         for (ItemStack stack : captured) {
             merge(collected, stack);

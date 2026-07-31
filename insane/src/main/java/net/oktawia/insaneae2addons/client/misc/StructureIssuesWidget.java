@@ -1,6 +1,9 @@
 package net.oktawia.insaneae2addons.client.misc;
 
-import lombok.Setter;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -8,9 +11,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import lombok.Setter;
 
 public class StructureIssuesWidget extends AbstractWidget {
 

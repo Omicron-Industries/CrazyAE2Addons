@@ -1,6 +1,11 @@
 package net.oktawia.crazyae2addons.logic.wormhole;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -12,13 +17,11 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+
+import lombok.RequiredArgsConstructor;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.parts.p2p.WormholeP2PTunnelPart;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class WormholeP2PCapabilityProxy {
@@ -39,7 +42,8 @@ public class WormholeP2PCapabilityProxy {
         }
 
         if (part.isOutput()) {
-            if (!isCapabilityAllowed(cap)) return LazyOptional.empty();
+            if (!isCapabilityAllowed(cap))
+                return LazyOptional.empty();
             RemoteTarget target = getInputTarget();
             if (target == null || target.blockEntity() == null) {
                 return LazyOptional.empty();
@@ -53,12 +57,15 @@ public class WormholeP2PCapabilityProxy {
         }
 
         if (!CrazyConfig.COMMON.WORMHOLE_MERGED_CAPABILITY_PROXY_ENABLED.get()) {
-            if (!isCapabilityAllowed(cap)) return LazyOptional.empty();
+            if (!isCapabilityAllowed(cap))
+                return LazyOptional.empty();
             for (var output : outputs) {
                 RemoteTarget target = getOutputTarget(output);
-                if (target == null || target.blockEntity() == null) continue;
+                if (target == null || target.blockEntity() == null)
+                    continue;
                 var result = target.blockEntity().getCapability(cap, target.side());
-                if (result.isPresent()) return result;
+                if (result.isPresent())
+                    return result;
             }
             return LazyOptional.empty();
         }
@@ -80,7 +87,8 @@ public class WormholeP2PCapabilityProxy {
             }
 
             if (!handlers.isEmpty()) {
-                return LazyOptional.of(() -> (T) new CombinedInvWrapper(handlers.toArray(new IItemHandlerModifiable[0])));
+                return LazyOptional
+                        .of(() -> (T) new CombinedInvWrapper(handlers.toArray(new IItemHandlerModifiable[0])));
             }
         }
 

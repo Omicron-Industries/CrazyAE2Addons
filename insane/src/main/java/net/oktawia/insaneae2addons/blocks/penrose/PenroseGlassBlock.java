@@ -1,5 +1,8 @@
 package net.oktawia.insaneae2addons.blocks.penrose;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -10,10 +13,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
 import net.oktawia.insaneae2addons.entities.penrose.PenroseGlassBE;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PenroseGlassBlock extends AbstractMenuOpeningBlock<PenroseGlassBE> {
 
@@ -48,7 +50,8 @@ public class PenroseGlassBlock extends AbstractMenuOpeningBlock<PenroseGlassBE> 
     }
 
     @Override
-    public boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos) {
+    public boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter level,
+            @NotNull BlockPos pos) {
         return true;
     }
 

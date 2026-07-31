@@ -1,5 +1,22 @@
 package net.oktawia.crazyae2addons.parts;
 
+import java.security.SecureRandom;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.phys.Vec3;
+
+import lombok.Setter;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.parts.IPartItem;
@@ -10,23 +27,10 @@ import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.parts.automation.AbstractLevelEmitterPart;
 import appeng.util.SettingsFrom;
-import lombok.Setter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.phys.Vec3;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.menus.part.RedstoneEmitterMenu;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.security.SecureRandom;
 
 public class RedstoneEmitter extends AbstractLevelEmitterPart implements MenuProvider {
 
@@ -34,33 +38,27 @@ public class RedstoneEmitter extends AbstractLevelEmitterPart implements MenuPro
 
     public static final PartModel MODEL_OFF_OFF = new PartModel(
             AppEng.makeId("part/level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_off")
-    );
+            AppEng.makeId("part/level_emitter_status_off"));
 
     public static final PartModel MODEL_OFF_ON = new PartModel(
             AppEng.makeId("part/level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_on")
-    );
+            AppEng.makeId("part/level_emitter_status_on"));
 
     public static final PartModel MODEL_OFF_HAS_CHANNEL = new PartModel(
             AppEng.makeId("part/level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_has_channel")
-    );
+            AppEng.makeId("part/level_emitter_status_has_channel"));
 
     public static final PartModel MODEL_ON_OFF = new PartModel(
             AppEng.makeId("part/level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_off")
-    );
+            AppEng.makeId("part/level_emitter_status_off"));
 
     public static final PartModel MODEL_ON_ON = new PartModel(
             AppEng.makeId("part/level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_on")
-    );
+            AppEng.makeId("part/level_emitter_status_on"));
 
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(
             AppEng.makeId("part/level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_has_channel")
-    );
+            AppEng.makeId("part/level_emitter_status_has_channel"));
 
     @Setter
     private String name = randomHexId();

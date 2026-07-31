@@ -1,8 +1,10 @@
 package net.oktawia.insaneae2addons.menus.block;
 
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerMenu;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.entities.research.ResearchUnitBE;
@@ -12,11 +14,16 @@ public class ResearchUnitMenu extends AbstractMultiblockControllerMenu {
 
     private final ResearchUnitBE host;
 
-    @GuiSync(880) public boolean formed;
-    @GuiSync(881) public int computation;
-    @GuiSync(882) public int fluidAmount;
-    @GuiSync(883) public int storedPower;
-    @GuiSync(884) public int statusOrdinal;
+    @GuiSync(880)
+    public boolean formed;
+    @GuiSync(881)
+    public int computation;
+    @GuiSync(882)
+    public int fluidAmount;
+    @GuiSync(883)
+    public int storedPower;
+    @GuiSync(884)
+    public int statusOrdinal;
 
     public final FluidProgress fluidBar = new FluidProgress();
     public final PowerProgress powerBar = new PowerProgress();

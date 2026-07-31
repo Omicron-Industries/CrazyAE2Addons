@@ -1,16 +1,18 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
-import appeng.client.gui.Icon;
-import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AECheckbox;
-import appeng.client.gui.widgets.AETextField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.client.gui.Icon;
+import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AECheckbox;
+import appeng.client.gui.widgets.AETextField;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.menus.block.AutoBuilderMenu;
@@ -32,7 +34,8 @@ public class AutoBuilderScreen<C extends AutoBuilderMenu> extends UpgradeableScr
         super(menu, playerInventory, title, style);
 
         skipMissing = new AECheckbox(0, 0, 0, 0, style, Component.empty());
-        skipMissing.setTooltip(Tooltip.create(Component.translatable(LangDefs.SKIP_MISSING_TOOLTIP.getTranslationKey())));
+        skipMissing
+                .setTooltip(Tooltip.create(Component.translatable(LangDefs.SKIP_MISSING_TOOLTIP.getTranslationKey())));
         skipMissing.setChangeListener(() -> getMenu().updateMissing(skipMissing.isSelected()));
 
         var front = new IconButton(Icon.ARROW_UP, btn -> changeForward(1));
@@ -87,8 +90,7 @@ public class AutoBuilderScreen<C extends AutoBuilderMenu> extends UpgradeableScr
                             missingIcon,
                             x,
                             y,
-                            String.valueOf(getMenu().getHost().getMissingItemAmount())
-                    );
+                            String.valueOf(getMenu().getHost().getMissingItemAmount()));
                 } else {
                     setTextContent("missing", Component.empty());
                 }
@@ -143,8 +145,7 @@ public class AutoBuilderScreen<C extends AutoBuilderMenu> extends UpgradeableScr
         this.previewBtn.setTooltip(Tooltip.create(
                 Component.translatable(on
                         ? LangDefs.HIDE_PREVIEW.getTranslationKey()
-                        : LangDefs.SHOW_PREVIEW.getTranslationKey())
-        ));
+                        : LangDefs.SHOW_PREVIEW.getTranslationKey())));
 
         xlabel.setValue(String.valueOf(getMenu().xax));
         ylabel.setValue(String.valueOf(getMenu().yax));

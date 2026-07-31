@@ -1,19 +1,22 @@
 package net.oktawia.insaneae2addons.client.screens.item;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.style.ScreenStyle;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.ScreenStyle;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
 import net.oktawia.insaneae2addons.client.utils.NbtMatcherHighlight;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.logic.nbt.NBTMatcher;
 import net.oktawia.insaneae2addons.menus.item.NbtViewCellMenu;
-import org.lwjgl.glfw.GLFW;
 
 public class NbtViewCellScreen<C extends NbtViewCellMenu> extends AEBaseScreen<C> {
 
@@ -29,14 +32,14 @@ public class NbtViewCellScreen<C extends NbtViewCellMenu> extends AEBaseScreen<C
                 Minecraft.getInstance().font,
                 0, 0,
                 240, 135,
-                Component.empty()
-        );
+                Component.empty());
         textEditor.setDefaultTextColor(0xFFFFFFFF);
         textEditor.setHighlightRules(NbtMatcherHighlight.rules());
         widgets.add("data", textEditor);
 
         confirmBtn = new IconButton(Icon.ENTER, btn -> save());
-        confirmBtn.setTooltip(Tooltip.create(Component.translatable(LangDefs.NBT_VIEW_CELL_CONFIRM.getTranslationKey())));
+        confirmBtn
+                .setTooltip(Tooltip.create(Component.translatable(LangDefs.NBT_VIEW_CELL_CONFIRM.getTranslationKey())));
         widgets.add("confirm", confirmBtn);
     }
 
@@ -45,7 +48,8 @@ public class NbtViewCellScreen<C extends NbtViewCellMenu> extends AEBaseScreen<C
         getMenu().updateData(text);
         NBTMatcher.Compiled compiled = NBTMatcher.compile(text);
         if (compiled.isValid()) {
-            confirmBtn.setTooltip(Tooltip.create(Component.translatable(LangDefs.NBT_FILTER_SAVED.getTranslationKey())));
+            confirmBtn
+                    .setTooltip(Tooltip.create(Component.translatable(LangDefs.NBT_FILTER_SAVED.getTranslationKey())));
         } else {
             confirmBtn.setTooltip(Tooltip.create(
                     Component.translatable(LangDefs.NBT_SYNTAX_ERROR.getTranslationKey())
@@ -87,7 +91,7 @@ public class NbtViewCellScreen<C extends NbtViewCellMenu> extends AEBaseScreen<C
                     || minecraft.options.keySocialInteractions.matches(key, sc)
                     || minecraft.options.keySwapOffhand.matches(key, sc)
                     || (key >= GLFW.GLFW_KEY_1 && key <= GLFW.GLFW_KEY_9
-                    && minecraft.options.keyHotbarSlots[key - GLFW.GLFW_KEY_1].matches(key, sc))) {
+                            && minecraft.options.keyHotbarSlots[key - GLFW.GLFW_KEY_1].matches(key, sc))) {
                 return true;
             }
 

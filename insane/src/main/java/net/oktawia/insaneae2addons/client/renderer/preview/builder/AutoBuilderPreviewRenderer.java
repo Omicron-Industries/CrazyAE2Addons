@@ -1,7 +1,10 @@
 package net.oktawia.insaneae2addons.client.renderer.preview.builder;
 
+import java.util.ArrayList;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,17 +18,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderCoordMath;
 
-import java.util.ArrayList;
-
-@Mod.EventBusSubscriber(
-        modid = InsaneAddons.MODID,
-        bus = Mod.EventBusSubscriber.Bus.FORGE,
-        value = Dist.CLIENT
-)
+@Mod.EventBusSubscriber(modid = InsaneAddons.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class AutoBuilderPreviewRenderer {
 
     @SubscribeEvent
@@ -72,8 +70,7 @@ public class AutoBuilderPreviewRenderer {
             AutoBuilderBE be,
             PoseStack poseStack,
             MultiBufferSource.BufferSource buffer,
-            Vec3 cameraPos
-    ) {
+            Vec3 cameraPos) {
         BlockPos ghostPos = be.getGhostRenderPos();
         if (ghostPos == null) {
             return;
@@ -90,8 +87,7 @@ public class AutoBuilderPreviewRenderer {
                 lineBuffer,
                 0.0, 0.0, 0.0,
                 1.0, 1.0, 1.0,
-                1.0f, 0.75f, 0.0f, 1.0f
-        );
+                1.0f, 0.75f, 0.0f, 1.0f);
 
         poseStack.popPose();
         buffer.endBatch(RenderType.lines());
@@ -107,9 +103,9 @@ public class AutoBuilderPreviewRenderer {
                 : Direction.NORTH;
 
         int delta = Math.floorMod(
-                BuilderCoordMath.yawStepsFromNorth(machineFacing) - BuilderCoordMath.yawStepsFromNorth(be.getSourceFacing()),
-                4
-        );
+                BuilderCoordMath.yawStepsFromNorth(machineFacing)
+                        - BuilderCoordMath.yawStepsFromNorth(be.getSourceFacing()),
+                4);
 
         var list = new ArrayList<PreviewInfo.BlockInfo>();
         for (int i = 0; i < positions.length && i < indices.length; i++) {

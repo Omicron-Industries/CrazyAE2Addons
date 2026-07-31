@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.logic.enchanter;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -8,19 +10,17 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-import java.util.List;
-
 public class VanillaEnchantStrategy implements EnchantStrategy {
 
     private static final int[][] BOOKSHELF_OFFSETS = {
-            {-1, 0, -2}, {0, 0, -2}, {1, 0, -2},
-            {-2, 0, -1}, {-2, 0, 0}, {-2, 0, 1},
-            {-1, 0, 2}, {0, 0, 2}, {1, 0, 2},
-            {2, 0, -1}, {2, 0, 0}, {2, 0, 1},
-            {-1, 1, -2}, {0, 1, -2}, {1, 1, -2},
-            {-2, 1, -1}, {-2, 1, 0}, {-2, 1, 1},
-            {-1, 1, 2}, {0, 1, 2}, {1, 1, 2},
-            {2, 1, -1}, {2, 1, 0}, {2, 1, 1}
+            { -1, 0, -2 }, { 0, 0, -2 }, { 1, 0, -2 },
+            { -2, 0, -1 }, { -2, 0, 0 }, { -2, 0, 1 },
+            { -1, 0, 2 }, { 0, 0, 2 }, { 1, 0, 2 },
+            { 2, 0, -1 }, { 2, 0, 0 }, { 2, 0, 1 },
+            { -1, 1, -2 }, { 0, 1, -2 }, { 1, 1, -2 },
+            { -2, 1, -1 }, { -2, 1, 0 }, { -2, 1, 1 },
+            { -1, 1, 2 }, { 0, 1, 2 }, { 1, 1, 2 },
+            { 2, 1, -1 }, { 2, 1, 0 }, { 2, 1, 1 }
     };
 
     @Override

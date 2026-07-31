@@ -1,5 +1,38 @@
 package net.oktawia.insaneae2addons.entities.autobuilder;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.google.common.collect.ImmutableSet;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import appeng.api.config.Actionable;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -25,29 +58,10 @@ import appeng.util.SettingsFrom;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.IAEItemFilter;
-import com.google.common.collect.ImmutableSet;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
+import net.oktawia.crazyae2addons.logic.buffer.ManagedBuffer;
+import net.oktawia.crazyae2addons.util.IManagedBEHelper;
+import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.client.renderer.preview.builder.PreviewInfo;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
@@ -58,17 +72,8 @@ import net.oktawia.insaneae2addons.items.autobuilder.BuilderPatternItem;
 import net.oktawia.insaneae2addons.logic.autobuilder.AutoBuilderPreviewOps;
 import net.oktawia.insaneae2addons.logic.autobuilder.AutoBuilderWorldOps;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderPatternHost;
-import net.oktawia.crazyae2addons.logic.buffer.ManagedBuffer;
 import net.oktawia.insaneae2addons.menus.block.AutoBuilderMenu;
-import net.oktawia.crazyae2addons.util.IManagedBEHelper;
-import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import net.oktawia.insaneae2addons.util.ProgramExpander;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AutoBuilderBE extends AENetworkBlockEntity implements
         IGridTickable,
@@ -83,8 +88,7 @@ public class AutoBuilderBE extends AENetworkBlockEntity implements
     private static final String NBT_OFFSET = "offset";
     private static final String NBT_SKIP_EMPTY = "skip_empty";
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(AutoBuilderBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AutoBuilderBE.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -93,8 +97,7 @@ public class AutoBuilderBE extends AENetworkBlockEntity implements
     @Persisted
     @LazyManaged
     public final IUpgradeInventory upgrades = UpgradeInventories.forMachine(
-            InsaneBlockRegistrar.AUTO_BUILDER_BLOCK.get(), 7, this::setChanged
-    );
+            InsaneBlockRegistrar.AUTO_BUILDER_BLOCK.get(), 7, this::setChanged);
 
     @Persisted
     @LazyManaged
@@ -205,8 +208,7 @@ public class AutoBuilderBE extends AENetworkBlockEntity implements
                 this,
                 this::setChanged,
                 this::onRedstoneActivate,
-                () -> isRunning || isCrafting
-        );
+                () -> isRunning || isCrafting);
 
         getMainNode()
                 .addService(IGridTickable.class, this)
@@ -214,8 +216,7 @@ public class AutoBuilderBE extends AENetworkBlockEntity implements
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .setIdlePowerUsage(4)
                 .setVisualRepresentation(
-                        new ItemStack(InsaneBlockRegistrar.AUTO_BUILDER_BLOCK.get().asItem())
-                );
+                        new ItemStack(InsaneBlockRegistrar.AUTO_BUILDER_BLOCK.get().asItem()));
 
         this.inventory.setFilter(new IAEItemFilter() {
             @Override
@@ -520,9 +521,7 @@ public class AutoBuilderBE extends AENetworkBlockEntity implements
         var program = ProgramExpander.expand(
                 BuilderPatternHost.loadProgramFromFile(
                         s,
-                        getLevel() != null ? getLevel().getServer() : null
-                )
-        );
+                        getLevel() != null ? getLevel().getServer() : null));
 
         if (program.success && program.program != null) {
             this.code = new ArrayList<>(program.program);

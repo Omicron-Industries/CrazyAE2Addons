@@ -1,15 +1,18 @@
 package net.oktawia.crazyae2addons.defs.recipes;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 public class FabricationRecipes {
 
-    public record InputEntry(String item, int count) {}
-    public record FluidEntry(String fluid, int amount) {}
+    public record InputEntry(String item, int count) {
+    }
+
+    public record FluidEntry(String fluid, int amount) {
+    }
 
     public record RecipeDef(
             String id,
@@ -17,8 +20,8 @@ public class FabricationRecipes {
             @Nullable String outputItem,
             int outputCount,
             @Nullable FluidEntry fluidInput,
-            @Nullable FluidEntry fluidOutput
-    ) {}
+            @Nullable FluidEntry fluidOutput) {
+    }
 
     private static final List<RecipeDef> RECIPES = new ArrayList<>();
 
@@ -97,6 +100,7 @@ public class FabricationRecipes {
         private int outputCount = 1;
         private FluidEntry fluidInput = null;
         private FluidEntry fluidOutput = null;
+
         private Builder(String id) {
             this.id = id;
         }

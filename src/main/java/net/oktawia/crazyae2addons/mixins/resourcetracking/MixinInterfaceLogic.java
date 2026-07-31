@@ -1,5 +1,14 @@
 package net.oktawia.crazyae2addons.mixins.resourcetracking;
 
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import net.minecraft.core.GlobalPos;
+
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -8,23 +17,19 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
-import net.minecraft.core.GlobalPos;
+
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
 import net.oktawia.crazyae2addons.tracking.UsageTarget;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = InterfaceLogic.class, remap = false)
 public class MixinInterfaceLogic {
 
-    @Shadow @Final
+    @Shadow
+    @Final
     protected IManagedGridNode mainNode;
 
-    @Shadow @Final
+    @Shadow
+    @Final
     protected InterfaceLogicHost host;
 
     @Unique
@@ -33,11 +38,7 @@ public class MixinInterfaceLogic {
     @Unique
     private UsageTarget crazyAE2Addons$cachedTarget;
 
-    @Redirect(
-        method = "acquireFromNetwork",
-        at = @At(value = "INVOKE",
-            target = "Lappeng/api/storage/StorageHelper;poweredExtraction(Lappeng/api/networking/energy/IEnergySource;Lappeng/api/storage/MEStorage;Lappeng/api/stacks/AEKey;JLappeng/api/networking/security/IActionSource;)J")
-    )
+    @Redirect(method = "acquireFromNetwork", at = @At(value = "INVOKE", target = "Lappeng/api/storage/StorageHelper;poweredExtraction(Lappeng/api/networking/energy/IEnergySource;Lappeng/api/storage/MEStorage;Lappeng/api/stacks/AEKey;JLappeng/api/networking/security/IActionSource;)J"))
     private long crazyAE2Addons$trackActualExtraction(
             IEnergySource energy,
             MEStorage inv,
@@ -54,7 +55,8 @@ public class MixinInterfaceLogic {
                         var be = host.getBlockEntity();
                         var pos = be.getBlockPos();
                         crazyAE2Addons$cachedDesc = "interface at " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
-                        crazyAE2Addons$cachedTarget = UsageTarget.interfaceAt(GlobalPos.of(be.getLevel().dimension(), pos.immutable()));
+                        crazyAE2Addons$cachedTarget = UsageTarget
+                                .interfaceAt(GlobalPos.of(be.getLevel().dimension(), pos.immutable()));
                     }
                     svc.trackConsumption(what, acquired, crazyAE2Addons$cachedTarget, crazyAE2Addons$cachedDesc, null);
                 }

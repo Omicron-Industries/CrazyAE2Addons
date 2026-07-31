@@ -1,5 +1,9 @@
 package net.oktawia.insaneae2addons.recipes;
 
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -9,10 +13,8 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
 
 public class ResearchRecipe implements Recipe<Container> {
     public final int duration;
@@ -23,8 +25,8 @@ public class ResearchRecipe implements Recipe<Container> {
     private final ResourceLocation id;
 
     public ResearchRecipe(ResourceLocation id,
-                          int duration, int ept,
-                          List<Consumable> consumables, Unlock unlock) {
+            int duration, int ept,
+            List<Consumable> consumables, Unlock unlock) {
         this.id = id;
         this.duration = duration;
         this.energyPerTick = ept;
@@ -32,7 +34,9 @@ public class ResearchRecipe implements Recipe<Container> {
         this.unlock = unlock;
     }
 
-    public long totalEnergy() { return (long) duration * (long) energyPerTick; }
+    public long totalEnergy() {
+        return (long) duration * (long) energyPerTick;
+    }
 
     @Override
     public boolean matches(@NotNull Container inv, @NotNull Level level) {
@@ -42,32 +46,67 @@ public class ResearchRecipe implements Recipe<Container> {
                 ItemStack st = inv.getItem(i);
                 if (!st.isEmpty() && st.getItem() == c.item) {
                     have += st.getCount();
-                    if (have >= c.count) break;
+                    if (have >= c.count)
+                        break;
                 }
             }
-            if (have < c.count) return false;
+            if (have < c.count)
+                return false;
         }
         return true;
     }
 
-    @Override public ItemStack assemble(Container inv, RegistryAccess reg) { return ItemStack.EMPTY; }
-    @Override public boolean canCraftInDimensions(int w, int h) { return false; }
-    @Override public ItemStack getResultItem(RegistryAccess reg) { return ItemStack.EMPTY; }
-    @Override public ResourceLocation getId() { return id; }
-    @Override public RecipeSerializer<?> getSerializer() { return InsaneRecipes.RESEARCH_SERIALIZER.get(); }
-    @Override public RecipeType<?> getType() { return InsaneRecipes.RESEARCH_TYPE.get(); }
+    @Override
+    public ItemStack assemble(Container inv, RegistryAccess reg) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int w, int h) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getResultItem(RegistryAccess reg) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return InsaneRecipes.RESEARCH_SERIALIZER.get();
+    }
+
+    @Override
+    public RecipeType<?> getType() {
+        return InsaneRecipes.RESEARCH_TYPE.get();
+    }
 
     public static final class Consumable {
         public final Item item;
         public final int count;
         public final int computation;
-        public Consumable(Item item, int count, int computation) { this.item = item; this.count = count; this.computation = computation; }
+
+        public Consumable(Item item, int count, int computation) {
+            this.item = item;
+            this.count = count;
+            this.computation = computation;
+        }
     }
 
     public static final class Unlock {
         public final ResourceLocation key;
         public final String label;
         public final String item;
-        public Unlock(ResourceLocation key, String label, String item) { this.key = key; this.label = label; this.item = item; }
+
+        public Unlock(ResourceLocation key, String label, String item) {
+            this.key = key;
+            this.label = label;
+            this.item = item;
+        }
     }
 }

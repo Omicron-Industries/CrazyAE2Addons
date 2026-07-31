@@ -1,11 +1,12 @@
 package net.oktawia.insaneae2addons.xei.emi;
 
-import dev.emi.emi.api.recipe.EmiRecipe;
-import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
+import java.util.List;
+
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
-import java.util.List;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 
 public class ResearchEmiRecipeHandler implements StandardRecipeHandler<AbstractContainerMenu> {
 

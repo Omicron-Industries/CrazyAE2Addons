@@ -1,8 +1,10 @@
 package net.oktawia.insaneae2addons.client.screens.item;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.Scrollbar;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,15 +14,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.Scrollbar;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
 import net.oktawia.insaneae2addons.items.DataDrive;
 import net.oktawia.insaneae2addons.menus.item.DataDriveMenu;
 import net.oktawia.insaneae2addons.recipes.ResearchRecipe;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
 
 public class DataDriveScreen<C extends DataDriveMenu> extends AEBaseScreen<C> {
 

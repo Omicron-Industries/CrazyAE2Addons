@@ -1,20 +1,24 @@
 package net.oktawia.insaneae2addons.xei.jei;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
-import org.jetbrains.annotations.Nullable;
 
 public class MultiblockCategory extends ModularUIRecipeCategory<MultiblockWrapper> {
 
-    public static final RecipeType<MultiblockWrapper> TYPE =
-            RecipeType.create("insaneae2addons", "multiblock", MultiblockWrapper.class);
+    public static final RecipeType<MultiblockWrapper> TYPE = RecipeType.create("insaneae2addons", "multiblock",
+            MultiblockWrapper.class);
 
     private final IDrawable background;
     private final IDrawable icon;

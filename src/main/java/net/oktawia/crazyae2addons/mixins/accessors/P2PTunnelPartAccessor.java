@@ -1,8 +1,9 @@
 package net.oktawia.crazyae2addons.mixins.accessors;
 
-import appeng.parts.p2p.P2PTunnelPart;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+
+import appeng.parts.p2p.P2PTunnelPart;
 
 @Mixin(P2PTunnelPart.class)
 public interface P2PTunnelPartAccessor {

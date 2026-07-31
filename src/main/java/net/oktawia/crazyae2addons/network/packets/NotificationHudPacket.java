@@ -3,9 +3,11 @@ package net.oktawia.crazyae2addons.network.packets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
+
 import net.oktawia.crazyae2addons.client.renderer.overlay.NotificationHudOverlay;
 
 public record NotificationHudPacket(List<Entry> entries, byte hudX, byte hudY, byte hudScale) {

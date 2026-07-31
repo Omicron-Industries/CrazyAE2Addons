@@ -1,11 +1,12 @@
 package net.oktawia.insaneae2addons.entities.research;
 
-import appeng.blockentity.AEBaseBlockEntity;
+import java.util.List;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -13,15 +14,18 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
+import appeng.blockentity.AEBaseBlockEntity;
+
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 
-import java.util.List;
-
 public class ResearchPedestalTopBE extends AEBaseBlockEntity implements IManagedBEHelper {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(ResearchPedestalTopBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            ResearchPedestalTopBE.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);

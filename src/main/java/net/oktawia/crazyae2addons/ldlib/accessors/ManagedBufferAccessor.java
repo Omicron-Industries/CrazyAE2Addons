@@ -6,7 +6,9 @@ import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.PrimitiveTypedPayload;
+
 import net.minecraft.nbt.CompoundTag;
+
 import net.oktawia.crazyae2addons.logic.buffer.ManagedBuffer;
 
 public final class ManagedBufferAccessor implements IAccessor {

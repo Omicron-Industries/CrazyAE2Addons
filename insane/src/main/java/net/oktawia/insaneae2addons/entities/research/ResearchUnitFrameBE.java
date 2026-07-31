@@ -1,12 +1,14 @@
 package net.oktawia.insaneae2addons.entities.research;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockFrameBE;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
-import org.jetbrains.annotations.Nullable;
 
 public class ResearchUnitFrameBE extends AbstractMultiblockFrameBE<ResearchUnitBE> {
 
@@ -16,8 +18,7 @@ public class ResearchUnitFrameBE extends AbstractMultiblockFrameBE<ResearchUnitB
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.RESEARCH_UNIT_FRAME_BLOCK.get()),
-                1.0F
-        );
+                1.0F);
     }
 
     @Override

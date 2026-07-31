@@ -1,13 +1,13 @@
 package net.oktawia.crazyae2addons.mixins;
 
+import java.io.InputStream;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-
-import java.io.InputStream;
 
 public final class Ae2Detection {
 
@@ -26,17 +26,16 @@ public final class Ae2Detection {
             + "Z"
             + ")Lappeng/api/networking/crafting/ICraftingSubmitResult;";
 
-    public static final boolean SHARED_CPU_LIST_WIDGET =
-            hasFieldOfType(CPU_SELECTION_LIST, "menu", CPU_LIST_MENU_DESC);
+    public static final boolean SHARED_CPU_LIST_WIDGET = hasFieldOfType(CPU_SELECTION_LIST, "menu", CPU_LIST_MENU_DESC);
 
-    public static final boolean CRAFTING_CPU_SCREEN_OVERRIDES_INIT =
-            declaresMethod(CRAFTING_CPU_SCREEN, "()V", "init", "m_7856_");
+    public static final boolean CRAFTING_CPU_SCREEN_OVERRIDES_INIT = declaresMethod(CRAFTING_CPU_SCREEN, "()V", "init",
+            "m_7856_");
 
-    public static final boolean CRAFT_CONFIRM_BUILDS_CPU_LIST =
-            declaresMethod(CRAFT_CONFIRM_MENU, null, "createCpuList");
+    public static final boolean CRAFT_CONFIRM_BUILDS_CPU_LIST = declaresMethod(CRAFT_CONFIRM_MENU, null,
+            "createCpuList");
 
-    public static final boolean CRAFT_CONFIRM_SUBMITS_WITH_FOLLOWING =
-            callsMethod(CRAFT_CONFIRM_MENU, CRAFTING_SERVICE, "submitJob", SUBMIT_JOB_FOLLOWING_DESC);
+    public static final boolean CRAFT_CONFIRM_SUBMITS_WITH_FOLLOWING = callsMethod(CRAFT_CONFIRM_MENU, CRAFTING_SERVICE,
+            "submitJob", SUBMIT_JOB_FOLLOWING_DESC);
 
     private Ae2Detection() {
     }

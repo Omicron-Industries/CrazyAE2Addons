@@ -1,8 +1,18 @@
 package net.oktawia.crazyae2addons.client.renderer.preview.multiblock;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,17 +28,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.model.data.ModelData;
-import net.oktawia.crazyae2addons.client.textures.PreviewQuadProvider;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import net.oktawia.crazyae2addons.client.textures.PreviewQuadProvider;
 
 public final class PreviewRenderer {
     public static float previewAlpha = 0.38f;
@@ -86,7 +89,8 @@ public final class PreviewRenderer {
 
     public static void render(MultiblockPreviewInfo previewInfo, RenderLevelStageEvent event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.player == null || previewInfo == null) return;
+        if (mc.level == null || mc.player == null || previewInfo == null)
+            return;
 
         Level level = mc.level;
         previewInfo.validate(level, level.getGameTime());
@@ -170,8 +174,7 @@ public final class PreviewRenderer {
             BlockPos pos,
             float red,
             float green,
-            float blue
-    ) {
+            float blue) {
         float x1 = pos.getX();
         float y1 = pos.getY();
         float z1 = pos.getZ();
@@ -201,8 +204,7 @@ public final class PreviewRenderer {
             Vec3 camera,
             float x1, float y1, float z1,
             float x2, float y2, float z2,
-            float red, float green, float blue
-    ) {
+            float red, float green, float blue) {
         Vector3f direction = new Vector3f(x2 - x1, y2 - y1, z2 - z1);
         if (direction.lengthSquared() < 1.0e-6f) {
             return;
@@ -211,8 +213,7 @@ public final class PreviewRenderer {
         Vector3f toCamera = new Vector3f(
                 (float) (camera.x - (x1 + x2) * 0.5),
                 (float) (camera.y - (y1 + y2) * 0.5),
-                (float) (camera.z - (z1 + z2) * 0.5)
-        );
+                (float) (camera.z - (z1 + z2) * 0.5));
 
         Vector3f side = direction.cross(toCamera, new Vector3f());
         if (side.lengthSquared() < 1.0e-6f) {
@@ -230,8 +231,7 @@ public final class PreviewRenderer {
             VertexConsumer target,
             Matrix4f matrix,
             float x, float y, float z,
-            float red, float green, float blue
-    ) {
+            float red, float green, float blue) {
         target.vertex(matrix, x, y, z).color(red, green, blue, 1.0f).endVertex();
     }
 
@@ -240,8 +240,7 @@ public final class PreviewRenderer {
             VertexConsumer target,
             BlockRenderDispatcher blockRenderer,
             MultiblockPreviewInfo.BlockInfo info,
-            float alpha
-    ) {
+            float alpha) {
         BlockPos pos = info.pos();
 
         poseStack.pushPose();
@@ -289,8 +288,7 @@ public final class PreviewRenderer {
             target.putBulkData(
                     poseStack.last(), quad,
                     1f, 1f, 1f, alpha,
-                    0x00F000F0, OverlayTexture.NO_OVERLAY, true
-            );
+                    0x00F000F0, OverlayTexture.NO_OVERLAY, true);
         }
     }
 
@@ -306,16 +304,14 @@ public final class PreviewRenderer {
         PreviewTooltipLayer.set(
                 pointed.state().getBlock().getName().getString(),
                 null,
-                PreviewTooltipLayer.DEFAULT_TTL_MS
-        );
+                PreviewTooltipLayer.DEFAULT_TTL_MS);
     }
 
     private static @Nullable MultiblockPreviewInfo.BlockInfo pick(
             MultiblockPreviewInfo previewInfo,
             Minecraft mc,
             Level level,
-            float reach
-    ) {
+            float reach) {
         Vec3 eye = mc.player.getEyePosition();
         Vec3 step = mc.player.getLookAngle().scale(PICK_STEP);
         double x = eye.x;

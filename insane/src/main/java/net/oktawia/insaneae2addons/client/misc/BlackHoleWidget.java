@@ -1,13 +1,18 @@
 package net.oktawia.insaneae2addons.client.misc;
 
-import appeng.client.gui.widgets.ITooltip;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import lombok.Setter;
+
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -19,13 +24,13 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
+
+import lombok.Setter;
+
+import appeng.client.gui.widgets.ITooltip;
+
 import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.defs.LangDefs;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlackHoleWidget extends AbstractWidget implements ITooltip {
 
@@ -43,10 +48,8 @@ public class BlackHoleWidget extends AbstractWidget implements ITooltip {
             long storedInDisk,
             long massDeltaPerSecond,
             double massEfficiency,
-            double heatEfficiency
-    ) {
-        public static final View EMPTY =
-                new View(false, 0L, 0L, 1L, 0.0, 1.0, 0L, 0L, 0L, 0L, 0L, 0L, 0.0, 0.0);
+            double heatEfficiency) {
+        public static final View EMPTY = new View(false, 0L, 0L, 1L, 0.0, 1.0, 0L, 0L, 0L, 0L, 0L, 0L, 0.0, 0.0);
     }
 
     private static final double DISK_FULL_AT_MU = 30_000.0;
@@ -105,7 +108,8 @@ public class BlackHoleWidget extends AbstractWidget implements ITooltip {
         graphics.fillGradient(layout.previewX(), layout.previewY(),
                 layout.previewX() + layout.previewW(), layout.previewY() + layout.previewH(), 0x22000000, 0x88000000);
         graphics.fillGradient(layout.previewX(), layout.previewY(),
-                layout.previewX() + layout.previewW(), layout.previewY() + layout.previewH() / 2, 0x11000000, 0x00000000);
+                layout.previewX() + layout.previewW(), layout.previewY() + layout.previewH() / 2, 0x11000000,
+                0x00000000);
 
         Disk disk = disk(layout);
         drawAccretionDisk(graphics, disk, animationTime(partialTick));
@@ -310,7 +314,7 @@ public class BlackHoleWidget extends AbstractWidget implements ITooltip {
     }
 
     private void drawBar(GuiGraphics graphics, int x, int y, int width, double progress, float hue,
-                         int mouseX, int mouseY, String label) {
+            int mouseX, int mouseY, String label) {
         boolean hover = contains(mouseX, mouseY, x, y, width, BAR_HEIGHT);
 
         graphics.fill(x, y, x + width, y + BAR_HEIGHT, hover ? 0xFF1A1D27 : 0xFF141620);
@@ -378,7 +382,7 @@ public class BlackHoleWidget extends AbstractWidget implements ITooltip {
     }
 
     private void diskVertex(BufferBuilder buffer, Matrix4f matrix, Disk disk, float angle, float radius,
-                            float total, float heat, float rotation, int alpha, float intensityScale) {
+            float total, float heat, float rotation, int alpha, float intensityScale) {
         float radialPx = radius - disk.innerRadius();
         float radial = total <= 0.0001f ? 0f : Mth.clamp(radialPx / total, 0f, 1f);
 
@@ -442,7 +446,7 @@ public class BlackHoleWidget extends AbstractWidget implements ITooltip {
     }
 
     private static void drawCircle(GuiGraphics graphics, float centerX, float centerY, float radius,
-                                   int segments, int color) {
+            int segments, int color) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -542,7 +546,9 @@ public class BlackHoleWidget extends AbstractWidget implements ITooltip {
     }
 
     private record Layout(int previewX, int previewY, int barW, int previewH,
-                          int barX, int massBarY, int heatBarY, int previewW) {}
+            int barX, int massBarY, int heatBarY, int previewW) {
+    }
 
-    private record Disk(float centerX, float centerY, float shadowRadius, float innerRadius, float outerRadius) {}
+    private record Disk(float centerX, float centerY, float shadowRadius, float innerRadius, float outerRadius) {
+    }
 }

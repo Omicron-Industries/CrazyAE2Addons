@@ -1,10 +1,12 @@
 package net.oktawia.insaneae2addons.items.mobstorage;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+
 import appeng.api.stacks.AEKey;
 import appeng.items.storage.BasicStorageCell;
 import appeng.items.storage.StorageTier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
+
 import net.oktawia.insaneae2addons.mobstorage.MobKey;
 import net.oktawia.insaneae2addons.mobstorage.MobKeyType;
 

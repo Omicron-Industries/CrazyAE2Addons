@@ -1,22 +1,25 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
-import appeng.client.gui.style.ScreenStyle;
-import appeng.menu.AEBaseMenu;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.client.screens.CrazyBaseScreen;
-import net.oktawia.insaneae2addons.client.misc.CurveWidget;
-import net.oktawia.insaneae2addons.client.misc.ValueField;
-import net.oktawia.insaneae2addons.defs.LangDefs;
-import net.oktawia.insaneae2addons.logic.penrose.PenroseCurveModel;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.style.ScreenStyle;
+import appeng.menu.AEBaseMenu;
+
+import net.oktawia.crazyae2addons.client.screens.CrazyBaseScreen;
+import net.oktawia.insaneae2addons.client.misc.CurveWidget;
+import net.oktawia.insaneae2addons.client.misc.ValueField;
+import net.oktawia.insaneae2addons.defs.LangDefs;
+import net.oktawia.insaneae2addons.logic.penrose.PenroseCurveModel;
 
 public abstract class PenrosePeripheralScreen<C extends AEBaseMenu> extends CrazyBaseScreen<C> {
 
@@ -54,7 +57,7 @@ public abstract class PenrosePeripheralScreen<C extends AEBaseMenu> extends Craz
     }
 
     protected void addCurve(PenroseCurveModel model, DoubleSupplier position, Supplier<double[]> targets,
-                            Supplier<List<Component>> tooltip) {
+            Supplier<List<Component>> tooltip) {
         this.curveModel = model;
         this.curvePosition = position;
         this.curveTargets = targets;

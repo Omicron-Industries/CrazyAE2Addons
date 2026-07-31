@@ -1,5 +1,26 @@
 package net.oktawia.crazyae2addons.entities;
 
+import java.util.List;
+
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
 import appeng.api.stacks.AEItemKey;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -11,21 +32,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.SettingsFrom;
 import appeng.util.inv.AppEngInternalInventory;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
@@ -35,9 +42,6 @@ import net.oktawia.crazyae2addons.logic.provider.CrazyProviderNbt;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.SyncBlockClientPacket;
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 @Getter
 public class CrazyPatternProviderBE extends PatternProviderBlockEntity implements IManagedBEHelper, IUpgradeableObject {
@@ -50,11 +54,10 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(
             CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get(),
             1,
-            this::setChanged
-    );
+            this::setChanged);
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(CrazyPatternProviderBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            CrazyPatternProviderBE.class);
 
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 
@@ -322,7 +325,6 @@ public class CrazyPatternProviderBE extends PatternProviderBlockEntity implement
             return;
         }
         NetworkHandler.sendToTrackingChunk(getLevel().getChunkAt(getBlockPos()),
-                new SyncBlockClientPacket(getBlockPos(), added, Direction.NORTH)
-        );
+                new SyncBlockClientPacket(getBlockPos(), added, Direction.NORTH));
     }
 }

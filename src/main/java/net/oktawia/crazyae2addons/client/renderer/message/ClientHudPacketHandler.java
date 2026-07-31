@@ -2,6 +2,7 @@ package net.oktawia.crazyae2addons.client.renderer.message;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.oktawia.crazyae2addons.network.packets.ShowHudMessagePacket;
 
 @OnlyIn(Dist.CLIENT)

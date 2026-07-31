@@ -1,17 +1,19 @@
 package net.oktawia.crazyae2addons.datagen;
 
-import appeng.core.definitions.AEBlocks;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+
+import appeng.core.definitions.AEBlocks;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.defs.recipes.BlockRecipes;
 import net.oktawia.crazyae2addons.defs.recipes.ItemRecipes;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class CrazyRecipeProvider extends RecipeProvider implements IConditionBuilder {
 
@@ -25,15 +27,17 @@ public class CrazyRecipeProvider extends RecipeProvider implements IConditionBui
         ItemRecipes.registerRecipes();
 
         for (var recipe : BlockRecipes.getRecipes()) {
-            save(writer, recipe.id(), recipe.pattern(), recipe.keys(), recipe.shapelessIngredients(), recipe.output(), recipe.count());
+            save(writer, recipe.id(), recipe.pattern(), recipe.keys(), recipe.shapelessIngredients(), recipe.output(),
+                    recipe.count());
         }
         for (var recipe : ItemRecipes.getRecipes()) {
-            save(writer, recipe.id(), recipe.pattern(), recipe.keys(), recipe.shapelessIngredients(), recipe.output(), recipe.count());
+            save(writer, recipe.id(), recipe.pattern(), recipe.keys(), recipe.shapelessIngredients(), recipe.output(),
+                    recipe.count());
         }
     }
 
     private void save(Consumer<FinishedRecipe> writer, String id, String pattern,
-                      Map<Character, Item> keys, List<Item> shapeless, Item output, int count) {
+            Map<Character, Item> keys, List<Item> shapeless, Item output, int count) {
         var unlock = has(AEBlocks.CONTROLLER.asItem());
         var unlockName = getHasName(AEBlocks.CONTROLLER.asItem());
         var recipeId = CrazyAddons.makeId(id);
@@ -45,7 +49,8 @@ public class CrazyRecipeProvider extends RecipeProvider implements IConditionBui
             builder.save(writer, recipeId);
         } else {
             var builder = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, output, count);
-            for (var row : pattern.split("/")) builder.pattern(row);
+            for (var row : pattern.split("/"))
+                builder.pattern(row);
             keys.forEach(builder::define);
             builder.unlockedBy(unlockName, unlock);
             builder.save(writer, recipeId);

@@ -1,23 +1,24 @@
 package net.oktawia.crazyae2addons.network.packets;
 
-import appeng.api.stacks.GenericStack;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
+
+import appeng.api.stacks.GenericStack;
+
 import net.oktawia.crazyae2addons.client.screens.item.WirelessNotificationTerminalScreen;
 import net.oktawia.crazyae2addons.menus.item.WirelessNotificationTerminalMenu;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public record WirelessNotificationWindowPacket(
         int totalCount,
         int windowOffset,
         int revision,
-        List<WirelessNotificationTerminalMenu.NotificationSlotInfo> window
-) {
+        List<WirelessNotificationTerminalMenu.NotificationSlotInfo> window) {
 
     public static void encode(WirelessNotificationWindowPacket pkt, FriendlyByteBuf buf) {
         buf.writeVarInt(pkt.totalCount);

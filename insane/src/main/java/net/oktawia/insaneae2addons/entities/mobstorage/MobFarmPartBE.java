@@ -1,11 +1,13 @@
 package net.oktawia.insaneae2addons.entities.mobstorage;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockFrameBE;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
-import org.jetbrains.annotations.Nullable;
 
 public class MobFarmPartBE extends AbstractMultiblockFrameBE<MobFarmControllerBE> {
 
@@ -15,8 +17,7 @@ public class MobFarmPartBE extends AbstractMultiblockFrameBE<MobFarmControllerBE
                 pos,
                 blockState,
                 new ItemStack(blockState.getBlock()),
-                1.0F
-        );
+                1.0F);
     }
 
     @Override

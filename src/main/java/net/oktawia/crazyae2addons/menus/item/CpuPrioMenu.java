@@ -1,17 +1,21 @@
 package net.oktawia.crazyae2addons.menus.item;
 
-import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.guisync.GuiSync;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
-import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
+
+import appeng.blockentity.crafting.CraftingBlockEntity;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.GuiSync;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.cpupriority.CpuPrioHost;
 import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
-import org.jetbrains.annotations.Nullable;
 
 public class CpuPrioMenu extends AEBaseMenu {
 

@@ -1,15 +1,16 @@
 package net.oktawia.crazyae2addons.tracking;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridServiceProvider;
-import appeng.api.stacks.AEKey;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridServiceProvider;
+import appeng.api.stacks.AEKey;
 
 public class ResourceTrackingService implements IResourceTrackingService, IGridServiceProvider {
 
@@ -23,14 +24,17 @@ public class ResourceTrackingService implements IResourceTrackingService, IGridS
 
     @Override
     public void trackConsumption(AEKey key, long amount, UsageTarget target, String description, @Nullable AEKey icon) {
-        if (amount <= 0) return;
+        if (amount <= 0)
+            return;
         PerKeyData d = data.get(key);
         if (d == null) {
-            if (data.size() >= MAX_KEYS) return;
+            if (data.size() >= MAX_KEYS)
+                return;
             d = new PerKeyData();
             data.put(key, d);
         }
-        if (d.targetAmounts.size() >= MAX_TARGETS_PER_KEY && !d.targetAmounts.containsKey(target)) return;
+        if (d.targetAmounts.size() >= MAX_TARGETS_PER_KEY && !d.targetAmounts.containsKey(target))
+            return;
         d.record(amount, target, description, icon, System.currentTimeMillis());
     }
 
@@ -51,13 +55,15 @@ public class ResourceTrackingService implements IResourceTrackingService, IGridS
     @Override
     public List<UsageEntry> getDetails(AEKey key) {
         PerKeyData d = data.get(key);
-        if (d == null) return List.of();
+        if (d == null)
+            return List.of();
         long now = System.currentTimeMillis();
         List<UsageEntry> entries = new ArrayList<>(d.targetAmounts.size());
         for (UsageTarget target : d.targetAmounts.keySet()) {
             long perMin = d.perMinuteTarget(target, now);
             if (perMin > 0) {
-                entries.add(new UsageEntry(d.targetDescriptions.get(target), perMin, d.targetIcons.get(target), target.pos()));
+                entries.add(new UsageEntry(d.targetDescriptions.get(target), perMin, d.targetIcons.get(target),
+                        target.pos()));
             }
         }
         entries.sort(Comparator.comparingLong(UsageEntry::totalAmount).reversed());

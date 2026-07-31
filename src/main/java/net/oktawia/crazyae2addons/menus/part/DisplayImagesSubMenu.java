@@ -1,13 +1,23 @@
 package net.oktawia.crazyae2addons.menus.part;
 
-import appeng.menu.AEBaseMenu;
-import appeng.menu.ISubMenu;
-import appeng.menu.guisync.GuiSync;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.menu.AEBaseMenu;
+import appeng.menu.ISubMenu;
+import appeng.menu.guisync.GuiSync;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.display.DisplayGrid;
@@ -15,17 +25,12 @@ import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.SyncDisplayImagePreviewPacket;
 import net.oktawia.crazyae2addons.parts.Display;
-import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class DisplayImagesSubMenu extends AEBaseMenu implements ISubMenu {
 
     private static final Gson GSON = new Gson();
-    private static final Type IMAGE_LIST_TYPE = new TypeToken<List<DisplayImageEntry>>() {}.getType();
+    private static final Type IMAGE_LIST_TYPE = new TypeToken<List<DisplayImageEntry>>() {
+    }.getType();
 
     public static final String ACTION_SELECT = "selectImage";
     public static final String ACTION_REMOVE = "removeImage";

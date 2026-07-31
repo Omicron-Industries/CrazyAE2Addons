@@ -1,17 +1,19 @@
 package net.oktawia.insaneae2addons.datagen;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.insaneae2addons.InsaneAddons;
-import net.oktawia.insaneae2addons.defs.recipes.FabricationRecipes;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+
+import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.insaneae2addons.InsaneAddons;
+import net.oktawia.insaneae2addons.defs.recipes.FabricationRecipes;
 
 public class InsaneFabricationRecipeProvider implements DataProvider {
 

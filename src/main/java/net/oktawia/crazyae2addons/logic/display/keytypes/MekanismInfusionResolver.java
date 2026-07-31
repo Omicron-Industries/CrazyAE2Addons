@@ -1,15 +1,18 @@
 package net.oktawia.crazyae2addons.logic.display.keytypes;
 
-import appeng.api.stacks.AEKey;
-import me.ramidzkh.mekae2.ae2.MekanismKey;
-import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.infuse.InfusionStack;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+
+import me.ramidzkh.mekae2.ae2.MekanismKey;
+import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
+
+import appeng.api.stacks.AEKey;
 
 public class MekanismInfusionResolver implements IDisplayKeyResolver {
 

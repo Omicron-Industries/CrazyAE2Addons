@@ -1,5 +1,9 @@
 package net.oktawia.crazyae2addons.client.screens;
 
+import java.util.function.Consumer;
+
+import com.google.common.primitives.Longs;
+
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AESubScreen;
 import appeng.client.gui.NumberEntryType;
@@ -8,11 +12,9 @@ import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
-import com.google.common.primitives.Longs;
+
 import net.oktawia.crazyae2addons.client.screens.block.EjectorScreen;
 import net.oktawia.crazyae2addons.menus.block.EjectorMenu;
-
-import java.util.function.Consumer;
 
 public class SetConfigAmountScreen<C extends EjectorMenu>
         extends AESubScreen<C, EjectorScreen<C>> {
@@ -22,8 +24,8 @@ public class SetConfigAmountScreen<C extends EjectorMenu>
     private final Consumer<GenericStack> setter;
 
     public SetConfigAmountScreen(EjectorScreen<C> parentScreen,
-                                 GenericStack currentStack,
-                                 Consumer<GenericStack> setter) {
+            GenericStack currentStack,
+            Consumer<GenericStack> setter) {
         super(parentScreen, "/screens/set_processing_pattern_amount.json");
 
         this.currentStack = currentStack;

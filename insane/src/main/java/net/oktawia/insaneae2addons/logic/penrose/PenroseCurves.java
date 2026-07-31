@@ -39,7 +39,7 @@ public final class PenroseCurves {
     }
 
     public static long generatedFe(double flow, double heatEfficiency, double massFactor,
-                                   double dutyCompensation, double feBasePerFlow) {
+            double dutyCompensation, double feBasePerFlow) {
         double generated = dutyCompensation * feBasePerFlow * flow * heatEfficiency * massFactor;
 
         if (Double.isNaN(generated) || generated <= 0.0) {

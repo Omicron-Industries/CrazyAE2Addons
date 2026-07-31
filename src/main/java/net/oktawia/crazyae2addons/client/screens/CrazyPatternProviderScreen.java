@@ -1,21 +1,23 @@
 package net.oktawia.crazyae2addons.client.screens;
 
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.interfaces.IMovableSlot;
 import net.oktawia.crazyae2addons.menus.CrazyPatternProviderMenu;
 import net.oktawia.crazyae2addons.mixins.accessors.WidgetContainerAccessor;
-
-import java.util.List;
 
 public class CrazyPatternProviderScreen<C extends CrazyPatternProviderMenu> extends PatternProviderScreen<C> {
     public static final int COLS = 9;
@@ -56,8 +58,7 @@ public class CrazyPatternProviderScreen<C extends CrazyPatternProviderMenu> exte
                 "patterninfo",
                 Component.translatable(LangDefs.CRAZY_PROVIDER_CAPACITY_TOOLTIP.getTranslationKey())
                         .append(getMenu().slotNum + " ")
-                        .append(Component.translatable(LangDefs.PATTERNS.getTranslationKey()))
-        );
+                        .append(Component.translatable(LangDefs.PATTERNS.getTranslationKey())));
 
         scrollbar.setRange(0, Math.max(0, (getMenu().slotNum / COLS) - VISIBLE_ROWS), 1);
 
@@ -94,12 +95,11 @@ public class CrazyPatternProviderScreen<C extends CrazyPatternProviderMenu> exte
             lastOffset = scrollOffset;
         }
 
-        boolean relayoutNeeded =
-                scrollOffset != lastOffset
-                        || this.leftPos != lastLeftPos
-                        || this.topPos != lastTopPos
-                        || this.width != lastWidth
-                        || this.height != lastHeight;
+        boolean relayoutNeeded = scrollOffset != lastOffset
+                || this.leftPos != lastLeftPos
+                || this.topPos != lastTopPos
+                || this.width != lastWidth
+                || this.height != lastHeight;
 
         if (relayoutNeeded) {
             List<Slot> slots = getMenu().getSlots(SlotSemantics.ENCODED_PATTERN);

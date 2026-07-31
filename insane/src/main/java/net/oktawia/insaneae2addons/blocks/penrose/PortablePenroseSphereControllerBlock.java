@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.blocks.penrose;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,9 +17,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
 import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControllerBE;
-import org.jetbrains.annotations.Nullable;
 
 public class PortablePenroseSphereControllerBlock extends AbstractMenuOpeningBlock<PortablePenroseSphereControllerBE> {
 
@@ -50,7 +52,8 @@ public class PortablePenroseSphereControllerBlock extends AbstractMenuOpeningBlo
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
+            ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
 
         if (level.isClientSide() || !(placer instanceof ServerPlayer player)) {

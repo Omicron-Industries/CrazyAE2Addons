@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.blocks.penrose;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -7,9 +9,9 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
+
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
 import net.oktawia.insaneae2addons.entities.penrose.PenroseHeatEmitterBE;
-import org.jetbrains.annotations.Nullable;
 
 public class PenroseHeatEmitterBlock extends AbstractMenuOpeningBlock<PenroseHeatEmitterBE> {
 

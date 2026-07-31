@@ -1,10 +1,10 @@
 package net.oktawia.insaneae2addons.items;
 
-import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.items.AEBaseItem;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocators;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -16,12 +16,15 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.items.AEBaseItem;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.DataHost;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class DataDrive extends AEBaseItem implements IMenuItem {
 
@@ -104,7 +107,8 @@ public class DataDrive extends AEBaseItem implements IMenuItem {
     }
 
     @Override
-    public @Nullable ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+    public @Nullable ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack,
+            @Nullable BlockPos pos) {
         return new DataHost(player, inventorySlot, stack);
     }
 }

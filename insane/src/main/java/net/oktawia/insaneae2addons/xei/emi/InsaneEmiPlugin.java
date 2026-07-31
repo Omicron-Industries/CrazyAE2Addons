@@ -1,20 +1,22 @@
 package net.oktawia.insaneae2addons.xei.emi;
 
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiInfoRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.network.chat.Component;
+
 import net.oktawia.crazyae2addons.util.FeatureGates;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.xei.common.InsaneXeiRecipes;
-
-import java.util.List;
 
 @EmiEntrypoint
 public class InsaneEmiPlugin implements EmiPlugin {
@@ -23,8 +25,7 @@ public class InsaneEmiPlugin implements EmiPlugin {
     public void register(EmiRegistry registry) {
         EmiRecipeCategory cradleCategory = new EmiRecipeCategory(
                 InsaneAddons.makeId("cradle"),
-                EmiStack.of(InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get().asItem())
-        ) {
+                EmiStack.of(InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get().asItem())) {
             @Override
             public Component getName() {
                 return Component.translatable(LangDefs.CRADLE_CATEGORY.getTranslationKey());
@@ -33,8 +34,7 @@ public class InsaneEmiPlugin implements EmiPlugin {
 
         EmiRecipeCategory researchCategory = new EmiRecipeCategory(
                 InsaneAddons.makeId("research"),
-                EmiStack.of(InsaneItemRegistrar.DATA_DRIVE.get())
-        ) {
+                EmiStack.of(InsaneItemRegistrar.DATA_DRIVE.get())) {
             @Override
             public Component getName() {
                 return Component.translatable(LangDefs.RESEARCH_CATEGORY.getTranslationKey());
@@ -43,8 +43,7 @@ public class InsaneEmiPlugin implements EmiPlugin {
 
         EmiRecipeCategory multiblockCategory = new EmiRecipeCategory(
                 InsaneAddons.makeId("multiblock"),
-                EmiStack.of(InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get().asItem())
-        ) {
+                EmiStack.of(InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get().asItem())) {
             @Override
             public Component getName() {
                 return Component.translatable(LangDefs.MULTIBLOCK_CATEGORY.getTranslationKey());
@@ -57,12 +56,10 @@ public class InsaneEmiPlugin implements EmiPlugin {
 
         registry.addWorkstation(
                 cradleCategory,
-                EmiStack.of(InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get().asItem())
-        );
+                EmiStack.of(InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get().asItem()));
         registry.addWorkstation(
                 researchCategory,
-                EmiStack.of(InsaneBlockRegistrar.RESEARCH_STATION_BLOCK.get().asItem())
-        );
+                EmiStack.of(InsaneBlockRegistrar.RESEARCH_STATION_BLOCK.get().asItem()));
         for (var entry : InsaneXeiRecipes.getMultiblockEntries()) {
             registry.addWorkstation(multiblockCategory, EmiStack.of(entry.controller()));
         }
@@ -80,8 +77,7 @@ public class InsaneEmiPlugin implements EmiPlugin {
         registry.addRecipe(new EmiInfoRecipe(
                 List.of(EmiStack.of(InsaneItemRegistrar.SUPER_SINGULARITY.get())),
                 List.of(InsaneXeiRecipes.superSingularityInfo()),
-                InsaneAddons.makeId("/super_singularity_info")
-        ));
+                InsaneAddons.makeId("/super_singularity_info")));
 
         registry.addRecipeHandler(null, new CradleEmiRecipeHandler());
         registry.addRecipeHandler(null, new ResearchEmiRecipeHandler());

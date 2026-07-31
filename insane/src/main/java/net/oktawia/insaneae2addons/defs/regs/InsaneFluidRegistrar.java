@@ -1,5 +1,9 @@
 package net.oktawia.insaneae2addons.defs.regs;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -7,8 +11,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.common.SoundActions;
@@ -18,15 +22,13 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.fluid.WaterBasedFluidType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public final class InsaneFluidRegistrar {
-    private InsaneFluidRegistrar() {}
+    private InsaneFluidRegistrar() {
+    }
 
     public record FluidSet(
             String name,
@@ -36,28 +38,28 @@ public final class InsaneFluidRegistrar {
             RegistryObject<FlowingFluid> source,
             RegistryObject<FlowingFluid> flowing,
             RegistryObject<LiquidBlock> block,
-            RegistryObject<Item> bucket
-    ) {}
+            RegistryObject<Item> bucket) {
+    }
 
-    public static final DeferredRegister<FluidType> FLUID_TYPES =
-            DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, InsaneAddons.MODID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister
+            .create(ForgeRegistries.Keys.FLUID_TYPES, InsaneAddons.MODID);
 
-    public static final DeferredRegister<Fluid> FLUIDS =
-            DeferredRegister.create(ForgeRegistries.FLUIDS, InsaneAddons.MODID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS,
+            InsaneAddons.MODID);
 
-    public static final DeferredRegister<Item> ITEMS =
-            DeferredRegister.create(ForgeRegistries.ITEMS, InsaneAddons.MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS,
+            InsaneAddons.MODID);
 
-    public static final DeferredRegister<Block> BLOCKS =
-            DeferredRegister.create(ForgeRegistries.BLOCKS, InsaneAddons.MODID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS,
+            InsaneAddons.MODID);
 
     private static final List<FluidSet> DEFINED = new ArrayList<>();
 
-    public static final FluidSet RESEARCH_FLUID =
-            define("research_fluid", "Research Fluid", "research_bucket", 0xFF47C7FF, MapColor.COLOR_LIGHT_BLUE);
+    public static final FluidSet RESEARCH_FLUID = define("research_fluid", "Research Fluid", "research_bucket",
+            0xFF47C7FF, MapColor.COLOR_LIGHT_BLUE);
 
-    public static final FluidSet PENROSE_COOLANT =
-            define("penrose_coolant", "Penrose Coolant", "penrose_coolant_bucket", 0xFFB8F2FF, MapColor.ICE);
+    public static final FluidSet PENROSE_COOLANT = define("penrose_coolant", "Penrose Coolant",
+            "penrose_coolant_bucket", 0xFFB8F2FF, MapColor.ICE);
 
     public static List<FluidSet> getFluids() {
         return Collections.unmodifiableList(DEFINED);

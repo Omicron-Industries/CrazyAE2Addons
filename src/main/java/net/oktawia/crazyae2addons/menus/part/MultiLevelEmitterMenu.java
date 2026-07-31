@@ -1,5 +1,10 @@
 package net.oktawia.crazyae2addons.menus.part;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+
 import appeng.api.config.Settings;
 import appeng.api.stacks.AEKey;
 import appeng.api.util.IConfigManager;
@@ -8,11 +13,9 @@ import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.FakeSlot;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.parts.MultiLevelEmitter;
-import org.jetbrains.annotations.Nullable;
 
 public class MultiLevelEmitterMenu extends UpgradeableMenu<MultiLevelEmitter> {
 
@@ -34,22 +37,38 @@ public class MultiLevelEmitterMenu extends UpgradeableMenu<MultiLevelEmitter> {
     @GuiSync(4)
     public int craftMask;
 
-    @GuiSync(10) public long t0;
-    @GuiSync(11) public long t1;
-    @GuiSync(12) public long t2;
-    @GuiSync(13) public long t3;
-    @GuiSync(14) public long t4;
-    @GuiSync(15) public long t5;
-    @GuiSync(16) public long t6;
-    @GuiSync(17) public long t7;
-    @GuiSync(18) public long t8;
-    @GuiSync(19) public long t9;
-    @GuiSync(20) public long t10;
-    @GuiSync(21) public long t11;
-    @GuiSync(22) public long t12;
-    @GuiSync(23) public long t13;
-    @GuiSync(24) public long t14;
-    @GuiSync(25) public long t15;
+    @GuiSync(10)
+    public long t0;
+    @GuiSync(11)
+    public long t1;
+    @GuiSync(12)
+    public long t2;
+    @GuiSync(13)
+    public long t3;
+    @GuiSync(14)
+    public long t4;
+    @GuiSync(15)
+    public long t5;
+    @GuiSync(16)
+    public long t6;
+    @GuiSync(17)
+    public long t7;
+    @GuiSync(18)
+    public long t8;
+    @GuiSync(19)
+    public long t9;
+    @GuiSync(20)
+    public long t10;
+    @GuiSync(21)
+    public long t11;
+    @GuiSync(22)
+    public long t12;
+    @GuiSync(23)
+    public long t13;
+    @GuiSync(24)
+    public long t14;
+    @GuiSync(25)
+    public long t15;
 
     public MultiLevelEmitterMenu(int id, Inventory ip, MultiLevelEmitter host) {
         super(CrazyMenuRegistrar.MULTI_LEVEL_EMITTER_MENU.get(), id, ip, host);

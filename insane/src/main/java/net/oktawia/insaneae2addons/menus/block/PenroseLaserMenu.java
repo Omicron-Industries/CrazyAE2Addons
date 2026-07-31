@@ -1,9 +1,12 @@
 package net.oktawia.insaneae2addons.menus.block;
 
+import net.minecraft.world.entity.player.Inventory;
+
+import lombok.Getter;
+
 import appeng.menu.AEBaseMenu;
 import appeng.menu.interfaces.IProgressProvider;
-import lombok.Getter;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.entities.penrose.PenroseLaserBE;
 

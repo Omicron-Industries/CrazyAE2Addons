@@ -1,12 +1,16 @@
 package net.oktawia.insaneae2addons.client.screens.part;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.style.ScreenStyle;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.ScreenStyle;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
 import net.oktawia.insaneae2addons.client.utils.NbtMatcherHighlight;
@@ -14,7 +18,6 @@ import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.logic.nbt.NBTMatcher;
 import net.oktawia.insaneae2addons.menus.part.NbtExportBusMenu;
 import net.oktawia.insaneae2addons.util.NbtFormatter;
-import org.lwjgl.glfw.GLFW;
 
 public class NbtExportBusScreen<C extends NbtExportBusMenu> extends AEBaseScreen<C> {
 
@@ -69,7 +72,8 @@ public class NbtExportBusScreen<C extends NbtExportBusMenu> extends AEBaseScreen
         getMenu().updateData(text);
         NBTMatcher.Compiled compiled = NBTMatcher.compile(text);
         if (compiled.isValid()) {
-            confirmBtn.setTooltip(Tooltip.create(Component.translatable(LangDefs.NBT_FILTER_SAVED.getTranslationKey())));
+            confirmBtn
+                    .setTooltip(Tooltip.create(Component.translatable(LangDefs.NBT_FILTER_SAVED.getTranslationKey())));
         } else {
             confirmBtn.setTooltip(Tooltip.create(
                     Component.translatable(LangDefs.NBT_SYNTAX_ERROR.getTranslationKey())
@@ -104,7 +108,7 @@ public class NbtExportBusScreen<C extends NbtExportBusMenu> extends AEBaseScreen
                     || minecraft.options.keySocialInteractions.matches(key, sc)
                     || minecraft.options.keySwapOffhand.matches(key, sc)
                     || (key >= GLFW.GLFW_KEY_1 && key <= GLFW.GLFW_KEY_9
-                    && minecraft.options.keyHotbarSlots[key - GLFW.GLFW_KEY_1].matches(key, sc))) {
+                            && minecraft.options.keyHotbarSlots[key - GLFW.GLFW_KEY_1].matches(key, sc))) {
                 return true;
             }
             if (textEditor.keyPressed(key, sc, mod)) {

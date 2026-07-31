@@ -1,5 +1,7 @@
 package net.oktawia.crazyae2addons.client.renderer.message;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
@@ -7,9 +9,8 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.oktawia.crazyae2addons.CrazyAddons;
 
-import java.util.List;
+import net.oktawia.crazyae2addons.CrazyAddons;
 
 @Mod.EventBusSubscriber(modid = CrazyAddons.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ClientHotbarMessageRenderer {

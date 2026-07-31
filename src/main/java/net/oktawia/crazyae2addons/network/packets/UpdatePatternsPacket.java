@@ -1,14 +1,15 @@
 package net.oktawia.crazyae2addons.network.packets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.client.screens.CrazyPatternProviderScreen;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import net.oktawia.crazyae2addons.client.screens.CrazyPatternProviderScreen;
 
 public class UpdatePatternsPacket {
     private final int startIndex;

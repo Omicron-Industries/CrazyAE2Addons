@@ -1,13 +1,15 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
-import appeng.client.gui.Icon;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.menus.part.RedstoneEmitterMenu;
@@ -32,8 +34,7 @@ public class RedstoneEmitterScreen<C extends RedstoneEmitterMenu> extends AEBase
 
         IconButton confirmButton = new IconButton(Icon.ENTER, button -> save());
         confirmButton.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.APPLY.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.APPLY.getTranslationKey())));
 
         this.widgets.add("name", this.nameField);
         this.widgets.add("confirm", confirmButton);

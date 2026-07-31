@@ -1,23 +1,26 @@
 package net.oktawia.insaneae2addons.defs.recipes;
 
-import appeng.api.util.AEColor;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
-import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
-import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
-import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
+
+import appeng.api.util.AEColor;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 
 public class BlockRecipes {
 
@@ -28,8 +31,8 @@ public class BlockRecipes {
             List<Item> shapelessIngredients,
             @Nullable Item smeltingInput,
             Item output,
-            int count
-    ) {}
+            int count) {
+    }
 
     private static final List<RecipeDef> RECIPES = new ArrayList<>();
 
@@ -319,7 +322,8 @@ public class BlockRecipes {
         }
 
         public Builder shapeless(ItemLike... ingredients) {
-            for (var i : ingredients) shapelessIngredients.add(i.asItem());
+            for (var i : ingredients)
+                shapelessIngredients.add(i.asItem());
             return this;
         }
 
@@ -335,7 +339,8 @@ public class BlockRecipes {
         }
 
         public void register() {
-            RECIPES.add(new RecipeDef(id, pattern, Map.copyOf(keys), List.copyOf(shapelessIngredients), smeltingInput, output, count));
+            RECIPES.add(new RecipeDef(id, pattern, Map.copyOf(keys), List.copyOf(shapelessIngredients), smeltingInput,
+                    output, count));
         }
     }
 }

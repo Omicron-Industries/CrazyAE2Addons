@@ -1,25 +1,30 @@
 package net.oktawia.crazyae2addons.util;
 
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import lombok.Getter;
+import java.util.*;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import lombok.Getter;
 
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
 
 public final class TagMatcher {
 
     private static final class InvalidTagMatcherSyntaxException extends Exception {
-        private InvalidTagMatcherSyntaxException(String s) { super(s); }
+        private InvalidTagMatcherSyntaxException(String s) {
+            super(s);
+        }
     }
 
     public static Compiled compile(@Nullable String expr) {
         String washed = washExpression(expr == null ? "" : expr);
-        if (washed.isBlank()) return Compiled.EMPTY;
+        if (washed.isBlank())
+            return Compiled.EMPTY;
 
         try {
             List<Token> tokens = tokenize(washed);
@@ -27,7 +32,10 @@ public final class TagMatcher {
 
             boolean needsTags = false;
             for (Token t : rpn) {
-                if (t.type == TokenType.TAG) { needsTags = true; break; }
+                if (t.type == TokenType.TAG) {
+                    needsTags = true;
+                    break;
+                }
             }
 
             return new Compiled(rpn, true, needsTags);
@@ -37,13 +45,15 @@ public final class TagMatcher {
     }
 
     public static boolean doesItemMatch(@Nullable AEItemKey item, @Nullable String expr) {
-        if (item == null || expr == null || expr.isBlank()) return false;
+        if (item == null || expr == null || expr.isBlank())
+            return false;
         Compiled c = compile(expr);
         return doesItemMatch(item, c);
     }
 
     public static boolean doesItemMatch(@Nullable AEItemKey item, @Nullable Compiled compiled) {
-        if (item == null || compiled == null || !compiled.isValid() || !compiled.isNeedsTags()) return false;
+        if (item == null || compiled == null || !compiled.isValid() || !compiled.isNeedsTags())
+            return false;
         ItemTagCache cache = ItemTagCache.of(item);
         try {
             return evalRpn(compiled.rpn, cache.tags);
@@ -53,13 +63,15 @@ public final class TagMatcher {
     }
 
     public static boolean doesFluidMatch(@Nullable AEFluidKey fluid, @Nullable String expr) {
-        if (fluid == null || expr == null || expr.isBlank()) return false;
+        if (fluid == null || expr == null || expr.isBlank())
+            return false;
         Compiled c = compile(expr);
         return doesFluidMatch(fluid, c);
     }
 
     public static boolean doesFluidMatch(@Nullable AEFluidKey fluid, @Nullable Compiled compiled) {
-        if (fluid == null || compiled == null || !compiled.isValid() || !compiled.isNeedsTags()) return false;
+        if (fluid == null || compiled == null || !compiled.isValid() || !compiled.isNeedsTags())
+            return false;
         FluidTagCache cache = FluidTagCache.of(fluid);
         try {
             return evalRpn(compiled.rpn, cache.tags);
@@ -82,7 +94,7 @@ public final class TagMatcher {
             this.needsTags = needsTags;
         }
 
-        public static final Compiled EMPTY   = new Compiled(new Token[0], true,  false);
+        public static final Compiled EMPTY = new Compiled(new Token[0], true, false);
         public static final Compiled INVALID = new Compiled(new Token[0], false, false);
     }
 
@@ -90,10 +102,11 @@ public final class TagMatcher {
 
         final Set<String> tags;
 
-        private ItemTagCache(Set<String> tags) { this.tags = tags; }
+        private ItemTagCache(Set<String> tags) {
+            this.tags = tags;
+        }
 
-        private static final ThreadLocal<Map<Item, Set<String>>> TL =
-                ThreadLocal.withInitial(IdentityHashMap::new);
+        private static final ThreadLocal<Map<Item, Set<String>>> TL = ThreadLocal.withInitial(IdentityHashMap::new);
 
         public static ItemTagCache of(AEItemKey key) {
             Item item = key.getItem();
@@ -109,17 +122,20 @@ public final class TagMatcher {
             return new ItemTagCache(tags);
         }
 
-        public static void clearThreadLocal() { TL.remove(); }
+        public static void clearThreadLocal() {
+            TL.remove();
+        }
     }
 
     public static final class FluidTagCache {
 
         final Set<String> tags;
 
-        private FluidTagCache(Set<String> tags) { this.tags = tags; }
+        private FluidTagCache(Set<String> tags) {
+            this.tags = tags;
+        }
 
-        private static final ThreadLocal<Map<Fluid, Set<String>>> TL =
-                ThreadLocal.withInitial(IdentityHashMap::new);
+        private static final ThreadLocal<Map<Fluid, Set<String>>> TL = ThreadLocal.withInitial(IdentityHashMap::new);
 
         public static FluidTagCache of(AEFluidKey key) {
             Fluid fluid = key.getFluid();
@@ -135,20 +151,24 @@ public final class TagMatcher {
             return new FluidTagCache(tags);
         }
 
-        public static void clearThreadLocal() { TL.remove(); }
+        public static void clearThreadLocal() {
+            TL.remove();
+        }
     }
 
     private static String washExpression(String expression) {
         return expression.replace("&&", "&").replace("||", "|");
     }
 
-    private enum TokenType { TAG, OPERATOR, LPAREN, RPAREN }
+    private enum TokenType {
+        TAG, OPERATOR, LPAREN, RPAREN
+    }
 
     private enum Operator {
         NOT("!", 3, true),
         AND("&", 2, false),
         XOR("^", 1, false),
-        OR("|",  0, false);
+        OR("|", 0, false);
 
         final String symbol;
         final int precedence;
@@ -162,7 +182,8 @@ public final class TagMatcher {
 
         static Operator fromSymbol(char symbol) {
             for (Operator op : values()) {
-                if (op.symbol.charAt(0) == symbol) return op;
+                if (op.symbol.charAt(0) == symbol)
+                    return op;
             }
             return null;
         }
@@ -173,9 +194,18 @@ public final class TagMatcher {
         static Token tag(String raw) {
             return new Token(TokenType.TAG, raw, raw.indexOf('*') >= 0, null);
         }
-        static Token op(Operator op)  { return new Token(TokenType.OPERATOR, null, false, op); }
-        static Token lparen()         { return new Token(TokenType.LPAREN,   null, false, null); }
-        static Token rparen()         { return new Token(TokenType.RPAREN,   null, false, null); }
+
+        static Token op(Operator op) {
+            return new Token(TokenType.OPERATOR, null, false, op);
+        }
+
+        static Token lparen() {
+            return new Token(TokenType.LPAREN, null, false, null);
+        }
+
+        static Token rparen() {
+            return new Token(TokenType.RPAREN, null, false, null);
+        }
     }
 
     private static List<Token> tokenize(String expression) throws InvalidTagMatcherSyntaxException {
@@ -189,22 +219,26 @@ public final class TagMatcher {
         for (int i = 0; i < expression.length(); i++) {
             char c = expression.charAt(i);
 
-            if (c == '#') throw new InvalidTagMatcherSyntaxException(
-                    "Character '#' is not allowed in tag expressions (pos " + i + ").");
+            if (c == '#')
+                throw new InvalidTagMatcherSyntaxException(
+                        "Character '#' is not allowed in tag expressions (pos " + i + ").");
 
-            if (Character.isWhitespace(c)) continue;
+            if (Character.isWhitespace(c))
+                continue;
 
             Operator op = Operator.fromSymbol(c);
 
             if (c == '(') {
-                if (!expectingOperand) throw new InvalidTagMatcherSyntaxException("Unexpected '(' at position " + i);
+                if (!expectingOperand)
+                    throw new InvalidTagMatcherSyntaxException("Unexpected '(' at position " + i);
                 flushTag(currentTag, tokens);
                 tokens.add(Token.lparen());
                 lp++;
                 lastIsTag = false;
 
             } else if (c == ')') {
-                if (expectingOperand && lp <= 0) throw new InvalidTagMatcherSyntaxException("Unexpected ')' at position " + i);
+                if (expectingOperand && lp <= 0)
+                    throw new InvalidTagMatcherSyntaxException("Unexpected ')' at position " + i);
                 flushTag(currentTag, tokens);
                 tokens.add(Token.rparen());
                 expectingOperand = false;
@@ -227,7 +261,8 @@ public final class TagMatcher {
                 lastIsTag = false;
 
             } else {
-                if (!expectingOperand) throw new InvalidTagMatcherSyntaxException("Unexpected character '" + c + "' at position " + i);
+                if (!expectingOperand)
+                    throw new InvalidTagMatcherSyntaxException("Unexpected character '" + c + "' at position " + i);
                 currentTag.append(c);
                 lastIsTag = true;
             }
@@ -235,8 +270,10 @@ public final class TagMatcher {
 
         flushTag(currentTag, tokens);
 
-        if (tokens.isEmpty()) throw new InvalidTagMatcherSyntaxException("Expression cannot be empty.");
-        if (lp > 0) throw new InvalidTagMatcherSyntaxException("Missing ')' at the end of the expression.");
+        if (tokens.isEmpty())
+            throw new InvalidTagMatcherSyntaxException("Expression cannot be empty.");
+        if (lp > 0)
+            throw new InvalidTagMatcherSyntaxException("Missing ')' at the end of the expression.");
 
         Token last = tokens.get(tokens.size() - 1);
         if (expectingOperand && last.type != TokenType.TAG && last.type != TokenType.RPAREN) {
@@ -267,8 +304,10 @@ public final class TagMatcher {
                         Operator top = stack.peek().op;
                         boolean shouldPop = (!cur.rightAssociative && cur.precedence <= top.precedence) ||
                                 (cur.rightAssociative && cur.precedence < top.precedence);
-                        if (shouldPop) out.add(stack.pop());
-                        else break;
+                        if (shouldPop)
+                            out.add(stack.pop());
+                        else
+                            break;
                     }
                     stack.push(t);
                 }
@@ -279,17 +318,23 @@ public final class TagMatcher {
                     boolean found = false;
                     while (!stack.isEmpty()) {
                         Token top = stack.peek();
-                        if (top.type == TokenType.LPAREN) { stack.pop(); found = true; break; }
+                        if (top.type == TokenType.LPAREN) {
+                            stack.pop();
+                            found = true;
+                            break;
+                        }
                         out.add(stack.pop());
                     }
-                    if (!found) throw new InvalidTagMatcherSyntaxException("Mismatched parentheses.");
+                    if (!found)
+                        throw new InvalidTagMatcherSyntaxException("Mismatched parentheses.");
                 }
             }
         }
 
         while (!stack.isEmpty()) {
             Token top = stack.pop();
-            if (top.type == TokenType.LPAREN) throw new InvalidTagMatcherSyntaxException("Mismatched parentheses.");
+            if (top.type == TokenType.LPAREN)
+                throw new InvalidTagMatcherSyntaxException("Mismatched parentheses.");
             out.add(top);
         }
 
@@ -306,17 +351,20 @@ public final class TagMatcher {
                 case OPERATOR -> {
                     int required = t.op == Operator.NOT ? 1 : 2;
                     sp -= required;
-                    if (sp < 0) throw new InvalidTagMatcherSyntaxException("Unexpected operator " + t.op);
+                    if (sp < 0)
+                        throw new InvalidTagMatcherSyntaxException("Unexpected operator " + t.op);
                     sp++;
                 }
                 case LPAREN, RPAREN -> throw new InvalidTagMatcherSyntaxException("Unexpected token: " + t.type);
             }
         }
-        if (sp != 1) throw new InvalidTagMatcherSyntaxException("Depth at the end should equal 1");
+        if (sp != 1)
+            throw new InvalidTagMatcherSyntaxException("Depth at the end should equal 1");
     }
 
     private static boolean evalRpn(Token[] rpn, Set<String> actualTags) throws InvalidTagMatcherSyntaxException {
-        if (rpn.length == 0) return false;
+        if (rpn.length == 0)
+            return false;
 
         boolean[] stack = new boolean[rpn.length];
         int sp = 0;
@@ -324,22 +372,24 @@ public final class TagMatcher {
         for (Token t : rpn) {
             if (t.type == TokenType.TAG) {
                 stack[sp++] = t.hasWildcard ? matchesAnyGlob(t.tagPattern, actualTags)
-                                            : actualTags.contains(t.tagPattern);
+                        : actualTags.contains(t.tagPattern);
 
             } else if (t.type == TokenType.OPERATOR) {
                 Operator op = t.op;
                 if (op == Operator.NOT) {
-                    if (sp < 1) throw new InvalidTagMatcherSyntaxException("NOT needs 1 operand.");
+                    if (sp < 1)
+                        throw new InvalidTagMatcherSyntaxException("NOT needs 1 operand.");
                     stack[sp - 1] = !stack[sp - 1];
                 } else {
-                    if (sp < 2) throw new InvalidTagMatcherSyntaxException(op.symbol + " needs 2 operands.");
+                    if (sp < 2)
+                        throw new InvalidTagMatcherSyntaxException(op.symbol + " needs 2 operands.");
                     boolean right = stack[--sp];
-                    boolean left  = stack[--sp];
+                    boolean left = stack[--sp];
                     stack[sp++] = switch (op) {
                         case AND -> left && right;
-                        case OR  -> left || right;
+                        case OR -> left || right;
                         case XOR -> left ^ right;
-                        default  -> throw new InvalidTagMatcherSyntaxException("Unexpected op: " + op);
+                        default -> throw new InvalidTagMatcherSyntaxException("Unexpected op: " + op);
                     };
                 }
             } else {
@@ -347,14 +397,17 @@ public final class TagMatcher {
             }
         }
 
-        if (sp == 1) return stack[0];
+        if (sp == 1)
+            return stack[0];
         throw new InvalidTagMatcherSyntaxException("Invalid expression: stack size " + sp);
     }
 
     private static boolean matchesAnyGlob(String pattern, Set<String> tags) {
-        if ("*".equals(pattern)) return true;
+        if ("*".equals(pattern))
+            return true;
         for (String tag : tags) {
-            if (globMatchStarOnly(pattern, tag)) return true;
+            if (globMatchStarOnly(pattern, tag))
+                return true;
         }
         return false;
     }
@@ -362,14 +415,23 @@ public final class TagMatcher {
     private static boolean globMatchStarOnly(String pattern, String text) {
         int p = 0, t = 0, star = -1, match = 0;
         while (t < text.length()) {
-            if (p < pattern.length() && pattern.charAt(p) == text.charAt(t)) { p++; t++; }
-            else if (p < pattern.length() && pattern.charAt(p) == '*') { star = p++; match = t; }
-            else if (star != -1) { p = star + 1; t = ++match; }
-            else return false;
+            if (p < pattern.length() && pattern.charAt(p) == text.charAt(t)) {
+                p++;
+                t++;
+            } else if (p < pattern.length() && pattern.charAt(p) == '*') {
+                star = p++;
+                match = t;
+            } else if (star != -1) {
+                p = star + 1;
+                t = ++match;
+            } else
+                return false;
         }
-        while (p < pattern.length() && pattern.charAt(p) == '*') p++;
+        while (p < pattern.length() && pattern.charAt(p) == '*')
+            p++;
         return p == pattern.length();
     }
 
-    private TagMatcher() {}
+    private TagMatcher() {
+    }
 }

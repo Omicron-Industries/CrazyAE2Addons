@@ -1,34 +1,37 @@
 package net.oktawia.crazyae2addons.parts;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.items.parts.PartModels;
-import net.oktawia.crazyae2addons.CrazyAddons;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.parts.automation.StorageLevelEmitterPart;
 import appeng.parts.reporting.AbstractDisplayPart;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
+
+import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-import net.oktawia.crazyae2addons.logic.interfaces.StorageLevelEmitterUuid;
 import net.oktawia.crazyae2addons.logic.interfaces.IEmitterTerminalHost;
+import net.oktawia.crazyae2addons.logic.interfaces.StorageLevelEmitterUuid;
 import net.oktawia.crazyae2addons.menus.part.EmitterTerminalMenu;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
 
 public class EmitterTerminal extends AbstractDisplayPart implements IUpgradeableObject, IEmitterTerminalHost {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = new ResourceLocation(CrazyAddons.MODID, "part/emitter_terminal_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(CrazyAddons.MODID,
+            "part/emitter_terminal_off");
     @PartModels
     public static final ResourceLocation MODEL_ON = new ResourceLocation(CrazyAddons.MODID, "part/emitter_terminal_on");
 
@@ -68,7 +71,8 @@ public class EmitterTerminal extends AbstractDisplayPart implements IUpgradeable
     @Override
     public List<EmitterTerminalMenu.StorageEmitterInfo> getEmitters(String filter) {
         var grid = getMainNode().getGrid();
-        if (grid == null) return List.of();
+        if (grid == null)
+            return List.of();
 
         String f = filter == null ? "" : filter.toLowerCase(Locale.ROOT).trim();
 
@@ -77,20 +81,17 @@ public class EmitterTerminal extends AbstractDisplayPart implements IUpgradeable
                 .filter(emitter -> matchesFilter(emitter, f))
                 .sorted(
                         Comparator
-                                .comparing((StorageLevelEmitterPart part) ->
-                                        part.getName().getString().trim().startsWith("ME Level Emitter"))
+                                .comparing((StorageLevelEmitterPart part) -> part.getName().getString().trim()
+                                        .startsWith("ME Level Emitter"))
                                 .thenComparing(part -> part.getName().getString(), String.CASE_INSENSITIVE_ORDER)
                                 .thenComparing(
                                         part -> ((StorageLevelEmitterUuid) part).getPersistentUuid().toString(),
-                                        String.CASE_INSENSITIVE_ORDER
-                                )
-                )
+                                        String.CASE_INSENSITIVE_ORDER))
                 .map(part -> new EmitterTerminalMenu.StorageEmitterInfo(
                         ((StorageLevelEmitterUuid) part).getPersistentUuid().toString(),
                         part.getName(),
                         part.getConfig().getStack(0),
-                        part.getReportingValue()
-                ))
+                        part.getReportingValue()))
                 .toList();
     }
 
@@ -100,26 +101,31 @@ public class EmitterTerminal extends AbstractDisplayPart implements IUpgradeable
     }
 
     private boolean matchesFilter(StorageLevelEmitterPart emitter, String filter) {
-        if (filter == null || filter.isBlank()) return true;
+        if (filter == null || filter.isBlank())
+            return true;
 
         String emitterName = emitter.getName() != null
                 ? emitter.getName().getString().trim().toLowerCase(Locale.ROOT)
                 : "";
 
-        if (!emitterName.isEmpty() && emitterName.contains(filter)) return true;
+        if (!emitterName.isEmpty() && emitterName.contains(filter))
+            return true;
 
         GenericStack config = emitter.getConfig().getStack(0);
-        if (config == null || config.what() == null) return false;
+        if (config == null || config.what() == null)
+            return false;
 
         String configName = config.what().getDisplayName().getString().trim().toLowerCase(Locale.ROOT);
         return !configName.isEmpty() && configName.contains(filter);
     }
 
     private StorageLevelEmitterPart findEmitterByUuid(String uuid) {
-        if (uuid == null || uuid.isBlank()) return null;
+        if (uuid == null || uuid.isBlank())
+            return null;
 
         var grid = getMainNode().getGrid();
-        if (grid == null) return null;
+        if (grid == null)
+            return null;
 
         return grid.getActiveMachines(StorageLevelEmitterPart.class)
                 .stream()
@@ -130,10 +136,12 @@ public class EmitterTerminal extends AbstractDisplayPart implements IUpgradeable
 
     @Override
     public boolean setEmitterValue(String uuid, long value) {
-        if (value < 0) return false;
+        if (value < 0)
+            return false;
 
         var emitter = findEmitterByUuid(uuid);
-        if (emitter == null) return false;
+        if (emitter == null)
+            return false;
 
         emitter.setReportingValue(value);
         if (emitter.getHost() != null) {
@@ -146,7 +154,8 @@ public class EmitterTerminal extends AbstractDisplayPart implements IUpgradeable
     @Override
     public boolean setEmitterConfig(String uuid, GenericStack stack) {
         var emitter = findEmitterByUuid(uuid);
-        if (emitter == null) return false;
+        if (emitter == null)
+            return false;
 
         emitter.getConfig().setStack(0, stack);
         if (emitter.getHost() != null) {

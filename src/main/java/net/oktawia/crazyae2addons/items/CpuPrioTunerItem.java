@@ -1,11 +1,7 @@
 package net.oktawia.crazyae2addons.items;
 
-import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.items.AEBaseItem;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocators;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
@@ -14,12 +10,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.Level;
+
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.blockentity.crafting.CraftingBlockEntity;
+import appeng.items.AEBaseItem;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.cpupriority.CpuPrioHost;
-import org.jetbrains.annotations.Nullable;
-
 
 public class CpuPrioTunerItem extends AEBaseItem implements IMenuItem {
 
@@ -58,15 +59,15 @@ public class CpuPrioTunerItem extends AEBaseItem implements IMenuItem {
             MenuOpener.open(
                     CrazyMenuRegistrar.CPU_PRIO_MENU.get(),
                     player,
-                    MenuLocators.forHand(player, context.getHand())
-            );
+                    MenuLocators.forHand(player, context.getHand()));
         }
 
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
-    public @Nullable ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+    public @Nullable ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack,
+            @Nullable BlockPos pos) {
         return new CpuPrioHost(player, inventorySlot, stack);
     }
 }

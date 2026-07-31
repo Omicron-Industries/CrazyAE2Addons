@@ -1,16 +1,18 @@
 package net.oktawia.crazyae2addons.multiblock;
 
-import appeng.menu.AEBaseMenu;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.menu.AEBaseMenu;
 
 public abstract class AbstractMultiblockControllerMenu extends AEBaseMenu {
 
     private final @Nullable AbstractMultiblockControllerBE controller;
 
     protected AbstractMultiblockControllerMenu(MenuType<?> menuType, int id, Inventory playerInventory,
-                                               AbstractMultiblockControllerBE host) {
+            AbstractMultiblockControllerBE host) {
         super(menuType, id, playerInventory, host);
         this.controller = host;
     }

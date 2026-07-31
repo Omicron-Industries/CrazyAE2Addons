@@ -1,17 +1,20 @@
 package net.oktawia.crazyae2addons.mixins;
 
-import appeng.api.networking.IGrid;
-import appeng.api.parts.IPartItem;
-import appeng.parts.automation.StorageLevelEmitterPart;
-import net.minecraft.nbt.CompoundTag;
-import net.oktawia.crazyae2addons.logic.interfaces.StorageLevelEmitterUuid;
+import java.util.UUID;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
+
+import appeng.api.networking.IGrid;
+import appeng.api.parts.IPartItem;
+import appeng.parts.automation.StorageLevelEmitterPart;
+
+import net.oktawia.crazyae2addons.logic.interfaces.StorageLevelEmitterUuid;
 
 @Mixin(value = StorageLevelEmitterPart.class, remap = false)
 public abstract class MixinStorageLevelEmitterPart implements StorageLevelEmitterUuid {

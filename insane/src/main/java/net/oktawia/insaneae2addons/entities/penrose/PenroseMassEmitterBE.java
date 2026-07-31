@@ -1,9 +1,10 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
@@ -16,8 +17,7 @@ public class PenroseMassEmitterBE extends PenroseEmitterBE {
                 InsaneBlockEntityRegistrar.PENROSE_MASS_EMITTER_BE.get(),
                 pos,
                 blockState,
-                new ItemStack(InsaneBlockRegistrar.PENROSE_MASS_EMITTER_BLOCK.get())
-        );
+                new ItemStack(InsaneBlockRegistrar.PENROSE_MASS_EMITTER_BLOCK.get()));
     }
 
     @Override

@@ -1,15 +1,16 @@
 package net.oktawia.crazyae2addons.network.packets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.client.renderer.message.ClientHudPacketHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import net.oktawia.crazyae2addons.client.renderer.message.ClientHudPacketHandler;
 
 public record ShowHudMessagePacket(int durationTicks, List<Line> lines) {
 
@@ -41,9 +42,8 @@ public record ShowHudMessagePacket(int durationTicks, List<Line> lines) {
     public static void handle(ShowHudMessagePacket msg, Supplier<NetworkEvent.Context> ctx) {
         NetworkEvent.Context context = ctx.get();
 
-        context.enqueueWork(() ->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientHudPacketHandler.handleShowHudMessage(msg))
-        );
+        context.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                () -> () -> ClientHudPacketHandler.handleShowHudMessage(msg)));
 
         context.setPacketHandled(true);
     }

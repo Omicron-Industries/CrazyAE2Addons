@@ -1,14 +1,17 @@
 package net.oktawia.insaneae2addons.menus.item;
 
-import appeng.menu.AEBaseMenu;
-import appeng.menu.MenuOpener;
-import appeng.menu.guisync.GuiSync;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuOpener;
+import appeng.menu.guisync.GuiSync;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.items.autobuilder.BuilderPatternItem;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderPatternHost;

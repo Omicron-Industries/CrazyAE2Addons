@@ -1,10 +1,15 @@
 package net.oktawia.insaneae2addons.items.autobuilder;
 
-import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.items.AEBaseItem;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocators;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.IntUnaryOperator;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -22,19 +27,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.items.AEBaseItem;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
+
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.autobuilder.BuilderPatternHost;
 import net.oktawia.insaneae2addons.util.ProgramExpander;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.IntUnaryOperator;
 
 public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
 
@@ -64,17 +67,16 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
 
         if (!level.isClientSide()) {
             SelectionState selection = SELECTIONS.get(player.getUUID());
-            if (selection != null && selection.cornerA != null && selection.cornerB != null && selection.origin != null) {
+            if (selection != null && selection.cornerA != null && selection.cornerB != null
+                    && selection.origin != null) {
                 BlockPos min = new BlockPos(
                         Math.min(selection.cornerA.getX(), selection.cornerB.getX()),
                         Math.min(selection.cornerA.getY(), selection.cornerB.getY()),
-                        Math.min(selection.cornerA.getZ(), selection.cornerB.getZ())
-                );
+                        Math.min(selection.cornerA.getZ(), selection.cornerB.getZ()));
                 BlockPos max = new BlockPos(
                         Math.max(selection.cornerA.getX(), selection.cornerB.getX()),
                         Math.max(selection.cornerA.getY(), selection.cornerB.getY()),
-                        Math.max(selection.cornerA.getZ(), selection.cornerB.getZ())
-                );
+                        Math.max(selection.cornerA.getZ(), selection.cornerB.getZ()));
 
                 Basis basis = Basis.forFacing(selection.originFacing);
                 Map<String, Integer> blockMap = new LinkedHashMap<>();
@@ -148,13 +150,11 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
                     player.displayClientMessage(
                             Component.translatable(LangDefs.PROGRAM_SAVED.getTranslationKey())
                                     .append(String.valueOf(finalCode.length())),
-                            true
-                    );
+                            true);
                 } else {
                     player.displayClientMessage(
                             Component.translatable(LangDefs.PROGRAM_INVALID.getTranslationKey()),
-                            true
-                    );
+                            true);
                 }
 
                 SELECTIONS.remove(player.getUUID());
@@ -164,8 +164,7 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
 
         return new InteractionResultHolder<>(
                 InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand)
-        );
+                player.getItemInHand(hand));
     }
 
     @Override
@@ -180,16 +179,14 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
                 state.cornerA = clicked.immutable();
                 player.displayClientMessage(
                         Component.translatable(LangDefs.CORNER_SET_A.getTranslationKey()),
-                        true
-                );
+                        true);
             } else if (state.cornerB == null) {
                 state.cornerB = clicked.immutable();
                 state.origin = clicked.immutable();
                 state.originFacing = player.getDirection();
                 player.displayClientMessage(
                         Component.translatable(LangDefs.CORNER_SET_B.getTranslationKey()),
-                        true
-                );
+                        true);
             } else {
                 SelectionState newState = new SelectionState();
                 newState.cornerA = clicked.immutable();
@@ -197,8 +194,7 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
 
                 player.displayClientMessage(
                         Component.translatable(LangDefs.CORNER_RESET.getTranslationKey()),
-                        true
-                );
+                        true);
             }
         }
 
@@ -219,7 +215,9 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
         applyFlipInPlace(stack, server, Axis.Y, player);
     }
 
-    private enum Axis { X, Y }
+    private enum Axis {
+        X, Y
+    }
 
     private static void applyFlipInPlace(ItemStack stack, MinecraftServer server, Axis axis, @Nullable Player player) {
         String full = BuilderPatternHost.loadProgramFromFile(stack, server);
@@ -243,7 +241,8 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
         setProgramId(stack, id);
     }
 
-    public static void applyRotateCWToItem(ItemStack stack, MinecraftServer server, int times, @Nullable Player player) {
+    public static void applyRotateCWToItem(ItemStack stack, MinecraftServer server, int times,
+            @Nullable Player player) {
         String full = BuilderPatternHost.loadProgramFromFile(stack, server);
         if (full.isEmpty()) {
             if (player != null) {
@@ -270,16 +269,14 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
         if (idx >= 0) {
             return new ProgramSections(
                     full.substring(0, idx),
-                    full.substring(idx + SEP_FORMATTED.length())
-            );
+                    full.substring(idx + SEP_FORMATTED.length()));
         }
 
         idx = full.indexOf(SEP);
         if (idx >= 0) {
             return new ProgramSections(
                     full.substring(0, idx),
-                    full.substring(idx + SEP.length())
-            );
+                    full.substring(idx + SEP.length()));
         }
 
         return new ProgramSections("", full);
@@ -298,12 +295,30 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
         int dy = toLocal.getY() - fromLocal.getY();
         int dz = toLocal.getZ() - fromLocal.getZ();
 
-        while (dx > 0) { moves.append("R"); dx--; }
-        while (dx < 0) { moves.append("L"); dx++; }
-        while (dy > 0) { moves.append("U"); dy--; }
-        while (dy < 0) { moves.append("D"); dy++; }
-        while (dz > 0) { moves.append("F"); dz--; }
-        while (dz < 0) { moves.append("B"); dz++; }
+        while (dx > 0) {
+            moves.append("R");
+            dx--;
+        }
+        while (dx < 0) {
+            moves.append("L");
+            dx++;
+        }
+        while (dy > 0) {
+            moves.append("U");
+            dy--;
+        }
+        while (dy < 0) {
+            moves.append("D");
+            dy++;
+        }
+        while (dz > 0) {
+            moves.append("F");
+            dz--;
+        }
+        while (dz < 0) {
+            moves.append("B");
+            dz++;
+        }
 
         return moves.toString();
     }
@@ -311,15 +326,15 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
     private record Basis(int fx, int fz, int rx, int rz) {
 
         static Basis forFacing(Direction f) {
-                return switch (f) {
-                    case NORTH -> new Basis(0, -1, 1, 0);
-                    case SOUTH -> new Basis(0, 1, -1, 0);
-                    case EAST -> new Basis(1, 0, 0, 1);
-                    case WEST -> new Basis(-1, 0, 0, -1);
-                    default -> new Basis(0, -1, 1, 0);
-                };
-            }
+            return switch (f) {
+                case NORTH -> new Basis(0, -1, 1, 0);
+                case SOUTH -> new Basis(0, 1, -1, 0);
+                case EAST -> new Basis(1, 0, 0, 1);
+                case WEST -> new Basis(-1, 0, 0, -1);
+                default -> new Basis(0, -1, 1, 0);
+            };
         }
+    }
 
     private static BlockPos worldToLocal(BlockPos worldPos, BlockPos origin, Basis b) {
         int dx = worldPos.getX() - origin.getX();
@@ -348,7 +363,12 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
         class Ev {
             String kind, payload;
             BlockPos pos;
-            Ev(String k, String p, BlockPos bp) { kind = k; payload = p; pos = bp; }
+
+            Ev(String k, String p, BlockPos bp) {
+                kind = k;
+                payload = p;
+                pos = bp;
+            }
         }
 
         ArrayList<Ev> events = new ArrayList<>();
@@ -365,15 +385,18 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
             }
             if (c == 'Z' && i + 1 < n && s.charAt(i + 1) == '|') {
                 int j = i + 2;
-                while (j < n && Character.isDigit(s.charAt(j))) j++;
+                while (j < n && Character.isDigit(s.charAt(j)))
+                    j++;
                 events.add(new Ev("Z", s.substring(i, j), null));
                 i = j;
                 continue;
             }
             if (c == 'P' && i + 1 < n && s.charAt(i + 1) == '(') {
                 int j = i + 2;
-                while (j < n && s.charAt(j) != ')') j++;
-                if (j < n) j++;
+                while (j < n && s.charAt(j) != ')')
+                    j++;
+                if (j < n)
+                    j++;
                 events.add(new Ev("ACT", s.substring(i, j), cursor));
                 i = j;
                 continue;
@@ -382,7 +405,8 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
                 int j = i + 2;
                 while (j < n) {
                     char cj = s.charAt(j);
-                    if ("HZPFBLRUDX".indexOf(cj) >= 0) break;
+                    if ("HZPFBLRUDX".indexOf(cj) >= 0)
+                        break;
                     j++;
                 }
                 events.add(new Ev("ACT", s.substring(i, j), cursor));
@@ -404,7 +428,8 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
 
         boolean hasAct = events.stream().anyMatch(e -> "ACT".equals(e.kind));
         if (!hasAct) {
-            return applyMapSkippingTokens(s, axis == Axis.X ? BuilderPatternItem::mapFlipHorizontal : BuilderPatternItem::mapFlipVertical);
+            return applyMapSkippingTokens(s,
+                    axis == Axis.X ? BuilderPatternItem::mapFlipHorizontal : BuilderPatternItem::mapFlipVertical);
         }
 
         int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
@@ -455,7 +480,8 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
             char c = s.charAt(i);
             if (c == 'P' && i + 1 < s.length() && s.charAt(i + 1) == '(') {
                 int j = i + 2;
-                while (j < s.length() && s.charAt(j) != ')') j++;
+                while (j < s.length() && s.charAt(j) != ')')
+                    j++;
                 j = Math.min(j + 1, s.length());
                 out.append(s, i, j);
                 i = j;
@@ -463,7 +489,8 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
             }
             if (c == 'Z' && i + 1 < s.length() && s.charAt(i + 1) == '|') {
                 int j = i + 2;
-                while (j < s.length() && Character.isDigit(s.charAt(j))) j++;
+                while (j < s.length() && Character.isDigit(s.charAt(j)))
+                    j++;
                 out.append(s, i, j);
                 i = j;
                 continue;
@@ -472,7 +499,8 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
                 int j = i + 2;
                 while (j < s.length()) {
                     char cj = s.charAt(j);
-                    if ("HZPFBLRUDX".indexOf(cj) >= 0) break;
+                    if ("HZPFBLRUDX".indexOf(cj) >= 0)
+                        break;
                     j++;
                 }
                 out.append(s, i, j);
@@ -491,7 +519,12 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
         class Ev {
             String kind, payload;
             BlockPos pos;
-            Ev(String k, String p, BlockPos bp) { kind = k; payload = p; pos = bp; }
+
+            Ev(String k, String p, BlockPos bp) {
+                kind = k;
+                payload = p;
+                pos = bp;
+            }
         }
 
         ArrayList<Ev> events = new ArrayList<>();
@@ -508,15 +541,18 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
             }
             if (c == 'Z' && i + 1 < n && s.charAt(i + 1) == '|') {
                 int j = i + 2;
-                while (j < n && Character.isDigit(s.charAt(j))) j++;
+                while (j < n && Character.isDigit(s.charAt(j)))
+                    j++;
                 events.add(new Ev("Z", s.substring(i, j), null));
                 i = j;
                 continue;
             }
             if (c == 'P' && i + 1 < n && s.charAt(i + 1) == '(') {
                 int j = i + 2;
-                while (j < n && s.charAt(j) != ')') j++;
-                if (j < n) j++;
+                while (j < n && s.charAt(j) != ')')
+                    j++;
+                if (j < n)
+                    j++;
                 events.add(new Ev("ACT", s.substring(i, j), cursor));
                 i = j;
                 continue;
@@ -525,7 +561,8 @@ public class BuilderPatternItem extends AEBaseItem implements IMenuItem {
                 int j = i + 2;
                 while (j < n) {
                     char cj = s.charAt(j);
-                    if ("HZPFBLRUDX".indexOf(cj) >= 0) break;
+                    if ("HZPFBLRUDX".indexOf(cj) >= 0)
+                        break;
                     j++;
                 }
                 events.add(new Ev("ACT", s.substring(i, j), cursor));

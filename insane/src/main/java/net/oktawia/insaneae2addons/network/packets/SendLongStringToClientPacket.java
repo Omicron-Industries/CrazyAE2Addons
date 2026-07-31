@@ -1,12 +1,13 @@
 package net.oktawia.insaneae2addons.network.packets;
 
+import java.nio.charset.StandardCharsets;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.insaneae2addons.client.screens.item.BuilderPatternScreen;
 
-import java.nio.charset.StandardCharsets;
-import java.util.function.Supplier;
+import net.oktawia.insaneae2addons.client.screens.item.BuilderPatternScreen;
 
 public class SendLongStringToClientPacket {
     private final String data;
@@ -21,8 +22,7 @@ public class SendLongStringToClientPacket {
 
     public static SendLongStringToClientPacket decode(FriendlyByteBuf buf) {
         return new SendLongStringToClientPacket(
-                new String(buf.readByteArray(), StandardCharsets.UTF_8)
-        );
+                new String(buf.readByteArray(), StandardCharsets.UTF_8));
     }
 
     public static void handle(SendLongStringToClientPacket packet, Supplier<NetworkEvent.Context> ctxSupplier) {

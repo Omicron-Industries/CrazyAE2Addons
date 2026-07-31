@@ -1,7 +1,7 @@
 package net.oktawia.crazyae2addons.blocks;
 
-import appeng.block.crafting.PatternProviderBlock;
-import appeng.util.InteractionUtil;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -12,11 +12,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+
+import appeng.block.crafting.PatternProviderBlock;
+import appeng.util.InteractionUtil;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.entities.CrazyPatternProviderBE;
-import org.jetbrains.annotations.Nullable;
 
 public class CrazyPatternProviderBlock extends PatternProviderBlock {
 
@@ -28,8 +31,8 @@ public class CrazyPatternProviderBlock extends PatternProviderBlock {
 
     @Override
     public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-                                         InteractionHand hand, @Nullable ItemStack heldItem,
-                                         BlockHitResult hit) {
+            InteractionHand hand, @Nullable ItemStack heldItem,
+            BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }
@@ -53,8 +56,7 @@ public class CrazyPatternProviderBlock extends PatternProviderBlock {
                 if (maxAdd != -1 && cur >= maxAdd) {
                     player.displayClientMessage(
                             Component.translatable(LangDefs.PROVIDER_MAX.getTranslationKey()),
-                            true
-                    );
+                            true);
                     return InteractionResult.sidedSuccess(false);
                 }
 

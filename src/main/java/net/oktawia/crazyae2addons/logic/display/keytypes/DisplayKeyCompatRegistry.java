@@ -1,14 +1,17 @@
 package net.oktawia.crazyae2addons.logic.display.keytypes;
 
-import appeng.api.stacks.AEKey;
+import java.util.LinkedHashMap;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.oktawia.crazyae2addons.IsModLoaded;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedHashMap;
-import java.util.Set;
+import appeng.api.stacks.AEKey;
+
+import net.oktawia.crazyae2addons.IsModLoaded;
 
 public final class DisplayKeyCompatRegistry {
 

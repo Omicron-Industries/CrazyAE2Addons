@@ -1,14 +1,19 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
-import appeng.client.gui.style.ScreenStyle;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.oktawia.insaneae2addons.blocks.penrose.PortablePenroseSphereControllerBlock;
+
+import appeng.client.gui.style.ScreenStyle;
+
 import net.oktawia.crazyae2addons.client.screens.AbstractMultiblockControllerScreen;
+import net.oktawia.insaneae2addons.blocks.penrose.PortablePenroseSphereControllerBlock;
 import net.oktawia.insaneae2addons.client.misc.BlackHoleWidget;
 import net.oktawia.insaneae2addons.client.misc.StructureIssuesWidget;
 import net.oktawia.insaneae2addons.defs.LangDefs;
@@ -16,16 +21,14 @@ import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControl
 import net.oktawia.insaneae2addons.logic.penrose.PenroseCurveModel;
 import net.oktawia.insaneae2addons.menus.block.PortablePenroseSphereControllerMenu;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PortablePenroseSphereControllerScreen<C extends PortablePenroseSphereControllerMenu>
         extends AbstractMultiblockControllerScreen<C> {
 
     private final BlackHoleWidget blackHole;
     private final StructureIssuesWidget issues;
 
-    public PortablePenroseSphereControllerScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+    public PortablePenroseSphereControllerScreen(C menu, Inventory playerInventory, Component title,
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.blackHole = new BlackHoleWidget();

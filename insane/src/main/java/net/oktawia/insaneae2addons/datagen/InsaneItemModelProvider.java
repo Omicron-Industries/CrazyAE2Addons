@@ -1,6 +1,7 @@
 package net.oktawia.insaneae2addons.datagen;
 
-import appeng.items.parts.PartItem;
+import java.util.Set;
+
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -8,18 +9,19 @@ import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import appeng.items.parts.PartItem;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneFluidRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 
-import java.util.Set;
-
 public class InsaneItemModelProvider extends ItemModelProvider {
-    private static final Set<String> STATIC_ITEM_MODELS =
-            Set.of("ampere_meter", "auto_builder", "broken_pattern_provider");
-    private static final Set<String> CABLE_ITEMS =
-            Set.of("research_cable", "research_cable_pink", "research_cable_white");
+    private static final Set<String> STATIC_ITEM_MODELS = Set.of("ampere_meter", "auto_builder",
+            "broken_pattern_provider");
+    private static final Set<String> CABLE_ITEMS = Set.of("research_cable", "research_cable_pink",
+            "research_cable_white");
 
     public InsaneItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, InsaneAddons.MODID, existingFileHelper);
@@ -52,6 +54,7 @@ public class InsaneItemModelProvider extends ItemModelProvider {
     private ItemModelBuilder simpleItem(Item item) {
         return withExistingParent(ForgeRegistries.ITEMS.getKey(item).getPath(),
                 new ResourceLocation("item/generated")).texture("layer0",
-                new ResourceLocation(InsaneAddons.MODID, "item/" + ForgeRegistries.ITEMS.getKey(item).getPath()));
+                        new ResourceLocation(InsaneAddons.MODID,
+                                "item/" + ForgeRegistries.ITEMS.getKey(item).getPath()));
     }
 }

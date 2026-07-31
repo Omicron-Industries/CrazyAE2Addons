@@ -1,9 +1,10 @@
 package net.oktawia.crazyae2addons.client.renderer.preview.multiblock;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import org.jetbrains.annotations.Nullable;
 
 public final class PreviewTooltipLayer {
     public static final long DEFAULT_TTL_MS = 150L;

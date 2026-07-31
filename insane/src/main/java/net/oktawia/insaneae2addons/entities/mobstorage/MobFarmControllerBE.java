@@ -1,5 +1,25 @@
 package net.oktawia.insaneae2addons.entities.mobstorage;
 
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
 import appeng.api.config.Actionable;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -18,20 +38,7 @@ import appeng.core.definitions.AEItems;
 import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerBE;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
 import net.oktawia.insaneae2addons.InsaneConfig;
@@ -46,9 +53,6 @@ import net.oktawia.insaneae2addons.items.XpShardItem;
 import net.oktawia.insaneae2addons.logic.mobstorage.MobLootSimulator;
 import net.oktawia.insaneae2addons.menus.block.MobFarmControllerMenu;
 import net.oktawia.insaneae2addons.mobstorage.MobKey;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class MobFarmControllerBE extends AbstractMultiblockControllerBE
         implements IUpgradeableObject, InternalInventoryHost {
@@ -80,8 +84,7 @@ public class MobFarmControllerBE extends AbstractMultiblockControllerBE
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get()),
-                2.0F
-        );
+                2.0F);
     }
 
     @Override

@@ -1,5 +1,36 @@
 package net.oktawia.crazyae2addons.parts;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -17,25 +48,7 @@ import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 import appeng.util.SettingsFrom;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
@@ -45,23 +58,17 @@ import net.oktawia.crazyae2addons.logic.display.DisplayImageStore;
 import net.oktawia.crazyae2addons.logic.display.DisplayTokenResolver;
 import net.oktawia.crazyae2addons.logic.display.SampleRing;
 import net.oktawia.crazyae2addons.menus.part.DisplayMenu;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, IGridTickable {
 
-    public enum LocalDir { UP, DOWN, LEFT, RIGHT }
+    public enum LocalDir {
+        UP, DOWN, LEFT, RIGHT
+    }
 
     private static final ResourceLocation MODEL_CHASSIS_OFF = AppEng.makeId("part/transition_plane_off");
     private static final ResourceLocation MODEL_CHASSIS_ON = AppEng.makeId("part/transition_plane_on");
-    private static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = AppEng.makeId("part/transition_plane_has_channel");
+    private static final ResourceLocation MODEL_CHASSIS_HAS_CHANNEL = AppEng
+            .makeId("part/transition_plane_has_channel");
 
     private static final ResourceLocation FRONT_MODEL_OFF = CrazyAddons.makeId("part/display_mon_off");
     private static final ResourceLocation FRONT_MODEL_ON = CrazyAddons.makeId("part/display_mon_on");
@@ -187,22 +194,19 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             CLIENT_INSTANCES.add(this);
         }
 
-        boolean topologyChanged =
-                !wasRegistered
-                        || oldMode != state.mergeMode
-                        || oldPowered != isPowered()
-                        || oldSide != getSide()
-                        || oldSpin != state.spin;
+        boolean topologyChanged = !wasRegistered
+                || oldMode != state.mergeMode
+                || oldPowered != isPowered()
+                || oldSide != getSide()
+                || oldSpin != state.spin;
 
-        boolean imageStateChanged =
-                oldImageCount != state.displayImages.size()
-                        || !oldSelectedImageId.equals(state.selectedDisplayImageId);
+        boolean imageStateChanged = oldImageCount != state.displayImages.size()
+                || !oldSelectedImageId.equals(state.selectedDisplayImageId);
 
-        boolean displayStateChanged =
-                oldSpin != state.spin
-                        || oldMargin != state.addMargin
-                        || oldCenter != state.centerText
-                        || !oldTextValue.equals(state.textValue);
+        boolean displayStateChanged = oldSpin != state.spin
+                || oldMargin != state.addMargin
+                || oldCenter != state.centerText
+                || !oldTextValue.equals(state.textValue);
 
         if (topologyChanged) {
             DisplayGrid.invalidateClientCache();
@@ -387,8 +391,7 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
                         Mth.clamp(x, 0, 100),
                         Mth.clamp(y, 0, 100),
                         Mth.clamp(width, 0, 100),
-                        Mth.clamp(height, 0, 100)
-                ));
+                        Mth.clamp(height, 0, 100)));
                 state.selectedDisplayImageId = id;
                 markDirtyAndSync();
                 return;
@@ -420,19 +423,19 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
 
     public boolean canConnectLocal(LocalDir dir) {
         return switch (dir) {
-            case UP    -> state.connectUp;
-            case DOWN  -> state.connectDown;
-            case LEFT  -> state.connectLeft;
+            case UP -> state.connectUp;
+            case DOWN -> state.connectDown;
+            case LEFT -> state.connectLeft;
             case RIGHT -> state.connectRight;
         };
     }
 
     public void setConnectLocal(LocalDir dir, boolean value) {
         switch (dir) {
-            case UP    -> state.connectUp    = value;
-            case DOWN  -> state.connectDown  = value;
-            case LEFT  -> state.connectLeft = value;
-            case RIGHT -> state.connectRight  = value;
+            case UP -> state.connectUp = value;
+            case DOWN -> state.connectDown = value;
+            case LEFT -> state.connectLeft = value;
+            case RIGHT -> state.connectRight = value;
         }
         markDirtyAndSync();
     }
@@ -498,13 +501,15 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         }
 
         DisplayImageStore store = DisplayImageStore.get(getLevel());
-        List<DisplayImageEntry> cardEntries = PartState.readImageEntries(memory.getList(PartState.NBT_DISPLAY_IMAGES, Tag.TAG_COMPOUND));
+        List<DisplayImageEntry> cardEntries = PartState
+                .readImageEntries(memory.getList(PartState.NBT_DISPLAY_IMAGES, Tag.TAG_COMPOUND));
 
         List<DisplayImageEntry> imported = new ArrayList<>();
         for (DisplayImageEntry entry : cardEntries) {
             String newId = store.copyImage(entry.id());
             if (newId != null) {
-                imported.add(new DisplayImageEntry(newId, entry.sourceName(), entry.x(), entry.y(), entry.width(), entry.height()));
+                imported.add(new DisplayImageEntry(newId, entry.sourceName(), entry.x(), entry.y(), entry.width(),
+                        entry.height()));
             }
         }
 
@@ -530,9 +535,9 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         private static final String NBT_CENTER = "center_text";
         private static final String NBT_DISPLAY_IMAGES = "display_images";
         private static final String NBT_SELECTED_DISPLAY_IMAGE = "selected_display_image";
-        private static final String NBT_CONNECT_UP    = "connect_up";
-        private static final String NBT_CONNECT_DOWN  = "connect_down";
-        private static final String NBT_CONNECT_LEFT  = "connect_left";
+        private static final String NBT_CONNECT_UP = "connect_up";
+        private static final String NBT_CONNECT_DOWN = "connect_down";
+        private static final String NBT_CONNECT_LEFT = "connect_left";
         private static final String NBT_CONNECT_RIGHT = "connect_right";
 
         private String textValue = "";
@@ -540,9 +545,9 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
         private boolean mergeMode = true;
         private boolean addMargin = false;
         private boolean centerText = false;
-        private boolean connectUp    = true;
-        private boolean connectDown  = true;
-        private boolean connectLeft  = true;
+        private boolean connectUp = true;
+        private boolean connectDown = true;
+        private boolean connectLeft = true;
         private boolean connectRight = true;
 
         @Getter(AccessLevel.NONE)
@@ -578,8 +583,7 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
                         Mth.clamp(img.getInt("x"), 0, 100),
                         Mth.clamp(img.getInt("y"), 0, 100),
                         Mth.clamp(img.getInt("width"), 0, 100),
-                        Mth.clamp(img.getInt("height"), 0, 100)
-                ));
+                        Mth.clamp(img.getInt("height"), 0, 100)));
             }
             return entries;
         }
@@ -595,9 +599,9 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             tag.put(NBT_DISPLAY_IMAGES, writeImageEntries(displayImages));
 
             tag.putString(NBT_SELECTED_DISPLAY_IMAGE, selectedDisplayImageId == null ? "" : selectedDisplayImageId);
-            tag.putBoolean(NBT_CONNECT_UP,    connectUp);
-            tag.putBoolean(NBT_CONNECT_DOWN,  connectDown);
-            tag.putBoolean(NBT_CONNECT_LEFT,  connectLeft);
+            tag.putBoolean(NBT_CONNECT_UP, connectUp);
+            tag.putBoolean(NBT_CONNECT_DOWN, connectDown);
+            tag.putBoolean(NBT_CONNECT_LEFT, connectLeft);
             tag.putBoolean(NBT_CONNECT_RIGHT, connectRight);
             return tag;
         }
@@ -617,9 +621,9 @@ public class Display extends AEBasePart implements MenuProvider, ISubMenuHost, I
             selectedDisplayImageId = tag.getString(NBT_SELECTED_DISPLAY_IMAGE);
             normalizeSelectedImage();
 
-            connectUp    = !tag.contains(NBT_CONNECT_UP)    || tag.getBoolean(NBT_CONNECT_UP);
-            connectDown  = !tag.contains(NBT_CONNECT_DOWN)  || tag.getBoolean(NBT_CONNECT_DOWN);
-            connectLeft  = !tag.contains(NBT_CONNECT_LEFT)  || tag.getBoolean(NBT_CONNECT_LEFT);
+            connectUp = !tag.contains(NBT_CONNECT_UP) || tag.getBoolean(NBT_CONNECT_UP);
+            connectDown = !tag.contains(NBT_CONNECT_DOWN) || tag.getBoolean(NBT_CONNECT_DOWN);
+            connectLeft = !tag.contains(NBT_CONNECT_LEFT) || tag.getBoolean(NBT_CONNECT_LEFT);
             connectRight = !tag.contains(NBT_CONNECT_RIGHT) || tag.getBoolean(NBT_CONNECT_RIGHT);
         }
 

@@ -9,7 +9,8 @@ public class ProgramExpander {
     public static Result expand(String code) {
         try {
             String[] parts = code.split("\\|", 3);
-            if (parts.length < 2) return Result.error("Code must have at least MAP | PROGRAM or MAP | MACRO | PROGRAM");
+            if (parts.length < 2)
+                return Result.error("Code must have at least MAP | PROGRAM or MAP | MACRO | PROGRAM");
 
             String mapPart = parts[0];
             String macroPart = parts.length == 3 ? parts[1] : "";
@@ -40,10 +41,13 @@ public class ProgramExpander {
                 char c = input.charAt(i);
                 if (c == '[') {
                     int j = i + 1;
-                    while (j < input.length() && input.charAt(j) != ']') j++;
-                    if (j >= input.length()) throw new Exception("Unclosed macro reference at position " + i);
+                    while (j < input.length() && input.charAt(j) != ']')
+                        j++;
+                    if (j >= input.length())
+                        throw new Exception("Unclosed macro reference at position " + i);
                     String macroName = input.substring(i + 1, j);
-                    if (!macros.containsKey(macroName)) throw new Exception("Macro [" + macroName + "] not defined at position " + i);
+                    if (!macros.containsKey(macroName))
+                        throw new Exception("Macro [" + macroName + "] not defined at position " + i);
                     output.append(macros.get(macroName));
                     i = j + 1;
                 } else {
@@ -94,10 +98,14 @@ public class ProgramExpander {
 
         for (int i = 0; i < map.length(); i++) {
             char c = map.charAt(i);
-            if (c == '[') bracketLevelSquare++;
-            else if (c == ']') bracketLevelSquare--;
-            else if (c == '(') bracketLevelRound++;
-            else if (c == ')') bracketLevelRound--;
+            if (c == '[')
+                bracketLevelSquare++;
+            else if (c == ']')
+                bracketLevelSquare--;
+            else if (c == '(')
+                bracketLevelRound++;
+            else if (c == ')')
+                bracketLevelRound--;
             else if (c == ',' && bracketLevelSquare == 0 && bracketLevelRound == 0) {
                 entries.add(map.substring(lastSplit, i));
                 lastSplit = i + 1;
@@ -118,7 +126,8 @@ public class ProgramExpander {
             if (macro.charAt(i) == '[') {
                 int nameStart = i + 1;
                 int nameEnd = macro.indexOf(']', nameStart);
-                if (nameEnd == -1) throw new Exception("Unclosed macro name at position " + i);
+                if (nameEnd == -1)
+                    throw new Exception("Unclosed macro name at position " + i);
                 String name = macro.substring(nameStart, nameEnd);
 
                 if (nameEnd + 1 >= macro.length() || macro.charAt(nameEnd + 1) != '(')
@@ -129,12 +138,15 @@ public class ProgramExpander {
                 int j = bodyStart;
                 while (j < macro.length() && depth > 0) {
                     char c = macro.charAt(j);
-                    if (c == '(') depth++;
-                    else if (c == ')') depth--;
+                    if (c == '(')
+                        depth++;
+                    else if (c == ')')
+                        depth--;
                     j++;
                 }
 
-                if (depth != 0) throw new Exception("Unclosed macro body for [" + name + "]");
+                if (depth != 0)
+                    throw new Exception("Unclosed macro body for [" + name + "]");
 
                 String body = macro.substring(bodyStart, j - 1);
                 result.put(name, body);
@@ -149,29 +161,38 @@ public class ProgramExpander {
     }
 
     private static List<String> tokenize(String input, Map<Integer, String> blockMap, int depth) throws Exception {
-        if (depth > 50) throw new Exception("Too many nested expansions (possible infinite loop)");
+        if (depth > 50)
+            throw new Exception("Too many nested expansions (possible infinite loop)");
         List<String> tokens = new ArrayList<>();
         int i = 0;
         while (i < input.length()) {
             char c = input.charAt(i);
             if (c == 'P' && i + 1 < input.length() && input.charAt(i + 1) == '(') {
                 int j = i + 2;
-                while (j < input.length() && input.charAt(j) != ')') j++;
-                if (j >= input.length()) throw new Exception("Unclosed P(n) at position " + i);
+                while (j < input.length() && input.charAt(j) != ')')
+                    j++;
+                if (j >= input.length())
+                    throw new Exception("Unclosed P(n) at position " + i);
                 String idStr = input.substring(i + 2, j);
-                if (!idStr.matches("\\d+")) throw new Exception("Invalid block ID in P(n) at position " + i);
+                if (!idStr.matches("\\d+"))
+                    throw new Exception("Invalid block ID in P(n) at position " + i);
                 int id = Integer.parseInt(idStr);
-                if (!blockMap.containsKey(id)) throw new Exception("Block ID [" + id + "] not defined in map at position " + i);
+                if (!blockMap.containsKey(id))
+                    throw new Exception("Block ID [" + id + "] not defined in map at position " + i);
                 String placeBlock = blockMap.get(id);
                 if (input.startsWith("==(", j + 1) || input.startsWith("!=(", j + 1)) {
                     String op = input.startsWith("==(", j + 1) ? "EQ" : "NE";
                     int k = j + 4;
-                    while (k < input.length() && input.charAt(k) != ')') k++;
-                    if (k >= input.length()) throw new Exception("Unclosed condition in P(n)op(m) at position " + i);
+                    while (k < input.length() && input.charAt(k) != ')')
+                        k++;
+                    if (k >= input.length())
+                        throw new Exception("Unclosed condition in P(n)op(m) at position " + i);
                     String condIdStr = input.substring(j + 4, k);
-                    if (!condIdStr.matches("\\d+")) throw new Exception("Invalid block ID in condition at position " + i);
+                    if (!condIdStr.matches("\\d+"))
+                        throw new Exception("Invalid block ID in condition at position " + i);
                     int condId = Integer.parseInt(condIdStr);
-                    if (!blockMap.containsKey(condId)) throw new Exception("Block ID [" + condId + "] not defined in map at position " + i);
+                    if (!blockMap.containsKey(condId))
+                        throw new Exception("Block ID [" + condId + "] not defined in map at position " + i);
                     tokens.add("P" + op + "|" + placeBlock + "|" + blockMap.get(condId));
                     i = k + 1;
                 } else {
@@ -182,12 +203,16 @@ public class ProgramExpander {
                 if (input.startsWith("==(", i + 1) || input.startsWith("!=(", i + 1)) {
                     String op = input.startsWith("==(", i + 1) ? "EQ" : "NE";
                     int j = i + 4;
-                    while (j < input.length() && input.charAt(j) != ')') j++;
-                    if (j >= input.length()) throw new Exception("Unclosed condition in X op(n) at position " + i);
+                    while (j < input.length() && input.charAt(j) != ')')
+                        j++;
+                    if (j >= input.length())
+                        throw new Exception("Unclosed condition in X op(n) at position " + i);
                     String condIdStr = input.substring(i + 4, j);
-                    if (!condIdStr.matches("\\d+")) throw new Exception("Invalid block ID in X condition at position " + i);
+                    if (!condIdStr.matches("\\d+"))
+                        throw new Exception("Invalid block ID in X condition at position " + i);
                     int condId = Integer.parseInt(condIdStr);
-                    if (!blockMap.containsKey(condId)) throw new Exception("Block ID [" + condId + "] not defined in map at position " + i);
+                    if (!blockMap.containsKey(condId))
+                        throw new Exception("Block ID [" + condId + "] not defined in map at position " + i);
                     tokens.add("X" + op + "|" + blockMap.get(condId));
                     i = j + 1;
                 } else {
@@ -199,27 +224,36 @@ public class ProgramExpander {
                 i++;
             } else if (Character.isDigit(c)) {
                 int j = i;
-                while (j < input.length() && Character.isDigit(input.charAt(j))) j++;
+                while (j < input.length() && Character.isDigit(input.charAt(j)))
+                    j++;
                 int count = Integer.parseInt(input.substring(i, j));
-                if (j >= input.length() || input.charAt(j) != '{') throw new Exception("Expected '{' after repeat count at position " + i);
+                if (j >= input.length() || input.charAt(j) != '{')
+                    throw new Exception("Expected '{' after repeat count at position " + i);
                 j++;
                 int depthCount = 1;
                 StringBuilder loopBody = new StringBuilder();
                 while (j < input.length() && depthCount > 0) {
                     char cj = input.charAt(j);
-                    if (cj == '{') depthCount++;
-                    else if (cj == '}') depthCount--;
-                    if (depthCount > 0) loopBody.append(cj);
+                    if (cj == '{')
+                        depthCount++;
+                    else if (cj == '}')
+                        depthCount--;
+                    if (depthCount > 0)
+                        loopBody.append(cj);
                     j++;
                 }
-                if (depthCount != 0) throw new Exception("Unmatched '{' at position " + i);
+                if (depthCount != 0)
+                    throw new Exception("Unmatched '{' at position " + i);
                 List<String> expanded = tokenize(loopBody.toString(), blockMap, depth + 1);
-                for (int k = 0; k < count; k++) tokens.addAll(expanded);
+                for (int k = 0; k < count; k++)
+                    tokens.addAll(expanded);
                 i = j;
             } else if (input.startsWith("Z(", i)) {
                 int j = i + 2;
-                while (j < input.length() && input.charAt(j) != ')') j++;
-                if (j >= input.length()) throw new Exception("Unclosed Z(n) at position " + i);
+                while (j < input.length() && input.charAt(j) != ')')
+                    j++;
+                if (j >= input.length())
+                    throw new Exception("Unclosed Z(n) at position " + i);
                 String delay = input.substring(i + 2, j);
                 tokens.add("Z|" + delay);
                 i = j + 1;
@@ -276,7 +310,7 @@ public class ProgramExpander {
             String[] tokens = compiledCode.split("/");
             for (String token : tokens) {
                 if (token.startsWith("PEQ|") || token.startsWith("PNE|") ||
-                    token.startsWith("XEQ|") || token.startsWith("XNE|")) {
+                        token.startsWith("XEQ|") || token.startsWith("XNE|")) {
                     return true;
                 }
             }

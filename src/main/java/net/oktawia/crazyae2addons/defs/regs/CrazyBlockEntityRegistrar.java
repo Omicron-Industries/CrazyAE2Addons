@@ -1,24 +1,27 @@
 package net.oktawia.crazyae2addons.defs.regs;
 
-import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.AEBaseBlockEntity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.entities.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.AEBaseBlockEntity;
+
+import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.entities.*;
+
 public class CrazyBlockEntityRegistrar {
 
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, CrazyAddons.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister
+            .create(ForgeRegistries.BLOCK_ENTITY_TYPES, CrazyAddons.MODID);
 
     private static final List<Runnable> BLOCK_ENTITY_SETUP = new ArrayList<>();
 
@@ -26,15 +29,13 @@ public class CrazyBlockEntityRegistrar {
             String id,
             RegistryObject<? extends AEBaseEntityBlock<?>> block,
             BlockEntityType.BlockEntitySupplier<T> factory,
-            Class<T> blockEntityClass
-    ) {
+            Class<T> blockEntityClass) {
         return BLOCK_ENTITIES.register(id, () -> {
             var blk = block.get();
             var type = BlockEntityType.Builder.of(factory, blk).build(null);
 
             BLOCK_ENTITY_SETUP.add(() -> blk.setBlockEntity(
-                    (Class) blockEntityClass, (BlockEntityType) type, null, null
-            ));
+                    (Class) blockEntityClass, (BlockEntityType) type, null, null));
 
             return type;
         });
@@ -47,8 +48,7 @@ public class CrazyBlockEntityRegistrar {
             Supplier<BlockEntityType.BlockEntitySupplier<S>> trueFactory,
             Supplier<Class<S>> trueClass,
             BlockEntityType.BlockEntitySupplier<T> falseFactory,
-            Class<T> falseClass
-    ) {
+            Class<T> falseClass) {
         return BLOCK_ENTITIES.register(id, () -> {
             var blk = block.get();
 
@@ -58,8 +58,7 @@ public class CrazyBlockEntityRegistrar {
                         (Class) trueClass.get(),
                         (BlockEntityType) type,
                         null,
-                        null
-                ));
+                        null));
                 return (BlockEntityType<T>) type;
             } else {
                 BlockEntityType<T> type = BlockEntityType.Builder.of(falseFactory, blk).build(null);
@@ -67,8 +66,7 @@ public class CrazyBlockEntityRegistrar {
                         (Class) falseClass,
                         (BlockEntityType) type,
                         null,
-                        null
-                ));
+                        null));
                 return type;
             }
         });
@@ -79,8 +77,7 @@ public class CrazyBlockEntityRegistrar {
             String id,
             BlockEntityType.BlockEntitySupplier<T> factory,
             Class<T> blockEntityClass,
-            Supplier<? extends AEBaseEntityBlock<?>>... blocks
-    ) {
+            Supplier<? extends AEBaseEntityBlock<?>>... blocks) {
         return BLOCK_ENTITIES.register(id, () -> {
             var resolved = Arrays.stream(blocks)
                     .map(Supplier::get)
@@ -94,8 +91,7 @@ public class CrazyBlockEntityRegistrar {
                         (Class) blockEntityClass,
                         (BlockEntityType) type,
                         null,
-                        null
-                ));
+                        null));
             }
 
             return type;
@@ -112,17 +108,21 @@ public class CrazyBlockEntityRegistrar {
         return BLOCK_ENTITIES.getEntries().stream().map(RegistryObject::get).toList();
     }
 
-    public static final RegistryObject<BlockEntityType<CrazyPatternProviderBE>> CRAZY_PATTERN_PROVIDER_BE =
-            reg("crazy_pattern_provider_be", CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK, CrazyPatternProviderBE::new, CrazyPatternProviderBE.class);
+    public static final RegistryObject<BlockEntityType<CrazyPatternProviderBE>> CRAZY_PATTERN_PROVIDER_BE = reg(
+            "crazy_pattern_provider_be", CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK, CrazyPatternProviderBE::new,
+            CrazyPatternProviderBE.class);
 
-    public static final RegistryObject<BlockEntityType<EjectorBE>> EJECTOR_BE =
-            reg("ejector_be", CrazyBlockRegistrar.EJECTOR_BLOCK, EjectorBE::new, EjectorBE.class);
+    public static final RegistryObject<BlockEntityType<EjectorBE>> EJECTOR_BE = reg("ejector_be",
+            CrazyBlockRegistrar.EJECTOR_BLOCK, EjectorBE::new, EjectorBE.class);
 
-    public static final RegistryObject<BlockEntityType<RecipeFabricatorBE>> RECIPE_FABRICATOR_BE =
-            reg("recipe_fabricator_be", CrazyBlockRegistrar.RECIPE_FABRICATOR_BLOCK, RecipeFabricatorBE::new, RecipeFabricatorBE.class);
+    public static final RegistryObject<BlockEntityType<RecipeFabricatorBE>> RECIPE_FABRICATOR_BE = reg(
+            "recipe_fabricator_be", CrazyBlockRegistrar.RECIPE_FABRICATOR_BLOCK, RecipeFabricatorBE::new,
+            RecipeFabricatorBE.class);
 
-    public static final RegistryObject<BlockEntityType<DisplayDatabaseBE>> DISPLAY_DATABASE_BE =
-            reg("me_display_database", CrazyBlockRegistrar.DISPLAY_DATABASE_BLOCK, DisplayDatabaseBE::new, DisplayDatabaseBE.class);
+    public static final RegistryObject<BlockEntityType<DisplayDatabaseBE>> DISPLAY_DATABASE_BE = reg(
+            "me_display_database", CrazyBlockRegistrar.DISPLAY_DATABASE_BLOCK, DisplayDatabaseBE::new,
+            DisplayDatabaseBE.class);
 
-    private CrazyBlockEntityRegistrar() {}
+    private CrazyBlockEntityRegistrar() {
+    }
 }

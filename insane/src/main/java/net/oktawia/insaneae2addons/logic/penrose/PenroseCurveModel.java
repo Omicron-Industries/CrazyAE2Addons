@@ -1,8 +1,8 @@
 package net.oktawia.insaneae2addons.logic.penrose;
 
-import net.oktawia.insaneae2addons.InsaneConfig;
-
 import java.util.function.DoubleUnaryOperator;
+
+import net.oktawia.insaneae2addons.InsaneConfig;
 
 public record PenroseCurveModel(DoubleUnaryOperator curve, double optimum) {
 

@@ -1,18 +1,21 @@
 package net.oktawia.insaneae2addons.mobstorage;
 
-import appeng.api.behaviors.ContainerItemStrategies;
-import appeng.api.behaviors.ContainerItemStrategy;
-import appeng.api.config.Actionable;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import appeng.api.behaviors.ContainerItemStrategies;
+import appeng.api.behaviors.ContainerItemStrategy;
+import appeng.api.config.Actionable;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+
 import net.oktawia.insaneae2addons.items.mobstorage.MobKeySelectorItem;
-import org.jetbrains.annotations.Nullable;
 
 public final class MobKeyContainerStrategy {
 

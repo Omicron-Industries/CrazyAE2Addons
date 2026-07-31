@@ -1,10 +1,11 @@
 package net.oktawia.insaneae2addons.logic.mobstorage;
 
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.item.ItemStack;
 
 public final class MobDropCapture {
 

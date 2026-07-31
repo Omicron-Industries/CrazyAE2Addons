@@ -1,30 +1,35 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
-import appeng.util.Platform;
-import appeng.util.SettingsFrom;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
-import net.oktawia.crazyae2addons.util.IManagedBEHelper;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
+import appeng.util.Platform;
+import appeng.util.SettingsFrom;
+
+import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.insaneae2addons.logic.penrose.PenroseCurveModel;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class PenroseEmitterBE extends PenrosePeripheralBE {
 
     private static final String NBT_ON_PERCENT = "on_percent";
     private static final String NBT_OFF_PERCENT = "off_percent";
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            IManagedBEHelper.inheritedFieldHolder(PenroseEmitterBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = IManagedBEHelper
+            .inheritedFieldHolder(PenroseEmitterBE.class);
 
     @Persisted
     @DescSynced
@@ -45,8 +50,7 @@ public abstract class PenroseEmitterBE extends PenrosePeripheralBE {
             BlockEntityType<?> type,
             BlockPos pos,
             BlockState blockState,
-            ItemStack visualRepresentation
-    ) {
+            ItemStack visualRepresentation) {
         super(type, pos, blockState, visualRepresentation, 2.0F);
     }
 

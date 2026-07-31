@@ -1,7 +1,21 @@
 package net.oktawia.crazyae2addons.client.misc;
 
+import static net.minecraft.client.gui.screens.Screen.hasControlDown;
+import static net.minecraft.client.gui.screens.Screen.hasShiftDown;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Getter;
+
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -15,19 +29,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static net.minecraft.client.gui.screens.Screen.hasControlDown;
-import static net.minecraft.client.gui.screens.Screen.hasShiftDown;
+import lombok.Getter;
 
 @OnlyIn(Dist.CLIENT)
 public class MultilineTextFieldWidget extends AbstractWidget {
@@ -49,8 +52,11 @@ public class MultilineTextFieldWidget extends AbstractWidget {
         }
     }
 
-    private record Line(int begin, int end) {}
-    private record ColorScope(int tokenStart, int contentStart, int contentEnd, int tokenEnd) {}
+    private record Line(int begin, int end) {
+    }
+
+    private record ColorScope(int tokenStart, int contentStart, int contentEnd, int tokenEnd) {
+    }
 
     private final Font font;
     private final CachedTextField textField;
@@ -639,7 +645,8 @@ public class MultilineTextFieldWidget extends AbstractWidget {
     private static final class CachedTextField extends MultilineTextField {
         private List<Line> cache = new ArrayList<>();
 
-        record Selection(int begin, int end) {}
+        record Selection(int begin, int end) {
+        }
 
         private static final String WORD_EXTRA = "_.+-*?";
 
@@ -1001,10 +1008,9 @@ public class MultilineTextFieldWidget extends AbstractWidget {
 
         for (int i = 0; i < 6; i++) {
             char ch = text.charAt(index + 2 + i);
-            boolean hex =
-                    (ch >= '0' && ch <= '9')
-                            || (ch >= 'a' && ch <= 'f')
-                            || (ch >= 'A' && ch <= 'F');
+            boolean hex = (ch >= '0' && ch <= '9')
+                    || (ch >= 'a' && ch <= 'f')
+                    || (ch >= 'A' && ch <= 'F');
             if (!hex) {
                 return false;
             }

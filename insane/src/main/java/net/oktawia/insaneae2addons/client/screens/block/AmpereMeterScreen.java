@@ -1,19 +1,21 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.ToggleButton;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
+import net.oktawia.crazyae2addons.util.MathParser;
+import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.menus.block.AmpereMeterMenu;
-import net.oktawia.crazyae2addons.util.MathParser;
-import net.oktawia.crazyae2addons.util.Utils;
-
-import java.util.List;
 
 public class AmpereMeterScreen<C extends AmpereMeterMenu> extends AEBaseScreen<C> {
 
@@ -28,8 +30,10 @@ public class AmpereMeterScreen<C extends AmpereMeterMenu> extends AEBaseScreen<C
         super(menu, playerInventory, title, style);
 
         direction = new ToggleButton(Icon.ARROW_RIGHT, Icon.ARROW_LEFT, this::toggleDirection);
-        direction.setTooltipOn(List.of(Component.translatable(LangDefs.AMPERE_METER_DIRECTION_LEFT_TO_RIGHT.getTranslationKey())));
-        direction.setTooltipOff(List.of(Component.translatable(LangDefs.AMPERE_METER_DIRECTION_RIGHT_TO_LEFT.getTranslationKey())));
+        direction.setTooltipOn(
+                List.of(Component.translatable(LangDefs.AMPERE_METER_DIRECTION_LEFT_TO_RIGHT.getTranslationKey())));
+        direction.setTooltipOff(
+                List.of(Component.translatable(LangDefs.AMPERE_METER_DIRECTION_RIGHT_TO_LEFT.getTranslationKey())));
         this.widgets.add("direction", direction);
 
         minFe = new AETextField(style, this.font, 0, 0, 64, 12);
@@ -75,8 +79,7 @@ public class AmpereMeterScreen<C extends AmpereMeterMenu> extends AEBaseScreen<C
         Component unit = Component.translatable(
                 useAmps
                         ? LangDefs.AMPERES.getTranslationKey()
-                        : LangDefs.FE_PER_TICK.getTranslationKey()
-        );
+                        : LangDefs.FE_PER_TICK.getTranslationKey());
 
         if (minFe != null) {
             minFe.setTooltipMessage(buildThresholdTooltip(LangDefs.AMPERE_METER_MIN_THRESHOLD, unit));
@@ -176,8 +179,8 @@ public class AmpereMeterScreen<C extends AmpereMeterMenu> extends AEBaseScreen<C
 
         setTextContent(
                 "energy",
-                Component.literal("Transferring: " + getMenu().getHost().getTransfer() + " " + getMenu().getHost().getUnit())
-        );
+                Component.literal(
+                        "Transferring: " + getMenu().getHost().getTransfer() + " " + getMenu().getHost().getUnit()));
 
         if (minFe != null) {
             boolean focused = minFe.isFocused();

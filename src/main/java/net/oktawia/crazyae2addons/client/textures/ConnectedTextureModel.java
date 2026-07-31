@@ -1,5 +1,13 @@
 package net.oktawia.crazyae2addons.client.textures;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.joml.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -20,13 +28,6 @@ import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
-import org.joml.Vector3f;
-
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> implements PreviewQuadProvider {
     private static final ModelProperty<Connections> CONNECTIONS = new ModelProperty<>();
@@ -59,7 +60,8 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
     }
 
     @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData modelData, RenderType renderType) {
+    public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData modelData,
+            RenderType renderType) {
         if (state == null || side == null) {
             return originalModel.getQuads(state, side, rand, modelData, renderType);
         }
@@ -101,8 +103,7 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
                 texture,
                 tex -> Minecraft.getInstance()
                         .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                        .apply(tex)
-        );
+                        .apply(tex));
 
         List<BakedQuad> quads = new ArrayList<>(4);
 
@@ -114,7 +115,8 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
         return List.copyOf(quads);
     }
 
-    private BakedQuad bakeQuarter(Direction face, Quarter quarter, QuarterType type, TextureAtlasSprite sprite, ResourceLocation rl) {
+    private BakedQuad bakeQuarter(Direction face, Quarter quarter, QuarterType type, TextureAtlasSprite sprite,
+            ResourceLocation rl) {
         FaceBounds bounds = FaceBounds.forQuarter(face, quarter);
         float[] uv = quarterUv(type.tile, quarter);
 
@@ -122,8 +124,7 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
                 face,
                 -1,
                 "",
-                new BlockFaceUV(uv, 0)
-        );
+                new BlockFaceUV(uv, 0));
 
         return bakery.bakeQuad(
                 bounds.from,
@@ -134,8 +135,7 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
                 BlockModelRotation.X0_Y0,
                 null,
                 true,
-                rl
-        );
+                rl);
     }
 
     @Override
@@ -166,16 +166,14 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
                 texture,
                 tex -> Minecraft.getInstance()
                         .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                        .apply(tex)
-        );
+                        .apply(tex));
 
         Vector3f[] bounds = cubeFaceBounds(face);
         BlockElementFace elementFace = new BlockElementFace(
                 face,
                 -1,
                 "",
-                new BlockFaceUV(new float[]{0.0f, 0.0f, 16.0f / 5.0f, 16.0f}, 0)
-        );
+                new BlockFaceUV(new float[] { 0.0f, 0.0f, 16.0f / 5.0f, 16.0f }, 0));
 
         return bakery.bakeQuad(
                 bounds[0],
@@ -186,18 +184,17 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
                 BlockModelRotation.X0_Y0,
                 null,
                 true,
-                texture
-        );
+                texture);
     }
 
     private static Vector3f[] cubeFaceBounds(Direction face) {
         return switch (face) {
-            case NORTH -> new Vector3f[]{new Vector3f(0, 0, 0), new Vector3f(16, 16, 0)};
-            case SOUTH -> new Vector3f[]{new Vector3f(0, 0, 16), new Vector3f(16, 16, 16)};
-            case WEST -> new Vector3f[]{new Vector3f(0, 0, 0), new Vector3f(0, 16, 16)};
-            case EAST -> new Vector3f[]{new Vector3f(16, 0, 0), new Vector3f(16, 16, 16)};
-            case UP -> new Vector3f[]{new Vector3f(0, 16, 0), new Vector3f(16, 16, 16)};
-            case DOWN -> new Vector3f[]{new Vector3f(0, 0, 0), new Vector3f(16, 0, 16)};
+            case NORTH -> new Vector3f[] { new Vector3f(0, 0, 0), new Vector3f(16, 16, 0) };
+            case SOUTH -> new Vector3f[] { new Vector3f(0, 0, 16), new Vector3f(16, 16, 16) };
+            case WEST -> new Vector3f[] { new Vector3f(0, 0, 0), new Vector3f(0, 16, 16) };
+            case EAST -> new Vector3f[] { new Vector3f(16, 0, 0), new Vector3f(16, 16, 16) };
+            case UP -> new Vector3f[] { new Vector3f(0, 16, 0), new Vector3f(16, 16, 16) };
+            case DOWN -> new Vector3f[] { new Vector3f(0, 0, 0), new Vector3f(16, 0, 16) };
         };
     }
 
@@ -206,16 +203,14 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
                 texture,
                 tex -> Minecraft.getInstance()
                         .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                        .apply(tex)
-        );
+                        .apply(tex));
 
         Vector3f[] bounds = fullFaceBounds(face);
         BlockElementFace elementFace = new BlockElementFace(
                 face,
                 -1,
                 "",
-                new BlockFaceUV(new float[]{0.0f, 0.0f, 16.0f, 16.0f}, 0)
-        );
+                new BlockFaceUV(new float[] { 0.0f, 0.0f, 16.0f, 16.0f }, 0));
 
         return bakery.bakeQuad(
                 bounds[0],
@@ -226,19 +221,18 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
                 BlockModelRotation.X0_Y0,
                 null,
                 true,
-                texture
-        );
+                texture);
     }
 
     private static Vector3f[] fullFaceBounds(Direction face) {
         float e = OVERLAY_EPS;
         return switch (face) {
-            case NORTH -> new Vector3f[]{new Vector3f(0, 0, -e), new Vector3f(16, 16, -e)};
-            case SOUTH -> new Vector3f[]{new Vector3f(0, 0, 16 + e), new Vector3f(16, 16, 16 + e)};
-            case WEST -> new Vector3f[]{new Vector3f(-e, 0, 0), new Vector3f(-e, 16, 16)};
-            case EAST -> new Vector3f[]{new Vector3f(16 + e, 0, 0), new Vector3f(16 + e, 16, 16)};
-            case UP -> new Vector3f[]{new Vector3f(0, 16 + e, 0), new Vector3f(16, 16 + e, 16)};
-            case DOWN -> new Vector3f[]{new Vector3f(0, -e, 0), new Vector3f(16, -e, 16)};
+            case NORTH -> new Vector3f[] { new Vector3f(0, 0, -e), new Vector3f(16, 16, -e) };
+            case SOUTH -> new Vector3f[] { new Vector3f(0, 0, 16 + e), new Vector3f(16, 16, 16 + e) };
+            case WEST -> new Vector3f[] { new Vector3f(-e, 0, 0), new Vector3f(-e, 16, 16) };
+            case EAST -> new Vector3f[] { new Vector3f(16 + e, 0, 0), new Vector3f(16 + e, 16, 16) };
+            case UP -> new Vector3f[] { new Vector3f(0, 16 + e, 0), new Vector3f(16, 16 + e, 16) };
+            case DOWN -> new Vector3f[] { new Vector3f(0, -e, 0), new Vector3f(16, -e, 16) };
         };
     }
 
@@ -257,13 +251,13 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
         float u1 = u0 + quarterW;
         float v1 = v0 + quarterH;
 
-        return new float[]{u0, v0, u1, v1};
+        return new float[] { u0, v0, u1, v1 };
     }
 
     private NeighborBits computeNeighbors(BlockAndTintGetter level,
-                                          BlockPos pos,
-                                          BlockState selfState,
-                                          Direction renderedFace) {
+            BlockPos pos,
+            BlockState selfState,
+            Direction renderedFace) {
         FaceSpace space = FaceSpace.of(renderedFace);
 
         boolean up = connects(level, pos, selfState, pos.relative(space.up), renderedFace);
@@ -274,35 +268,31 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
         boolean upRight = up && right && connects(
                 level, pos, selfState,
                 pos.relative(space.up).relative(space.right),
-                renderedFace
-        );
+                renderedFace);
 
         boolean upLeft = up && left && connects(
                 level, pos, selfState,
                 pos.relative(space.up).relative(space.left),
-                renderedFace
-        );
+                renderedFace);
 
         boolean downRight = down && right && connects(
                 level, pos, selfState,
                 pos.relative(space.down).relative(space.right),
-                renderedFace
-        );
+                renderedFace);
 
         boolean downLeft = down && left && connects(
                 level, pos, selfState,
                 pos.relative(space.down).relative(space.left),
-                renderedFace
-        );
+                renderedFace);
 
         return new NeighborBits(up, right, down, left, upRight, upLeft, downRight, downLeft);
     }
 
     private boolean connects(BlockAndTintGetter level,
-                             BlockPos selfPos,
-                             BlockState selfState,
-                             BlockPos otherPos,
-                             Direction face) {
+            BlockPos selfPos,
+            BlockState selfState,
+            BlockPos otherPos,
+            Direction face) {
         BlockState otherState = level.getBlockState(otherPos);
         return entry.rule().connects(level, selfPos, selfState, otherPos, otherState, face);
     }
@@ -322,9 +312,11 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
         }
     }
 
-    private record QuadCacheKey(ResourceLocation texture, Direction face, FaceQuarters quarters) {}
+    private record QuadCacheKey(ResourceLocation texture, Direction face, FaceQuarters quarters) {
+    }
 
-    private record FullFaceKey(ResourceLocation texture, Direction face) {}
+    private record FullFaceKey(ResourceLocation texture, Direction face) {
+    }
 
     private record Connections(Map<Direction, NeighborBits> byFace) {
         static final Connections EMPTY = new Connections(Map.of());
@@ -343,10 +335,10 @@ public final class ConnectedTextureModel extends BakedModelWrapper<BakedModel> i
             return switch (face) {
                 case NORTH -> new FaceSpace(Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
                 case SOUTH -> new FaceSpace(Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
-                case WEST  -> new FaceSpace(Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
-                case EAST  -> new FaceSpace(Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
-                case UP    -> new FaceSpace(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
-                case DOWN  -> new FaceSpace(Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST);
+                case WEST -> new FaceSpace(Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
+                case EAST -> new FaceSpace(Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
+                case UP -> new FaceSpace(Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST);
+                case DOWN -> new FaceSpace(Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST);
             };
         }
     }

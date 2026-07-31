@@ -1,5 +1,9 @@
 package net.oktawia.insaneae2addons.events;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -8,14 +12,11 @@ import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.logic.penrose.BlackHoleField;
 import net.oktawia.insaneae2addons.logic.penrose.BlackHoleFieldData;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = InsaneAddons.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class BlackHoleFieldManager {

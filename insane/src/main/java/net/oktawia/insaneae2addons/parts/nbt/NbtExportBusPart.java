@@ -1,5 +1,16 @@
 package net.oktawia.insaneae2addons.parts.nbt;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+
 import appeng.api.behaviors.StackExportStrategy;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
@@ -16,20 +27,12 @@ import appeng.parts.automation.StackWorldBehaviors;
 import appeng.util.ConfigInventory;
 import appeng.util.SettingsFrom;
 import appeng.util.prioritylist.DefaultPriorityList;
-import net.oktawia.insaneae2addons.InsaneConfig;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.minecraft.core.GlobalPos;
+
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
 import net.oktawia.crazyae2addons.tracking.UsageTarget;
+import net.oktawia.insaneae2addons.InsaneConfig;
+import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.nbt.NBTMatcher;
-import org.jetbrains.annotations.Nullable;
 
 public class NbtExportBusPart extends IOBusPart {
 
@@ -48,7 +51,8 @@ public class NbtExportBusPart extends IOBusPart {
     private static final String NBT_STATE = "state";
     private static final String NBT_FILTER = "nbt_filter";
 
-    public final ConfigInventory inv = ConfigInventory.configTypes(1, () -> {});
+    public final ConfigInventory inv = ConfigInventory.configTypes(1, () -> {
+    });
 
     private final NbtFilterState state = new NbtFilterState(this::markForSaveSafe);
 

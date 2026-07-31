@@ -1,12 +1,14 @@
 package net.oktawia.insaneae2addons.logic.penrose;
 
+import java.util.Arrays;
+
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.nbt.CompoundTag;
 
-import java.util.Arrays;
+import lombok.Getter;
+import lombok.Setter;
 
 public final class AccretionDisk implements ITagSerializable<CompoundTag>, IContentChangeAware {
 

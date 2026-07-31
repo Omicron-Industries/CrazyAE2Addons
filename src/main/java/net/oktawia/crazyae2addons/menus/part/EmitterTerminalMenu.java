@@ -1,12 +1,8 @@
 package net.oktawia.crazyae2addons.menus.part;
 
-import appeng.api.inventories.InternalInventory;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantics;
-import appeng.menu.guisync.GuiSync;
-import appeng.menu.slot.FakeSlot;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,6 +10,15 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
+
+import appeng.api.inventories.InternalInventory;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.GuiSync;
+import appeng.menu.slot.FakeSlot;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IEmitterTerminalHost;
 import net.oktawia.crazyae2addons.logic.wireless.WirelessEmitterTerminalItemLogicHost;
@@ -21,12 +26,10 @@ import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.EmitterWindowPacket;
 import net.oktawia.crazyae2addons.parts.EmitterTerminal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class EmitterTerminalMenu extends AEBaseMenu {
 
-    public record StorageEmitterInfo(String uuid, Component name, GenericStack config, Long value) {}
+    public record StorageEmitterInfo(String uuid, Component name, GenericStack config, Long value) {
+    }
 
     private static final String ACTION_SEARCH = "search";
     private static final String ACTION_SET_VALUE = "setValue";
@@ -102,10 +105,12 @@ public class EmitterTerminalMenu extends AEBaseMenu {
             sendClientAction(ACTION_SET_VALUE, payload);
             return;
         }
-        if (payload == null) return;
+        if (payload == null)
+            return;
 
         String[] parts = payload.split("\\|", 2);
-        if (parts.length != 2 || parts[0].isBlank()) return;
+        if (parts.length != 2 || parts[0].isBlank())
+            return;
 
         long value = 0L;
         if (!parts[1].isBlank()) {
@@ -142,7 +147,8 @@ public class EmitterTerminalMenu extends AEBaseMenu {
     }
 
     protected void refreshEmitters() {
-        if (isClientSide()) return;
+        if (isClientSide())
+            return;
 
         fullList = currentSearch.isBlank() ? emitterHost.getEmitters() : emitterHost.getEmitters(currentSearch);
         totalEmitterCount = fullList.size();
@@ -159,7 +165,8 @@ public class EmitterTerminalMenu extends AEBaseMenu {
     }
 
     private void sendWindow() {
-        if (!(getPlayer() instanceof ServerPlayer sp)) return;
+        if (!(getPlayer() instanceof ServerPlayer sp))
+            return;
 
         int from = currentOffset;
         int to = Math.min(from + VISIBLE_ROWS, fullList.size());
@@ -172,8 +179,7 @@ public class EmitterTerminalMenu extends AEBaseMenu {
 
         NetworkHandler.CHANNEL.send(
                 PacketDistributor.PLAYER.with(() -> sp),
-                new EmitterWindowPacket(fullList.size(), from, revision, serverWindow)
-        );
+                new EmitterWindowPacket(fullList.size(), from, revision, serverWindow));
     }
 
     protected final class WindowedEmitterInventory implements InternalInventory {
@@ -203,14 +209,18 @@ public class EmitterTerminalMenu extends AEBaseMenu {
 
         @Override
         public ItemStack getStackInSlot(int slot) {
-            if (slot < 0 || slot >= VISIBLE_ROWS) return ItemStack.EMPTY;
+            if (slot < 0 || slot >= VISIBLE_ROWS)
+                return ItemStack.EMPTY;
 
-            if (isClientSide()) return clientCache[slot];
+            if (isClientSide())
+                return clientCache[slot];
 
-            if (slot >= serverWindow.size()) return ItemStack.EMPTY;
+            if (slot >= serverWindow.size())
+                return ItemStack.EMPTY;
 
             var emitter = serverWindow.get(slot);
-            if (emitter == null || emitter.config() == null) return ItemStack.EMPTY;
+            if (emitter == null || emitter.config() == null)
+                return ItemStack.EMPTY;
 
             return GenericStack.wrapInItemStack(emitter.config());
         }
@@ -218,14 +228,17 @@ public class EmitterTerminalMenu extends AEBaseMenu {
         @Override
         public void setItemDirect(int slot, ItemStack stack) {
             if (isClientSide()) {
-                if (slot >= 0 && slot < VISIBLE_ROWS) clientCache[slot] = stack;
+                if (slot >= 0 && slot < VISIBLE_ROWS)
+                    clientCache[slot] = stack;
                 return;
             }
 
-            if (slot < 0 || slot >= VISIBLE_ROWS || slot >= serverWindow.size()) return;
+            if (slot < 0 || slot >= VISIBLE_ROWS || slot >= serverWindow.size())
+                return;
 
             var emitter = serverWindow.get(slot);
-            if (emitter == null || emitter.uuid() == null || emitter.uuid().isBlank()) return;
+            if (emitter == null || emitter.uuid() == null || emitter.uuid().isBlank())
+                return;
 
             GenericStack generic = stack.isEmpty() ? null : convertStack(stack);
             emitterHost.setEmitterConfig(emitter.uuid(), generic);
@@ -234,9 +247,11 @@ public class EmitterTerminalMenu extends AEBaseMenu {
         }
 
         private GenericStack convertStack(ItemStack stack) {
-            if (stack.isEmpty()) return null;
+            if (stack.isEmpty())
+                return null;
             GenericStack unwrapped = GenericStack.fromItemStack(stack);
-            if (unwrapped != null) return unwrapped;
+            if (unwrapped != null)
+                return unwrapped;
             return new GenericStack(AEItemKey.of(stack), stack.getCount());
         }
 
@@ -247,7 +262,8 @@ public class EmitterTerminalMenu extends AEBaseMenu {
 
         @Override
         public void sendChangeNotification(int slot) {
-            if (!isClientSide()) refreshEmitters();
+            if (!isClientSide())
+                refreshEmitters();
         }
     }
 }

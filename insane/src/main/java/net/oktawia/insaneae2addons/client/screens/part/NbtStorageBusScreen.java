@@ -1,5 +1,10 @@
 package net.oktawia.insaneae2addons.client.screens.part;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
@@ -9,10 +14,7 @@ import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
 import net.oktawia.insaneae2addons.client.utils.NbtMatcherHighlight;
@@ -87,7 +89,8 @@ public class NbtStorageBusScreen<C extends NbtStorageBusMenu> extends Upgradeabl
         getMenu().updateData(text);
         NBTMatcher.Compiled compiled = NBTMatcher.compile(text);
         if (compiled.isValid()) {
-            confirmBtn.setTooltip(Tooltip.create(Component.translatable(LangDefs.NBT_FILTER_SAVED.getTranslationKey())));
+            confirmBtn
+                    .setTooltip(Tooltip.create(Component.translatable(LangDefs.NBT_FILTER_SAVED.getTranslationKey())));
         } else {
             confirmBtn.setTooltip(Tooltip.create(
                     Component.translatable(LangDefs.NBT_SYNTAX_ERROR.getTranslationKey())

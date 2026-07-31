@@ -1,8 +1,11 @@
 package net.oktawia.insaneae2addons.menus.block;
 
-import appeng.menu.AEBaseMenu;
-import lombok.Getter;
 import net.minecraft.world.entity.player.Inventory;
+
+import lombok.Getter;
+
+import appeng.menu.AEBaseMenu;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.entities.penrose.PenroseInjectionPortBE;
 

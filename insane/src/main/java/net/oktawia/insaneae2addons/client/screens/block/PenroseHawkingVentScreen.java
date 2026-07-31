@@ -1,18 +1,20 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
-import appeng.client.gui.style.ScreenStyle;
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.style.ScreenStyle;
+
 import net.oktawia.crazyae2addons.util.Utils;
-import net.oktawia.insaneae2addons.defs.LangDefs;
-import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControllerBE;
-import net.oktawia.insaneae2addons.entities.penrose.PenroseHawkingVentBE;
 import net.oktawia.insaneae2addons.client.misc.ValueField;
+import net.oktawia.insaneae2addons.defs.LangDefs;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseHawkingVentBE;
+import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControllerBE;
 import net.oktawia.insaneae2addons.logic.penrose.PenroseCurveModel;
 import net.oktawia.insaneae2addons.logic.penrose.PenroseCurves;
 import net.oktawia.insaneae2addons.menus.block.PenroseHawkingVentMenu;
-
-import java.util.List;
 
 public class PenroseHawkingVentScreen<C extends PenroseHawkingVentMenu> extends PenrosePeripheralScreen<C> {
 

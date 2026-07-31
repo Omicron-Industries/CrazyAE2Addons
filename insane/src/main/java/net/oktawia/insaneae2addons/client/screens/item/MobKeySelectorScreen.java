@@ -1,10 +1,10 @@
 package net.oktawia.insaneae2addons.client.screens.item;
 
-import appeng.api.client.AEKeyRendering;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
-import appeng.client.gui.widgets.Scrollbar;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,13 +18,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import appeng.api.client.AEKeyRendering;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.Scrollbar;
+
 import net.oktawia.insaneae2addons.menus.item.MobKeySelectorMenu;
 import net.oktawia.insaneae2addons.mobstorage.MobKey;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
 
 public class MobKeySelectorScreen<C extends MobKeySelectorMenu> extends AEBaseScreen<C> {
 

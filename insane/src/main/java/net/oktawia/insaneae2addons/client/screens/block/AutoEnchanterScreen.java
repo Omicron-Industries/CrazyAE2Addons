@@ -1,18 +1,20 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
+import java.util.List;
+
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ToggleButton;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.menus.block.AutoEnchanterMenu;
-
-import java.util.List;
 
 public class AutoEnchanterScreen extends AEBaseScreen<AutoEnchanterMenu> {
 
@@ -30,12 +32,16 @@ public class AutoEnchanterScreen extends AEBaseScreen<AutoEnchanterMenu> {
         opt3.setTooltip(Tooltip.create(Component.translatable(LangDefs.ENCHANTER_EXP.getTranslationKey())));
 
         this.autoSupplyLapis = new ToggleButton(Icon.VALID, Icon.INVALID, this::toggleLapis);
-        this.autoSupplyLapis.setTooltipOn(List.of(Component.translatable(LangDefs.ENCHANTER_LAPIS_ON.getTranslationKey())));
-        this.autoSupplyLapis.setTooltipOff(List.of(Component.translatable(LangDefs.ENCHANTER_LAPIS_OFF.getTranslationKey())));
+        this.autoSupplyLapis
+                .setTooltipOn(List.of(Component.translatable(LangDefs.ENCHANTER_LAPIS_ON.getTranslationKey())));
+        this.autoSupplyLapis
+                .setTooltipOff(List.of(Component.translatable(LangDefs.ENCHANTER_LAPIS_OFF.getTranslationKey())));
 
         this.autoSupplyBooks = new ToggleButton(Icon.VALID, Icon.INVALID, this::toggleBooks);
-        this.autoSupplyBooks.setTooltipOn(List.of(Component.translatable(LangDefs.ENCHANTER_BOOK_ON.getTranslationKey())));
-        this.autoSupplyBooks.setTooltipOff(List.of(Component.translatable(LangDefs.ENCHANTER_BOOK_OFF.getTranslationKey())));
+        this.autoSupplyBooks
+                .setTooltipOn(List.of(Component.translatable(LangDefs.ENCHANTER_BOOK_ON.getTranslationKey())));
+        this.autoSupplyBooks
+                .setTooltipOff(List.of(Component.translatable(LangDefs.ENCHANTER_BOOK_OFF.getTranslationKey())));
 
         this.widgets.add("opt1", opt1);
         this.widgets.add("opt2", opt2);
@@ -64,7 +70,8 @@ public class AutoEnchanterScreen extends AEBaseScreen<AutoEnchanterMenu> {
         };
         setTextContent("option", Component.literal("> " + label + " <"));
         setTextContent("xpval", Component.literal(Utils.shortenNumber(host.getXp())));
-        setTextContent("estval", Component.translatable(LangDefs.ENCHANTER_REQUIRED.getTranslationKey(), host.getLevelCost()));
+        setTextContent("estval",
+                Component.translatable(LangDefs.ENCHANTER_REQUIRED.getTranslationKey(), host.getLevelCost()));
         this.autoSupplyLapis.setState(host.isAutoSupplyLapis());
         this.autoSupplyBooks.setState(host.isAutoSupplyBooks());
     }

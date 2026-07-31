@@ -1,15 +1,18 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockFrameBE;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class PenrosePeripheralBE extends AbstractMultiblockFrameBE<PortablePenroseSphereControllerBE> {
 
@@ -18,8 +21,7 @@ public abstract class PenrosePeripheralBE extends AbstractMultiblockFrameBE<Port
             BlockPos pos,
             BlockState blockState,
             ItemStack visualRepresentation,
-            float idlePowerUsage
-    ) {
+            float idlePowerUsage) {
         super(type, pos, blockState, visualRepresentation, idlePowerUsage);
     }
 

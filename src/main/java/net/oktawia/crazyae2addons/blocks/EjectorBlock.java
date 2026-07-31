@@ -1,9 +1,8 @@
 package net.oktawia.crazyae2addons.blocks;
 
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.block.AEBaseBlock;
-import appeng.util.InteractionUtil;
-import appeng.util.Platform;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -21,10 +20,14 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.block.AEBaseBlock;
+import appeng.util.InteractionUtil;
+import appeng.util.Platform;
+
 import net.oktawia.crazyae2addons.entities.EjectorBE;
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class EjectorBlock extends AbstractMenuOpeningBlock<EjectorBE> implements IUpgradeableObject {
 
@@ -39,8 +42,7 @@ public class EjectorBlock extends AbstractMenuOpeningBlock<EjectorBE> implements
                 this.defaultBlockState()
                         .setValue(FACING, Direction.NORTH)
                         .setValue(POWERED, false)
-                        .setValue(ISCRAFTING, false)
-        );
+                        .setValue(ISCRAFTING, false));
     }
 
     @Override
@@ -65,7 +67,7 @@ public class EjectorBlock extends AbstractMenuOpeningBlock<EjectorBE> implements
 
     @Override
     public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
-                                          InteractionHand hand, BlockHitResult hit) {
+            InteractionHand hand, BlockHitResult hit) {
         ItemStack heldItem = player.getItemInHand(hand);
         if (InteractionUtil.canWrenchRotate(heldItem)) {
             if (!level.isClientSide) {
@@ -84,8 +86,9 @@ public class EjectorBlock extends AbstractMenuOpeningBlock<EjectorBE> implements
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos,
-                                Block block, BlockPos fromPos, boolean isMoving) {
-        if (level.isClientSide) return;
+            Block block, BlockPos fromPos, boolean isMoving) {
+        if (level.isClientSide)
+            return;
 
         boolean wasPowered = state.getValue(POWERED);
         boolean isPoweredNow = level.hasNeighborSignal(pos);

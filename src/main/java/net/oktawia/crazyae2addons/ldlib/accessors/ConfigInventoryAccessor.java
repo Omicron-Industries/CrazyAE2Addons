@@ -1,19 +1,16 @@
 package net.oktawia.crazyae2addons.ldlib.accessors;
 
-import appeng.util.ConfigInventory;
 import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
 import com.lowdragmc.lowdraglib.syncdata.managed.IRef;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.PrimitiveTypedPayload;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
-import java.util.stream.Stream;
+import appeng.util.ConfigInventory;
 
 public final class ConfigInventoryAccessor implements IAccessor {
     private byte defaultType = -1;

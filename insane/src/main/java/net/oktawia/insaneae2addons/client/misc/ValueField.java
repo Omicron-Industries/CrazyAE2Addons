@@ -1,14 +1,16 @@
 package net.oktawia.insaneae2addons.client.misc;
 
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+
+import net.minecraft.client.gui.Font;
+
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
-import net.minecraft.client.gui.Font;
+
 import net.oktawia.crazyae2addons.util.MathParser;
 import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.InsaneAddons;
-
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 
 public class ValueField extends AETextField {
 

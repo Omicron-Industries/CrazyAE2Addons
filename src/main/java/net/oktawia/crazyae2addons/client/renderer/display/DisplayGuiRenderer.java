@@ -1,13 +1,15 @@
 package net.oktawia.crazyae2addons.client.renderer.display;
 
+import java.util.List;
+import java.util.Map;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
 
-import java.util.List;
-import java.util.Map;
+import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
 
 public final class DisplayGuiRenderer {
 
@@ -32,8 +34,7 @@ public final class DisplayGuiRenderer {
             boolean center,
             boolean margin,
             int gridWidthBlocks,
-            int gridHeightBlocks
-    ) {
+            int gridHeightBlocks) {
         return DisplayRendererCommon.prepare(
                 font,
                 textValue,
@@ -44,8 +45,7 @@ public final class DisplayGuiRenderer {
                 Math.max(1, gridHeightBlocks),
                 List.of(),
                 Map.of(),
-                true
-        );
+                true);
     }
 
     public static DisplayRendererCommon.PreparedDisplay preparePreview(
@@ -57,8 +57,7 @@ public final class DisplayGuiRenderer {
             int gridWidthBlocks,
             int gridHeightBlocks,
             List<DisplayImageEntry> images,
-            Map<String, byte[]> imageData
-    ) {
+            Map<String, byte[]> imageData) {
         return DisplayRendererCommon.prepare(
                 font,
                 textValue,
@@ -69,8 +68,7 @@ public final class DisplayGuiRenderer {
                 Math.max(1, gridHeightBlocks),
                 images == null ? List.of() : images,
                 imageData == null ? Map.of() : imageData,
-                true
-        );
+                true);
     }
 
     public static void renderPreview(
@@ -79,8 +77,7 @@ public final class DisplayGuiRenderer {
             int y,
             int width,
             int height,
-            DisplayRendererCommon.PreparedDisplay prepared
-    ) {
+            DisplayRendererCommon.PreparedDisplay prepared) {
         if (width <= 0 || height <= 0) {
             return;
         }
@@ -100,8 +97,7 @@ public final class DisplayGuiRenderer {
 
         float fit = Math.min(
                 (float) innerW / surfaceW,
-                (float) innerH / surfaceH
-        );
+                (float) innerH / surfaceH);
 
         if (!Float.isFinite(fit) || fit <= 0f) {
             fit = 1f;
@@ -144,8 +140,7 @@ public final class DisplayGuiRenderer {
                 ps,
                 gui.bufferSource(),
                 Minecraft.getInstance().font,
-                0xF000F0
-        );
+                0xF000F0);
 
         ps.popPose();
         gui.flush();

@@ -1,20 +1,22 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
-import appeng.client.gui.style.ScreenStyle;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.util.Utils;
-import net.oktawia.insaneae2addons.InsaneConfig;
-import net.oktawia.insaneae2addons.defs.LangDefs;
-import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControllerBE;
-import net.oktawia.insaneae2addons.entities.penrose.PenroseHeatVentBE;
-import net.oktawia.insaneae2addons.client.misc.ValueField;
-import net.oktawia.insaneae2addons.logic.penrose.PenroseCurveModel;
-import net.oktawia.insaneae2addons.menus.block.PenroseHeatVentMenu;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.style.ScreenStyle;
+
+import net.oktawia.crazyae2addons.util.Utils;
+import net.oktawia.insaneae2addons.InsaneConfig;
+import net.oktawia.insaneae2addons.client.misc.ValueField;
+import net.oktawia.insaneae2addons.defs.LangDefs;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseHeatVentBE;
+import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControllerBE;
+import net.oktawia.insaneae2addons.logic.penrose.PenroseCurveModel;
+import net.oktawia.insaneae2addons.menus.block.PenroseHeatVentMenu;
 
 public class PenroseHeatVentScreen<C extends PenroseHeatVentMenu> extends PenrosePeripheralScreen<C> {
 
@@ -33,7 +35,7 @@ public class PenroseHeatVentScreen<C extends PenroseHeatVentMenu> extends Penros
 
     private double smoothedCoolant(int current) {
         long now = System.currentTimeMillis();
-        this.coolantSamples.addLast(new long[]{now, current});
+        this.coolantSamples.addLast(new long[] { now, current });
         while (!this.coolantSamples.isEmpty() && now - this.coolantSamples.peekFirst()[0] > COOLANT_WINDOW_MS) {
             this.coolantSamples.removeFirst();
         }
@@ -74,8 +76,7 @@ public class PenroseHeatVentScreen<C extends PenroseHeatVentMenu> extends Penros
         super.updateBeforeRender();
 
         PenroseHeatVentBE host = getMenu().getHost();
-        double coolantBuckets =
-                host.getDesiredCooling() * InsaneConfig.COMMON.PENROSE_COOLANT_MB_PER_MK.get() / 1000.0;
+        double coolantBuckets = host.getDesiredCooling() * InsaneConfig.COMMON.PENROSE_COOLANT_MB_PER_MK.get() / 1000.0;
 
         setTextContent("cooling", Component.translatable(LangDefs.PENROSE_VENT_COOLING.getTranslationKey(),
                 Utils.shortenNumber(host.getDesiredCooling())));

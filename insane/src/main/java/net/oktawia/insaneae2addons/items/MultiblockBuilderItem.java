@@ -1,15 +1,11 @@
 package net.oktawia.insaneae2addons.items;
 
-import appeng.api.config.Actionable;
-import appeng.api.features.IGridLinkableHandler;
-import appeng.api.implementations.blockentities.IWirelessAccessPoint;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.storage.MEStorage;
-import appeng.items.AEBaseItem;
-import appeng.util.Platform;
+import java.util.List;
+
 import com.mojang.datafixers.util.Pair;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,16 +27,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.api.config.Actionable;
+import appeng.api.features.IGridLinkableHandler;
+import appeng.api.implementations.blockentities.IWirelessAccessPoint;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.MEStorage;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerBE;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition.PatternEntry;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition.SymbolDef;
 import net.oktawia.insaneae2addons.defs.LangDefs;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MultiblockBuilderItem extends AEBaseItem {
 
@@ -173,8 +175,8 @@ public class MultiblockBuilderItem extends AEBaseItem {
 
     @Nullable
     private static BlockState pickAndConsume(AbstractMultiblockControllerBE controller, PatternEntry entry,
-                                             SymbolDef symbol, Player player, @Nullable MEStorage meInventory,
-                                             IActionSource source) {
+            SymbolDef symbol, Player player, @Nullable MEStorage meInventory,
+            IActionSource source) {
         List<Block> candidates = symbol.blocks();
         for (int i = 0; i < candidates.size(); i++) {
             Item item = candidates.get(i).asItem();
@@ -189,7 +191,7 @@ public class MultiblockBuilderItem extends AEBaseItem {
     }
 
     private static boolean consumeOne(Player player, @Nullable MEStorage meInventory, IActionSource source,
-                                      Item item) {
+            Item item) {
         Inventory inventory = player.getInventory();
         for (int slot = 0; slot < 36; slot++) {
             ItemStack slotStack = inventory.getItem(slot);

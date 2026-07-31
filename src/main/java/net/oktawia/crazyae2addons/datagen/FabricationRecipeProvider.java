@@ -1,16 +1,18 @@
 package net.oktawia.crazyae2addons.datagen;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.defs.recipes.FabricationRecipes;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+
+import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.defs.recipes.FabricationRecipes;
 
 public class FabricationRecipeProvider implements DataProvider {
 
@@ -60,7 +62,6 @@ public class FabricationRecipeProvider implements DataProvider {
                 fluidOutputObj.addProperty("amount", recipe.fluidOutput().amount());
                 json.add("fluid_output", fluidOutputObj);
             }
-
 
             var path = pathResolver.json(CrazyAddons.makeId(recipe.id()));
             futures.add(DataProvider.saveStable(cache, json, path));

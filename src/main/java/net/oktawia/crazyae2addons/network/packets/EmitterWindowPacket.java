@@ -1,24 +1,25 @@
 package net.oktawia.crazyae2addons.network.packets;
 
-import appeng.api.stacks.GenericStack;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
+
+import appeng.api.stacks.GenericStack;
+
 import net.oktawia.crazyae2addons.client.screens.part.EmitterTerminalScreen;
 import net.oktawia.crazyae2addons.menus.part.EmitterTerminalMenu;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public record EmitterWindowPacket(
         int totalCount,
         int windowOffset,
         int revision,
-        List<EmitterTerminalMenu.StorageEmitterInfo> window
-) {
+        List<EmitterTerminalMenu.StorageEmitterInfo> window) {
 
     public static void encode(EmitterWindowPacket pkt, FriendlyByteBuf buf) {
         buf.writeVarInt(pkt.totalCount);

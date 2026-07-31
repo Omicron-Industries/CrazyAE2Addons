@@ -1,15 +1,16 @@
 package net.oktawia.insaneae2addons.client.renderer.preview.builder;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.oktawia.insaneae2addons.logic.autobuilder.BuilderCoordMath;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import net.oktawia.insaneae2addons.logic.autobuilder.BuilderCoordMath;
 
 class AutoBuilderPreviewStateCache {
     private static final Map<String, BlockState> CACHE = new ConcurrentHashMap<>();

@@ -1,10 +1,8 @@
 package net.oktawia.insaneae2addons.items.mobstorage;
 
-import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.items.AEBaseItem;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocators;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -12,10 +10,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.items.AEBaseItem;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.mobstorage.MobKeySelectorHost;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class MobKeySelectorItem extends AEBaseItem implements IMenuItem {
     public static final String NBT_MOBKEY = "mob_key";
@@ -25,9 +28,11 @@ public class MobKeySelectorItem extends AEBaseItem implements IMenuItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player,
+            @NotNull InteractionHand hand) {
         if (!level.isClientSide() && !player.isSecondaryUseActive()) {
-            MenuOpener.open(InsaneMenuRegistrar.MOB_KEY_SELECTOR_MENU.get(), player, MenuLocators.forHand(player, hand));
+            MenuOpener.open(InsaneMenuRegistrar.MOB_KEY_SELECTOR_MENU.get(), player,
+                    MenuLocators.forHand(player, hand));
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }

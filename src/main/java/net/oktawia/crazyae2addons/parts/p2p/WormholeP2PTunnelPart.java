@@ -1,5 +1,27 @@
 package net.oktawia.crazyae2addons.parts.p2p;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.function.Function;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+
+import lombok.Getter;
+
 import appeng.api.config.PowerUnits;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -18,36 +40,21 @@ import appeng.items.parts.PartModels;
 import appeng.parts.p2p.P2PModels;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.SettingsFrom;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.logic.wormhole.WormholeP2PCapabilityProxy;
 import net.oktawia.crazyae2addons.logic.wormhole.WormholeP2PConnectionManager;
 import net.oktawia.crazyae2addons.logic.wormhole.WormholeP2PInteractionLogic;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.function.Function;
-
-public class WormholeP2PTunnelPart extends P2PTunnelPart<WormholeP2PTunnelPart> implements IGridTickable, ICapabilityProvider {
+public class WormholeP2PTunnelPart extends P2PTunnelPart<WormholeP2PTunnelPart>
+        implements IGridTickable, ICapabilityProvider {
 
     public interface WormholeCapabilityExtension {
         boolean handles(Capability<?> cap);
+
         <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side);
+
         void onRemoveFromWorld();
     }
 
@@ -92,8 +99,8 @@ public class WormholeP2PTunnelPart extends P2PTunnelPart<WormholeP2PTunnelPart> 
         this.getMainNode()
                 .setFlags(
                         GridFlags.REQUIRE_CHANNEL,
-                        CrazyConfig.COMMON.WORMHOLE_NESTED_P2PS_ENABLED.get() ? GridFlags.DENSE_CAPACITY : GridFlags.COMPRESSED_CHANNEL
-                )
+                        CrazyConfig.COMMON.WORMHOLE_NESTED_P2PS_ENABLED.get() ? GridFlags.DENSE_CAPACITY
+                                : GridFlags.COMPRESSED_CHANNEL)
                 .addService(IGridTickable.class, this);
     }
 

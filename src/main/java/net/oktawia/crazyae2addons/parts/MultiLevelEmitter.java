@@ -1,5 +1,30 @@
 package net.oktawia.crazyae2addons.parts;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+
+import com.lowdragmc.lowdraglib.syncdata.IManaged;
+import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.accessor.IManagedAccessor;
+import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import lombok.Getter;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -25,30 +50,10 @@ import appeng.parts.PartModel;
 import appeng.parts.automation.AbstractLevelEmitterPart;
 import appeng.util.ConfigInventory;
 import appeng.util.SettingsFrom;
-import com.lowdragmc.lowdraglib.syncdata.IManaged;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.accessor.IManagedAccessor;
-import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import lombok.Getter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
 
 public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConfigInvHost, ICraftingProvider {
 
@@ -71,38 +76,32 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
     @PartModels
     public static final PartModel MODEL_OFF_OFF = new PartModel(
             CrazyAddons.makeId("part/multi_storage_level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_off")
-    );
+            AppEng.makeId("part/level_emitter_status_off"));
 
     @PartModels
     public static final PartModel MODEL_OFF_ON = new PartModel(
             CrazyAddons.makeId("part/multi_storage_level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_on")
-    );
+            AppEng.makeId("part/level_emitter_status_on"));
 
     @PartModels
     public static final PartModel MODEL_OFF_HAS_CHANNEL = new PartModel(
             CrazyAddons.makeId("part/multi_storage_level_emitter_base_off"),
-            AppEng.makeId("part/level_emitter_status_has_channel")
-    );
+            AppEng.makeId("part/level_emitter_status_has_channel"));
 
     @PartModels
     public static final PartModel MODEL_ON_OFF = new PartModel(
             CrazyAddons.makeId("part/multi_storage_level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_off")
-    );
+            AppEng.makeId("part/level_emitter_status_off"));
 
     @PartModels
     public static final PartModel MODEL_ON_ON = new PartModel(
             CrazyAddons.makeId("part/multi_storage_level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_on")
-    );
+            AppEng.makeId("part/level_emitter_status_on"));
 
     @PartModels
     public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel(
             CrazyAddons.makeId("part/multi_storage_level_emitter_base_on"),
-            AppEng.makeId("part/level_emitter_status_has_channel")
-    );
+            AppEng.makeId("part/level_emitter_status_has_channel"));
 
     @Getter
     private final PartState state = new PartState(this);
@@ -696,8 +695,7 @@ public class MultiLevelEmitter extends AbstractLevelEmitterPart implements IConf
             CompoundTag tag,
             String key,
             Class<E> enumClass,
-            Consumer<E> consumer
-    ) {
+            Consumer<E> consumer) {
         if (!tag.contains(key, Tag.TAG_STRING)) {
             return;
         }

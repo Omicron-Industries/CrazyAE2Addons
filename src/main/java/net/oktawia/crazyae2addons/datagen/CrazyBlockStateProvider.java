@@ -4,6 +4,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 
@@ -14,10 +15,9 @@ public class CrazyBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        for (var block : CrazyBlockRegistrar.getBlocks()){
+        for (var block : CrazyBlockRegistrar.getBlocks()) {
             if (block != CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get()
-                    && block != CrazyBlockRegistrar.EJECTOR_BLOCK.get()
-            ){
+                    && block != CrazyBlockRegistrar.EJECTOR_BLOCK.get()) {
                 simpleBlockWithItem(block);
             }
         }

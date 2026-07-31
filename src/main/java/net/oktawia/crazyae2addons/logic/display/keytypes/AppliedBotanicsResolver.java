@@ -1,11 +1,14 @@
 package net.oktawia.crazyae2addons.logic.display.keytypes;
 
-import appbot.ae2.ManaKey;
-import appeng.api.stacks.AEKey;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+
+import appbot.ae2.ManaKey;
+
+import appeng.api.stacks.AEKey;
 
 public class AppliedBotanicsResolver implements IDisplayKeyResolver {
 

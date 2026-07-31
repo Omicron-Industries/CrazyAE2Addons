@@ -5,13 +5,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 
-@Mod.EventBusSubscriber(
-        modid = CrazyAddons.MODID,
-        bus = Mod.EventBusSubscriber.Bus.MOD,
-        value = Dist.CLIENT
-)
+@Mod.EventBusSubscriber(modid = CrazyAddons.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class PreviewGuiLayers {
 
     private PreviewGuiLayers() {
@@ -24,8 +21,7 @@ public final class PreviewGuiLayers {
             PreviewTooltipLayer.render(
                     guiGraphics,
                     mc.getWindow().getGuiScaledWidth(),
-                    mc.getWindow().getGuiScaledHeight()
-            );
+                    mc.getWindow().getGuiScaledHeight());
         });
     }
 }

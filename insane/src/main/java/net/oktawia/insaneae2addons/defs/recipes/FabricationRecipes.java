@@ -1,15 +1,18 @@
 package net.oktawia.insaneae2addons.defs.recipes;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 public class FabricationRecipes {
 
-    public record InputEntry(String item, int count) {}
-    public record FluidEntry(String fluid, int amount) {}
+    public record InputEntry(String item, int count) {
+    }
+
+    public record FluidEntry(String fluid, int amount) {
+    }
 
     public record RecipeDef(
             String id,
@@ -18,8 +21,8 @@ public class FabricationRecipes {
             int outputCount,
             @Nullable FluidEntry fluidInput,
             @Nullable FluidEntry fluidOutput,
-            @Nullable String requiredKey
-    ) {}
+            @Nullable String requiredKey) {
+    }
 
     private static final List<RecipeDef> RECIPES = new ArrayList<>();
 
@@ -139,7 +142,8 @@ public class FabricationRecipes {
         }
 
         public void register() {
-            RECIPES.add(new RecipeDef(id, List.copyOf(inputs), outputItem, outputCount, fluidInput, fluidOutput, requiredKey));
+            RECIPES.add(new RecipeDef(id, List.copyOf(inputs), outputItem, outputCount, fluidInput, fluidOutput,
+                    requiredKey));
         }
     }
 }

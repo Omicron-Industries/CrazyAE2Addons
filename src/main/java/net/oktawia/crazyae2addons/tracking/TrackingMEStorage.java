@@ -1,5 +1,13 @@
 package net.oktawia.crazyae2addons.tracking;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.IActionSource;
@@ -8,13 +16,6 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.hooks.ticking.TickHandler;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class TrackingMEStorage implements MEStorage {
 
@@ -30,12 +31,14 @@ public class TrackingMEStorage implements MEStorage {
     private final Set<AEKey> replenishedKeys = new HashSet<>();
     private long replenishedKeysTick = -1L;
 
-    public TrackingMEStorage(MEStorage delegate, IGrid grid, InterfaceLogicHost interfaceHost, Level level, BlockPos interfacePos) {
+    public TrackingMEStorage(MEStorage delegate, IGrid grid, InterfaceLogicHost interfaceHost, Level level,
+            BlockPos interfacePos) {
         this.delegate = delegate;
         this.grid = grid;
         this.interfaceHost = interfaceHost;
         this.target = UsageTarget.interfaceAt(GlobalPos.of(level.dimension(), interfacePos.immutable()));
-        this.description = "interface at " + interfacePos.getX() + " " + interfacePos.getY() + " " + interfacePos.getZ();
+        this.description = "interface at " + interfacePos.getX() + " " + interfacePos.getY() + " "
+                + interfacePos.getZ();
     }
 
     @Override
@@ -89,7 +92,8 @@ public class TrackingMEStorage implements MEStorage {
             var config = interfaceHost.getConfig();
             for (int i = 0; i < config.size(); i++) {
                 AEKey key = config.getKey(i);
-                if (key != null) replenishedKeys.add(key);
+                if (key != null)
+                    replenishedKeys.add(key);
             }
         }
         return replenishedKeys.contains(what);

@@ -1,9 +1,11 @@
 package net.oktawia.insaneae2addons.menus.part;
 
-import appeng.core.definitions.AEItems;
-import appeng.menu.implementations.UpgradeableMenu;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+
+import appeng.core.definitions.AEItems;
+import appeng.menu.implementations.UpgradeableMenu;
+
 import net.oktawia.insaneae2addons.parts.mobstorage.MobFormationPlanePart;
 
 public class MobFormationPlaneMenu extends UpgradeableMenu<MobFormationPlanePart> {

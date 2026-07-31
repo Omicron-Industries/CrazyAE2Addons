@@ -1,18 +1,16 @@
 package net.oktawia.crazyae2addons;
 
-import appeng.api.features.GridLinkables;
-import appeng.api.networking.GridServices;
-import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
-import net.oktawia.crazyae2addons.tracking.ResourceTrackingService;
-import appeng.items.tools.powered.WirelessTerminalItem;
+import java.util.Objects;
+
 import com.mojang.logging.LogUtils;
-import de.mari_023.ae2wtlib.terminal.IUniversalWirelessTerminalItem;
-import de.mari_023.ae2wtlib.wut.WUTHandler;
+
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -24,12 +22,18 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
+
+import de.mari_023.ae2wtlib.terminal.IUniversalWirelessTerminalItem;
+import de.mari_023.ae2wtlib.wut.WUTHandler;
+
+import appeng.api.features.GridLinkables;
+import appeng.api.networking.GridServices;
+import appeng.items.tools.powered.WirelessTerminalItem;
+
 import net.oktawia.crazyae2addons.client.screens.CrazyConfigScreen;
 import net.oktawia.crazyae2addons.compat.CC.CCCompat;
-import net.oktawia.crazyae2addons.logic.wormhole.extensions.GTWormholeCapabilityExtension;
-import net.oktawia.crazyae2addons.parts.p2p.WormholeP2PTunnelPart;
-import net.oktawia.crazyae2addons.defs.Screens;
 import net.oktawia.crazyae2addons.defs.CrazyFeatureGates;
+import net.oktawia.crazyae2addons.defs.Screens;
 import net.oktawia.crazyae2addons.defs.UpgradeCards;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
@@ -40,14 +44,14 @@ import net.oktawia.crazyae2addons.defs.regs.CrazyRecipes;
 import net.oktawia.crazyae2addons.logic.wireless.WirelessEmitterTerminalItemLogicHost;
 import net.oktawia.crazyae2addons.logic.wireless.WirelessNotificationTerminalItemLogicHost;
 import net.oktawia.crazyae2addons.logic.wireless.WirelessRedstoneTerminalItemLogicHost;
+import net.oktawia.crazyae2addons.logic.wormhole.extensions.GTWormholeCapabilityExtension;
 import net.oktawia.crazyae2addons.menus.item.WirelessEmitterTerminalMenu;
 import net.oktawia.crazyae2addons.menus.item.WirelessNotificationTerminalMenu;
 import net.oktawia.crazyae2addons.menus.item.WirelessRedstoneTerminalMenu;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-
-import java.util.Objects;
+import net.oktawia.crazyae2addons.parts.p2p.WormholeP2PTunnelPart;
+import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
+import net.oktawia.crazyae2addons.tracking.ResourceTrackingService;
 
 @Mod(CrazyAddons.MODID)
 public class CrazyAddons {
@@ -75,24 +79,24 @@ public class CrazyAddons {
 
         modEventBus.addListener(this::registerCreativeTab);
 
-
         modEventBus.addListener((RegisterEvent event) -> {
             if (event.getRegistryKey().equals(ForgeRegistries.ITEMS.getRegistryKey())) {
                 CrazyItemRegistrar.registerPartModels();
 
-                GridLinkables.register(CrazyItemRegistrar.WIRELESS_NOTIFICATION_TERMINAL.get(), WirelessTerminalItem.LINKABLE_HANDLER);
+                GridLinkables.register(CrazyItemRegistrar.WIRELESS_NOTIFICATION_TERMINAL.get(),
+                        WirelessTerminalItem.LINKABLE_HANDLER);
                 IUniversalWirelessTerminalItem notifTerm = CrazyItemRegistrar.WIRELESS_NOTIFICATION_TERMINAL.get();
                 Objects.requireNonNull(notifTerm);
                 WUTHandler.addTerminal("wireless_notification_terminal",
-                    notifTerm::tryOpen,
-                    WirelessNotificationTerminalItemLogicHost::new,
-                    WirelessNotificationTerminalMenu.TYPE,
-                    notifTerm,
-                    "wireless_notification_terminal",
-                    "item.crazyae2addons.wireless_notification_terminal"
-                );
+                        notifTerm::tryOpen,
+                        WirelessNotificationTerminalItemLogicHost::new,
+                        WirelessNotificationTerminalMenu.TYPE,
+                        notifTerm,
+                        "wireless_notification_terminal",
+                        "item.crazyae2addons.wireless_notification_terminal");
 
-                GridLinkables.register(CrazyItemRegistrar.WIRELESS_EMITTER_TERMINAL.get(), WirelessTerminalItem.LINKABLE_HANDLER);
+                GridLinkables.register(CrazyItemRegistrar.WIRELESS_EMITTER_TERMINAL.get(),
+                        WirelessTerminalItem.LINKABLE_HANDLER);
                 IUniversalWirelessTerminalItem emitterTerm = CrazyItemRegistrar.WIRELESS_EMITTER_TERMINAL.get();
                 Objects.requireNonNull(emitterTerm);
                 WUTHandler.addTerminal("wireless_emitter_terminal",
@@ -101,10 +105,10 @@ public class CrazyAddons {
                         WirelessEmitterTerminalMenu.TYPE,
                         emitterTerm,
                         "wireless_emitter_terminal",
-                        "item.crazyae2addons.wireless_emitter_terminal"
-                );
+                        "item.crazyae2addons.wireless_emitter_terminal");
 
-                GridLinkables.register(CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get(), WirelessTerminalItem.LINKABLE_HANDLER);
+                GridLinkables.register(CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get(),
+                        WirelessTerminalItem.LINKABLE_HANDLER);
                 IUniversalWirelessTerminalItem redstoneTerm = CrazyItemRegistrar.WIRELESS_REDSTONE_TERMINAL.get();
                 Objects.requireNonNull(redstoneTerm);
                 WUTHandler.addTerminal("wireless_redstone_terminal",
@@ -113,8 +117,7 @@ public class CrazyAddons {
                         WirelessRedstoneTerminalMenu.TYPE,
                         redstoneTerm,
                         "wireless_redstone_terminal",
-                        "item.crazyae2addons.wireless_redstone_terminal"
-                );
+                        "item.crazyae2addons.wireless_redstone_terminal");
             }
         });
     }
@@ -128,8 +131,7 @@ public class CrazyAddons {
             evt.register(
                     Registries.CREATIVE_MODE_TAB,
                     CrazyCreativeTabRegistrar.ID,
-                    () -> CrazyCreativeTabRegistrar.TAB
-            );
+                    () -> CrazyCreativeTabRegistrar.TAB);
         }
     }
 
@@ -149,18 +151,14 @@ public class CrazyAddons {
         });
     }
 
-    @Mod.EventBusSubscriber(
-            modid = CrazyAddons.MODID,
-            bus = Mod.EventBusSubscriber.Bus.MOD,
-            value = Dist.CLIENT
-    )
+    @Mod.EventBusSubscriber(modid = CrazyAddons.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             ModLoadingContext.get().registerExtensionPoint(
                     ConfigScreenHandler.ConfigScreenFactory.class,
-                    () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> CrazyConfigScreen.create(parent))
-            );
+                    () -> new ConfigScreenHandler.ConfigScreenFactory(
+                            (mc, parent) -> CrazyConfigScreen.create(parent)));
             Screens.register();
         }
     }

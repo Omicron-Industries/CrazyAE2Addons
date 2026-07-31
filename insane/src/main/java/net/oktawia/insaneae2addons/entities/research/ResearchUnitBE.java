@@ -1,16 +1,15 @@
 package net.oktawia.insaneae2addons.entities.research;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.ticking.TickRateModulation;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.LazyManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,24 +26,29 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import lombok.Getter;
+
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.ticking.TickRateModulation;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerBE;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
+import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.blocks.research.ICableMachine;
 import net.oktawia.insaneae2addons.blocks.research.ResearchUnitBlock;
 import net.oktawia.insaneae2addons.blocks.research.ResearchUnitFrameBlock;
+import net.oktawia.insaneae2addons.defs.InsaneMultiblocks;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneFluidRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
 import net.oktawia.insaneae2addons.menus.block.ResearchUnitMenu;
-import net.oktawia.insaneae2addons.defs.InsaneMultiblocks;
-import net.oktawia.insaneae2addons.InsaneConfig;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 
 public class ResearchUnitBE extends AbstractMultiblockControllerBE implements ICableMachine {
 
@@ -59,12 +63,10 @@ public class ResearchUnitBE extends AbstractMultiblockControllerBE implements IC
         return InsaneConfig.COMMON.RESEARCH_UNIT_POWER_BUFFER.get();
     }
 
-    private static final Predicate<FluidStack> RESEARCH_FLUID_ONLY = stack ->
-            !stack.isEmpty()
-                    && stack.getFluid().getFluidType() == InsaneFluidRegistrar.RESEARCH_FLUID.type().get();
+    private static final Predicate<FluidStack> RESEARCH_FLUID_ONLY = stack -> !stack.isEmpty()
+            && stack.getFluid().getFluidType() == InsaneFluidRegistrar.RESEARCH_FLUID.type().get();
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(ResearchUnitBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ResearchUnitBE.class);
 
     @DescSynced
     @Getter
@@ -86,8 +88,7 @@ public class ResearchUnitBE extends AbstractMultiblockControllerBE implements IC
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.RESEARCH_UNIT_BLOCK.get()),
-                1.0F
-        );
+                1.0F);
     }
 
     @Override

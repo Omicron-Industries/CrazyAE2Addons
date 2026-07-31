@@ -1,8 +1,10 @@
 package net.oktawia.crazyae2addons.tracking;
 
-import appeng.api.stacks.AEKey;
-import net.minecraft.core.GlobalPos;
 import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.GlobalPos;
+
+import appeng.api.stacks.AEKey;
 
 public record UsageTarget(UsageType type, @Nullable AEKey output, @Nullable GlobalPos pos) {
 

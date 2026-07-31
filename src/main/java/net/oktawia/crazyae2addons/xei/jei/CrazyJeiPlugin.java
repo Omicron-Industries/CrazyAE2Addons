@@ -1,5 +1,16 @@
 package net.oktawia.crazyae2addons.xei.jei;
 
+import java.util.List;
+
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.level.ItemLike;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -9,22 +20,13 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.level.ItemLike;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.client.screens.part.DisplayScreen;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.util.FeatureGates;
 import net.oktawia.crazyae2addons.xei.common.CrazyRecipes;
-
-import java.util.List;
 
 @JeiPlugin
 public class CrazyJeiPlugin implements IModPlugin {
@@ -42,12 +44,11 @@ public class CrazyJeiPlugin implements IModPlugin {
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGuiContainerHandler(
                 (Class) DisplayScreen.class,
-                new DisplayScreenGuiHandler()
-        );
+                new DisplayScreenGuiHandler());
     }
 
     @Override
@@ -64,21 +65,19 @@ public class CrazyJeiPlugin implements IModPlugin {
                         CrazyItemRegistrar.CRAZY_PATTERN_PROVIDER_PART.get()),
                 providerConversion("crazy_provider_to_block",
                         CrazyItemRegistrar.CRAZY_PATTERN_PROVIDER_PART.get(),
-                        CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get())
-        ));
+                        CrazyBlockRegistrar.CRAZY_PATTERN_PROVIDER_BLOCK.get())));
 
-        FeatureGates.forEachDisabled(CrazyAddons.MODID, item -> registration.getIngredientManager().removeIngredientsAtRuntime(
-                VanillaTypes.ITEM_STACK,
-                List.of(new ItemStack(item))
-        ));
+        FeatureGates.forEachDisabled(CrazyAddons.MODID,
+                item -> registration.getIngredientManager().removeIngredientsAtRuntime(
+                        VanillaTypes.ITEM_STACK,
+                        List.of(new ItemStack(item))));
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(
                 CrazyBlockRegistrar.RECIPE_FABRICATOR_BLOCK.get(),
-                FabricationCategory.TYPE
-        );
+                FabricationCategory.TYPE);
     }
 
     private static ShapelessRecipe providerConversion(String id, ItemLike input, ItemLike output) {
@@ -87,8 +86,7 @@ public class CrazyJeiPlugin implements IModPlugin {
                 "",
                 CraftingBookCategory.MISC,
                 new ItemStack(output),
-                NonNullList.of(Ingredient.EMPTY, Ingredient.of(input))
-        );
+                NonNullList.of(Ingredient.EMPTY, Ingredient.of(input)));
     }
 
     private static final class DisplayScreenGuiHandler<T extends DisplayScreen<?>>

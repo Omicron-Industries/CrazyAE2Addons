@@ -2,6 +2,7 @@ package net.oktawia.insaneae2addons.client.screens;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
 

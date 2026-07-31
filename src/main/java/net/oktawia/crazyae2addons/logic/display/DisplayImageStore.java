@@ -1,14 +1,15 @@
 package net.oktawia.crazyae2addons.logic.display;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class DisplayImageStore extends SavedData {
 
@@ -24,8 +25,7 @@ public class DisplayImageStore extends SavedData {
         return overworld.getDataStorage().computeIfAbsent(
                 DisplayImageStore::load,
                 DisplayImageStore::new,
-                NAME
-        );
+                NAME);
     }
 
     @Nullable

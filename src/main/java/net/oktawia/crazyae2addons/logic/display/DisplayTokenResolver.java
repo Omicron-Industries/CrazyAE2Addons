@@ -1,23 +1,5 @@
 package net.oktawia.crazyae2addons.logic.display;
 
-import appeng.api.networking.storage.IStorageService;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.material.Fluids;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.entities.DisplayDatabaseBE;
-import net.oktawia.crazyae2addons.logic.display.keytypes.DisplayKeyCompatRegistry;
-import net.oktawia.crazyae2addons.network.NetworkHandler;
-import net.oktawia.crazyae2addons.network.packets.DisplaySyncPacket;
-import net.oktawia.crazyae2addons.parts.Display;
-import net.oktawia.crazyae2addons.util.TagMatcher;
-import org.jetbrains.annotations.Nullable;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -32,30 +14,48 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluids;
+
+import appeng.api.networking.storage.IStorageService;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+
+import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.entities.DisplayDatabaseBE;
+import net.oktawia.crazyae2addons.logic.display.keytypes.DisplayKeyCompatRegistry;
+import net.oktawia.crazyae2addons.network.NetworkHandler;
+import net.oktawia.crazyae2addons.network.packets.DisplaySyncPacket;
+import net.oktawia.crazyae2addons.parts.Display;
+import net.oktawia.crazyae2addons.util.TagMatcher;
+
 public final class DisplayTokenResolver {
 
     private static final long MAX_RATE_WINDOW_TICKS = 20L * 60L * 30L;
 
-    private static final Pattern SERVER_STOCK_TOKEN =
-            Pattern.compile("&(s\\^(?:tag\\{[^}]*\\}|[\\w:]+)(?:%\\d+)?)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SERVER_STOCK_TOKEN = Pattern.compile("&(s\\^(?:tag\\{[^}]*\\}|[\\w:]+)(?:%\\d+)?)",
+            Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern SERVER_DELTA_TOKEN =
-            Pattern.compile("&(d\\^(?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+)(?:%\\d+[tsm])?@\\d+[tsm])", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SERVER_DELTA_TOKEN = Pattern
+            .compile("&(d\\^(?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+)(?:%\\d+[tsm])?@\\d+[tsm])", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern SERVER_DATABASE_TOKEN = Pattern.compile(
             "&(?![sdi]\\^)(?![cb][0-9a-f]{6}\\b)(?!nl\\b)(?!tag\\{)([a-z0-9_]+)",
-            Pattern.CASE_INSENSITIVE
-    );
+            Pattern.CASE_INSENSITIVE);
 
     private static final Pattern DATABASE_KEY_PATTERN = Pattern.compile(
             "^(?!nl$)[a-z0-9_]+$",
-            Pattern.CASE_INSENSITIVE
-    );
+            Pattern.CASE_INSENSITIVE);
 
     private static final Pattern DELTA_PARSE = Pattern.compile(
             "^d\\^((?:tag\\{[^}]*\\}|[a-z0-9_\\.:]+))(?:%(\\d+)([tsm]))?@([0-9]+)([tsm])$",
-            Pattern.CASE_INSENSITIVE
-    );
+            Pattern.CASE_INSENSITIVE);
 
     private static final Map<String, TagMatcher.Compiled> COMPILED_CACHE = new HashMap<>();
 
@@ -71,8 +71,7 @@ public final class DisplayTokenResolver {
     private record DatabaseResolveResult(
             String expandedText,
             Map<String, String> resolved,
-            Set<String> liveKeys
-    ) {
+            Set<String> liveKeys) {
     }
 
     public static void recomputeVariablesAndNotify(Display part) {
@@ -232,18 +231,15 @@ public final class DisplayTokenResolver {
             part.resolvedTokens.put(tokenKey, out);
         }
 
-        part.resolvedTokens.keySet().removeIf(k ->
-                (k.startsWith("s^") || k.startsWith("d^") || isDatabaseTokenKey(k))
-                        && !liveKeys.contains(k)
-        );
+        part.resolvedTokens.keySet().removeIf(k -> (k.startsWith("s^") || k.startsWith("d^") || isDatabaseTokenKey(k))
+                && !liveKeys.contains(k));
 
         String packed = packResolvedTokens(part.resolvedTokens);
 
         var be = part.getBlockEntity();
         NetworkHandler.sendToTrackingChunk(
                 level.getChunkAt(be.getBlockPos()),
-                new DisplaySyncPacket(be.getBlockPos(), part.getSide(), packed)
-        );
+                new DisplaySyncPacket(be.getBlockPos(), part.getSide(), packed));
     }
 
     private static DatabaseResolveResult resolveDatabaseTokensServerSide(Display part, String input) {

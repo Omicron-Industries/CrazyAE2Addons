@@ -1,13 +1,18 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.storage.StorageCells;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -29,12 +34,20 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import lombok.Getter;
+
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.StorageCells;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerBE;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
 import net.oktawia.crazyae2addons.multiblock.MultiblockState;
 import net.oktawia.insaneae2addons.InsaneConfig;
-import net.oktawia.insaneae2addons.blocks.penrose.PortablePenroseSphereControllerBlock;
 import net.oktawia.insaneae2addons.blocks.penrose.PenroseFrameBlock;
+import net.oktawia.insaneae2addons.blocks.penrose.PortablePenroseSphereControllerBlock;
 import net.oktawia.insaneae2addons.defs.InsaneMultiblocks;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
@@ -47,14 +60,6 @@ import net.oktawia.insaneae2addons.logic.penrose.AccretionDisk;
 import net.oktawia.insaneae2addons.logic.penrose.PenroseCurves;
 import net.oktawia.insaneae2addons.logic.penrose.PenroseEnergyExport;
 import net.oktawia.insaneae2addons.menus.block.PortablePenroseSphereControllerMenu;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class PortablePenroseSphereControllerBE extends AbstractMultiblockControllerBE {
 
@@ -66,8 +71,8 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
     public static final String ISSUE_VENTS = "V";
     public static final String ISSUE_MISSING = "M";
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(PortablePenroseSphereControllerBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            PortablePenroseSphereControllerBE.class);
 
     @Persisted
     @DescSynced
@@ -156,8 +161,7 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.PORTABLE_PENROSE_SPHERE_CONTROLLER_BLOCK.get()),
-                2.0F
-        );
+                2.0F);
     }
 
     @Override
@@ -197,7 +201,8 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
 
             int hawkingVents = this.multiblockState.countRegisteredCallbacks(PenroseHawkingVentBE.class);
             if (hawkingVents > MAX_VENTS_PER_TYPE) {
-                out.add(ISSUE_VENTS + "|" + InsaneBlockRegistrar.PENROSE_HAWKING_VENT_BLOCK.getId() + "|" + hawkingVents);
+                out.add(ISSUE_VENTS + "|" + InsaneBlockRegistrar.PENROSE_HAWKING_VENT_BLOCK.getId() + "|"
+                        + hawkingVents);
             }
 
             for (MultiblockState.MissingGroup group : this.multiblockState.collectMissingEntries(level)) {
@@ -393,10 +398,10 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
             this.pendingEvaporation = 0L;
         }
 
-        List<PenroseHeatVentBE> vents =
-                ioEnabled ? livePeripherals(PenroseHeatVentBE.class) : List.<PenroseHeatVentBE>of();
-        List<PenroseHawkingVentBE> hawkingVents =
-                ioEnabled ? livePeripherals(PenroseHawkingVentBE.class) : List.<PenroseHawkingVentBE>of();
+        List<PenroseHeatVentBE> vents = ioEnabled ? livePeripherals(PenroseHeatVentBE.class)
+                : List.<PenroseHeatVentBE>of();
+        List<PenroseHawkingVentBE> hawkingVents = ioEnabled ? livePeripherals(PenroseHawkingVentBE.class)
+                : List.<PenroseHawkingVentBE>of();
 
         if (ioEnabled) {
             if (isVentingLocked()) {
@@ -420,7 +425,8 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
 
             int feed = 0;
             if (ioEnabled && !isVentingLocked()) {
-                feed = Math.min(Math.max(0, InsaneConfig.COMMON.PENROSE_MAX_FEED_PER_TICK.get()), this.pendingFeedSingu);
+                feed = Math.min(Math.max(0, InsaneConfig.COMMON.PENROSE_MAX_FEED_PER_TICK.get()),
+                        this.pendingFeedSingu);
                 this.pendingFeedSingu -= feed;
             } else {
                 this.pendingFeedSingu = 0;
@@ -788,7 +794,8 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
         BlockState state = getBlockState();
         if (state.hasProperty(PortablePenroseSphereControllerBlock.FORMED)
                 && state.getValue(PortablePenroseSphereControllerBlock.FORMED) != formed) {
-            level.setBlock(getBlockPos(), state.setValue(PortablePenroseSphereControllerBlock.FORMED, formed), Block.UPDATE_CLIENTS);
+            level.setBlock(getBlockPos(), state.setValue(PortablePenroseSphereControllerBlock.FORMED, formed),
+                    Block.UPDATE_CLIENTS);
         }
     }
 

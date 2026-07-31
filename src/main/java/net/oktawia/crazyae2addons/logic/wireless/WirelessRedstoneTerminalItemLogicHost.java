@@ -1,24 +1,28 @@
 package net.oktawia.crazyae2addons.logic.wireless;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import de.mari_023.ae2wtlib.terminal.ItemWT;
+import de.mari_023.ae2wtlib.terminal.WTMenuHost;
+
 import appeng.api.networking.IGrid;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.menu.ISubMenu;
-import de.mari_023.ae2wtlib.terminal.ItemWT;
-import de.mari_023.ae2wtlib.terminal.WTMenuHost;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IRedstoneTerminalHost;
 import net.oktawia.crazyae2addons.menus.part.RedstoneTerminalMenu;
 import net.oktawia.crazyae2addons.parts.RedstoneEmitter;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.function.BiConsumer;
 
 public class WirelessRedstoneTerminalItemLogicHost extends WTMenuHost
         implements IUpgradeableObject, IRedstoneTerminalHost {
@@ -29,8 +33,7 @@ public class WirelessRedstoneTerminalItemLogicHost extends WTMenuHost
             Player player,
             @Nullable Integer slot,
             ItemStack itemStack,
-            BiConsumer<Player, ISubMenu> returnToMainMenu
-    ) {
+            BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(player, slot, itemStack, returnToMainMenu);
         this.readFromNbt();
     }
@@ -64,8 +67,7 @@ public class WirelessRedstoneTerminalItemLogicHost extends WTMenuHost
                 .map(emitter -> new RedstoneTerminalMenu.EmitterInfo(
                         emitter.getBlockEntity().getBlockPos(),
                         emitter.getNameId(),
-                        emitter.getState()
-                ))
+                        emitter.getState()))
                 .toList();
     }
 

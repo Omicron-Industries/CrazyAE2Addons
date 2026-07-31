@@ -1,10 +1,11 @@
 package net.oktawia.crazyae2addons.logic.display;
 
-import appeng.api.networking.IGrid;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.api.networking.IGrid;
 
 public final class DisplayDatabaseHelper {
 

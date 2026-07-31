@@ -1,14 +1,16 @@
 package net.oktawia.insaneae2addons.logic.autobuilder;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 
-import java.util.ArrayList;
-import java.util.List;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
+import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 
 public final class AutoBuilderPreviewOps {
 
@@ -123,8 +125,7 @@ public final class AutoBuilderPreviewOps {
             BlockPos localTotal = new BlockPos(
                     be.offset.getX() + localCursor.getX(),
                     be.offset.getY() + localCursor.getY(),
-                    be.offset.getZ() + localCursor.getZ()
-            );
+                    be.offset.getZ() + localCursor.getZ());
 
             newPositions.add(transformRelative(be, localTotal));
             indices.add(paletteIndex);

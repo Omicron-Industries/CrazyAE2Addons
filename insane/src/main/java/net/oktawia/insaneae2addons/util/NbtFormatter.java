@@ -4,7 +4,8 @@ public final class NbtFormatter {
 
     private static final String INDENT = "  ";
 
-    private NbtFormatter() {}
+    private NbtFormatter() {
+    }
 
     public static String format(String input) {
         if (input == null || input.isEmpty()) {

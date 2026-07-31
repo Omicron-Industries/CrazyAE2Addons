@@ -1,9 +1,11 @@
 package net.oktawia.insaneae2addons.client.renderer;
 
-import appeng.api.client.AEKeyRenderHandler;
-import appeng.api.client.AEKeyRendering;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
@@ -13,11 +15,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+
+import appeng.api.client.AEKeyRenderHandler;
+import appeng.api.client.AEKeyRendering;
+
 import net.oktawia.insaneae2addons.mobstorage.MobKey;
 import net.oktawia.insaneae2addons.mobstorage.MobKeyType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EntityTypeRenderer implements AEKeyRenderHandler<MobKey> {
 
@@ -87,7 +90,7 @@ public class EntityTypeRenderer implements AEKeyRenderHandler<MobKey> {
 
     @Override
     public void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, MobKey key,
-                                float scale, int combinedLight, Level level) {
+            float scale, int combinedLight, Level level) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {
             return;

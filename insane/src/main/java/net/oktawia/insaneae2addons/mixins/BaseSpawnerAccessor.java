@@ -1,10 +1,11 @@
 package net.oktawia.insaneae2addons.mixins;
 
-import net.minecraft.world.level.BaseSpawner;
-import net.minecraft.world.level.SpawnData;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.level.SpawnData;
 
 @Mixin(BaseSpawner.class)
 public interface BaseSpawnerAccessor {

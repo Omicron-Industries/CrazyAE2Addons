@@ -1,7 +1,12 @@
 package net.oktawia.crazyae2addons.client.misc;
 
-import com.lowdragmc.lowdraglib.gui.widget.HsbColorWidget;
 import java.util.function.IntConsumer;
+
+import com.lowdragmc.lowdraglib.gui.widget.HsbColorWidget;
+
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,8 +17,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
 public class LDLibColorSelectorAdapter extends AbstractWidget {
@@ -39,9 +42,12 @@ public class LDLibColorSelectorAdapter extends AbstractWidget {
     private int currentColor = 0xFFFFFFFF;
     private int lastCommittedColor = 0xFFFFFFFF;
 
-    private Runnable onOpen = () -> {};
-    private Runnable onClose = () -> {};
-    private IntConsumer onColorCommitted = color -> {};
+    private Runnable onOpen = () -> {
+    };
+    private Runnable onClose = () -> {
+    };
+    private IntConsumer onColorCommitted = color -> {
+    };
 
     private boolean pollingDragActive = false;
     private boolean changedSincePress = false;
@@ -77,17 +83,20 @@ public class LDLibColorSelectorAdapter extends AbstractWidget {
     }
 
     public LDLibColorSelectorAdapter setOnOpen(Runnable onOpen) {
-        this.onOpen = onOpen == null ? () -> {} : onOpen;
+        this.onOpen = onOpen == null ? () -> {
+        } : onOpen;
         return this;
     }
 
     public LDLibColorSelectorAdapter setOnClose(Runnable onClose) {
-        this.onClose = onClose == null ? () -> {} : onClose;
+        this.onClose = onClose == null ? () -> {
+        } : onClose;
         return this;
     }
 
     public LDLibColorSelectorAdapter setOnColorCommitted(IntConsumer consumer) {
-        this.onColorCommitted = consumer == null ? c -> {} : consumer;
+        this.onColorCommitted = consumer == null ? c -> {
+        } : consumer;
         return this;
     }
 
@@ -279,8 +288,10 @@ public class LDLibColorSelectorAdapter extends AbstractWidget {
         graphics.pose().pushPose();
         graphics.pose().translate(0.0F, 0.0F, POPUP_Z);
 
-        graphics.fill(this.popupX - 2, this.popupY - 2, this.popupX + POPUP_W + 2, this.popupY + POPUP_H + 2, 0xFF000000);
-        graphics.fill(this.popupX - 1, this.popupY - 1, this.popupX + POPUP_W + 1, this.popupY + POPUP_H + 1, 0xFF101010);
+        graphics.fill(this.popupX - 2, this.popupY - 2, this.popupX + POPUP_W + 2, this.popupY + POPUP_H + 2,
+                0xFF000000);
+        graphics.fill(this.popupX - 1, this.popupY - 1, this.popupX + POPUP_W + 1, this.popupY + POPUP_H + 1,
+                0xFF101010);
         graphics.fill(this.popupX, this.popupY, this.popupX + POPUP_W, this.popupY + POPUP_H, 0xFF2A2A2A);
 
         this.selector.drawInBackground(graphics, mouseX, mouseY, partialTick);
@@ -319,14 +330,12 @@ public class LDLibColorSelectorAdapter extends AbstractWidget {
 
         computePopupBounds(screen);
 
-        boolean screenChanged =
-                screen != this.lastScreen
-                        || screen.width != this.lastScreenWidth
-                        || screen.height != this.lastScreenHeight;
+        boolean screenChanged = screen != this.lastScreen
+                || screen.width != this.lastScreenWidth
+                || screen.height != this.lastScreenHeight;
 
-        boolean boundsChanged =
-                this.popupX != this.syncedPopupX
-                        || this.popupY != this.syncedPopupY;
+        boolean boundsChanged = this.popupX != this.syncedPopupX
+                || this.popupY != this.syncedPopupY;
 
         if (!screenChanged && !boundsChanged) {
             return;

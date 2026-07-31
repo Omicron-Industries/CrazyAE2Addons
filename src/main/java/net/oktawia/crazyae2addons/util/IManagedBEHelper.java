@@ -7,6 +7,7 @@ import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,9 +18,8 @@ public interface IManagedBEHelper extends IManaged, IAsyncAutoSyncBlockEntity, I
     static ManagedFieldHolder inheritedFieldHolder(Class<? extends IManaged> clazz) {
         ManagedFieldHolder holder = new ManagedFieldHolder(clazz);
 
-        for (Class<?> parent = clazz.getSuperclass();
-             parent != null && IManaged.class.isAssignableFrom(parent);
-             parent = parent.getSuperclass()) {
+        for (Class<?> parent = clazz.getSuperclass(); parent != null
+                && IManaged.class.isAssignableFrom(parent); parent = parent.getSuperclass()) {
             holder.merge(new ManagedFieldHolder(parent.asSubclass(IManaged.class)));
         }
 
@@ -46,8 +46,7 @@ public interface IManagedBEHelper extends IManaged, IAsyncAutoSyncBlockEntity, I
         if (tag.contains(MANAGED_TAG, Tag.TAG_COMPOUND)) {
             IManagedAccessor.writePersistedFields(
                     tag.getCompound(MANAGED_TAG),
-                    getSyncStorage().getPersistedFields()
-            );
+                    getSyncStorage().getPersistedFields());
         }
     }
 

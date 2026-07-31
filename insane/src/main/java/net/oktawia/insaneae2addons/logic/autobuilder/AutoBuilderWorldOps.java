@@ -1,15 +1,10 @@
 package net.oktawia.insaneae2addons.logic.autobuilder;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.StorageHelper;
-import appeng.core.definitions.AEItems;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -24,16 +19,23 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.StorageHelper;
+import appeng.core.definitions.AEItems;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderCreativeSupplyBE;
 import net.oktawia.insaneae2addons.util.ProgramExpander;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class AutoBuilderWorldOps {
 
@@ -126,10 +128,9 @@ public final class AutoBuilderWorldOps {
 
             switch (inst) {
                 case "F", "B", "L", "R", "U", "D" ->
-                        AutoBuilderPreviewOps.setGhostRenderPos(
-                                be,
-                                AutoBuilderPreviewOps.stepRelative(be, be.getGhostRenderPos(), inst.charAt(0))
-                        );
+                    AutoBuilderPreviewOps.setGhostRenderPos(
+                            be,
+                            AutoBuilderPreviewOps.stepRelative(be, be.getGhostRenderPos(), inst.charAt(0)));
                 case "H" -> AutoBuilderPreviewOps.resetGhostToHome(be);
                 case "X" -> {
                     if (executeBreak(be)) {
@@ -156,7 +157,8 @@ public final class AutoBuilderWorldOps {
                             if (checkBlock == null) {
                                 checkBlock = Blocks.AIR;
                             }
-                            boolean matches = be.getLevel().getBlockState(be.getGhostRenderPos()).getBlock() == checkBlock;
+                            boolean matches = be.getLevel().getBlockState(be.getGhostRenderPos())
+                                    .getBlock() == checkBlock;
                             if ((inst.startsWith("PEQ|") == matches) && tickInstructionPlace(be, parts[0])) {
                                 return;
                             }
@@ -253,8 +255,7 @@ public final class AutoBuilderWorldOps {
                             AEItemKey.of(drop.getItem()),
                             1,
                             IActionSource.ofMachine(be),
-                            Actionable.MODULATE
-                    );
+                            Actionable.MODULATE);
                 }
                 if (inserted <= 0 && !drops.isEmpty()) {
                     be.currentInstruction++;
@@ -301,8 +302,7 @@ public final class AutoBuilderWorldOps {
                 int delta = Math.floorMod(
                         BuilderCoordMath.yawStepsFromNorth(AutoBuilderPreviewOps.getFacing(be)) -
                                 BuilderCoordMath.yawStepsFromNorth(be.sourceFacing),
-                        4
-                );
+                        4);
                 state = BuilderCoordMath.rotateStateByDelta(state, delta);
                 be.getLevel().setBlock(target, state, 3);
                 if (extracted > 0) {
@@ -322,8 +322,7 @@ public final class AutoBuilderWorldOps {
 
         for (var entry : required.entrySet()) {
             var block = ForgeRegistries.BLOCKS.getValue(
-                    ResourceLocation.parse(entry.getKey().split("\\[")[0])
-            );
+                    ResourceLocation.parse(entry.getKey().split("\\[")[0]));
             if (block == null || block == Blocks.AIR) {
                 continue;
             }
@@ -552,8 +551,7 @@ public final class AutoBuilderWorldOps {
                             AEItemKey.of(drop.getItem()),
                             1,
                             IActionSource.ofMachine(be),
-                            Actionable.MODULATE
-                    );
+                            Actionable.MODULATE);
                 }
                 if (inserted > 0 || drops.isEmpty()) {
                     if (be.getLevel().destroyBlock(pos, false)) {
@@ -571,8 +569,7 @@ public final class AutoBuilderWorldOps {
                             AEFluidKey.of(fs.getType()),
                             1000,
                             IActionSource.ofMachine(be),
-                            Actionable.MODULATE
-                    );
+                            Actionable.MODULATE);
                 }
                 if (be.getLevel().setBlock(pos, Blocks.AIR.defaultBlockState(), 3)) {
                     didDestroy = true;

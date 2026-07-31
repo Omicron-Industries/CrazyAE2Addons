@@ -2,6 +2,7 @@ package net.oktawia.insaneae2addons.integration.kubejs;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.util.MapJS;

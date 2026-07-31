@@ -1,8 +1,15 @@
 package net.oktawia.insaneae2addons.logic.penrose;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import lombok.Getter;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.IntStream;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
@@ -13,15 +20,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.Heightmap;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.IntStream;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import lombok.Getter;
 
 public final class BlackHoleField {
 
@@ -30,7 +32,8 @@ public final class BlackHoleField {
     private static final int PERSIST_EVERY_CHUNKS = 16;
     private static final int RESCAN_EVERY_TICKS = 40;
 
-    public record Snapshot(UUID id, BlockPos center, int radius, long[] processedChunks) {}
+    public record Snapshot(UUID id, BlockPos center, int radius, long[] processedChunks) {
+    }
 
     @Getter
     private final ServerLevel level;
@@ -269,8 +272,8 @@ public final class BlackHoleField {
                 continue;
             }
 
-            ClientboundLevelChunkWithLightPacket packet =
-                    new ClientboundLevelChunkWithLightPacket(chunk, this.level.getLightEngine(), null, null);
+            ClientboundLevelChunkWithLightPacket packet = new ClientboundLevelChunkWithLightPacket(chunk,
+                    this.level.getLightEngine(), null, null);
             this.level.getChunkSource().chunkMap
                     .getPlayers(pos, false)
                     .forEach(player -> player.connection.send(packet));

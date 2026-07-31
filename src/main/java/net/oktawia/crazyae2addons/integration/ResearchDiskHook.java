@@ -1,10 +1,10 @@
 package net.oktawia.crazyae2addons.integration;
 
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 public interface ResearchDiskHook {
 

@@ -1,5 +1,17 @@
 package net.oktawia.insaneae2addons.parts.nbt;
 
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
@@ -8,18 +20,9 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.parts.storagebus.StorageBusPart;
 import appeng.util.ConfigInventory;
 import appeng.util.SettingsFrom;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class NbtStorageBusPart extends StorageBusPart {
 
@@ -27,7 +30,8 @@ public class NbtStorageBusPart extends StorageBusPart {
     private static final String NBT_UPGRADES = "nbtUpgrades";
     private static final String NBT_FILTER = "nbt_filter";
 
-    public final ConfigInventory inv = ConfigInventory.configTypes(1, () -> {});
+    public final ConfigInventory inv = ConfigInventory.configTypes(1, () -> {
+    });
 
     private final IUpgradeInventory nbtUpgrades = UpgradeInventories.forMachine(
             InsaneItemRegistrar.NBT_STORAGE_BUS.get(), 1, this::onNbtUpgradesChanged);

@@ -2,12 +2,14 @@ package net.oktawia.insaneae2addons.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.insaneae2addons.entities.research.ResearchPedestalTopBE;
 
 public class ResearchPedestalTopRenderer implements BlockEntityRenderer<ResearchPedestalTopBE> {
@@ -22,8 +24,8 @@ public class ResearchPedestalTopRenderer implements BlockEntityRenderer<Research
 
     @Override
     public void render(ResearchPedestalTopBE be, float partialTick,
-                       PoseStack poseStack, MultiBufferSource buffer,
-                       int packedLight, int packedOverlay) {
+            PoseStack poseStack, MultiBufferSource buffer,
+            int packedLight, int packedOverlay) {
         ItemStack stack = be.getStoredStack();
         if (stack.isEmpty() || be.getLevel() == null) {
             return;
@@ -48,8 +50,7 @@ public class ResearchPedestalTopRenderer implements BlockEntityRenderer<Research
                 poseStack,
                 buffer,
                 be.getLevel(),
-                0
-        );
+                0);
 
         poseStack.popPose();
     }

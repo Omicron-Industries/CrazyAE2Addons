@@ -1,20 +1,20 @@
 package net.oktawia.crazyae2addons.network.packets;
 
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
+
 import net.oktawia.crazyae2addons.client.screens.part.DisplayImagesSubScreen;
 import net.oktawia.crazyae2addons.client.screens.part.DisplayScreen;
 
-import java.util.function.Supplier;
-
 public record SyncDisplayImagePreviewPacket(
         String imageId,
-        byte[] pngBytes
-) {
+        byte[] pngBytes) {
 
     private static final int MAX_ID_LEN = 128;
 
@@ -26,16 +26,13 @@ public record SyncDisplayImagePreviewPacket(
     public static SyncDisplayImagePreviewPacket decode(FriendlyByteBuf buf) {
         return new SyncDisplayImagePreviewPacket(
                 buf.readUtf(MAX_ID_LEN),
-                buf.readByteArray(UploadDisplayImagePacket.MAX_IMAGE_BYTES)
-        );
+                buf.readByteArray(UploadDisplayImagePacket.MAX_IMAGE_BYTES));
     }
 
     public static void handle(SyncDisplayImagePreviewPacket pkt, Supplier<NetworkEvent.Context> ctxSupplier) {
         NetworkEvent.Context ctx = ctxSupplier.get();
 
-        ctx.enqueueWork(() ->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> Client.handle(pkt))
-        );
+        ctx.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> Client.handle(pkt)));
 
         ctx.setPacketHandled(true);
     }

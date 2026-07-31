@@ -1,5 +1,8 @@
 package net.oktawia.insaneae2addons.client.screens.part;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.implementations.UpgradeableScreen;
@@ -7,8 +10,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.definitions.AEItems;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.insaneae2addons.menus.part.MobFormationPlaneMenu;
 
 public class MobFormationPlaneScreen<C extends MobFormationPlaneMenu> extends UpgradeableScreen<C> {

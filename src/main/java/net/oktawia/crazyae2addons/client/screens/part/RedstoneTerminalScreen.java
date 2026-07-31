@@ -1,21 +1,23 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.menus.part.RedstoneTerminalMenu;
 import net.oktawia.crazyae2addons.network.packets.RedstoneWindowPacket;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RedstoneTerminalScreen<C extends RedstoneTerminalMenu> extends AEBaseScreen<C> {
 
@@ -140,8 +142,7 @@ public class RedstoneTerminalScreen<C extends RedstoneTerminalMenu> extends AEBa
     public boolean mouseScrolled(double x, double y, double delta) {
         return this.scrollbar.onMouseWheel(
                 new Point((int) Math.round(x - leftPos), (int) Math.round(y - topPos)),
-                delta
-        );
+                delta);
     }
 
     @Override

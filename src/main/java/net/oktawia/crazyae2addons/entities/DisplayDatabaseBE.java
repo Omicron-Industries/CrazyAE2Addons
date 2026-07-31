@@ -1,41 +1,5 @@
 package net.oktawia.crazyae2addons.entities;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
-import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
-import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-import net.oktawia.crazyae2addons.logic.display.DisplayDatabaseProvider;
-import net.oktawia.crazyae2addons.menus.block.DisplayDatabaseMenu;
-import net.oktawia.crazyae2addons.util.IManagedBEHelper;
-import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
-import org.jetbrains.annotations.Nullable;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,21 +11,61 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+
+import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockEntityRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
+import net.oktawia.crazyae2addons.logic.display.DisplayDatabaseProvider;
+import net.oktawia.crazyae2addons.menus.block.DisplayDatabaseMenu;
+import net.oktawia.crazyae2addons.util.IManagedBEHelper;
+import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
+
 public class DisplayDatabaseBE extends AENetworkBlockEntity
         implements MenuProvider, IMenuOpeningBlockEntity, IManagedBEHelper, DisplayDatabaseProvider, IGridTickable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(DisplayDatabaseBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DisplayDatabaseBE.class);
 
     private static final Gson GSON = new Gson();
-    private static final Type MAP_TYPE = new TypeToken<Map<String, String>>() {}.getType();
+    private static final Type MAP_TYPE = new TypeToken<Map<String, String>>() {
+    }.getType();
 
     private static final double IDLE_POWER_USAGE = 1.0;
 
     private static final Map<IGrid, GridSnapshot> GRID_DATABASES = new WeakHashMap<>();
 
-    private static final Set<DisplayDatabaseBE> LOADED_DATABASES =
-            Collections.newSetFromMap(new WeakHashMap<>());
+    private static final Set<DisplayDatabaseBE> LOADED_DATABASES = Collections.newSetFromMap(new WeakHashMap<>());
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -85,8 +89,7 @@ public class DisplayDatabaseBE extends AENetworkBlockEntity
                 .addService(IGridTickable.class, this)
                 .setIdlePowerUsage(IDLE_POWER_USAGE)
                 .setVisualRepresentation(new ItemStack(
-                        CrazyBlockRegistrar.DISPLAY_DATABASE_BLOCK.get().asItem()
-                ));
+                        CrazyBlockRegistrar.DISPLAY_DATABASE_BLOCK.get().asItem()));
     }
 
     public static boolean isFeatureEnabled() {
@@ -149,8 +152,7 @@ public class DisplayDatabaseBE extends AENetworkBlockEntity
         MenuOpener.open(
                 CrazyMenuRegistrar.DISPLAY_DATABASE_MENU.get(),
                 player,
-                locator
-        );
+                locator);
     }
 
     @Override
@@ -409,8 +411,7 @@ public class DisplayDatabaseBE extends AENetworkBlockEntity
 
                 snapshots.add(new GridSnapshot(
                         provider.getDisplayDatabaseJson(),
-                        provider.getDisplayDatabaseRevision()
-                ));
+                        provider.getDisplayDatabaseRevision()));
             }
         } catch (Throwable e) {
             CrazyAddons.LOGGER.debug("failed to scan ME display database providers", e);
@@ -510,8 +511,7 @@ public class DisplayDatabaseBE extends AENetworkBlockEntity
     private void broadcastSnapshotToGrid(IGrid grid, GridSnapshot snapshot) {
         snapshot = new GridSnapshot(
                 sanitizeJson(snapshot.variablesJson()),
-                snapshot.revision()
-        );
+                snapshot.revision());
 
         try {
             for (DisplayDatabaseProvider provider : grid.getMachines(DisplayDatabaseProvider.class)) {
@@ -521,8 +521,7 @@ public class DisplayDatabaseBE extends AENetworkBlockEntity
 
                 provider.acceptDisplayDatabaseSnapshot(
                         snapshot.variablesJson(),
-                        snapshot.revision()
-                );
+                        snapshot.revision());
             }
         } catch (Throwable e) {
             CrazyAddons.LOGGER.debug("failed to broadcast ME display database via grid providers", e);
@@ -546,16 +545,14 @@ public class DisplayDatabaseBE extends AENetworkBlockEntity
 
             database.acceptDisplayDatabaseSnapshot(
                     snapshot.variablesJson(),
-                    snapshot.revision()
-            );
+                    snapshot.revision());
         }
     }
 
     private GridSnapshot localSnapshot() {
         return new GridSnapshot(
                 getVariablesJson(),
-                databaseRevision
-        );
+                databaseRevision);
     }
 
     private boolean sameContent(GridSnapshot a, GridSnapshot b) {
@@ -565,8 +562,7 @@ public class DisplayDatabaseBE extends AENetworkBlockEntity
 
         return Objects.equals(
                 sanitizeJson(a.variablesJson()),
-                sanitizeJson(b.variablesJson())
-        );
+                sanitizeJson(b.variablesJson()));
     }
 
     private LinkedHashMap<String, String> getVariablesMutable() {

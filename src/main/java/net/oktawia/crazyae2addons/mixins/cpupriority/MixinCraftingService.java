@@ -1,13 +1,10 @@
 package net.oktawia.crazyae2addons.mixins.cpupriority;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.stacks.AEKey;
-import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.me.service.CraftingService;
+import java.util.Iterator;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,8 +13,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Iterator;
-import java.util.Set;
+import appeng.api.config.Actionable;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.api.stacks.AEKey;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.me.service.CraftingService;
+
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
 
 @Mixin(value = CraftingService.class, remap = false)
 public abstract class MixinCraftingService {
@@ -31,8 +34,7 @@ public abstract class MixinCraftingService {
             AEKey what,
             long amount,
             Actionable type,
-            CallbackInfoReturnable<Long> cir
-    ) {
+            CallbackInfoReturnable<Long> cir) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
             return;
         }
@@ -56,13 +58,7 @@ public abstract class MixinCraftingService {
         cir.setReturnValue(inserted);
     }
 
-    @Redirect(
-            method = "onServerEndTick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"
-            )
-    )
+    @Redirect(method = "onServerEndTick", at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
     private Iterator<CraftingCPUCluster> crazyae2addons$sortedCpuIterator(Set<CraftingCPUCluster> self) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
             return self.iterator();

@@ -1,15 +1,16 @@
 package net.oktawia.crazyae2addons.client.screens;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.menu.AEBaseMenu;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.menu.AEBaseMenu;
 
 public abstract class CrazyBaseScreen<C extends AEBaseMenu> extends AEBaseScreen<C> {
 

@@ -1,9 +1,7 @@
 package net.oktawia.crazyae2addons.mixins.compat;
 
-import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.me.service.CraftingService;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
+import java.util.Comparator;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -12,7 +10,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Comparator;
+import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.me.service.CraftingService;
+
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
 
 @Mixin(value = CraftingService.class, remap = false)
 public abstract class MixinCraftingServiceCLCompat {

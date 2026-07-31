@@ -1,19 +1,22 @@
 package net.oktawia.insaneae2addons.defs.recipes;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
-import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+
+import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 
 public class ItemRecipes {
 
@@ -23,8 +26,8 @@ public class ItemRecipes {
             Map<Character, Item> keys,
             List<Item> shapelessIngredients,
             Item output,
-            int count
-    ) {}
+            int count) {
+    }
 
     private static final List<RecipeDef> RECIPES = new ArrayList<>();
 
@@ -192,7 +195,8 @@ public class ItemRecipes {
         }
 
         public Builder shapeless(ItemLike... ingredients) {
-            for (var i : ingredients) shapelessIngredients.add(i.asItem());
+            for (var i : ingredients)
+                shapelessIngredients.add(i.asItem());
             return this;
         }
 

@@ -1,10 +1,8 @@
 package net.oktawia.insaneae2addons.items.nbt;
 
-import appeng.api.implementations.menuobjects.IMenuItem;
-import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.items.storage.ViewCellItem;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocators;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,10 +10,15 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.items.storage.ViewCellItem;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.logic.nbt.ViewCellHost;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class NbtViewCellItem extends ViewCellItem implements IMenuItem {
     public NbtViewCellItem(Properties props) {
@@ -33,7 +36,8 @@ public class NbtViewCellItem extends ViewCellItem implements IMenuItem {
     }
 
     @Override
-    public @Nullable ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+    public @Nullable ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack,
+            @Nullable BlockPos pos) {
         return new ViewCellHost(player, inventorySlot, stack);
     }
 }

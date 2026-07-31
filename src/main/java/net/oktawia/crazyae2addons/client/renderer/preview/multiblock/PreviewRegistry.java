@@ -6,8 +6,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 public final class PreviewRegistry {
-    private static final Set<MultiblockPreviewHost> HOSTS =
-            Collections.newSetFromMap(new WeakHashMap<>());
+    private static final Set<MultiblockPreviewHost> HOSTS = Collections.newSetFromMap(new WeakHashMap<>());
 
     private PreviewRegistry() {
     }

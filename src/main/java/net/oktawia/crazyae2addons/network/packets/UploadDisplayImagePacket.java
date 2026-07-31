@@ -1,17 +1,17 @@
 package net.oktawia.crazyae2addons.network.packets;
 
+import java.util.function.Supplier;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.menus.part.DisplayImagesSubMenu;
 
-import java.util.function.Supplier;
+import net.oktawia.crazyae2addons.menus.part.DisplayImagesSubMenu;
 
 public record UploadDisplayImagePacket(
         String sourceName,
         byte[] pngBytes,
         int width,
-        int height
-) {
+        int height) {
 
     public static final int MAX_NAME_LEN = 256;
     public static final int MAX_IMAGE_BYTES = 1024 * 1024;
@@ -29,8 +29,7 @@ public record UploadDisplayImagePacket(
                 buf.readUtf(MAX_NAME_LEN),
                 buf.readByteArray(MAX_IMAGE_BYTES),
                 buf.readVarInt(),
-                buf.readVarInt()
-        );
+                buf.readVarInt());
     }
 
     public static void handle(UploadDisplayImagePacket pkt, Supplier<NetworkEvent.Context> ctxSupplier) {

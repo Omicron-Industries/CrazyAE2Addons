@@ -1,25 +1,28 @@
 package net.oktawia.insaneae2addons.logic.autobuilder;
 
-import appeng.api.implementations.menuobjects.ItemMenuHost;
-import appeng.api.storage.ISubMenuHost;
-import appeng.menu.ISubMenu;
-import appeng.menu.MenuOpener;
-import com.mojang.logging.LogUtils;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.LevelResource;
-import net.oktawia.insaneae2addons.InsaneAddons;
-import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
-import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import net.oktawia.insaneae2addons.items.autobuilder.BuilderPatternItem;
-import net.oktawia.insaneae2addons.util.ProgramExpander;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
+
+import com.mojang.logging.LogUtils;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.LevelResource;
+
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.storage.ISubMenuHost;
+import appeng.menu.ISubMenu;
+import appeng.menu.MenuOpener;
+
+import net.oktawia.insaneae2addons.InsaneAddons;
+import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
+import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
+import net.oktawia.insaneae2addons.items.autobuilder.BuilderPatternItem;
+import net.oktawia.insaneae2addons.util.ProgramExpander;
 
 public class BuilderPatternHost extends ItemMenuHost implements ISubMenuHost {
 

@@ -1,14 +1,15 @@
 package net.oktawia.crazyae2addons.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import net.minecraft.server.level.ServerPlayer;
+
 import appeng.api.stacks.AEKey;
 import appeng.menu.locator.MenuLocator;
 import appeng.menu.me.crafting.CraftAmountMenu;
-import net.minecraft.server.level.ServerPlayer;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.IsModLoaded;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import net.oktawia.crazyae2addons.CrazyAddons;
 
 public final class Ae2clOpenCraftingMenu {
 
@@ -32,8 +33,7 @@ public final class Ae2clOpenCraftingMenu {
                     ServerPlayer.class,
                     MenuLocator.class,
                     AEKey.class,
-                    long.class
-            );
+                    long.class);
 
             method.invoke(null, player, locator, whatToCraft, amount);
         } catch (NoSuchMethodException e) {
@@ -52,8 +52,7 @@ public final class Ae2clOpenCraftingMenu {
                     ServerPlayer.class,
                     MenuLocator.class,
                     AEKey.class,
-                    int.class
-            );
+                    int.class);
 
             int clampedAmount = (int) Math.min(amount, Integer.MAX_VALUE);
             method.invoke(null, player, locator, whatToCraft, clampedAmount);

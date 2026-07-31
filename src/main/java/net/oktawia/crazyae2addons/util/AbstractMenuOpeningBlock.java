@@ -1,9 +1,7 @@
 package net.oktawia.crazyae2addons.util;
 
-import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.AEBaseBlockEntity;
-import appeng.menu.locator.MenuLocators;
-import appeng.util.InteractionUtil;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,7 +10,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.block.AEBaseEntityBlock;
+import appeng.blockentity.AEBaseBlockEntity;
+import appeng.menu.locator.MenuLocators;
+import appeng.util.InteractionUtil;
 
 public abstract class AbstractMenuOpeningBlock<T extends AEBaseBlockEntity & IMenuOpeningBlockEntity>
         extends AEBaseEntityBlock<T> {
@@ -23,8 +25,8 @@ public abstract class AbstractMenuOpeningBlock<T extends AEBaseBlockEntity & IMe
 
     @Override
     public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-                                         InteractionHand hand, @Nullable ItemStack heldItem,
-                                         BlockHitResult hit) {
+            InteractionHand hand, @Nullable ItemStack heldItem,
+            BlockHitResult hit) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
             return InteractionResult.PASS;
         }

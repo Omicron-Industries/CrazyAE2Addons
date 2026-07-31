@@ -1,5 +1,12 @@
 package net.oktawia.insaneae2addons.menus.part;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+import lombok.Getter;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
@@ -10,13 +17,10 @@ import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.FakeSlot;
-import lombok.Getter;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.parts.nbt.NbtStorageBusPart;
 import net.oktawia.insaneae2addons.util.NbtFormatter;
-import org.jetbrains.annotations.Nullable;
 
 public class NbtStorageBusMenu extends UpgradeableMenu<NbtStorageBusPart> {
     public static final String SEND_DATA = "SendData";

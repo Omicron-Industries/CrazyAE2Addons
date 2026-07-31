@@ -1,10 +1,10 @@
 package net.oktawia.crazyae2addons.mixins.cpupriority;
 
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuList;
+import java.util.HashMap;
+import java.util.WeakHashMap;
+
 import com.google.common.collect.ImmutableSet;
-import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,8 +12,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashMap;
-import java.util.WeakHashMap;
+import appeng.api.networking.crafting.ICraftingCPU;
+import appeng.menu.me.crafting.CraftingStatusMenu;
+import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuList;
+
+import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
 
 @Mixin(value = CraftingStatusMenu.class, remap = false)
 public abstract class MixinCraftingStatusMenu {

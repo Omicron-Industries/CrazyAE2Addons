@@ -1,14 +1,16 @@
 package net.oktawia.crazyae2addons.client.misc;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.oktawia.crazyae2addons.network.NetworkHandler;
-import net.oktawia.crazyae2addons.network.packets.RequestDisplayImagePacket;
-
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Nullable;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import net.oktawia.crazyae2addons.network.NetworkHandler;
+import net.oktawia.crazyae2addons.network.packets.RequestDisplayImagePacket;
 
 @OnlyIn(Dist.CLIENT)
 public final class DisplayImageClientCache {
@@ -16,7 +18,8 @@ public final class DisplayImageClientCache {
     private static final Map<String, byte[]> CACHE = new ConcurrentHashMap<>();
     private static final Set<String> REQUESTED = ConcurrentHashMap.newKeySet();
 
-    private DisplayImageClientCache() {}
+    private DisplayImageClientCache() {
+    }
 
     @Nullable
     public static byte[] get(String id) {

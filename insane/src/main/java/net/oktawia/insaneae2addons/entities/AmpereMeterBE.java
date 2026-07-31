@@ -1,15 +1,15 @@
 package net.oktawia.insaneae2addons.entities;
 
-import appeng.blockentity.AEBaseBlockEntity;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
-import appeng.util.SettingsFrom;
+import java.util.ArrayDeque;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,19 +28,24 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import appeng.blockentity.AEBaseBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+import appeng.util.SettingsFrom;
+
 import net.oktawia.crazyae2addons.IsModLoaded;
+import net.oktawia.crazyae2addons.util.IManagedBEHelper;
+import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
+import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.menus.block.AmpereMeterMenu;
-import net.oktawia.crazyae2addons.util.IManagedBEHelper;
-import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
-import net.oktawia.crazyae2addons.util.Utils;
 import net.oktawia.insaneae2addons.util.InsaneUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayDeque;
 
 public class AmpereMeterBE extends AEBaseBlockEntity
         implements MenuProvider, IManagedBEHelper, IMenuOpeningBlockEntity {
@@ -49,8 +54,7 @@ public class AmpereMeterBE extends AEBaseBlockEntity
     private static final String NBT_MIN_FE = "min_fe_per_tick";
     private static final String NBT_MAX_FE = "max_fe_per_tick";
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(AmpereMeterBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AmpereMeterBE.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -346,7 +350,8 @@ public class AmpereMeterBE extends AEBaseBlockEntity
         }
 
         long gameTime = level.getGameTime();
-        if (be.lastActiveTick >= 0 && gameTime - be.lastActiveTick > InsaneConfig.COMMON.AMPERE_METER_INACTIVITY_RESET_TICKS.get()) {
+        if (be.lastActiveTick >= 0
+                && gameTime - be.lastActiveTick > InsaneConfig.COMMON.AMPERE_METER_INACTIVITY_RESET_TICKS.get()) {
             be.clearDisplayedTransfer();
         }
     }

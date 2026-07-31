@@ -1,6 +1,16 @@
 package net.oktawia.crazyae2addons.multiblock;
 
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BooleanSupplier;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -10,15 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BooleanSupplier;
+import lombok.Getter;
 
 public final class MultiblockState {
     private static final int FAST_POLL_INTERVAL_TICKS = 10;
@@ -50,8 +52,7 @@ public final class MultiblockState {
             BlockEntity controller,
             Runnable onFormed,
             Runnable onDisformed,
-            BooleanSupplier extraValidation
-    ) {
+            BooleanSupplier extraValidation) {
         this.definition = definition;
         this.controller = controller;
         this.onFormed = onFormed;
@@ -203,15 +204,13 @@ public final class MultiblockState {
             BlockPos worldPos = controllerPos.offset(
                     rotatedEntry.relX(),
                     rotatedEntry.relY(),
-                    rotatedEntry.relZ()
-            );
+                    rotatedEntry.relZ());
 
             MultiblockDefinition.PatternEntry previous = this.entryByWorldPos.put(worldPos, rotatedEntry);
             if (previous != null) {
                 throw new IllegalStateException(
                         "Duplicate world position in multiblock cache for controller at "
-                                + controllerPos + ": " + worldPos
-                );
+                                + controllerPos + ": " + worldPos);
             }
 
             this.symbolPositions
@@ -387,8 +386,7 @@ public final class MultiblockState {
             Level level,
             BlockPos pos,
             MultiblockCallback callback,
-            MultiblockDefinition.TrackingMode expectedTracking
-    ) {
+            MultiblockDefinition.TrackingMode expectedTracking) {
         MultiblockDefinition.PatternEntry patternEntry = this.entryByWorldPos.get(pos);
         if (patternEntry == null) {
             return false;
@@ -432,8 +430,7 @@ public final class MultiblockState {
     private static Direction getStructureFacing(BlockState controllerState) {
         if (!controllerState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
             throw new IllegalStateException(
-                    "Controller state must have HORIZONTAL_FACING: " + controllerState
-            );
+                    "Controller state must have HORIZONTAL_FACING: " + controllerState);
         }
 
         return controllerState.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();

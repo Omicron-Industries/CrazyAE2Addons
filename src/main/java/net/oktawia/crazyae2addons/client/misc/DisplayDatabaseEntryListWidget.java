@@ -1,20 +1,22 @@
 package net.oktawia.crazyae2addons.client.misc;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.oktawia.crazyae2addons.defs.LangDefs;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+
+import net.oktawia.crazyae2addons.defs.LangDefs;
 
 public class DisplayDatabaseEntryListWidget extends AbstractWidget {
 
@@ -32,8 +34,7 @@ public class DisplayDatabaseEntryListWidget extends AbstractWidget {
             Supplier<Map<String, String>> entriesSupplier,
             Supplier<String> selectedKeySupplier,
             BiConsumer<String, String> selectAction,
-            Consumer<String> removeAction
-    ) {
+            Consumer<String> removeAction) {
         super(0, 0, 0, 0, Component.empty());
         this.entriesSupplier = entriesSupplier;
         this.selectedKeySupplier = selectedKeySupplier;
@@ -113,8 +114,7 @@ public class DisplayDatabaseEntryListWidget extends AbstractWidget {
                     x + 4,
                     y + 4,
                     0xFF777777,
-                    false
-            );
+                    false);
             return;
         }
 
@@ -153,8 +153,7 @@ public class DisplayDatabaseEntryListWidget extends AbstractWidget {
                     x + 4,
                     ry + 3,
                     selected ? 0xFFFF5555 : 0xFFCCCCCC,
-                    false
-            );
+                    false);
 
             boolean deleteHovered = mouseX >= deleteX
                     && mouseX < deleteX + DELETE_W
@@ -167,8 +166,7 @@ public class DisplayDatabaseEntryListWidget extends AbstractWidget {
                     deleteX + 4,
                     ry + 3,
                     deleteHovered ? 0xFFFF7777 : 0xFFAA5555,
-                    false
-            );
+                    false);
         }
 
         renderScrollbar(g, entries.size(), vis);

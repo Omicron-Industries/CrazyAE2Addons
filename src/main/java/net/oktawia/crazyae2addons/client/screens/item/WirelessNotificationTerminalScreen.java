@@ -1,5 +1,24 @@
 package net.oktawia.crazyae2addons.client.screens.item;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+import de.mari_023.ae2wtlib.wut.CycleTerminalButton;
+import de.mari_023.ae2wtlib.wut.IUniversalTerminalCapable;
+
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.PaletteColor;
@@ -10,28 +29,12 @@ import appeng.client.gui.widgets.ConfirmableTextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
-import de.mari_023.ae2wtlib.wut.CycleTerminalButton;
-import de.mari_023.ae2wtlib.wut.IUniversalTerminalCapable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.interfaces.IMovableSlot;
 import net.oktawia.crazyae2addons.menus.item.WirelessNotificationTerminalMenu;
 import net.oktawia.crazyae2addons.network.packets.WirelessNotificationWindowPacket;
 import net.oktawia.crazyae2addons.util.MathParser;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class WirelessNotificationTerminalScreen<C extends WirelessNotificationTerminalMenu>
         extends UpgradeableScreen<C> implements IUniversalTerminalCapable {
@@ -108,47 +111,36 @@ public class WirelessNotificationTerminalScreen<C extends WirelessNotificationTe
         this.hudXField = new ConfirmableTextField(style, font, 0, 0, 0, font.lineHeight);
         this.hudXField.setBordered(false);
         this.hudXField.setMaxLength(32);
-        this.hudXField.setResponder(text ->
-                parsePercentField(text).ifPresent(getMenu()::setHudX)
-        );
+        this.hudXField.setResponder(text -> parsePercentField(text).ifPresent(getMenu()::setHudX));
         this.hudXField.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HUD_X_TOOLTIP.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HUD_X_TOOLTIP.getTranslationKey())));
         this.widgets.add("hud_x", this.hudXField);
 
         this.hudYField = new ConfirmableTextField(style, font, 0, 0, 0, font.lineHeight);
         this.hudYField.setBordered(false);
         this.hudYField.setMaxLength(32);
-        this.hudYField.setResponder(text ->
-                parsePercentField(text).ifPresent(getMenu()::setHudY)
-        );
+        this.hudYField.setResponder(text -> parsePercentField(text).ifPresent(getMenu()::setHudY));
         this.hudYField.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HUD_Y_TOOLTIP.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HUD_Y_TOOLTIP.getTranslationKey())));
         this.widgets.add("hud_y", this.hudYField);
 
         this.hudScaleField = new ConfirmableTextField(style, font, 0, 0, 0, font.lineHeight);
         this.hudScaleField.setBordered(false);
         this.hudScaleField.setMaxLength(32);
-        this.hudScaleField.setResponder(text ->
-                parsePercentField(text).ifPresent(getMenu()::setHudScale)
-        );
+        this.hudScaleField.setResponder(text -> parsePercentField(text).ifPresent(getMenu()::setHudScale));
         this.hudScaleField.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HUD_SCALE_TOOLTIP.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HUD_SCALE_TOOLTIP.getTranslationKey())));
         this.widgets.add("hud_scale", this.hudScaleField);
 
         this.hideAboveCb = new AECheckbox(0, 0, 170, 14, style, Component.empty());
         this.hideAboveCb.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HIDE_ABOVE_TOOLTIP.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HIDE_ABOVE_TOOLTIP.getTranslationKey())));
         this.hideAboveCb.setChangeListener(() -> getMenu().setHideAbove(this.hideAboveCb.isSelected()));
         this.widgets.add("hide_above", this.hideAboveCb);
 
         this.hideBelowCb = new AECheckbox(0, 0, 170, 14, style, Component.empty());
         this.hideBelowCb.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HIDE_BELOW_TOOLTIP.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.NOTIFICATION_TERMINAL_HIDE_BELOW_TOOLTIP.getTranslationKey())));
         this.hideBelowCb.setChangeListener(() -> getMenu().setHideBelow(this.hideBelowCb.isSelected()));
         this.widgets.add("hide_below", this.hideBelowCb);
     }
@@ -260,8 +252,7 @@ public class WirelessNotificationTerminalScreen<C extends WirelessNotificationTe
     private void refreshVisibleRows(
             int windowOffset,
             List<WirelessNotificationTerminalMenu.NotificationSlotInfo> window,
-            int totalCount
-    ) {
+            int totalCount) {
         for (int row = 0; row < VISIBLE_ROWS; row++) {
             int absoluteSlot = windowOffset + row;
             boolean valid = row < window.size() && absoluteSlot < totalCount;
@@ -456,8 +447,7 @@ public class WirelessNotificationTerminalScreen<C extends WirelessNotificationTe
                 LangDefs.NOTIFICATION_TERMINAL_UNIT_LINE.getTranslationKey(),
                 type.unit() == null
                         ? Component.translatable(LangDefs.ITEMS.getTranslationKey())
-                        : type.unit()
-        ));
+                        : type.unit()));
 
         String text = this.limitFields[row].getValue().trim();
         if (text.isEmpty()) {
@@ -479,7 +469,8 @@ public class WirelessNotificationTerminalScreen<C extends WirelessNotificationTe
                 long external = convertToExternalValue(type, internal.get());
                 if (external < 0) {
                     valid = false;
-                    tooltip.add(Component.translatable(LangDefs.NOTIFICATION_TERMINAL_INVALID_NUMBER.getTranslationKey()));
+                    tooltip.add(
+                            Component.translatable(LangDefs.NOTIFICATION_TERMINAL_INVALID_NUMBER.getTranslationKey()));
                 } else if (!isNumberLiteral(row)) {
                     tooltip.add(Component.literal("= " + this.decimalFormat.format(internal.get())));
                 }
@@ -502,19 +493,22 @@ public class WirelessNotificationTerminalScreen<C extends WirelessNotificationTe
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            if (this.hudXField != null && this.hudXField.visible && this.hudXField.active && this.hudXField.mouseClicked(mouseX, mouseY, button)) {
+            if (this.hudXField != null && this.hudXField.visible && this.hudXField.active
+                    && this.hudXField.mouseClicked(mouseX, mouseY, button)) {
                 this.setFocused(this.hudXField);
                 this.hudXField.setFocused(true);
                 return true;
             }
 
-            if (this.hudYField != null && this.hudYField.visible && this.hudYField.active && this.hudYField.mouseClicked(mouseX, mouseY, button)) {
+            if (this.hudYField != null && this.hudYField.visible && this.hudYField.active
+                    && this.hudYField.mouseClicked(mouseX, mouseY, button)) {
                 this.setFocused(this.hudYField);
                 this.hudYField.setFocused(true);
                 return true;
             }
 
-            if (this.hudScaleField != null && this.hudScaleField.visible && this.hudScaleField.active && this.hudScaleField.mouseClicked(mouseX, mouseY, button)) {
+            if (this.hudScaleField != null && this.hudScaleField.visible && this.hudScaleField.active
+                    && this.hudScaleField.mouseClicked(mouseX, mouseY, button)) {
                 this.setFocused(this.hudScaleField);
                 this.hudScaleField.setFocused(true);
                 return true;

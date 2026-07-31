@@ -9,8 +9,10 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.syncdata.payload.NbtTagPayload;
-import lombok.Getter;
+
 import net.minecraft.nbt.CompoundTag;
+
+import lombok.Getter;
 
 public final class NbtFilterState implements IManaged {
     private static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NbtFilterState.class);

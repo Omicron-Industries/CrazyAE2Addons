@@ -1,15 +1,5 @@
 package net.oktawia.crazyae2addons.client.misc;
 
-import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.defs.LangDefs;
-import net.oktawia.crazyae2addons.network.NetworkHandler;
-import net.oktawia.crazyae2addons.network.packets.UploadDisplayImagePacket;
-import org.lwjgl.util.tinyfd.TinyFileDialogs;
-
-import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -23,10 +13,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import org.lwjgl.util.tinyfd.TinyFileDialogs;
+
+import net.minecraft.network.chat.Component;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import net.oktawia.crazyae2addons.CrazyAddons;
+import net.oktawia.crazyae2addons.defs.LangDefs;
+import net.oktawia.crazyae2addons.network.NetworkHandler;
+import net.oktawia.crazyae2addons.network.packets.UploadDisplayImagePacket;
+
 @OnlyIn(Dist.CLIENT)
 public final class DisplayImageUploadClient {
 
-    public record Result(Component message, int color, boolean success) {}
+    public record Result(Component message, int color, boolean success) {
+    }
 
     private static final int MAX_DIM = UploadDisplayImagePacket.MAX_IMAGE_DIM;
     private static final int MAX_PACKET_BYTES = 32 * 1024;
@@ -35,8 +39,7 @@ public final class DisplayImageUploadClient {
 
     private static final int MAX_EFFECTIVE_IMAGE_BYTES = Math.min(
             UploadDisplayImagePacket.MAX_IMAGE_BYTES,
-            MAX_PACKET_BYTES - PACKET_ESTIMATE_EXTRA_BYTES
-    );
+            MAX_PACKET_BYTES - PACKET_ESTIMATE_EXTRA_BYTES);
 
     private DisplayImageUploadClient() {
     }
@@ -47,15 +50,13 @@ public final class DisplayImageUploadClient {
                 "",
                 null,
                 null,
-                false
-        );
+                false);
 
         if (selected == null || selected.isBlank()) {
             return new Result(
                     Component.translatable(LangDefs.IMAGE_UPLOAD_CANCELLED.getTranslationKey()),
                     0xFFAAAAAA,
-                    false
-            );
+                    false);
         }
 
         try {
@@ -65,8 +66,7 @@ public final class DisplayImageUploadClient {
             return new Result(
                     Component.translatable(LangDefs.IMAGE_UPLOAD_INVALID_PATH.getTranslationKey()),
                     0xFFFF5555,
-                    false
-            );
+                    false);
         }
     }
 
@@ -80,8 +80,7 @@ public final class DisplayImageUploadClient {
                 return new Result(
                         Component.translatable(LangDefs.IMAGE_UPLOAD_CLIPBOARD_EMPTY.getTranslationKey()),
                         0xFFFF5555,
-                        false
-                );
+                        false);
             }
 
             if (transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
@@ -111,8 +110,7 @@ public final class DisplayImageUploadClient {
                         return new Result(
                                 Component.translatable(LangDefs.IMAGE_UPLOAD_INVALID_PATH.getTranslationKey()),
                                 0xFFFF5555,
-                                false
-                        );
+                                false);
                     }
                 }
             }
@@ -121,15 +119,13 @@ public final class DisplayImageUploadClient {
             return new Result(
                     Component.translatable(LangDefs.IMAGE_UPLOAD_FAILED.getTranslationKey()),
                     0xFFFF5555,
-                    false
-            );
+                    false);
         }
 
         return new Result(
                 Component.translatable(LangDefs.IMAGE_UPLOAD_CLIPBOARD_EMPTY.getTranslationKey()),
                 0xFFFF5555,
-                false
-        );
+                false);
     }
 
     public static Result uploadDroppedFiles(List<Path> paths) {
@@ -137,8 +133,7 @@ public final class DisplayImageUploadClient {
             return new Result(
                     Component.translatable(LangDefs.IMAGE_UPLOAD_INVALID_PATH.getTranslationKey()),
                     0xFFFF5555,
-                    false
-            );
+                    false);
         }
 
         for (Path path : paths) {
@@ -150,8 +145,7 @@ public final class DisplayImageUploadClient {
         return new Result(
                 Component.translatable(LangDefs.IMAGE_UPLOAD_INVALID_PATH.getTranslationKey()),
                 0xFFFF5555,
-                false
-        );
+                false);
     }
 
     public static Result uploadPath(Path path) {
@@ -159,8 +153,7 @@ public final class DisplayImageUploadClient {
             return new Result(
                     Component.translatable(LangDefs.IMAGE_UPLOAD_INVALID_PATH.getTranslationKey()),
                     0xFFFF5555,
-                    false
-            );
+                    false);
         }
 
         try {
@@ -169,8 +162,7 @@ public final class DisplayImageUploadClient {
                 return new Result(
                         Component.translatable(LangDefs.IMAGE_UPLOAD_INVALID_IMAGE.getTranslationKey()),
                         0xFFFF5555,
-                        false
-                );
+                        false);
             }
 
             Path fileName = path.getFileName();
@@ -180,8 +172,7 @@ public final class DisplayImageUploadClient {
             return new Result(
                     Component.translatable(LangDefs.IMAGE_UPLOAD_FAILED.getTranslationKey()),
                     0xFFFF5555,
-                    false
-            );
+                    false);
         }
     }
 
@@ -193,8 +184,7 @@ public final class DisplayImageUploadClient {
                 return new Result(
                         Component.translatable(LangDefs.IMAGE_UPLOAD_INVALID_IMAGE.getTranslationKey()),
                         0xFFFF5555,
-                        false
-                );
+                        false);
             }
 
             if (img.getWidth() > MAX_DIM || img.getHeight() > MAX_DIM) {
@@ -227,36 +217,30 @@ public final class DisplayImageUploadClient {
                 return new Result(
                         Component.translatable(
                                 LangDefs.IMAGE_UPLOAD_TOO_LARGE.getTranslationKey(),
-                                MAX_PACKET_BYTES / 1024
-                        ),
+                                MAX_PACKET_BYTES / 1024),
                         0xFFFF5555,
-                        false
-                );
+                        false);
             }
 
             NetworkHandler.sendToServer(new UploadDisplayImagePacket(
                     safeName,
                     pngBytes,
                     img.getWidth(),
-                    img.getHeight()
-            ));
+                    img.getHeight()));
 
             return new Result(
                     Component.translatable(
                             LangDefs.IMAGE_UPLOAD_OK.getTranslationKey(),
                             img.getWidth(),
-                            img.getHeight()
-                    ),
+                            img.getHeight()),
                     0xFF55FF55,
-                    true
-            );
+                    true);
         } catch (Throwable e) {
             CrazyAddons.LOGGER.debug("failed to upload buffered display image", e);
             return new Result(
                     Component.translatable(LangDefs.IMAGE_UPLOAD_FAILED.getTranslationKey()),
                     0xFFFF5555,
-                    false
-            );
+                    false);
         }
     }
 
@@ -355,7 +339,7 @@ public final class DisplayImageUploadClient {
         StringBuilder out = new StringBuilder();
         int used = 0;
 
-        for (int i = 0; i < s.length(); ) {
+        for (int i = 0; i < s.length();) {
             int cp = s.codePointAt(i);
             String part = new String(Character.toChars(cp));
             int partBytes = part.getBytes(StandardCharsets.UTF_8).length;
@@ -389,7 +373,8 @@ public final class DisplayImageUploadClient {
         try {
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION,
+                    RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
             g.drawImage(src.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, width, height, null);
         } finally {
             g.dispose();

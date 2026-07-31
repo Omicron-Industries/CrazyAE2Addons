@@ -1,19 +1,10 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
-import appeng.api.inventories.InternalInventory;
-import appeng.blockentity.AEBaseInvBlockEntity;
-import appeng.core.definitions.AEItems;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocator;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.api.inventories.BaseInternalInventory;
-import appeng.util.inv.CombinedInternalInventory;
-import appeng.util.inv.filter.IAEItemFilter;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +16,19 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
+import appeng.api.inventories.BaseInternalInventory;
+import appeng.api.inventories.InternalInventory;
+import appeng.blockentity.AEBaseInvBlockEntity;
+import appeng.core.definitions.AEItems;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocator;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.CombinedInternalInventory;
+import appeng.util.inv.filter.IAEItemFilter;
+
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
@@ -38,8 +42,8 @@ public class ReinforcedMatterCondenserBE extends AEBaseInvBlockEntity
     public static final int SINGULARITIES_PER_SUPER = 8192;
     public static final int REQUIRED_CELL_COMPONENTS = 64;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(ReinforcedMatterCondenserBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            ReinforcedMatterCondenserBE.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -50,19 +54,19 @@ public class ReinforcedMatterCondenserBE extends AEBaseInvBlockEntity
     private int storedSingularities = 0;
 
     @Getter
-    private final AppEngInternalInventory outputInventory =
-            new AppEngInternalInventory(this, 1, 64, onlyItem(AEItems.SINGULARITY.asItem()));
+    private final AppEngInternalInventory outputInventory = new AppEngInternalInventory(this, 1, 64,
+            onlyItem(AEItems.SINGULARITY.asItem()));
 
     @Getter
-    private final AppEngInternalInventory componentInventory =
-            new AppEngInternalInventory(this, 1, REQUIRED_CELL_COMPONENTS,
-                    onlyItem(AEItems.CELL_COMPONENT_256K.asItem()));
+    private final AppEngInternalInventory componentInventory = new AppEngInternalInventory(this, 1,
+            REQUIRED_CELL_COMPONENTS,
+            onlyItem(AEItems.CELL_COMPONENT_256K.asItem()));
 
     @Getter
     private final InternalInventory inputInventory = new CondenseInventory();
 
-    private final InternalInventory exposedInventory =
-            new CombinedInternalInventory(this.inputInventory, this.outputInventory);
+    private final InternalInventory exposedInventory = new CombinedInternalInventory(this.inputInventory,
+            this.outputInventory);
 
     public ReinforcedMatterCondenserBE(BlockPos pos, BlockState blockState) {
         super(InsaneBlockEntityRegistrar.REINFORCED_MATTER_CONDENSER_BE.get(), pos, blockState);

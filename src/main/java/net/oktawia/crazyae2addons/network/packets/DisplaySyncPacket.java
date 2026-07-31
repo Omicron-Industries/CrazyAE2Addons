@@ -1,6 +1,10 @@
 package net.oktawia.crazyae2addons.network.packets;
 
-import appeng.api.parts.IPartHost;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,12 +13,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.parts.Display;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Map;
-import java.util.function.Supplier;
+import appeng.api.parts.IPartHost;
+
+import net.oktawia.crazyae2addons.parts.Display;
 
 public record DisplaySyncPacket(BlockPos pos, Direction side, String packed) {
 
@@ -28,16 +30,13 @@ public record DisplaySyncPacket(BlockPos pos, Direction side, String packed) {
         return new DisplaySyncPacket(
                 buf.readBlockPos(),
                 buf.readEnum(Direction.class),
-                buf.readUtf(65535)
-        );
+                buf.readUtf(65535));
     }
 
     public static void handle(DisplaySyncPacket pkt, Supplier<NetworkEvent.Context> ctxSupplier) {
         NetworkEvent.Context ctx = ctxSupplier.get();
 
-        ctx.enqueueWork(() ->
-                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> Client.handle(pkt))
-        );
+        ctx.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> Client.handle(pkt)));
 
         ctx.setPacketHandled(true);
     }

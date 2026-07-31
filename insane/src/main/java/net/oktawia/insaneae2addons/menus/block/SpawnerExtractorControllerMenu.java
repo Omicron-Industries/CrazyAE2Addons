@@ -1,8 +1,11 @@
 package net.oktawia.insaneae2addons.menus.block;
 
-import appeng.api.upgrades.IUpgradeInventory;
-import lombok.Getter;
 import net.minecraft.world.entity.player.Inventory;
+
+import lombok.Getter;
+
+import appeng.api.upgrades.IUpgradeInventory;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerMenu;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.entities.mobstorage.SpawnerExtractorControllerBE;

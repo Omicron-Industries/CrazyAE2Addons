@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -20,8 +21,7 @@ public class CradleRecipeSerializer implements RecipeSerializer<CradleRecipe> {
         CradlePattern pattern = CradlePattern.fromJson(json.getAsJsonObject("pattern"));
 
         Block resultBlock = ForgeRegistries.BLOCKS.getValue(
-                new ResourceLocation(json.get("result_block").getAsString())
-        );
+                new ResourceLocation(json.get("result_block").getAsString()));
 
         String description = json.has("description") ? json.get("description").getAsString() : "";
 

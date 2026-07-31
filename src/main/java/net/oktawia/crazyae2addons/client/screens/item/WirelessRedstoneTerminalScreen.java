@@ -1,21 +1,24 @@
 package net.oktawia.crazyae2addons.client.screens.item;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+import de.mari_023.ae2wtlib.wut.CycleTerminalButton;
+import de.mari_023.ae2wtlib.wut.IUniversalTerminalCapable;
+
 import appeng.api.upgrades.Upgrades;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.BackgroundPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
-import de.mari_023.ae2wtlib.wut.CycleTerminalButton;
-import de.mari_023.ae2wtlib.wut.IUniversalTerminalCapable;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.client.screens.part.RedstoneTerminalScreen;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 import net.oktawia.crazyae2addons.menus.item.WirelessRedstoneTerminalMenu;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WirelessRedstoneTerminalScreen extends RedstoneTerminalScreen<WirelessRedstoneTerminalMenu>
         implements IUniversalTerminalCapable {
@@ -24,8 +27,7 @@ public class WirelessRedstoneTerminalScreen extends RedstoneTerminalScreen<Wirel
             WirelessRedstoneTerminalMenu menu,
             Inventory playerInventory,
             Component title,
-            ScreenStyle style
-    ) {
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         if (menu.isWUT()) {
@@ -39,8 +41,7 @@ public class WirelessRedstoneTerminalScreen extends RedstoneTerminalScreen<Wirel
 
         this.widgets.add("upgrades", new UpgradesPanel(
                 menu.getSlots(SlotSemantics.UPGRADE),
-                this::getCompatibleUpgrades
-        ));
+                this::getCompatibleUpgrades));
     }
 
     private List<Component> getCompatibleUpgrades() {

@@ -1,11 +1,14 @@
 package net.oktawia.crazyae2addons.logic.cpupriority;
 
-import appeng.api.implementations.menuobjects.ItemMenuHost;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+
 import net.oktawia.crazyae2addons.items.CpuPrioTunerItem;
-import org.jetbrains.annotations.Nullable;
 
 public class CpuPrioHost extends ItemMenuHost {
 

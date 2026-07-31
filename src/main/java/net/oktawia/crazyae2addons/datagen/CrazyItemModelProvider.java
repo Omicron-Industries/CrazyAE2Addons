@@ -7,6 +7,7 @@ import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
 
@@ -17,16 +18,17 @@ public class CrazyItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        for (var item : CrazyItemRegistrar.getItems()){
-            if (!CrazyItemRegistrar.getParts().contains(item)){
+        for (var item : CrazyItemRegistrar.getItems()) {
+            if (!CrazyItemRegistrar.getParts().contains(item)) {
                 simpleItem(item);
             }
         }
     }
 
-    private ItemModelBuilder simpleItem(Item item){
+    private ItemModelBuilder simpleItem(Item item) {
         return withExistingParent(ForgeRegistries.ITEMS.getKey(item).getPath(),
-            new ResourceLocation("item/generated")).texture("layer0",
-            new ResourceLocation(CrazyAddons.MODID, "item/" + ForgeRegistries.ITEMS.getKey(item).getPath()));
+                new ResourceLocation("item/generated")).texture("layer0",
+                        new ResourceLocation(CrazyAddons.MODID,
+                                "item/" + ForgeRegistries.ITEMS.getKey(item).getPath()));
     }
 }

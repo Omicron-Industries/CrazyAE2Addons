@@ -1,10 +1,5 @@
 package net.oktawia.crazyae2addons.menus.block;
 
-import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
-import appeng.menu.SlotSemantics;
-import appeng.menu.slot.AppEngSlot;
-import lombok.Getter;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -14,6 +9,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import lombok.Getter;
+
+import appeng.menu.AEBaseMenu;
+import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
+import appeng.menu.slot.AppEngSlot;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.RecipeFabricatorBE;
 import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
@@ -43,7 +46,7 @@ public class RecipeFabricatorMenu extends AEBaseMenu {
 
         this.fluidInSlot = this.addSlot(new FluidClickSlot(fluidUi, 0), SlotSemantics.MACHINE_INPUT);
 
-        this.addSlot(new AppEngSlot(host.output, 0){
+        this.addSlot(new AppEngSlot(host.output, 0) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;

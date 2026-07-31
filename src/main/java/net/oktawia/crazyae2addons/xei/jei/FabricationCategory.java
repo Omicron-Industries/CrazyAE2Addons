@@ -1,19 +1,23 @@
 package net.oktawia.crazyae2addons.xei.jei;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
-import org.jetbrains.annotations.Nullable;
 
 public class FabricationCategory extends ModularUIRecipeCategory<FabricationWrapper> {
 
-    public static final RecipeType<FabricationWrapper> TYPE =
-            RecipeType.create("crazyae2addons", "fabrication", FabricationWrapper.class);
+    public static final RecipeType<FabricationWrapper> TYPE = RecipeType.create("crazyae2addons", "fabrication",
+            FabricationWrapper.class);
 
     private final IDrawable background;
     private final IDrawable icon;
@@ -22,8 +26,7 @@ public class FabricationCategory extends ModularUIRecipeCategory<FabricationWrap
         this.background = guiHelper.createBlankDrawable(160, 100);
         this.icon = guiHelper.createDrawableIngredient(
                 VanillaTypes.ITEM_STACK,
-                new ItemStack(CrazyBlockRegistrar.RECIPE_FABRICATOR_BLOCK.get().asItem())
-        );
+                new ItemStack(CrazyBlockRegistrar.RECIPE_FABRICATOR_BLOCK.get().asItem()));
     }
 
     @Override

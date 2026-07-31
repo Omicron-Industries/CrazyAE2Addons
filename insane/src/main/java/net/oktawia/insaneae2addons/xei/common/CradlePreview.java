@@ -1,5 +1,12 @@
 package net.oktawia.insaneae2addons.xei.common;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -11,9 +18,11 @@ import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mojang.logging.LogUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
@@ -23,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
 import net.oktawia.insaneae2addons.blocks.cradle.EntropyCradleBlock;
 import net.oktawia.insaneae2addons.blocks.cradle.EntropyCradleCapacitorBlock;
@@ -33,14 +43,6 @@ import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
 import net.oktawia.insaneae2addons.recipes.CradlePattern;
 import net.oktawia.insaneae2addons.recipes.CradleRecipe;
-import net.minecraft.core.Direction;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class CradlePreview extends WidgetGroup {
 
@@ -287,7 +289,8 @@ public class CradlePreview extends WidgetGroup {
                 shell.put(new BlockPos(entry.relX(), entry.relY(), entry.relZ()), BlockInfo.fromBlockState(state));
             }
 
-            BlockState controller = formed(InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get().defaultBlockState());
+            BlockState controller = formed(
+                    InsaneBlockRegistrar.ENTROPY_CRADLE_CONTROLLER_BLOCK.get().defaultBlockState());
             shell.put(new BlockPos(0, 0, 0), BlockInfo.fromBlockState(controller));
         } catch (Exception e) {
             LogUtils.getLogger().warn("Failed to build cradle shell overlay: {}", e.toString());

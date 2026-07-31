@@ -2,15 +2,19 @@ package net.oktawia.insaneae2addons.logic.penrose;
 
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-import lombok.Getter;
-import lombok.Setter;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import net.oktawia.insaneae2addons.InsaneConfig;
-import org.jetbrains.annotations.NotNull;
 
 public final class CoolantTank implements IFluidHandler, ITagSerializable<CompoundTag>, IContentChangeAware {
 

@@ -1,6 +1,7 @@
 package net.oktawia.insaneae2addons.integration.kubejs;
 
 import com.google.gson.JsonObject;
+
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.StringComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;

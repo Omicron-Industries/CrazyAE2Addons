@@ -1,36 +1,40 @@
 package net.oktawia.insaneae2addons.entities.penrose;
 
-import appeng.util.SettingsFrom;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
-import net.oktawia.crazyae2addons.util.IManagedBEHelper;
-import lombok.Getter;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+
+import lombok.Getter;
+
+import appeng.util.SettingsFrom;
+
+import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PenroseHawkingVentBE extends PenrosePeripheralBE {
 
     private static final String NBT_DESIRED_EVAPORATION = "desired_evaporation";
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            IManagedBEHelper.inheritedFieldHolder(PenroseHawkingVentBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = IManagedBEHelper
+            .inheritedFieldHolder(PenroseHawkingVentBE.class);
 
     @Persisted
     @DescSynced
@@ -50,8 +54,7 @@ public class PenroseHawkingVentBE extends PenrosePeripheralBE {
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.PENROSE_HAWKING_VENT_BLOCK.get()),
-                1.0F
-        );
+                1.0F);
     }
 
     @Override

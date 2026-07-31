@@ -1,23 +1,26 @@
 package net.oktawia.insaneae2addons.xei.emi;
 
-import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
-import net.oktawia.insaneae2addons.InsaneAddons;
-import net.oktawia.insaneae2addons.xei.common.MultiblockEntry;
-import net.oktawia.insaneae2addons.xei.common.MultiblockStructurePreview;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
+
+import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
+import net.oktawia.insaneae2addons.InsaneAddons;
+import net.oktawia.insaneae2addons.xei.common.MultiblockEntry;
+import net.oktawia.insaneae2addons.xei.common.MultiblockStructurePreview;
 
 public class MultiblockEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 

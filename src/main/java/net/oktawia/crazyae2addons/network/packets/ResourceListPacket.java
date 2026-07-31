@@ -1,17 +1,18 @@
 package net.oktawia.crazyae2addons.network.packets;
 
-import appeng.api.stacks.GenericStack;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
-import net.oktawia.crazyae2addons.client.screens.part.ResourceTrackingTerminalScreen;
-import net.oktawia.crazyae2addons.menus.part.ResourceTrackingTerminalMenu;
-import net.oktawia.crazyae2addons.tracking.ResourceSummary;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import appeng.api.stacks.GenericStack;
+
+import net.oktawia.crazyae2addons.client.screens.part.ResourceTrackingTerminalScreen;
+import net.oktawia.crazyae2addons.tracking.ResourceSummary;
 
 public record ResourceListPacket(List<ResourceSummary> summaries) {
 

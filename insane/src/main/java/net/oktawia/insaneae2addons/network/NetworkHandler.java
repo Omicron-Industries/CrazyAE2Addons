@@ -5,6 +5,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.network.packets.SendLongStringToClientPacket;
 import net.oktawia.insaneae2addons.network.packets.SendLongStringToServerPacket;
@@ -17,8 +18,7 @@ public final class NetworkHandler {
             InsaneAddons.makeId("main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
+            PROTOCOL_VERSION::equals);
 
     private static int nextId = 0;
 

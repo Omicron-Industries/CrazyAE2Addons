@@ -1,5 +1,16 @@
 package net.oktawia.insaneae2addons.mixins;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -12,33 +23,20 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingTreeNode;
 import appeng.me.service.CraftingService;
+
 import net.oktawia.crazyae2addons.entities.CrazyPatternProviderBE;
 import net.oktawia.crazyae2addons.parts.CrazyPatternProviderPart;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Mixin(value = CraftingTreeNode.class, remap = false)
 public abstract class MixinCraftingTreeNode {
 
-    @Shadow @Final private CraftingCalculation job;
+    @Shadow
+    @Final
+    private CraftingCalculation job;
 
-    @Redirect(
-            method = "buildChildPatterns",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lappeng/api/networking/crafting/ICraftingService;getCraftingFor(Lappeng/api/stacks/AEKey;)Ljava/util/Collection;"
-            )
-    )
+    @Redirect(method = "buildChildPatterns", at = @At(value = "INVOKE", target = "Lappeng/api/networking/crafting/ICraftingService;getCraftingFor(Lappeng/api/stacks/AEKey;)Ljava/util/Collection;"))
     private Collection<IPatternDetails> insaneAE2Addons$filterPatterns(ICraftingService craftingService, AEKey what) {
         Collection<IPatternDetails> original = craftingService.getCraftingFor(what);
         if (original.isEmpty() || !InsaneConfig.COMMON.PROVIDER_CARDS_ENABLED.get()) {
@@ -76,7 +74,7 @@ public abstract class MixinCraftingTreeNode {
 
     @Unique
     private boolean insaneAE2Addons$allowed(IPatternDetails details, ICraftingService craftingService,
-                                            IGrid grid, boolean isPlayer, boolean isMachine) {
+            IGrid grid, boolean isPlayer, boolean isMachine) {
         if (!(craftingService instanceof CraftingService ae2Service)) {
             return true;
         }

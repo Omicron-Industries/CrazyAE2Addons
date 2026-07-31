@@ -11,12 +11,13 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 
 public final class MultiblockDefinition {
     private final Map<Character, SymbolDef> symbols;
@@ -27,8 +28,7 @@ public final class MultiblockDefinition {
 
     private MultiblockDefinition(
             Map<Character, SymbolDef> symbols,
-            List<PatternEntry> entries
-    ) {
+            List<PatternEntry> entries) {
         this.symbols = Collections.unmodifiableMap(new LinkedHashMap<>(symbols));
         this.entries = List.copyOf(entries);
 
@@ -54,8 +54,8 @@ public final class MultiblockDefinition {
     }
 
     public List<BlockPos> getOffsetsBySymbol(Direction structureFacing, char symbol) {
-        Map<Character, List<BlockPos>> bySymbol =
-                this.rotatedSymbolOffsets.get(normalizeHorizontalFacing(structureFacing));
+        Map<Character, List<BlockPos>> bySymbol = this.rotatedSymbolOffsets
+                .get(normalizeHorizontalFacing(structureFacing));
 
         List<BlockPos> offsets = bySymbol.get(symbol);
         return offsets != null ? offsets : Collections.emptyList();
@@ -115,14 +115,12 @@ public final class MultiblockDefinition {
                 ResourceLocation id = ResourceLocation.tryParse(blockId);
                 if (id == null) {
                     throw new IllegalArgumentException(
-                            "Invalid block id '" + blockId + "' for symbol '" + symbol + "'"
-                    );
+                            "Invalid block id '" + blockId + "' for symbol '" + symbol + "'");
                 }
 
                 if (!ForgeRegistries.BLOCKS.containsKey(id)) {
                     throw new IllegalArgumentException(
-                            "Unknown block id '" + blockId + "' for symbol '" + symbol + "'"
-                    );
+                            "Unknown block id '" + blockId + "' for symbol '" + symbol + "'");
                 }
 
                 resolvedBlocks.add(ForgeRegistries.BLOCKS.getValue(id));
@@ -153,7 +151,8 @@ public final class MultiblockDefinition {
                 String normalized = normalizeRow(row);
 
                 if (normalized.isEmpty()) {
-                    throw new IllegalArgumentException("Layer row at z=" + z + " cannot be empty after removing spaces");
+                    throw new IllegalArgumentException(
+                            "Layer row at z=" + z + " cannot be empty after removing spaces");
                 }
 
                 if (this.expectedWidth == -1) {
@@ -165,8 +164,7 @@ public final class MultiblockDefinition {
                                     + ", got "
                                     + normalized.length()
                                     + " at z="
-                                    + z
-                    );
+                                    + z);
                 }
 
                 normalizedRows.add(normalized);
@@ -179,8 +177,7 @@ public final class MultiblockDefinition {
                         "All layers must have the same row count. Expected "
                                 + this.expectedDepth
                                 + ", got "
-                                + normalizedRows.size()
-                );
+                                + normalizedRows.size());
             }
 
             this.layers.add(List.copyOf(normalizedRows));
@@ -218,8 +215,8 @@ public final class MultiblockDefinition {
 
                         if (!this.symbols.containsKey(symbol)) {
                             throw new IllegalStateException(
-                                    "Pattern uses undefined symbol '" + symbol + "' at x=" + x + ", y=" + y + ", z=" + z
-                            );
+                                    "Pattern uses undefined symbol '" + symbol + "' at x=" + x + ", y=" + y + ", z="
+                                            + z);
                         }
                     }
                 }
@@ -255,8 +252,7 @@ public final class MultiblockDefinition {
                                 x - controllerX,
                                 y - controllerY,
                                 z - controllerZ,
-                                symbol
-                        ));
+                                symbol));
                     }
                 }
             }
@@ -267,8 +263,7 @@ public final class MultiblockDefinition {
         private static void validateSymbolChar(char symbol) {
             if (symbol == '.' || Character.isWhitespace(symbol)) {
                 throw new IllegalArgumentException(
-                        "'.' and whitespace are reserved for pattern formatting/wildcards and cannot be used as real symbols"
-                );
+                        "'.' and whitespace are reserved for pattern formatting/wildcards and cannot be used as real symbols");
             }
         }
 
@@ -302,8 +297,7 @@ public final class MultiblockDefinition {
                         rotatedOffset.getX(),
                         entry.relY(),
                         rotatedOffset.getZ(),
-                        entry.symbol()
-                ));
+                        entry.symbol()));
             }
 
             result.put(facing, List.copyOf(rotated));
@@ -313,8 +307,7 @@ public final class MultiblockDefinition {
     }
 
     private static Map<Direction, Map<Character, List<BlockPos>>> buildRotatedSymbolOffsets(
-            Map<Direction, List<PatternEntry>> rotatedEntries
-    ) {
+            Map<Direction, List<PatternEntry>> rotatedEntries) {
         EnumMap<Direction, Map<Character, List<BlockPos>>> result = new EnumMap<>(Direction.class);
 
         for (var facingEntry : rotatedEntries.entrySet()) {
@@ -338,8 +331,7 @@ public final class MultiblockDefinition {
     }
 
     private static Map<Direction, Map<BlockPos, PatternEntry>> buildRotatedEntryByOffset(
-            Map<Direction, List<PatternEntry>> rotatedEntries
-    ) {
+            Map<Direction, List<PatternEntry>> rotatedEntries) {
         EnumMap<Direction, Map<BlockPos, PatternEntry>> result = new EnumMap<>(Direction.class);
 
         for (var facingEntry : rotatedEntries.entrySet()) {
@@ -354,8 +346,7 @@ public final class MultiblockDefinition {
                             "Duplicate rotated offset detected for facing "
                                     + facingEntry.getKey()
                                     + " at "
-                                    + pos
-                    );
+                                    + pos);
                 }
             }
 

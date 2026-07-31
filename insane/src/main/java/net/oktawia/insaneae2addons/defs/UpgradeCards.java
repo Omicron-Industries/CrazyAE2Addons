@@ -1,9 +1,12 @@
 package net.oktawia.insaneae2addons.defs;
 
+import com.glodblock.github.appflux.common.AFItemAndBlock;
+
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
 import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEItems;
-import com.glodblock.github.appflux.common.AFItemAndBlock;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
 import net.oktawia.crazyae2addons.IsModLoaded;
 import net.oktawia.crazyae2addons.defs.regs.CrazyBlockRegistrar;
 import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
@@ -23,8 +26,10 @@ public class UpgradeCards {
             Upgrades.add(AEItems.SPEED_CARD, InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK.get(), 4);
 
             Upgrades.add(AEItems.SPEED_CARD, InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4);
-            Upgrades.add(InsaneItemRegistrar.LOOTING_UPGRADE_CARD.get(), InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4);
-            Upgrades.add(InsaneItemRegistrar.EXPERIENCE_UPGRADE_CARD.get(), InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4);
+            Upgrades.add(InsaneItemRegistrar.LOOTING_UPGRADE_CARD.get(),
+                    InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4);
+            Upgrades.add(InsaneItemRegistrar.EXPERIENCE_UPGRADE_CARD.get(),
+                    InsaneBlockRegistrar.MOB_FARM_CONTROLLER_BLOCK.get(), 4);
 
             Upgrades.add(AEItems.CAPACITY_CARD, InsaneItemRegistrar.MOB_EXPORT_BUS.get(), 5);
             Upgrades.add(AEItems.REDSTONE_CARD, InsaneItemRegistrar.MOB_EXPORT_BUS.get(), 1);
@@ -45,7 +50,8 @@ public class UpgradeCards {
                     CrazyItemRegistrar.CRAZY_PATTERN_PROVIDER_PART.get(), 1);
 
             if (IsModLoaded.APP_FLUX) {
-                Upgrades.add(AFItemAndBlock.INDUCTION_CARD, InsaneBlockRegistrar.BROKEN_PATTERN_PROVIDER_BLOCK.get(), 1);
+                Upgrades.add(AFItemAndBlock.INDUCTION_CARD, InsaneBlockRegistrar.BROKEN_PATTERN_PROVIDER_BLOCK.get(),
+                        1);
             }
         });
     }

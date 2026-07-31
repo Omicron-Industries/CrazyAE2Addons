@@ -1,23 +1,28 @@
 package net.oktawia.insaneae2addons.logic.nbt;
 
-import appeng.api.stacks.AEItemKey;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lombok.Getter;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagParser;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagParser;
+
+import lombok.Getter;
+
+import appeng.api.stacks.AEItemKey;
+
 public final class NBTMatcher {
 
-    private NBTMatcher() {}
+    private NBTMatcher() {
+    }
 
     private static final class InvalidNbtMatcherSyntaxException extends Exception {
         private InvalidNbtMatcherSyntaxException(String s) {
@@ -26,7 +31,8 @@ public final class NBTMatcher {
     }
 
     public static Compiled compile(@Nullable String expr) {
-        if (expr == null || expr.isBlank()) return Compiled.EMPTY;
+        if (expr == null || expr.isBlank())
+            return Compiled.EMPTY;
         try {
             List<Token> tokens = tokenize(expr);
             Token[] rpn = toRpn(tokens);
@@ -37,19 +43,23 @@ public final class NBTMatcher {
     }
 
     public static boolean doesItemMatch(@Nullable AEItemKey item, String expr) {
-        if (item == null) return false;
+        if (item == null)
+            return false;
         return doesItemMatch(item, compile(expr));
     }
 
     public static boolean doesItemMatch(@Nullable AEItemKey item, @Nullable Compiled compiled) {
-        if (item == null || compiled == null || !compiled.valid || compiled.rpn.length == 0) return false;
+        if (item == null || compiled == null || !compiled.valid || compiled.rpn.length == 0)
+            return false;
         CompoundTag tag = item.getTag();
-        if (tag == null) tag = new CompoundTag();
+        if (tag == null)
+            tag = new CompoundTag();
         return doesTagMatch(tag, compiled);
     }
 
     public static boolean doesTagMatch(@Nullable CompoundTag tag, @Nullable Compiled compiled) {
-        if (compiled == null || !compiled.valid || compiled.rpn.length == 0) return false;
+        if (compiled == null || !compiled.valid || compiled.rpn.length == 0)
+            return false;
         CompoundTag t = tag == null ? new CompoundTag() : tag;
         try {
             return evalRpn(compiled.rpn, t);
@@ -79,7 +89,9 @@ public final class NBTMatcher {
         static final Compiled EMPTY = new Compiled(new Token[0], true, null);
     }
 
-    private enum TokenType { CRIT, OPERATOR, LPAREN, RPAREN }
+    private enum TokenType {
+        CRIT, OPERATOR, LPAREN, RPAREN
+    }
 
     private enum Operator {
         NOT("!", 3, true),
@@ -131,21 +143,25 @@ public final class NBTMatcher {
             }
 
             if (c == '(') {
-                if (!expectingOperand) throw new InvalidNbtMatcherSyntaxException("Unexpected '(' at position " + pos);
+                if (!expectingOperand)
+                    throw new InvalidNbtMatcherSyntaxException("Unexpected '(' at position " + pos);
                 tokens.add(Token.lparen());
                 lp++;
                 pos++;
             } else if (c == ')') {
-                if (expectingOperand || lp <= 0) throw new InvalidNbtMatcherSyntaxException("Unexpected ')' at position " + pos);
+                if (expectingOperand || lp <= 0)
+                    throw new InvalidNbtMatcherSyntaxException("Unexpected ')' at position " + pos);
                 tokens.add(Token.rparen());
                 lp--;
                 pos++;
             } else if (c == '!') {
-                if (!expectingOperand) throw new InvalidNbtMatcherSyntaxException("Unexpected '!' at position " + pos);
+                if (!expectingOperand)
+                    throw new InvalidNbtMatcherSyntaxException("Unexpected '!' at position " + pos);
                 tokens.add(Token.op(Operator.NOT));
                 pos++;
             } else if (c == '&' || c == '|' || c == '^') {
-                if (expectingOperand) throw new InvalidNbtMatcherSyntaxException("Unexpected operator '" + c + "' at position " + pos);
+                if (expectingOperand)
+                    throw new InvalidNbtMatcherSyntaxException("Unexpected operator '" + c + "' at position " + pos);
                 Operator op = c == '&' ? Operator.AND : c == '|' ? Operator.OR : Operator.XOR;
                 pos++;
                 if ((c == '&' || c == '|') && pos < expr.length() && expr.charAt(pos) == c) {
@@ -154,7 +170,8 @@ public final class NBTMatcher {
                 tokens.add(Token.op(op));
                 expectingOperand = true;
             } else if (c == '{') {
-                if (!expectingOperand) throw new InvalidNbtMatcherSyntaxException("Unexpected '{' at position " + pos);
+                if (!expectingOperand)
+                    throw new InvalidNbtMatcherSyntaxException("Unexpected '{' at position " + pos);
                 int end = readBalanced(expr, pos);
                 String snippet = expr.substring(pos, end);
                 tokens.add(Token.crit(parseSnippet(snippet)));
@@ -165,9 +182,12 @@ public final class NBTMatcher {
             }
         }
 
-        if (tokens.isEmpty()) throw new InvalidNbtMatcherSyntaxException("Expression cannot be empty.");
-        if (lp > 0) throw new InvalidNbtMatcherSyntaxException("Missing ')' at the end of the expression.");
-        if (expectingOperand) throw new InvalidNbtMatcherSyntaxException("Expression ended unexpectedly.");
+        if (tokens.isEmpty())
+            throw new InvalidNbtMatcherSyntaxException("Expression cannot be empty.");
+        if (lp > 0)
+            throw new InvalidNbtMatcherSyntaxException("Missing ')' at the end of the expression.");
+        if (expectingOperand)
+            throw new InvalidNbtMatcherSyntaxException("Expression ended unexpectedly.");
 
         return tokens;
     }
@@ -176,7 +196,8 @@ public final class NBTMatcher {
         int d = 0;
         int pos = start;
         do {
-            if (pos >= src.length()) throw new InvalidNbtMatcherSyntaxException("Unbalanced '{' at position " + start);
+            if (pos >= src.length())
+                throw new InvalidNbtMatcherSyntaxException("Unbalanced '{' at position " + start);
             char ch = src.charAt(pos++);
             if (ch == '{') {
                 d++;
@@ -185,8 +206,10 @@ public final class NBTMatcher {
             } else if (ch == '"') {
                 while (pos < src.length()) {
                     char q = src.charAt(pos++);
-                    if (q == '\\') pos++;
-                    else if (q == '"') break;
+                    if (q == '\\')
+                        pos++;
+                    else if (q == '"')
+                        break;
                 }
             }
         } while (d > 0);
@@ -206,8 +229,10 @@ public final class NBTMatcher {
                         Operator top = stack.peek().op;
                         boolean shouldPop = (!cur.rightAssociative && cur.precedence <= top.precedence)
                                 || (cur.rightAssociative && cur.precedence < top.precedence);
-                        if (shouldPop) out.add(stack.pop());
-                        else break;
+                        if (shouldPop)
+                            out.add(stack.pop());
+                        else
+                            break;
                     }
                     stack.push(t);
                 }
@@ -223,14 +248,16 @@ public final class NBTMatcher {
                         }
                         out.add(stack.pop());
                     }
-                    if (!found) throw new InvalidNbtMatcherSyntaxException("Mismatched parentheses.");
+                    if (!found)
+                        throw new InvalidNbtMatcherSyntaxException("Mismatched parentheses.");
                 }
             }
         }
 
         while (!stack.isEmpty()) {
             Token top = stack.pop();
-            if (top.type == TokenType.LPAREN) throw new InvalidNbtMatcherSyntaxException("Mismatched parentheses.");
+            if (top.type == TokenType.LPAREN)
+                throw new InvalidNbtMatcherSyntaxException("Mismatched parentheses.");
             out.add(top);
         }
 
@@ -247,17 +274,20 @@ public final class NBTMatcher {
                 case OPERATOR -> {
                     int required = t.op == Operator.NOT ? 1 : 2;
                     sp -= required;
-                    if (sp < 0) throw new InvalidNbtMatcherSyntaxException("Unexpected operator " + t.op);
+                    if (sp < 0)
+                        throw new InvalidNbtMatcherSyntaxException("Unexpected operator " + t.op);
                     sp++;
                 }
                 default -> throw new InvalidNbtMatcherSyntaxException("Unexpected token: " + t.type);
             }
         }
-        if (sp != 1) throw new InvalidNbtMatcherSyntaxException("Depth at the end should equal 1");
+        if (sp != 1)
+            throw new InvalidNbtMatcherSyntaxException("Depth at the end should equal 1");
     }
 
     private static boolean evalRpn(Token[] rpn, CompoundTag itemTag) throws InvalidNbtMatcherSyntaxException {
-        if (rpn.length == 0) return false;
+        if (rpn.length == 0)
+            return false;
 
         boolean[] stack = new boolean[rpn.length];
         int sp = 0;
@@ -268,10 +298,12 @@ public final class NBTMatcher {
             } else if (t.type == TokenType.OPERATOR) {
                 Operator op = t.op;
                 if (op == Operator.NOT) {
-                    if (sp < 1) throw new InvalidNbtMatcherSyntaxException("NOT needs 1 operand.");
+                    if (sp < 1)
+                        throw new InvalidNbtMatcherSyntaxException("NOT needs 1 operand.");
                     stack[sp - 1] = !stack[sp - 1];
                 } else {
-                    if (sp < 2) throw new InvalidNbtMatcherSyntaxException(op.symbol + " needs 2 operands.");
+                    if (sp < 2)
+                        throw new InvalidNbtMatcherSyntaxException(op.symbol + " needs 2 operands.");
                     boolean right = stack[--sp];
                     boolean left = stack[--sp];
                     stack[sp++] = switch (op) {
@@ -286,7 +318,8 @@ public final class NBTMatcher {
             }
         }
 
-        if (sp == 1) return stack[0];
+        if (sp == 1)
+            return stack[0];
         throw new InvalidNbtMatcherSyntaxException("Invalid expression: stack size " + sp);
     }
 
@@ -304,11 +337,18 @@ public final class NBTMatcher {
         boolean inQ = false;
         for (int i = 0; i < src.length(); i++) {
             char ch = src.charAt(i);
-            if (ch == '"') { out.append(ch); inQ = !inQ; continue; }
+            if (ch == '"') {
+                out.append(ch);
+                inQ = !inQ;
+                continue;
+            }
             if (!inQ && ch == '*') {
                 boolean key = lookAhead(src, i + 1, ':');
                 boolean val = lookBehind(src, i - 1, ':');
-                if (key || val) { out.append("\"*\""); continue; }
+                if (key || val) {
+                    out.append("\"*\"");
+                    continue;
+                }
             }
             out.append(ch);
         }
@@ -316,12 +356,14 @@ public final class NBTMatcher {
     }
 
     private static boolean lookAhead(String s, int i, char t) {
-        while (i < s.length() && Character.isWhitespace(s.charAt(i))) i++;
+        while (i < s.length() && Character.isWhitespace(s.charAt(i)))
+            i++;
         return i < s.length() && s.charAt(i) == t;
     }
 
     private static boolean lookBehind(String s, int i, char t) {
-        while (i >= 0 && Character.isWhitespace(s.charAt(i))) i--;
+        while (i >= 0 && Character.isWhitespace(s.charAt(i)))
+            i--;
         return i >= 0 && s.charAt(i) == t;
     }
 
@@ -335,14 +377,20 @@ public final class NBTMatcher {
                 }
                 boolean ok = false;
                 for (String ik : item.getAllKeys()) {
-                    if (valueMatches(item.get(ik), cv)) { ok = true; break; }
+                    if (valueMatches(item.get(ik), cv)) {
+                        ok = true;
+                        break;
+                    }
                 }
-                if (!ok) return false;
+                if (!ok)
+                    return false;
                 continue;
             }
 
-            if (!item.contains(ck)) return false;
-            if (!valueMatches(item.get(ck), cv)) return false;
+            if (!item.contains(ck))
+                return false;
+            if (!valueMatches(item.get(ck), cv))
+                return false;
         }
         return true;
     }
@@ -382,10 +430,10 @@ public final class NBTMatcher {
         if (crit.isEmpty()) {
             return item.isEmpty();
         }
-        outer:
-        for (Tag c : crit) {
+        outer: for (Tag c : crit) {
             for (Tag i : item) {
-                if (valueMatches(i, c)) continue outer;
+                if (valueMatches(i, c))
+                    continue outer;
             }
             return false;
         }
@@ -393,7 +441,9 @@ public final class NBTMatcher {
     }
 
     private static boolean listAnyMatch(ListTag item, CompoundTag crit) {
-        for (Tag i : item) if (i instanceof CompoundTag ct && matches(ct, crit)) return true;
+        for (Tag i : item)
+            if (i instanceof CompoundTag ct && matches(ct, crit))
+                return true;
         return false;
     }
 

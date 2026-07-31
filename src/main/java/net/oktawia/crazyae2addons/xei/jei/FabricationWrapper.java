@@ -1,13 +1,15 @@
 package net.oktawia.crazyae2addons.xei.jei;
 
+import java.util.List;
+
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.xei.common.FabricationEntry;
 import net.oktawia.crazyae2addons.xei.common.FabricationPreview;
-
-import java.util.List;
 
 public class FabricationWrapper extends ModularWrapper<FabricationPreview> {
 
@@ -25,8 +27,7 @@ public class FabricationWrapper extends ModularWrapper<FabricationPreview> {
                 entry.fluidInput(),
                 entry.fluidOutput(),
                 entry.requiredKey(),
-                entry.label()
-        ));
+                entry.label()));
         this.input = entry.inputs();
         this.output = entry.output();
         this.fluidInput = entry.fluidInput();

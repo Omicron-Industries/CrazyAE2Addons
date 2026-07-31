@@ -1,9 +1,11 @@
 package net.oktawia.crazyae2addons.logic.viewcell;
 
-import appeng.api.implementations.menuobjects.ItemMenuHost;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.implementations.menuobjects.ItemMenuHost;
 
 public class TagViewCellHost extends ItemMenuHost {
 

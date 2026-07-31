@@ -16,7 +16,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
+
 import lombok.Getter;
+
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.defs.InsaneMultiblocks;
 import net.oktawia.insaneae2addons.events.BlackHoleFieldManager;

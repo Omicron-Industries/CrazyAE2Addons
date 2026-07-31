@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.xei.common;
 
+import java.util.List;
+
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -8,17 +10,18 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.mojang.logging.LogUtils;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
 import net.oktawia.insaneae2addons.recipes.ResearchRecipe;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class ResearchPreview extends WidgetGroup {
 
@@ -88,8 +91,7 @@ public class ResearchPreview extends WidgetGroup {
                     .setIngredientIO(IngredientIO.INPUT));
 
             String compText = Component.translatable(
-                    LangDefs.RESEARCH_PEDESTAL_COMPACT.getTranslationKey(), c.computation
-            ).getString();
+                    LangDefs.RESEARCH_PEDESTAL_COMPACT.getTranslationKey(), c.computation).getString();
 
             int textWidth = font.width(compText);
             addWidget(new LabelWidget(slotCenterX - textWidth / 2, slotY + 18 + 2, compText));
@@ -109,11 +111,11 @@ public class ResearchPreview extends WidgetGroup {
                 .setIngredientIO(IngredientIO.OUTPUT));
 
         addWidget(new ButtonWidget(x + 20, slotY + 3, 12, 12,
-                new TextTexture("?"), b -> {})
+                new TextTexture("?"), b -> {
+                })
                 .appendHoverTooltips(
                         comp(LangDefs.RESEARCH_DRIVE_TOOLTIP_1),
-                        comp(LangDefs.RESEARCH_DRIVE_TOOLTIP_2)
-                ));
+                        comp(LangDefs.RESEARCH_DRIVE_TOOLTIP_2)));
 
         addWidget(new LabelWidget(x + 35, slotY + 4, tr(LangDefs.RESEARCH_OUTPUT_DISK_NOTE)));
     }

@@ -3,7 +3,10 @@ package net.oktawia.insaneae2addons.entities.penrose;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -14,19 +17,20 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+
+import lombok.Getter;
+
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PenroseLaserBE extends PenrosePeripheralBE {
 
     public static final int CAPACITY = 2_100_000_000;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            IManagedBEHelper.inheritedFieldHolder(PenroseLaserBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = IManagedBEHelper
+            .inheritedFieldHolder(PenroseLaserBE.class);
 
     @Persisted
     @DescSynced
@@ -46,8 +50,7 @@ public class PenroseLaserBE extends PenrosePeripheralBE {
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.PENROSE_LASER_BLOCK.get()),
-                2.0F
-        );
+                2.0F);
     }
 
     @Override

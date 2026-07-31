@@ -1,9 +1,11 @@
 package net.oktawia.insaneae2addons.client.screens.block;
 
-import appeng.client.gui.style.ScreenStyle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.style.ScreenStyle;
+
 import net.oktawia.crazyae2addons.client.misc.GradientProgressBar;
 import net.oktawia.crazyae2addons.client.screens.AbstractMultiblockControllerScreen;
 import net.oktawia.crazyae2addons.util.Utils;

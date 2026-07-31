@@ -1,5 +1,14 @@
 package net.oktawia.crazyae2addons.parts;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -8,19 +17,12 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractDisplayPart;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.interfaces.IRedstoneTerminalHost;
 import net.oktawia.crazyae2addons.menus.part.RedstoneTerminalMenu;
-import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 public class RedstoneTerminal extends AbstractDisplayPart implements IUpgradeableObject, IRedstoneTerminalHost {
 
@@ -93,8 +95,7 @@ public class RedstoneTerminal extends AbstractDisplayPart implements IUpgradeabl
                 .map(emitter -> new RedstoneTerminalMenu.EmitterInfo(
                         emitter.getBlockEntity().getBlockPos(),
                         emitter.getNameId(),
-                        emitter.getState()
-                ))
+                        emitter.getState()))
                 .toList();
     }
 

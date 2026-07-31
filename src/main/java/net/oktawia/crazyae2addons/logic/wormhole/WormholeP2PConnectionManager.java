@@ -1,21 +1,24 @@
 package net.oktawia.crazyae2addons.logic.wormhole;
 
-import appeng.api.networking.GridHelper;
-import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridNode;
-import appeng.hooks.ticking.TickHandler;
-import lombok.RequiredArgsConstructor;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.oktawia.crazyae2addons.parts.p2p.WormholeP2PTunnelPart;
-
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.RequiredArgsConstructor;
+
+import appeng.api.networking.GridHelper;
+import appeng.api.networking.IGridConnection;
+import appeng.api.networking.IGridNode;
+import appeng.hooks.ticking.TickHandler;
+
+import net.oktawia.crazyae2addons.parts.p2p.WormholeP2PTunnelPart;
 
 @RequiredArgsConstructor
 public class WormholeP2PConnectionManager {

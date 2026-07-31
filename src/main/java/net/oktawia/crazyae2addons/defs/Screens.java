@@ -1,7 +1,7 @@
 package net.oktawia.crazyae2addons.defs;
 
 import appeng.init.client.InitScreens;
-import com.mojang.blaze3d.platform.DisplayData;
+
 import net.oktawia.crazyae2addons.client.screens.CrazyPatternProviderScreen;
 import net.oktawia.crazyae2addons.client.screens.block.DisplayDatabaseScreen;
 import net.oktawia.crazyae2addons.client.screens.block.EjectorScreen;
@@ -37,99 +37,81 @@ public final class Screens {
         InitScreens.register(
                 CrazyMenuRegistrar.CRAZY_PATTERN_PROVIDER_MENU.get(),
                 CrazyPatternProviderScreen<CrazyPatternProviderMenu>::new,
-                "/screens/crazy_pattern_provider.json"
-        );
+                "/screens/crazy_pattern_provider.json");
         InitScreens.register(
                 CrazyMenuRegistrar.EJECTOR_MENU.get(),
                 EjectorScreen<EjectorMenu>::new,
-                "/screens/ejector.json"
-        );
+                "/screens/ejector.json");
         InitScreens.register(
                 CrazyMenuRegistrar.DISPLAY_MENU.get(),
                 DisplayScreen<DisplayMenu>::new,
-                "/screens/display.json"
-        );
+                "/screens/display.json");
         InitScreens.register(
                 CrazyMenuRegistrar.DISPLAY_IMAGES_SUBMENU.get(),
                 DisplayImagesSubScreen::new,
-                "/screens/display_images_subscreen.json"
-        );
+                "/screens/display_images_subscreen.json");
         InitScreens.register(
                 CrazyMenuRegistrar.DISPLAY_TOKEN_SUBMENU.get(),
                 DisplayTokenSubScreen::new,
-                "/screens/display_token_subscreen.json"
-        );
+                "/screens/display_token_subscreen.json");
         InitScreens.register(
                 WirelessNotificationTerminalMenu.TYPE,
                 WirelessNotificationTerminalScreen<WirelessNotificationTerminalMenu>::new,
-                "/screens/wireless_notification_terminal.json"
-        );
+                "/screens/wireless_notification_terminal.json");
         InitScreens.register(
                 CrazyMenuRegistrar.EMITTER_TERMINAL_MENU.get(),
                 EmitterTerminalScreen<EmitterTerminalMenu>::new,
-                "/screens/emitter_terminal.json"
-        );
+                "/screens/emitter_terminal.json");
         InitScreens.register(
                 WirelessEmitterTerminalMenu.TYPE,
                 WirelessEmitterTerminalScreen::new,
-                "/screens/wireless_emitter_terminal.json"
-        );
+                "/screens/wireless_emitter_terminal.json");
         InitScreens.register(
                 CrazyMenuRegistrar.MULTI_LEVEL_EMITTER_MENU.get(),
                 MultiLevelEmitterScreen<MultiLevelEmitterMenu>::new,
-                "/screens/multi_level_emitter.json"
-        );
+                "/screens/multi_level_emitter.json");
         InitScreens.register(
                 CrazyMenuRegistrar.TAG_LEVEL_EMITTER_MENU.get(),
                 TagLevelEmitterScreen<TagLevelEmitterMenu>::new,
-                "/screens/tag_level_emitter.json"
-        );
+                "/screens/tag_level_emitter.json");
         InitScreens.register(
                 CrazyMenuRegistrar.REDSTONE_TERMINAL_MENU.get(),
                 RedstoneTerminalScreen<RedstoneTerminalMenu>::new,
-                "/screens/redstone_terminal.json"
-        );
+                "/screens/redstone_terminal.json");
         InitScreens.register(
                 WirelessRedstoneTerminalMenu.TYPE,
                 WirelessRedstoneTerminalScreen::new,
-                "/screens/wireless_redstone_terminal.json"
-        );
+                "/screens/wireless_redstone_terminal.json");
         InitScreens.register(
                 CrazyMenuRegistrar.REDSTONE_EMITTER_MENU.get(),
                 RedstoneEmitterScreen<RedstoneEmitterMenu>::new,
-                "/screens/redstone_emitter.json"
-        );
+                "/screens/redstone_emitter.json");
         InitScreens.register(
                 CrazyMenuRegistrar.PATTERN_MULTIPLIER_MENU.get(),
                 PatternMultiplierScreen<PatternMultiplierMenu>::new,
-                "/screens/pattern_multiplier.json"
-        );
+                "/screens/pattern_multiplier.json");
         InitScreens.register(
                 CrazyMenuRegistrar.CPU_PRIO_MENU.get(),
                 CpuPrioScreen<CpuPrioMenu>::new,
-                "/screens/cpu_prio.json"
-        );
+                "/screens/cpu_prio.json");
         InitScreens.register(
                 CrazyMenuRegistrar.TAG_VIEW_CELL_MENU.get(),
                 TagViewCellScreen<TagViewCellMenu>::new,
-                "/screens/tag_view_cell.json"
-        );
+                "/screens/tag_view_cell.json");
         InitScreens.register(
                 CrazyMenuRegistrar.RECIPE_FABRICATOR_MENU.get(),
                 RecipeFabricatorScreen<RecipeFabricatorMenu>::new,
-                "/screens/recipe_fabricator.json"
-        );
+                "/screens/recipe_fabricator.json");
         InitScreens.register(
                 CrazyMenuRegistrar.DISPLAY_DATABASE_MENU.get(),
                 DisplayDatabaseScreen<DisplayDatabaseMenu>::new,
-                "/screens/display_database.json"
-        );
+                "/screens/display_database.json");
         InitScreens.register(
                 CrazyMenuRegistrar.RESOURCE_TRACKING_TERMINAL_MENU.get(),
                 ResourceTrackingTerminalScreen<ResourceTrackingTerminalMenu>::new,
-                "/screens/resource_tracking_terminal.json"
-        );
+                "/screens/resource_tracking_terminal.json");
     }
 
-    private Screens() {}
+    private Screens() {
+    }
 }

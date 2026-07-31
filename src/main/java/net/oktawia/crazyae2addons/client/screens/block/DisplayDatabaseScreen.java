@@ -1,17 +1,20 @@
 package net.oktawia.crazyae2addons.client.screens.block;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+
 import net.oktawia.crazyae2addons.client.misc.AETextButton;
 import net.oktawia.crazyae2addons.client.misc.DisplayDatabaseEntryListWidget;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.menus.block.DisplayDatabaseMenu;
-import org.lwjgl.glfw.GLFW;
 
 public class DisplayDatabaseScreen<C extends DisplayDatabaseMenu> extends AEBaseScreen<C> {
 
@@ -42,16 +45,13 @@ public class DisplayDatabaseScreen<C extends DisplayDatabaseMenu> extends AEBase
                 () -> getMenu().getEntries(),
                 () -> selectedKey,
                 this::selectEntry,
-                this::removeEntry
-        );
+                this::removeEntry);
 
         this.addButton = new AETextButton(
                 Component.translatable(LangDefs.DISPLAY_DATABASE_ADD.getTranslationKey()),
-                btn -> addEntry()
-        );
+                btn -> addEntry());
         this.addButton.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.DISPLAY_DATABASE_ADD_TOOLTIP.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.DISPLAY_DATABASE_ADD_TOOLTIP.getTranslationKey())));
 
         this.clearButton = new AETextButton(
                 Component.translatable(LangDefs.DISPLAY_DATABASE_CLEAR.getTranslationKey()),
@@ -59,11 +59,9 @@ public class DisplayDatabaseScreen<C extends DisplayDatabaseMenu> extends AEBase
                     getMenu().clearEntries();
                     selectedKey = null;
                     entries.clampScroll();
-                }
-        );
+                });
         this.clearButton.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.DISPLAY_DATABASE_CLEAR_TOOLTIP.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.DISPLAY_DATABASE_CLEAR_TOOLTIP.getTranslationKey())));
 
         widgets.add("key", keyInput);
         widgets.add("value", valueInput);

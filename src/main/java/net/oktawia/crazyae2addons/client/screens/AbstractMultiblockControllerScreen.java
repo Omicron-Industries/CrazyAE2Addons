@@ -1,10 +1,12 @@
 package net.oktawia.crazyae2addons.client.screens;
 
-import appeng.client.gui.Icon;
-import appeng.client.gui.style.ScreenStyle;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.ScreenStyle;
+
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerMenu;
 
@@ -13,7 +15,8 @@ public abstract class AbstractMultiblockControllerScreen<C extends AbstractMulti
 
     private final IconButton previewButton;
 
-    protected AbstractMultiblockControllerScreen(C menu, Inventory playerInventory, Component title, ScreenStyle style) {
+    protected AbstractMultiblockControllerScreen(C menu, Inventory playerInventory, Component title,
+            ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.previewButton = new IconButton(Icon.ENTER, btn -> getMenu().togglePreview());

@@ -1,9 +1,10 @@
 package net.oktawia.insaneae2addons.logic.penrose;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
+import java.util.List;
 
 import javax.annotation.Nullable;
-import java.util.List;
+
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface PenroseEnergyExport {
 

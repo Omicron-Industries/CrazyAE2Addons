@@ -1,14 +1,17 @@
 package net.oktawia.insaneae2addons.menus.part;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.stacks.AEItemKey;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.FakeSlot;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.parts.nbt.NbtExportBusPart;
 import net.oktawia.insaneae2addons.util.NbtFormatter;
-import org.jetbrains.annotations.Nullable;
 
 public class NbtExportBusMenu extends AEBaseMenu {
     public static final String SEND_DATA = "SendData";

@@ -1,12 +1,14 @@
 package net.oktawia.insaneae2addons.menus.block;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.entities.autobuilder.AutoBuilderBE;
 import net.oktawia.insaneae2addons.util.ProgramExpander;

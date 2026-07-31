@@ -1,5 +1,7 @@
 package net.oktawia.crazyae2addons.blocks;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -11,10 +13,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.entities.DisplayDatabaseBE;
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
-import org.jetbrains.annotations.Nullable;
 
 public class DisplayDatabaseBlock extends AbstractMenuOpeningBlock<DisplayDatabaseBE> {
 
@@ -24,8 +26,8 @@ public class DisplayDatabaseBlock extends AbstractMenuOpeningBlock<DisplayDataba
 
     @Override
     public InteractionResult onActivated(Level level, BlockPos pos, Player player,
-                                         InteractionHand hand, @Nullable ItemStack heldItem,
-                                         BlockHitResult hit) {
+            InteractionHand hand, @Nullable ItemStack heldItem,
+            BlockHitResult hit) {
         if (!CrazyConfig.COMMON.DISPLAY_DATABASE_ENABLED.get()) {
             return InteractionResult.PASS;
         }

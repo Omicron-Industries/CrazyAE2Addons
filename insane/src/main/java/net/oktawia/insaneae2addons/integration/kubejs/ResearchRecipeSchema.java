@@ -12,14 +12,12 @@ public interface ResearchRecipeSchema {
     RecipeComponent<RecipeComponentBuilderMap> CONSUMABLE = RecipeComponent.builder(
             StringComponent.ID.key("item"),
             NumberComponent.INT.key("count").optional(1),
-            NumberComponent.INT.key("computation").optional(1)
-    );
+            NumberComponent.INT.key("computation").optional(1));
 
     RecipeComponent<RecipeComponentBuilderMap> UNLOCK_ENTRY = RecipeComponent.builder(
             StringComponent.ID.key("key"),
             StringComponent.ANY.key("label").optional(""),
-            StringComponent.ANY.key("item").optional("")
-    );
+            StringComponent.ANY.key("item").optional(""));
 
     RecipeKey<Integer> DURATION = NumberComponent.INT.key("duration");
     RecipeKey<Integer> ENERGY_PER_TICK = NumberComponent.INT.key("energy_per_tick").preferred("energyPerTick");

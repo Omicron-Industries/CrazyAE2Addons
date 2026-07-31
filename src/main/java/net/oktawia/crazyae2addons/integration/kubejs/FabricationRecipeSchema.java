@@ -15,8 +15,10 @@ public interface FabricationRecipeSchema {
     RecipeKey<OutputItem> OUTPUT = ItemComponents.OUTPUT.key("output").defaultOptional().allowEmpty();
     RecipeKey<InputItem[]> INPUT = CountedIngredientComponent.INSTANCE.asArray().key("input");
     RecipeKey<String> REQUIRED_KEY = StringComponent.ANY.key("required_key").preferred("requiredKey").defaultOptional();
-    RecipeKey<InputFluid> FLUID_INPUT = FluidComponents.INPUT.key("fluid_input").preferred("fluidInput").defaultOptional();
-    RecipeKey<OutputFluid> FLUID_OUTPUT = FluidComponents.OUTPUT.key("fluid_output").preferred("fluidOutput").defaultOptional();
+    RecipeKey<InputFluid> FLUID_INPUT = FluidComponents.INPUT.key("fluid_input").preferred("fluidInput")
+            .defaultOptional();
+    RecipeKey<OutputFluid> FLUID_OUTPUT = FluidComponents.OUTPUT.key("fluid_output").preferred("fluidOutput")
+            .defaultOptional();
 
     RecipeSchema SCHEMA = new RecipeSchema(OUTPUT, INPUT, REQUIRED_KEY, FLUID_INPUT, FLUID_OUTPUT);
 }

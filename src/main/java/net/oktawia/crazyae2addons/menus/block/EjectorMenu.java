@@ -1,5 +1,17 @@
 package net.oktawia.crazyae2addons.menus.block;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import lombok.Getter;
+
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEKey;
@@ -8,17 +20,9 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import lombok.Getter;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.entities.EjectorBE;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
 
 public class EjectorMenu extends AEBaseMenu {
 
@@ -57,14 +61,16 @@ public class EjectorMenu extends AEBaseMenu {
 
     public void setConfigAmount(int slotIndex, long amount) {
         int local = configIndexBySlot.getOrDefault(slotIndex, -1);
-        if (local < 0) return;
+        if (local < 0)
+            return;
 
         var inv = this.host.config;
         if (amount <= 0) {
             inv.setStack(local, null);
         } else {
             var gs = inv.getStack(local);
-            if (gs == null) return;
+            if (gs == null)
+                return;
             inv.setStack(local, new GenericStack(gs.what(), amount));
         }
 
@@ -77,7 +83,8 @@ public class EjectorMenu extends AEBaseMenu {
         } else {
             var pg = host.pattern;
             ItemStack pattern = pg.getStackInSlot(0);
-            if (pattern.isEmpty()) return;
+            if (pattern.isEmpty())
+                return;
 
             IPatternDetails details;
             try {
@@ -86,7 +93,8 @@ public class EjectorMenu extends AEBaseMenu {
                 return;
             }
 
-            if (details == null) return;
+            if (details == null)
+                return;
 
             for (int i = 0; i < host.config.size(); i++) {
                 host.config.setStack(i, null);
@@ -95,7 +103,8 @@ public class EjectorMenu extends AEBaseMenu {
             int ci = 0;
             for (var input : details.getInputs()) {
                 var possibles = input.getPossibleInputs();
-                if (possibles.length == 0) continue;
+                if (possibles.length == 0)
+                    continue;
 
                 AEKey key = possibles[0].what();
                 long amount = Math.max(1, input.getMultiplier());

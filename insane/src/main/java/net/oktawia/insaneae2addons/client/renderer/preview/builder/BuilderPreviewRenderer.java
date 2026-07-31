@@ -1,8 +1,12 @@
 package net.oktawia.insaneae2addons.client.renderer.preview.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -23,9 +27,6 @@ import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BuilderPreviewRenderer {
 
@@ -118,8 +119,7 @@ public class BuilderPreviewRenderer {
                                 1f, 1f, 1f, BUILDER_ALPHA,
                                 0xF0F0F0,
                                 OverlayTexture.NO_OVERLAY,
-                                true
-                        );
+                                true);
                     }
                 }
 
@@ -131,8 +131,7 @@ public class BuilderPreviewRenderer {
                             1f, 1f, 1f, BUILDER_ALPHA,
                             0xF0F0F0,
                             OverlayTexture.NO_OVERLAY,
-                            true
-                    );
+                            true);
                 }
             }
 
@@ -154,8 +153,7 @@ public class BuilderPreviewRenderer {
                     lineBuffer,
                     0.0, 0.0, 0.0,
                     1.0, 1.0, 1.0,
-                    0.8f, 0.9f, 1.0f, BUILDER_ALPHA
-            );
+                    0.8f, 0.9f, 1.0f, BUILDER_ALPHA);
 
             poseStack.popPose();
         }

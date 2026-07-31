@@ -1,11 +1,15 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.implementations.AESubScreen;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
-import appeng.client.gui.widgets.TabButton;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -14,20 +18,19 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.implementations.AESubScreen;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.TabButton;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.client.misc.AETextButton;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.display.keytypes.DisplayKeyCompatRegistry;
 import net.oktawia.crazyae2addons.menus.part.DisplayTokenSubMenu;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
 
 public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
 
@@ -100,13 +103,11 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
         widgets.add("back", new TabButton(
                 Icon.ARROW_LEFT,
                 Component.translatable(LangDefs.BACK.getTranslationKey()),
-                btn -> AESubScreen.goBack()
-        ));
+                btn -> AESubScreen.goBack()));
         this.iconBtn = new AETextButton(
                 0, 0, 0, 0,
                 Component.translatable(LangDefs.ICON.getTranslationKey()),
-                btn -> setType(TokenType.ICON)
-        );
+                btn -> setType(TokenType.ICON));
         this.iconBtn.visible = CrazyConfig.COMMON.DISPLAY_ICONS_ENABLED.get();
         this.iconBtn.active = this.iconBtn.visible;
         widgets.add("icon", this.iconBtn);
@@ -114,8 +115,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
         this.stockBtn = new AETextButton(
                 0, 0, 0, 0,
                 Component.translatable(LangDefs.STOCK.getTranslationKey()),
-                btn -> setType(TokenType.STOCK)
-        );
+                btn -> setType(TokenType.STOCK));
         this.stockBtn.visible = CrazyConfig.COMMON.DISPLAY_STOCK_ENABLED.get();
         this.stockBtn.active = this.stockBtn.visible;
         widgets.add("stock", this.stockBtn);
@@ -123,8 +123,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
         this.deltaBtn = new AETextButton(
                 0, 0, 0, 0,
                 Component.translatable(LangDefs.DELTA.getTranslationKey()),
-                btn -> setType(TokenType.DELTA)
-        );
+                btn -> setType(TokenType.DELTA));
         this.deltaBtn.visible = CrazyConfig.COMMON.DISPLAY_DELTA_ENABLED.get();
         this.deltaBtn.active = this.deltaBtn.visible;
         widgets.add("delta", this.deltaBtn);
@@ -137,15 +136,13 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
         typeBtn = new AETextButton(
                 0, 0, 0, 0,
                 Component.translatable(LangDefs.ANY.getTranslationKey()),
-                btn -> cycleType()
-        );
+                btn -> cycleType());
         widgets.add("type", typeBtn);
 
         typesDropBtn = new AETextButton(
                 0, 0, 0, 0,
                 Component.translatable(LangDefs.KEY_TYPES_COLLAPSED.getTranslationKey()),
-                btn -> toggleDropdown()
-        );
+                btn -> toggleDropdown());
         widgets.add("typeDropdown", typesDropBtn);
 
         divisorBtn = new AETextButton(
@@ -154,8 +151,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                 btn -> {
                     divisorPow = (divisorPow + 1) % DIV_LABELS.length;
                     btn.setMessage(DIV_LABELS[divisorPow]);
-                }
-        );
+                });
         widgets.add("divisor", divisorBtn);
 
         perNField = new AETextField(style, font, 0, 0, 0, 0);
@@ -169,8 +165,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                 btn -> {
                     perUnitIdx = (perUnitIdx + 1) % 3;
                     btn.setMessage(unitLabel(perUnitIdx));
-                }
-        );
+                });
         widgets.add("perUnit", perUnitBtn);
 
         winNField = new AETextField(style, font, 0, 0, 0, 0);
@@ -184,15 +179,13 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                 btn -> {
                     winUnitIdx = (winUnitIdx + 1) % 3;
                     btn.setMessage(unitLabel(winUnitIdx));
-                }
-        );
+                });
         widgets.add("winUnit", winUnitBtn);
 
         insertBtn = new AETextButton(
                 0, 0, 0, 0,
                 Component.translatable(LangDefs.INSERT.getTranslationKey()),
-                btn -> doInsert()
-        );
+                btn -> doInsert());
         widgets.add("insert", insertBtn);
     }
 
@@ -249,8 +242,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                 Component.translatable(LangDefs.TYPES_HEADER.getTranslationKey()),
                 cx + cw / 2,
                 cy + 3,
-                0xFFCCCCCC
-        );
+                0xFFCCCCCC);
         g.fill(cx + 1, cy + hdr - 1, cx + cw - 1, cy + hdr, 0xFF444444);
 
         for (int i = 0; i < availableTypes.size(); i++) {
@@ -270,8 +262,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                     cx + 4,
                     ry + 1,
                     sel ? 0xFFFF5555 : 0xFFAAAAAA,
-                    false
-            );
+                    false);
         }
     }
 
@@ -460,8 +451,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
         typeBtn.setMessage(
                 typeIdx < 0 || typeIdx >= availableTypes.size()
                         ? Component.translatable(LangDefs.ANY.getTranslationKey())
-                        : Component.literal(availableTypes.get(typeIdx))
-        );
+                        : Component.literal(availableTypes.get(typeIdx)));
     }
 
     private void cycleType() {
@@ -483,8 +473,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
         typesDropBtn.setMessage(
                 dropdownOpen
                         ? Component.translatable(LangDefs.KEY_TYPES_EXPANDED.getTranslationKey())
-                        : Component.translatable(LangDefs.KEY_TYPES_COLLAPSED.getTranslationKey())
-        );
+                        : Component.translatable(LangDefs.KEY_TYPES_COLLAPSED.getTranslationKey()));
     }
 
     private void closeDropdown() {
@@ -525,7 +514,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                     yield null;
                 }
 
-                String[] suffixes = {"", "%1", "%2", "%3", "%4", "%5", "%6"};
+                String[] suffixes = { "", "%1", "%2", "%3", "%4", "%5", "%6" };
                 if (isTagExprType()) {
                     yield "&s^tag{" + id + "}" + suffixes[divisorPow];
                 }
@@ -581,8 +570,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                     leftPos + 5,
                     itemIdField.getY() + 2,
                     0xFFAAAAAA,
-                    false
-            );
+                    false);
 
             g.drawString(
                     font,
@@ -590,8 +578,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                     leftPos + 5,
                     typeBtn.getY() + 2,
                     0xFFAAAAAA,
-                    false
-            );
+                    false);
 
             if (type == TokenType.STOCK) {
                 g.drawString(
@@ -600,8 +587,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                         leftPos + 5,
                         divisorBtn.getY() + 2,
                         0xFFAAAAAA,
-                        false
-                );
+                        false);
             } else if (type == TokenType.DELTA) {
                 g.drawString(
                         font,
@@ -609,8 +595,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                         leftPos + 5,
                         perNField.getY() + 2,
                         0xFFAAAAAA,
-                        false
-                );
+                        false);
 
                 g.drawString(
                         font,
@@ -618,8 +603,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                         winNField.getX() - 36,
                         winNField.getY() + 2,
                         0xFFAAAAAA,
-                        false
-                );
+                        false);
             }
 
             String preview = buildToken(itemIdField.getValue().trim().toLowerCase(), currentPrefix());
@@ -630,8 +614,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                         leftPos + 5,
                         insertBtn.getY() - 17,
                         0xFF55FF55,
-                        false
-                );
+                        false);
             }
 
             if (dropdownOpen && !availableTypes.isEmpty()) {
@@ -674,8 +657,7 @@ public class DisplayTokenSubScreen extends AEBaseScreen<DisplayTokenSubMenu> {
                             lx + 4,
                             ly + i * DROP_ROW_H + 2,
                             sel ? 0xFFFF5555 : (hov ? 0xFFFFFFFF : 0xFFCCCCCC),
-                            false
-                    );
+                            false);
                 }
 
                 g.pose().popPose();

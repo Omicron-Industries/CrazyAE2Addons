@@ -1,26 +1,29 @@
 package net.oktawia.crazyae2addons.mixins.analogemitter;
 
-import appeng.menu.implementations.StorageLevelEmitterMenu;
-import appeng.menu.implementations.UpgradeableMenu;
-import appeng.parts.automation.StorageLevelEmitterPart;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.MenuType;
-import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
-import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterMenu;
-import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterOutput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.MenuType;
+
+import appeng.menu.implementations.StorageLevelEmitterMenu;
+import appeng.menu.implementations.UpgradeableMenu;
+import appeng.parts.automation.StorageLevelEmitterPart;
+
+import net.oktawia.crazyae2addons.defs.regs.CrazyItemRegistrar;
+import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterMenu;
+import net.oktawia.crazyae2addons.logic.interfaces.IAnalogLevelEmitterOutput;
+
 @Mixin(value = StorageLevelEmitterMenu.class, remap = false)
-public abstract class MixinStorageLevelEmitterMenuAnalog extends UpgradeableMenu<StorageLevelEmitterPart> implements IAnalogLevelEmitterMenu {
+public abstract class MixinStorageLevelEmitterMenuAnalog extends UpgradeableMenu<StorageLevelEmitterPart>
+        implements IAnalogLevelEmitterMenu {
 
     @Unique
-    private static final String CRAZY_AE2_ADDONS_ACTION_SET_ANALOG_LOG_MODE =
-            "crazySetAnalogLogMode";
+    private static final String CRAZY_AE2_ADDONS_ACTION_SET_ANALOG_LOG_MODE = "crazySetAnalogLogMode";
 
     @Unique
     private boolean crazyAE2Addons$analogLogarithmicMode = false;
@@ -29,8 +32,7 @@ public abstract class MixinStorageLevelEmitterMenuAnalog extends UpgradeableMenu
             MenuType<?> menuType,
             int id,
             Inventory ip,
-            StorageLevelEmitterPart host
-    ) {
+            StorageLevelEmitterPart host) {
         super(menuType, id, ip, host);
     }
 
@@ -40,13 +42,11 @@ public abstract class MixinStorageLevelEmitterMenuAnalog extends UpgradeableMenu
             int id,
             Inventory ip,
             StorageLevelEmitterPart te,
-            CallbackInfo ci
-    ) {
+            CallbackInfo ci) {
         this.registerClientAction(
                 CRAZY_AE2_ADDONS_ACTION_SET_ANALOG_LOG_MODE,
                 Boolean.class,
-                this::crazyAE2Addons$handleSetAnalogLogarithmicMode
-        );
+                this::crazyAE2Addons$handleSetAnalogLogarithmicMode);
 
         this.addDataSlot(new DataSlot() {
             @Override

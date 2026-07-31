@@ -1,12 +1,11 @@
 package net.oktawia.crazyae2addons.mixins;
 
+import java.io.InputStream;
+import java.util.List;
+import java.util.Set;
+
 import com.mojang.logging.LogUtils;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.LoadingModList;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
-import net.oktawia.crazyae2addons.CrazyAddons;
-import net.oktawia.crazyae2addons.IsModLoaded;
-import net.oktawia.crazyae2addons.util.Ae2clOpenCraftingMenu;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -14,9 +13,11 @@ import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.LoadingModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+
+import net.oktawia.crazyae2addons.util.Ae2clOpenCraftingMenu;
 
 public class Plugin implements IMixinConfigPlugin {
 
@@ -86,31 +87,32 @@ public class Plugin implements IMixinConfigPlugin {
         boolean doload = true;
         switch (mixinClassName) {
             case "net.oktawia.crazyae2addons.mixins.cpupriority.MixinCraftingService" ->
-                    doload = !advancedAeLoaded;
+                doload = !advancedAeLoaded;
             case "net.oktawia.crazyae2addons.mixins.compat.MixinAdvancedAECraftingServiceCompat" ->
-                    doload = advancedAeLoaded;
+                doload = advancedAeLoaded;
             case "net.oktawia.crazyae2addons.mixins.compat.MixinCraftingServiceCLCompat" ->
-                    doload = hasTrySubmitJobBoolean;
+                doload = hasTrySubmitJobBoolean;
             case "net.oktawia.crazyae2addons.mixins.cancelallcrafting.ae2clo.MixinCraftingCPUScreen" ->
-                    doload = Ae2Detection.CRAFTING_CPU_SCREEN_OVERRIDES_INIT;
+                doload = Ae2Detection.CRAFTING_CPU_SCREEN_OVERRIDES_INIT;
             case "net.oktawia.crazyae2addons.mixins.cancelallcrafting.ae2.MixinCraftingCPUScreen" ->
-                    doload = !Ae2Detection.CRAFTING_CPU_SCREEN_OVERRIDES_INIT;
+                doload = !Ae2Detection.CRAFTING_CPU_SCREEN_OVERRIDES_INIT;
             case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2.MixinCPUSelectionList" ->
-                    doload = !Ae2Detection.SHARED_CPU_LIST_WIDGET;
+                doload = !Ae2Detection.SHARED_CPU_LIST_WIDGET;
             case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2cln.MixinCPUSelectionList" ->
-                    doload = Ae2Detection.SHARED_CPU_LIST_WIDGET;
+                doload = Ae2Detection.SHARED_CPU_LIST_WIDGET;
             case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2cln.MixinCraftConfirmMenuCpuListPrio" ->
-                    doload = Ae2Detection.CRAFT_CONFIRM_BUILDS_CPU_LIST;
+                doload = Ae2Detection.CRAFT_CONFIRM_BUILDS_CPU_LIST;
             case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2.MixinCraftConfirmMenuAutoCpuPriority" ->
-                    doload = !Ae2Detection.CRAFT_CONFIRM_SUBMITS_WITH_FOLLOWING;
+                doload = !Ae2Detection.CRAFT_CONFIRM_SUBMITS_WITH_FOLLOWING;
             case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2cl.MixinCraftConfirmMenuAutoCpuPriority" ->
-                    doload = Ae2Detection.CRAFT_CONFIRM_SUBMITS_WITH_FOLLOWING;
+                doload = Ae2Detection.CRAFT_CONFIRM_SUBMITS_WITH_FOLLOWING;
             case "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEInputBusPartMachine",
-                 "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEInputHatchPartMachine",
-                 "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEStockingItemSlot",
-                 "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEStockingFluidSlot" ->
-                    doload = gtceuLoaded;
-        };
+                    "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEInputHatchPartMachine",
+                    "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEStockingItemSlot",
+                    "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEStockingFluidSlot" ->
+                doload = gtceuLoaded;
+        }
+        ;
         LOGGER.info("{} load status: {}", mixinClassName, doload);
         return doload;
     }

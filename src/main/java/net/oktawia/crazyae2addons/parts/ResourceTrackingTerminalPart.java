@@ -1,5 +1,12 @@
 package net.oktawia.crazyae2addons.parts;
 
+import java.util.List;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKey;
@@ -8,10 +15,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractDisplayPart;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
@@ -19,8 +23,6 @@ import net.oktawia.crazyae2addons.logic.interfaces.IResourceTrackingTerminalHost
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
 import net.oktawia.crazyae2addons.tracking.ResourceSummary;
 import net.oktawia.crazyae2addons.tracking.UsageEntry;
-
-import java.util.List;
 
 public class ResourceTrackingTerminalPart extends AbstractDisplayPart implements IResourceTrackingTerminalHost {
 
@@ -44,7 +46,8 @@ public class ResourceTrackingTerminalPart extends AbstractDisplayPart implements
             return true;
         }
         if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
-            MenuOpener.open(CrazyMenuRegistrar.RESOURCE_TRACKING_TERMINAL_MENU.get(), player, MenuLocators.forPart(this));
+            MenuOpener.open(CrazyMenuRegistrar.RESOURCE_TRACKING_TERMINAL_MENU.get(), player,
+                    MenuLocators.forPart(this));
         }
         return true;
     }
@@ -57,18 +60,22 @@ public class ResourceTrackingTerminalPart extends AbstractDisplayPart implements
     @Override
     public List<ResourceSummary> getSummaries() {
         var grid = getMainNode().getGrid();
-        if (grid == null) return List.of();
+        if (grid == null)
+            return List.of();
         var svc = grid.getService(IResourceTrackingService.class);
-        if (svc == null) return List.of();
+        if (svc == null)
+            return List.of();
         return svc.getSummaries();
     }
 
     @Override
     public List<UsageEntry> getDetails(AEKey key) {
         var grid = getMainNode().getGrid();
-        if (grid == null) return List.of();
+        if (grid == null)
+            return List.of();
         var svc = grid.getService(IResourceTrackingService.class);
-        if (svc == null) return List.of();
+        if (svc == null)
+            return List.of();
         return svc.getDetails(key);
     }
 }

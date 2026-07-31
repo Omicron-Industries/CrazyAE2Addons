@@ -1,21 +1,24 @@
 package net.oktawia.insaneae2addons.client.screens.item;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
+import java.util.List;
+
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+
+import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.menus.item.BuilderPatternMenu;
 import net.oktawia.insaneae2addons.util.ProgramExpander;
-import net.oktawia.crazyae2addons.client.misc.IconButton;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.List;
 
 public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseScreen<C> {
 
@@ -32,8 +35,7 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
                 Minecraft.getInstance().font,
                 0, 0,
                 202, 135,
-                Component.empty()
-        );
+                Component.empty());
         textEditor.setDefaultTextColor(0xFFFFFFFF);
         textEditor.setHighlightRules(List.of(
                 new MultilineTextFieldWidget.HighlightRule("\\|\\|", 0xFF64B5F6),
@@ -47,8 +49,7 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
                 new MultilineTextFieldWidget.HighlightRule("==|!=", 0xFFFFB74D),
                 new MultilineTextFieldWidget.HighlightRule("[\\[\\]{}(),]", 0xFFB0BEC5),
                 new MultilineTextFieldWidget.HighlightRule("[a-z_][a-z0-9_]*(?==)", 0xFFA5D6A7),
-                new MultilineTextFieldWidget.HighlightRule("\\d+", 0xFFFFF176)
-        ));
+                new MultilineTextFieldWidget.HighlightRule("\\d+", 0xFFFFF176)));
         widgets.add("data", textEditor);
 
         renameField = new AETextField(style, Minecraft.getInstance().font, 0, 0, 120, 12);
@@ -81,7 +82,8 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
         widgets.add("rotate", rotateBtn);
 
         var visualAssistBtn = new IconButton(Icon.CRAFT_HAMMER, btn -> getMenu().openSubMenu());
-        visualAssistBtn.setTooltip(Tooltip.create(Component.translatable(LangDefs.VISUAL_ASSISTANCE.getTranslationKey())));
+        visualAssistBtn
+                .setTooltip(Tooltip.create(Component.translatable(LangDefs.VISUAL_ASSISTANCE.getTranslationKey())));
         widgets.add("visualAssist", visualAssistBtn);
     }
 
@@ -118,7 +120,7 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
                     || minecraft.options.keySocialInteractions.matches(key, sc)
                     || minecraft.options.keySwapOffhand.matches(key, sc)
                     || (key >= GLFW.GLFW_KEY_1 && key <= GLFW.GLFW_KEY_9
-                    && minecraft.options.keyHotbarSlots[key - GLFW.GLFW_KEY_1].matches(key, sc))) {
+                            && minecraft.options.keyHotbarSlots[key - GLFW.GLFW_KEY_1].matches(key, sc))) {
                 return true;
             }
 
@@ -184,14 +186,12 @@ public class BuilderPatternScreen<C extends BuilderPatternMenu> extends AEBaseSc
             }
 
             confirmBtn.setTooltip(Tooltip.create(
-                    Component.translatable(LangDefs.PROGRAM_SAVED.getTranslationKey())
-            ));
+                    Component.translatable(LangDefs.PROGRAM_SAVED.getTranslationKey())));
         } else {
             confirmBtn.setTooltip(Tooltip.create(
                     Component.translatable(LangDefs.SYNTAX_ERROR.getTranslationKey())
                             .append(" ")
-                            .append(result.error)
-            ));
+                            .append(result.error)));
         }
     }
 }

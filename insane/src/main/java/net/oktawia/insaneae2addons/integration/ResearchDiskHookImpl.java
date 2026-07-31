@@ -1,16 +1,17 @@
 package net.oktawia.insaneae2addons.integration;
 
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
 import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
 import net.oktawia.insaneae2addons.defs.LangDefs;
 import net.oktawia.insaneae2addons.defs.regs.InsaneItemRegistrar;
 import net.oktawia.insaneae2addons.defs.regs.InsaneRecipes;
 import net.oktawia.insaneae2addons.items.DataDrive;
-
-import java.util.List;
 
 public class ResearchDiskHookImpl implements ResearchDiskHook {
 
@@ -62,8 +63,7 @@ public class ResearchDiskHookImpl implements ResearchDiskHook {
         String label = resolveUnlockLabel(requiredKey);
         return List.of(
                 Component.translatable(LangDefs.RESEARCH_GATE_REQUIRES.getTranslationKey(), label),
-                Component.translatable(LangDefs.RESEARCH_GATE_HINT.getTranslationKey())
-        );
+                Component.translatable(LangDefs.RESEARCH_GATE_HINT.getTranslationKey()));
     }
 
     @Override

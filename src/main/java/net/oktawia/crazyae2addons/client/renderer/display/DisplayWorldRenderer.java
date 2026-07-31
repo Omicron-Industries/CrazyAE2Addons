@@ -1,7 +1,14 @@
 package net.oktawia.crazyae2addons.client.renderer.display;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
+
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.joml.Matrix4f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,14 +22,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.logic.display.DisplayGrid;
 import net.oktawia.crazyae2addons.parts.Display;
-import org.joml.Matrix4f;
-
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = CrazyAddons.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -35,8 +38,8 @@ public final class DisplayWorldRenderer {
     private static final int MAX_COMMANDS_PER_GROUP = 16_384;
 
     private static final BufferBuilder DISPLAY_BUFFER_BUILDER = new BufferBuilder(DISPLAY_BUFFER_SIZE);
-    private static final MultiBufferSource.BufferSource DISPLAY_BUFFER_SOURCE =
-            MultiBufferSource.immediate(DISPLAY_BUFFER_BUILDER);
+    private static final MultiBufferSource.BufferSource DISPLAY_BUFFER_SOURCE = MultiBufferSource
+            .immediate(DISPLAY_BUFFER_BUILDER);
 
     private DisplayWorldRenderer() {
     }
@@ -153,8 +156,7 @@ public final class DisplayWorldRenderer {
             Set<Display> grid,
             PoseStack ps,
             MultiBufferSource.BufferSource buf,
-            Vec3 cam
-    ) {
+            Vec3 cam) {
         if (renderOrigin == null || grid == null || grid.isEmpty()) {
             return false;
         }

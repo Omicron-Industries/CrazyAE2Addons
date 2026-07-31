@@ -1,16 +1,17 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.ToggleButton;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.mojang.datafixers.util.Pair;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.mojang.datafixers.util.Pair;
+
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -18,9 +19,14 @@ import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.ToggleButton;
+
 import net.oktawia.crazyae2addons.CrazyAddons;
 import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.parts.Display;
 import net.oktawia.crazyae2addons.client.misc.IconButton;
 import net.oktawia.crazyae2addons.client.misc.LDLibColorSelectorAdapter;
 import net.oktawia.crazyae2addons.client.misc.MultilineTextFieldWidget;
@@ -29,13 +35,13 @@ import net.oktawia.crazyae2addons.client.renderer.display.DisplayRendererCommon;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.display.DisplayImageEntry;
 import net.oktawia.crazyae2addons.menus.part.DisplayMenu;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import net.oktawia.crazyae2addons.parts.Display;
 
 public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
 
     private static final Gson GSON = new Gson();
-    private static final Type TOKENS_TYPE = new TypeToken<Map<String, String>>() {}.getType();
+    private static final Type TOKENS_TYPE = new TypeToken<Map<String, String>>() {
+    }.getType();
 
     private static final int PREVIEW_PREFERRED_W = 116;
     private static final int PREVIEW_PREFERRED_H = 152;
@@ -71,14 +77,16 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
         this.value = new MultilineTextFieldWidget(
                 Minecraft.getInstance().font,
                 0, 0, 0, 0,
-                Component.translatable(LangDefs.INSERT.getTranslationKey())
-        );
+                Component.translatable(LangDefs.INSERT.getTranslationKey()));
         value.setDefaultTextColor(0xFFFFFFFF);
         value.setHighlightRules(List.of(
                 new MultilineTextFieldWidget.HighlightRule("&[cb][0-9A-Fa-f]{6}(?=\\(|\\b)", 0xFF00FFC8),
-                new MultilineTextFieldWidget.HighlightRule("&d\\^(?:[a-z0-9_.-]+:)?[a-z0-9_.-]+:[a-z0-9_./-]+(?:%\\d+[tsm])?@\\d+[tsm]",0xFF00FFC8),
-                new MultilineTextFieldWidget.HighlightRule("&s\\^(?:[a-z0-9_.-]+:)?[a-z0-9_.-]+:[a-z0-9_./-]+(?:%\\d+)?",0xFF00FFC8),
-                new MultilineTextFieldWidget.HighlightRule("&i\\^(?:[a-z0-9_.-]+:)?[a-z0-9_.-]+:[a-z0-9_./-]+",0xFF00FFC8),
+                new MultilineTextFieldWidget.HighlightRule(
+                        "&d\\^(?:[a-z0-9_.-]+:)?[a-z0-9_.-]+:[a-z0-9_./-]+(?:%\\d+[tsm])?@\\d+[tsm]", 0xFF00FFC8),
+                new MultilineTextFieldWidget.HighlightRule(
+                        "&s\\^(?:[a-z0-9_.-]+:)?[a-z0-9_.-]+:[a-z0-9_./-]+(?:%\\d+)?", 0xFF00FFC8),
+                new MultilineTextFieldWidget.HighlightRule("&i\\^(?:[a-z0-9_.-]+:)?[a-z0-9_.-]+:[a-z0-9_./-]+",
+                        0xFF00FFC8),
                 new MultilineTextFieldWidget.HighlightRule("(?m)^```[A-Za-z0-9_-]*\\s*$", 0xFFFFDD55),
                 new MultilineTextFieldWidget.HighlightRule("`[^`\\r\\n]+`", 0xFFFFDD55),
                 new MultilineTextFieldWidget.HighlightRule("(?m)^(#{1,6})(?=\\s)", 0xFFFFC800),
@@ -88,21 +96,20 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                 new MultilineTextFieldWidget.HighlightRule("\\|", 0xFFB8B8B8),
                 new MultilineTextFieldWidget.HighlightRule("(?m):?-{3,}:?", 0xFFB8B8B8),
                 new MultilineTextFieldWidget.HighlightRule("\\*\\*|__|~~", 0xFFFFC800),
-                new MultilineTextFieldWidget.HighlightRule("(?<!\\*)\\*(?!\\*)|(?<!_)_(?!_)", 0xFFFFC800)
-        ));
+                new MultilineTextFieldWidget.HighlightRule("(?<!\\*)\\*(?!\\*)|(?<!_)_(?!_)", 0xFFFFC800)));
 
         this.backgroundColor = new LDLibColorSelectorAdapter(
                 0, 0, 16, 16,
-                Component.translatable(LangDefs.BACKGROUND_COLOR.getTranslationKey())
-        );
-        this.backgroundColor.setTooltip(Tooltip.create(Component.translatable(LangDefs.BACKGROUND_COLOR.getTranslationKey())));
+                Component.translatable(LangDefs.BACKGROUND_COLOR.getTranslationKey()));
+        this.backgroundColor
+                .setTooltip(Tooltip.create(Component.translatable(LangDefs.BACKGROUND_COLOR.getTranslationKey())));
         this.backgroundColor.setOnColorCommitted(this::applyBackgroundColor);
 
         this.selectedTextColor = new LDLibColorSelectorAdapter(
                 0, 0, 16, 16,
-                Component.translatable(LangDefs.CHANGE_SELECTED_TEXT_COLOR.getTranslationKey())
-        );
-        this.selectedTextColor.setTooltip(Tooltip.create(Component.translatable(LangDefs.CHANGE_SELECTED_TEXT_COLOR.getTranslationKey())));
+                Component.translatable(LangDefs.CHANGE_SELECTED_TEXT_COLOR.getTranslationKey()));
+        this.selectedTextColor.setTooltip(
+                Tooltip.create(Component.translatable(LangDefs.CHANGE_SELECTED_TEXT_COLOR.getTranslationKey())));
         this.selectedTextColor.setOnColorCommitted(this::applySelectedTextColor);
 
         this.backgroundColor.setOnOpen(() -> selectedTextColor.closePopup(true));
@@ -121,9 +128,7 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                 Component.translatable(
                         CrazyConfig.COMMON.DISPLAY_IMAGES_ENABLED.get()
                                 ? LangDefs.IMAGES.getTranslationKey()
-                                : LangDefs.FEATURE_DISABLED.getTranslationKey()
-                )
-        ));
+                                : LangDefs.FEATURE_DISABLED.getTranslationKey())));
         widgets.add("images", imagesBtn);
 
         IconButton confirm = new IconButton(Icon.COPY_MODE_ON, btn -> save());
@@ -145,10 +150,8 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                         (!CrazyConfig.COMMON.DISPLAY_ICONS_ENABLED.get()
                                 && !CrazyConfig.COMMON.DISPLAY_STOCK_ENABLED.get()
                                 && !CrazyConfig.COMMON.DISPLAY_DELTA_ENABLED.get())
-                                ? LangDefs.FEATURE_DISABLED.getTranslationKey()
-                                : LangDefs.INSERT_TOKEN.getTranslationKey()
-                )
-        ));
+                                        ? LangDefs.FEATURE_DISABLED.getTranslationKey()
+                                        : LangDefs.INSERT_TOKEN.getTranslationKey())));
         widgets.add("insertToken", insertToken);
 
         this.mode = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeMode);
@@ -159,15 +162,16 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
         this.center.setTooltip(Tooltip.create(Component.translatable(LangDefs.CENTER_TEXT.getTranslationKey())));
         this.margin.setTooltip(Tooltip.create(Component.translatable(LangDefs.ADD_MARGIN.getTranslationKey())));
 
-        this.connectUp    = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectUp);
-        this.connectDown  = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectDown);
-        this.connectLeft  = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectLeft);
+        this.connectUp = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectUp);
+        this.connectDown = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectDown);
+        this.connectLeft = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectLeft);
         this.connectRight = new ToggleButton(Icon.ENTER, Icon.CLEAR, this::changeConnectRight);
 
         this.connectUp.setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_UP.getTranslationKey())));
         this.connectDown.setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_DOWN.getTranslationKey())));
         this.connectLeft.setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_LEFT.getTranslationKey())));
-        this.connectRight.setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_RIGHT.getTranslationKey())));
+        this.connectRight
+                .setTooltip(Tooltip.create(Component.translatable(LangDefs.CONNECT_RIGHT.getTranslationKey())));
 
         widgets.add("value", value);
         widgets.add("confirm", confirm);
@@ -176,9 +180,9 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
         widgets.add("margin", margin);
         widgets.add("backgroundColor", backgroundColor);
         widgets.add("selectedTextColor", selectedTextColor);
-        widgets.add("connectUp",    connectUp);
-        widgets.add("connectDown",  connectDown);
-        widgets.add("connectLeft",  connectLeft);
+        widgets.add("connectUp", connectUp);
+        widgets.add("connectDown", connectDown);
+        widgets.add("connectLeft", connectLeft);
         widgets.add("connectRight", connectRight);
     }
 
@@ -334,8 +338,8 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                     || minecraft.options.keySocialInteractions.matches(key, sc)
                     || minecraft.options.keySwapOffhand.matches(key, sc)
                     || (key >= GLFW.GLFW_KEY_1
-                    && key <= GLFW.GLFW_KEY_9
-                    && minecraft.options.keyHotbarSlots[key - GLFW.GLFW_KEY_1].matches(key, sc))) {
+                            && key <= GLFW.GLFW_KEY_9
+                            && minecraft.options.keyHotbarSlots[key - GLFW.GLFW_KEY_1].matches(key, sc))) {
                 return true;
             }
 
@@ -399,14 +403,12 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                 dims.getFirst(),
                 dims.getSecond(),
                 images,
-                previewImageData
-        );
+                previewImageData);
 
         Component label = Component.translatable(
                 LangDefs.DISPLAY_PREVIEW_SIZE.getTranslationKey(),
                 dims.getFirst(),
-                dims.getSecond()
-        );
+                dims.getSecond());
         gui.drawString(Minecraft.getInstance().font, label, previewX, Math.max(2, previewY - 10), 0xE0E0E0, false);
 
         DisplayGuiRenderer.renderPreview(gui, previewX, previewY, previewW, previewH, prepared);
@@ -419,8 +421,7 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
 
         return Pair.of(
                 Math.max(1, getMenu().previewGridWidth),
-                Math.max(1, getMenu().previewGridHeight)
-        );
+                Math.max(1, getMenu().previewGridHeight));
     }
 
     private Map<String, String> decodePreviewTokens() {
@@ -492,8 +493,7 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                     }
                 },
                 Component.translatable(LangDefs.UNSAVED_CHANGES_TITLE.getTranslationKey()),
-                Component.translatable(LangDefs.UNSAVED_CHANGES_TEXT.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.UNSAVED_CHANGES_TEXT.getTranslationKey())));
     }
 
     private void save() {
@@ -509,9 +509,9 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
     }
 
     private void updateConnectButtonVisibility() {
-        connectUp.visible    = modeState;
-        connectDown.visible  = modeState;
-        connectLeft.visible  = modeState;
+        connectUp.visible = modeState;
+        connectDown.visible = modeState;
+        connectLeft.visible = modeState;
         connectRight.visible = modeState;
     }
 
@@ -579,8 +579,7 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                 leftPos + 258,
                 topPos + 6,
                 52,
-                52
-        );
+                52);
     }
 
     @Nullable
@@ -589,8 +588,7 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                 leftPos,
                 PREVIEW_PREFERRED_W,
                 PREVIEW_GAP,
-                PREVIEW_MIN_X
-        );
+                PREVIEW_MIN_X);
 
         if (previewW < 52) {
             return null;
@@ -608,7 +606,6 @@ public class DisplayScreen<C extends DisplayMenu> extends AEBaseScreen<C> {
                 previewX,
                 areaY,
                 previewW,
-                areaH
-        );
+                areaH);
     }
 }

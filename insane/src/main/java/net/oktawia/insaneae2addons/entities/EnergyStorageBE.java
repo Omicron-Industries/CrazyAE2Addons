@@ -1,8 +1,10 @@
 package net.oktawia.insaneae2addons.entities;
 
-import appeng.blockentity.networking.EnergyCellBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.blockentity.networking.EnergyCellBlockEntity;
+
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.blocks.EnergyStorageBlock;
 import net.oktawia.insaneae2addons.defs.regs.InsaneBlockEntityRegistrar;

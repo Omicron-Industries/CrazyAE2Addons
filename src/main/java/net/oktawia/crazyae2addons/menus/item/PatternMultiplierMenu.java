@@ -1,11 +1,13 @@
 package net.oktawia.crazyae2addons.menus;
 
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.core.definitions.AEItems;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.AppEngSlot;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.items.PatternMultiplierItem;
 import net.oktawia.crazyae2addons.logic.patternmultiplier.PatternMultiplierHost;
@@ -64,8 +66,7 @@ public class PatternMultiplierMenu extends AEBaseMenu {
                 host.getInventory(),
                 this.mult,
                 this.limit,
-                getPlayer().level()
-        )) {
+                getPlayer().level())) {
             host.saveChanges();
         }
     }

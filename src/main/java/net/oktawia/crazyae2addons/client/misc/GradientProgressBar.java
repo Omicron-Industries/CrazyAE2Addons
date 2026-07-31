@@ -1,10 +1,11 @@
 package net.oktawia.crazyae2addons.client.misc;
 
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.menu.interfaces.IProgressProvider;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 
 public class GradientProgressBar extends ProgressBar {
 
@@ -21,7 +22,7 @@ public class GradientProgressBar extends ProgressBar {
     }
 
     public GradientProgressBar(IProgressProvider source, int colorFrom, int colorTo,
-                               Direction direction, Component title) {
+            Direction direction, Component title) {
         super(source, Blitter.texture("guis/states.png").src(0, 0, 1, 1), direction, title);
         this.provider = source;
         this.colorFrom = colorFrom;

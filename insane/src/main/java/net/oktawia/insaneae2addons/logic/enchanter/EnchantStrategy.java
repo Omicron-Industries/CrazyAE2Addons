@@ -1,12 +1,12 @@
 package net.oktawia.insaneae2addons.logic.enchanter;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
-
-import java.util.List;
 
 public interface EnchantStrategy {
 

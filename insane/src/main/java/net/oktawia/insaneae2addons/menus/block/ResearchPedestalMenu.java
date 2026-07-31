@@ -1,8 +1,10 @@
 package net.oktawia.insaneae2addons.menus.block;
 
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
-import net.minecraft.world.entity.player.Inventory;
+
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.entities.research.ResearchPedestalBottomBE;
 import net.oktawia.insaneae2addons.logic.research.PedestalConnectionState;
@@ -12,9 +14,12 @@ public class ResearchPedestalMenu extends AEBaseMenu {
 
     private final ResearchPedestalBottomBE host;
 
-    @GuiSync(881) public int computation;
-    @GuiSync(882) public int connectionOrdinal;
-    @GuiSync(883) public int statusOrdinal;
+    @GuiSync(881)
+    public int computation;
+    @GuiSync(882)
+    public int connectionOrdinal;
+    @GuiSync(883)
+    public int statusOrdinal;
 
     public ResearchPedestalMenu(int id, Inventory playerInventory, ResearchPedestalBottomBE host) {
         super(InsaneMenuRegistrar.RESEARCH_PEDESTAL_MENU.get(), id, playerInventory, host);
@@ -31,7 +36,8 @@ public class ResearchPedestalMenu extends AEBaseMenu {
     }
 
     public PedestalConnectionState connection() {
-        return PedestalConnectionState.values()[Math.floorMod(connectionOrdinal, PedestalConnectionState.values().length)];
+        return PedestalConnectionState.values()[Math.floorMod(connectionOrdinal,
+                PedestalConnectionState.values().length)];
     }
 
     @Override

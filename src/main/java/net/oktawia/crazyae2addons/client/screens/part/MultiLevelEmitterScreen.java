@@ -1,5 +1,24 @@
 package net.oktawia.crazyae2addons.client.screens.part;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.stacks.AEKey;
@@ -16,29 +35,12 @@ import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.AppEngSlot;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
+
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.logic.interfaces.IMovableSlot;
 import net.oktawia.crazyae2addons.menus.part.MultiLevelEmitterMenu;
 import net.oktawia.crazyae2addons.parts.MultiLevelEmitter;
 import net.oktawia.crazyae2addons.util.MathParser;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends UpgradeableScreen<C> {
 
@@ -109,12 +111,10 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
     private void createLogicButton() {
         this.logicButton = Button.builder(
                 Component.empty(),
-                button -> getMenu().setLogicAnd(!getMenu().isLogicAndClient())
-        ).bounds(0, 0, 52, 16).build();
+                button -> getMenu().setLogicAnd(!getMenu().isLogicAndClient())).bounds(0, 0, 52, 16).build();
 
         this.logicButton.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.MULTI_EMITTER_LOGIC.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.MULTI_EMITTER_LOGIC.getTranslationKey())));
 
         this.widgets.add("logic", logicButton);
     }
@@ -153,12 +153,11 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
 
         updateControls(craftingCardInstalled);
 
-        boolean relayoutNeeded =
-                scrollOffset != lastOffset
-                        || leftPos != lastLeftPos
-                        || topPos != lastTopPos
-                        || width != lastWidth
-                        || height != lastHeight;
+        boolean relayoutNeeded = scrollOffset != lastOffset
+                || leftPos != lastLeftPos
+                || topPos != lastTopPos
+                || width != lastWidth
+                || height != lastHeight;
 
         if (relayoutNeeded) {
             repositionConfigSlots(scrollOffset);
@@ -181,8 +180,7 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
         logicButton.setMessage(Component.translatable(
                 getMenu().isLogicAndClient()
                         ? LangDefs.AND.getTranslationKey()
-                        : LangDefs.OR.getTranslationKey()
-        ));
+                        : LangDefs.OR.getTranslationKey()));
 
         for (int i = 0; i < VISIBLE_ROWS; i++) {
             limitFields[i].setVisible(!craftingCardInstalled);
@@ -262,16 +260,14 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
                 compareButtons[row].setTooltip(Tooltip.create(Component.translatable(
                         whenCrafting
                                 ? LangDefs.MULTI_EMITTER_EMIT_WHEN_CRAFTING.getTranslationKey()
-                                : LangDefs.MULTI_EMITTER_EMIT_WHEN_NOT_CRAFTING.getTranslationKey()
-                )));
+                                : LangDefs.MULTI_EMITTER_EMIT_WHEN_NOT_CRAFTING.getTranslationKey())));
             } else {
                 boolean compareGreaterOrEqual = getMenu().isCompareGeClient(slotIndex);
                 compareButtons[row].setState(compareGreaterOrEqual);
                 compareButtons[row].setTooltip(Tooltip.create(Component.translatable(
                         compareGreaterOrEqual
                                 ? LangDefs.MULTI_EMITTER_CMP_ABOVE.getTranslationKey()
-                                : LangDefs.MULTI_EMITTER_CMP_BELOW.getTranslationKey()
-                )));
+                                : LangDefs.MULTI_EMITTER_CMP_BELOW.getTranslationKey())));
                 validateRow(row);
             }
 
@@ -405,8 +401,7 @@ public class MultiLevelEmitterScreen<C extends MultiLevelEmitterMenu> extends Up
 
         tooltip.add(Component.translatable(
                 LangDefs.MULTI_EMITTER_UNIT_LINE.getTranslationKey(),
-                unitArg
-        ));
+                unitArg));
 
         String text = limitFields[row].getValue();
         if (text == null) {

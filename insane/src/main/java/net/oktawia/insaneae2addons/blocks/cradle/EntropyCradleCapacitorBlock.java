@@ -1,5 +1,7 @@
 package net.oktawia.insaneae2addons.blocks.cradle;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -9,10 +11,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+
 import net.oktawia.crazyae2addons.util.AbstractMenuOpeningBlock;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.entities.cradle.EntropyCradleCapacitorBE;
-import org.jetbrains.annotations.Nullable;
 
 public class EntropyCradleCapacitorBlock extends AbstractMenuOpeningBlock<EntropyCradleCapacitorBE> {
 

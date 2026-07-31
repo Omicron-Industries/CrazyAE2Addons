@@ -1,15 +1,18 @@
 package net.oktawia.insaneae2addons.compat.CC;
 
-import dan200.computercraft.api.lua.LuaFunction;
-import dan200.computercraft.api.peripheral.GenericPeripheral;
-import net.minecraft.resources.ResourceLocation;
-import net.oktawia.insaneae2addons.InsaneAddons;
-import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControllerBE;
-import net.oktawia.insaneae2addons.entities.penrose.PenroseFrameBE;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.resources.ResourceLocation;
+
+import dan200.computercraft.api.lua.LuaFunction;
+import dan200.computercraft.api.peripheral.GenericPeripheral;
+
+import net.oktawia.insaneae2addons.InsaneAddons;
+import net.oktawia.insaneae2addons.entities.penrose.PenroseFrameBE;
+import net.oktawia.insaneae2addons.entities.penrose.PortablePenroseSphereControllerBE;
 
 public final class PenroseFramePeripheral implements GenericPeripheral {
 

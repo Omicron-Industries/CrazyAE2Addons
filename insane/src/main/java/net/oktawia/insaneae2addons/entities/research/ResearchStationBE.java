@@ -1,22 +1,19 @@
 package net.oktawia.insaneae2addons.entities.research;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
-import appeng.blockentity.grid.AENetworkInvBlockEntity;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.filter.IAEItemFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -30,11 +27,25 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
+import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.filter.IAEItemFilter;
+
 import net.oktawia.crazyae2addons.util.IManagedBEHelper;
 import net.oktawia.crazyae2addons.util.IMenuOpeningBlockEntity;
 import net.oktawia.insaneae2addons.InsaneConfig;
@@ -46,22 +57,13 @@ import net.oktawia.insaneae2addons.items.DataDrive;
 import net.oktawia.insaneae2addons.logic.research.ResearchStatus;
 import net.oktawia.insaneae2addons.menus.block.ResearchStationMenu;
 import net.oktawia.insaneae2addons.recipes.ResearchRecipe;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ResearchStationBE extends AENetworkInvBlockEntity
         implements IGridTickable, IManagedBEHelper, MenuProvider, IMenuOpeningBlockEntity {
 
-    private static final int[] PEDESTAL_Y_OFFSETS = {0, 1};
+    private static final int[] PEDESTAL_Y_OFFSETS = { 0, 1 };
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER =
-            new ManagedFieldHolder(ResearchStationBE.class);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ResearchStationBE.class);
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -431,7 +433,8 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
         }
 
         for (PedestalUse use : activePedestals) {
-            if (!(level.getBlockEntity(use.bottomPos()) instanceof ResearchPedestalBottomBE bottom) || !bottom.doWork()) {
+            if (!(level.getBlockEntity(use.bottomPos()) instanceof ResearchPedestalBottomBE bottom)
+                    || !bottom.doWork()) {
                 return false;
             }
         }
@@ -556,7 +559,8 @@ public class ResearchStationBE extends AENetworkInvBlockEntity
             serverLevel.sendParticles(ParticleTypes.ENCHANT,
                     worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5,
                     8, 0.2, 0.2, 0.2, 0.01);
-            serverLevel.playSound(null, worldPosition, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f, 1.2f);
+            serverLevel.playSound(null, worldPosition, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f,
+                    1.2f);
         }
     }
 

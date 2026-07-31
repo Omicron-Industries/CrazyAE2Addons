@@ -1,5 +1,24 @@
 package net.oktawia.insaneae2addons.parts;
 
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -20,27 +39,11 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.parts.p2p.P2PModels;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.InsaneConfig;
 import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.menus.part.EntityTickerMenu;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class EntityTickerPart extends UpgradeablePart implements IGridTickable, MenuProvider {
 
@@ -132,7 +135,8 @@ public class EntityTickerPart extends UpgradeablePart implements IGridTickable, 
         }
         int speedCards = getSpeedCards();
         int powerDraw = (int) (InsaneConfig.COMMON.ENTITY_TICKER_COST.get() * Math.pow(4, speedCards)) / 2;
-        if (grid.getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE, PowerMultiplier.CONFIG) < powerDraw) {
+        if (grid.getEnergyService().extractAEPower(powerDraw, Actionable.MODULATE,
+                PowerMultiplier.CONFIG) < powerDraw) {
             return;
         }
         int extraTicks = (int) Math.pow(2, speedCards + 1) - 1;

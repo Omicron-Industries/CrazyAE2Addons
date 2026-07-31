@@ -1,18 +1,8 @@
 package net.oktawia.crazyae2addons.mixins.cpupriority.ae2;
 
-import appeng.client.Point;
-import appeng.client.gui.Tooltip;
-import appeng.client.gui.style.Blitter;
-import appeng.client.gui.widgets.CPUSelectionList;
-import appeng.client.gui.widgets.Scrollbar;
-import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuListEntry;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
-import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,8 +13,21 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+
+import appeng.client.Point;
+import appeng.client.gui.Tooltip;
+import appeng.client.gui.style.Blitter;
+import appeng.client.gui.widgets.CPUSelectionList;
+import appeng.client.gui.widgets.Scrollbar;
+import appeng.menu.me.crafting.CraftingStatusMenu;
+import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuListEntry;
+
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
+import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
 
 @Mixin(value = CPUSelectionList.class, remap = false)
 public abstract class MixinCPUSelectionList {
@@ -50,18 +53,11 @@ public abstract class MixinCPUSelectionList {
     @Unique
     private CraftingCpuListEntry crazyae2addons$lastHitCpu;
 
-    @Redirect(
-            method = "drawBackgroundLayer",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/List;subList(II)Ljava/util/List;"
-            )
-    )
+    @Redirect(method = "drawBackgroundLayer", at = @At(value = "INVOKE", target = "Ljava/util/List;subList(II)Ljava/util/List;"))
     private List<CraftingCpuListEntry> crazyae2addons$sortThenSlice(
             List<CraftingCpuListEntry> list,
             int from,
-            int to
-    ) {
+            int to) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
             return list.subList(from, to);
         }
@@ -120,19 +116,11 @@ public abstract class MixinCPUSelectionList {
     private void crazyae2addons$captureCpu(
             int mouseX,
             int mouseY,
-            CallbackInfoReturnable<Tooltip> cir
-    ) {
+            CallbackInfoReturnable<Tooltip> cir) {
         this.crazyae2addons$lastHitCpu = hitTestCpu(new Point(mouseX, mouseY));
     }
 
-    @ModifyArg(
-            method = "getTooltip",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lappeng/client/gui/Tooltip;<init>(Ljava/util/List;)V"
-            ),
-            index = 0
-    )
+    @ModifyArg(method = "getTooltip", at = @At(value = "INVOKE", target = "Lappeng/client/gui/Tooltip;<init>(Ljava/util/List;)V"), index = 0)
     private List<Component> crazyae2addons$appendCpuInfo(List<Component> lines) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
             return lines;

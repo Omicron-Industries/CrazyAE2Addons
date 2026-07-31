@@ -1,12 +1,12 @@
 package net.oktawia.insaneae2addons.client.renderer.preview.builder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 @OnlyIn(Dist.CLIENT)
 public class PreviewInfo {
@@ -22,5 +22,6 @@ public class PreviewInfo {
         this.lastTick = 0.0f;
     }
 
-    public record BlockInfo(BlockPos pos, BlockState state) {}
+    public record BlockInfo(BlockPos pos, BlockState state) {
+    }
 }

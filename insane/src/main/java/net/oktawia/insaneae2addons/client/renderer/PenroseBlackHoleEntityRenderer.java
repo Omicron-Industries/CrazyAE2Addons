@@ -6,14 +6,17 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+
+import org.joml.Matrix4f;
+
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+
 import net.oktawia.insaneae2addons.InsaneAddons;
 import net.oktawia.insaneae2addons.entities.penrose.PenroseBlackHoleEntity;
-import org.joml.Matrix4f;
 
 public class PenroseBlackHoleEntityRenderer extends EntityRenderer<PenroseBlackHoleEntity> {
 
@@ -33,7 +36,7 @@ public class PenroseBlackHoleEntityRenderer extends EntityRenderer<PenroseBlackH
 
     @Override
     public void render(PenroseBlackHoleEntity entity, float yaw, float partialTick, PoseStack poseStack,
-                       MultiBufferSource buffer, int light) {
+            MultiBufferSource buffer, int light) {
         super.render(entity, yaw, partialTick, poseStack, buffer, light);
 
         Matrix4f matrix = poseStack.last().pose();

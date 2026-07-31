@@ -1,5 +1,19 @@
 package net.oktawia.crazyae2addons.items;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.parts.IPart;
@@ -12,23 +26,11 @@ import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.items.AEBaseItem;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.Container;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
+
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.defs.regs.CrazyMenuRegistrar;
 import net.oktawia.crazyae2addons.logic.patternmultiplier.PatternMultiplierHost;
 import net.oktawia.crazyae2addons.logic.patternmultiplier.PatternMultiplierLogic;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 
 public class PatternMultiplierItem extends AEBaseItem implements IMenuItem {
 
@@ -44,25 +46,23 @@ public class PatternMultiplierItem extends AEBaseItem implements IMenuItem {
     public @NotNull InteractionResultHolder<ItemStack> use(
             @NotNull Level level,
             @NotNull Player player,
-            @NotNull InteractionHand hand
-    ) {
+            @NotNull InteractionHand hand) {
         if (CrazyConfig.COMMON.PATTERN_MULTIPLIER_ENABLED.get()) {
             if (!level.isClientSide() && !player.isSecondaryUseActive()) {
                 MenuOpener.open(
                         CrazyMenuRegistrar.PATTERN_MULTIPLIER_MENU.get(),
                         player,
-                        MenuLocators.forHand(player, hand)
-                );
+                        MenuLocators.forHand(player, hand));
             }
         }
         return new InteractionResultHolder<>(
                 InteractionResult.sidedSuccess(level.isClientSide()),
-                player.getItemInHand(hand)
-        );
+                player.getItemInHand(hand));
     }
 
     @Override
-    public @Nullable ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
+    public @Nullable ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack,
+            @Nullable BlockPos pos) {
         return new PatternMultiplierHost(player, inventorySlot, stack);
     }
 
@@ -156,8 +156,7 @@ public class PatternMultiplierItem extends AEBaseItem implements IMenuItem {
         Vec3 hit = context.getClickLocation().subtract(
                 context.getClickedPos().getX(),
                 context.getClickedPos().getY(),
-                context.getClickedPos().getZ()
-        );
+                context.getClickedPos().getZ());
 
         IPartHost host = PartHelper.getPartHost(context.getLevel(), context.getClickedPos());
         SelectedPart selected = host == null ? null : host.selectPartLocal(hit);

@@ -1,8 +1,9 @@
 package net.oktawia.crazyae2addons.client.screens.block;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.style.ScreenStyle;
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -13,16 +14,18 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.menu.interfaces.IProgressProvider;
+
 import net.oktawia.crazyae2addons.client.misc.GradientProgressBar;
 import net.oktawia.crazyae2addons.client.misc.ResearchDiskPanel;
-import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
-import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
 import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.entities.RecipeFabricatorBE;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHook;
+import net.oktawia.crazyae2addons.integration.ResearchDiskHooks;
 import net.oktawia.crazyae2addons.menus.block.RecipeFabricatorMenu;
-
-import java.util.List;
 
 public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBaseScreen<C> {
 
@@ -43,8 +46,7 @@ public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBa
         List<Component> diskTooltip = hook != null ? hook.researchSlotTooltip() : List.of();
         this.widgets.add("research_disk", new ResearchDiskPanel(
                 diskSlots.isEmpty() ? null : diskSlots.get(0),
-                diskTooltip
-        ));
+                diskTooltip));
     }
 
     @Override
@@ -88,8 +90,7 @@ public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBa
                     getInputFluid(host),
                     mouseX,
                     mouseY,
-                    Component.translatable(LangDefs.RECIPE_FABRICATOR_FLUID_IN.getTranslationKey())
-            );
+                    Component.translatable(LangDefs.RECIPE_FABRICATOR_FLUID_IN.getTranslationKey()));
         }
 
         if (isHovering(getMenu().getFluidOutSlot().x, getMenu().getFluidOutSlot().y, 16, 16, mouseX, mouseY)) {
@@ -98,8 +99,7 @@ public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBa
                     getOutputFluid(host),
                     mouseX,
                     mouseY,
-                    Component.translatable(LangDefs.RECIPE_FABRICATOR_FLUID_OUT.getTranslationKey())
-            );
+                    Component.translatable(LangDefs.RECIPE_FABRICATOR_FLUID_OUT.getTranslationKey()));
         }
     }
 
@@ -140,11 +140,9 @@ public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBa
                     this.font,
                     List.of(
                             title,
-                            Component.translatable(LangDefs.EMPTY.getTranslationKey())
-                    ),
+                            Component.translatable(LangDefs.EMPTY.getTranslationKey())),
                     mouseX,
-                    mouseY
-            );
+                    mouseY);
             return;
         }
 
@@ -153,11 +151,9 @@ public class RecipeFabricatorScreen<C extends RecipeFabricatorMenu> extends AEBa
                 List.of(
                         title,
                         fluidStack.getDisplayName(),
-                        Component.translatable(LangDefs.MB_AMOUNT.getTranslationKey(), fluidStack.getAmount())
-                ),
+                        Component.translatable(LangDefs.MB_AMOUNT.getTranslationKey(), fluidStack.getAmount())),
                 mouseX,
-                mouseY
-        );
+                mouseY);
     }
 
     private void renderFluidSlot(GuiGraphics gg, FluidStack fluidStack, Slot slot) {

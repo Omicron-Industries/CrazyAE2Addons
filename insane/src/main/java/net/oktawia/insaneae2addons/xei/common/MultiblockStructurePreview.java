@@ -1,5 +1,14 @@
 package net.oktawia.insaneae2addons.xei.common;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -10,6 +19,7 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -20,18 +30,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
 import net.oktawia.crazyae2addons.multiblock.MultiblockMaterials;
 import net.oktawia.insaneae2addons.defs.LangDefs;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class MultiblockStructurePreview extends WidgetGroup {
 
@@ -283,8 +285,12 @@ public class MultiblockStructurePreview extends WidgetGroup {
             maxY = Math.max(maxY, pos.getY());
             maxZ = Math.max(maxZ, pos.getZ());
         }
-        minX--; minY--; minZ--;
-        maxX++; maxY++; maxZ++;
+        minX--;
+        minY--;
+        minZ--;
+        maxX++;
+        maxY++;
+        maxZ++;
 
         Map<BlockPos, Integer> bestDepth = new HashMap<>();
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();

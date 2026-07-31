@@ -1,5 +1,12 @@
 package net.oktawia.crazyae2addons.mixins.resourcetracking;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.nbt.CompoundTag;
+
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
@@ -8,14 +15,10 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.inv.ListCraftingInventory;
-import net.minecraft.nbt.CompoundTag;
+
 import net.oktawia.crazyae2addons.logic.buffer.ManagedBuffer;
 import net.oktawia.crazyae2addons.tracking.IResourceTrackingService;
 import net.oktawia.crazyae2addons.tracking.UsageTarget;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = CraftingCpuHelper.class, remap = false)
 public class MixinCraftingCpuHelper {
@@ -27,10 +30,12 @@ public class MixinCraftingCpuHelper {
             ListCraftingInventory cpuInventory,
             IActionSource src,
             CallbackInfoReturnable<GenericStack> cir) {
-        if (cir.getReturnValue() != null) return;
+        if (cir.getReturnValue() != null)
+            return;
 
         var svc = grid.getService(IResourceTrackingService.class);
-        if (svc == null) return;
+        if (svc == null)
+            return;
 
         AEKey outputKey = plan.finalOutput().what();
         if (outputKey instanceof AEItemKey itemKey) {

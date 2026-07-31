@@ -1,10 +1,6 @@
 package net.oktawia.crazyae2addons.logic.viewcell;
 
-import lombok.experimental.UtilityClass;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import static net.minecraft.core.registries.Registries.ITEM;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +8,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static net.minecraft.core.registries.Registries.ITEM;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class TagViewCellLogic {

@@ -1,9 +1,15 @@
 package net.oktawia.crazyae2addons.recipes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -13,10 +19,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FabricationRecipeSerializer implements RecipeSerializer<FabricationRecipe> {
 
@@ -66,7 +68,8 @@ public class FabricationRecipeSerializer implements RecipeSerializer<Fabrication
             throw new JsonSyntaxException("Fabrication recipe " + id + " must have either 'output' or 'fluid_output'");
         }
 
-        @Nullable String requiredKey = json.has("required_key")
+        @Nullable
+        String requiredKey = json.has("required_key")
                 ? GsonHelper.getAsString(json, "required_key")
                 : null;
 

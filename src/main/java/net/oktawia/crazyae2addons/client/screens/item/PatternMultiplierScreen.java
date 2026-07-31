@@ -1,20 +1,5 @@
 package net.oktawia.crazyae2addons.client.screens.item;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
-import appeng.client.gui.MathExpressionParser;
-import appeng.client.gui.style.PaletteColor;
-import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AETextField;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.oktawia.crazyae2addons.client.misc.IconButton;
-import net.oktawia.crazyae2addons.defs.LangDefs;
-import net.oktawia.crazyae2addons.menus.PatternMultiplierMenu;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -22,6 +7,23 @@ import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.Icon;
+import appeng.client.gui.MathExpressionParser;
+import appeng.client.gui.style.PaletteColor;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.AETextField;
+
+import net.oktawia.crazyae2addons.client.misc.IconButton;
+import net.oktawia.crazyae2addons.defs.LangDefs;
+import net.oktawia.crazyae2addons.menus.PatternMultiplierMenu;
 
 public class PatternMultiplierScreen<C extends PatternMultiplierMenu> extends AEBaseScreen<C> {
 
@@ -48,13 +50,11 @@ public class PatternMultiplierScreen<C extends PatternMultiplierMenu> extends AE
 
         this.confirm = new IconButton(Icon.ENTER, this::modify);
         this.confirm.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.APPLY_MULTIPLIER.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.APPLY_MULTIPLIER.getTranslationKey())));
 
         this.clear = new IconButton(Icon.CLEAR, this::clear);
         this.clear.setTooltip(Tooltip.create(
-                Component.translatable(LangDefs.CLEAR_ALL_PATTERNS.getTranslationKey())
-        ));
+                Component.translatable(LangDefs.CLEAR_ALL_PATTERNS.getTranslationKey())));
 
         this.value = new AETextField(style, Minecraft.getInstance().font, 0, 0, 0, 0);
         this.value.setBordered(false);

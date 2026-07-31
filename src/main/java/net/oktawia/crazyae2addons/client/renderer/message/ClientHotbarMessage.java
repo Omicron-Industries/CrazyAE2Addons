@@ -1,15 +1,17 @@
 package net.oktawia.crazyae2addons.client.renderer.message;
 
-import lombok.Getter;
-import net.minecraft.network.chat.Component;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.network.chat.Component;
+
+import lombok.Getter;
+
 public final class ClientHotbarMessage {
 
-    public record Line(Component text, int color) {}
+    public record Line(Component text, int color) {
+    }
 
     private static final int MAX_LINES = 3;
 

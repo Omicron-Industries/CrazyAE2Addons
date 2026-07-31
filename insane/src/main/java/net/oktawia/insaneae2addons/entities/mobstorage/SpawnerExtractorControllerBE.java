@@ -1,18 +1,9 @@
 package net.oktawia.insaneae2addons.entities.mobstorage;
 
-import appeng.api.config.Actionable;
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.storage.StorageHelper;
-import appeng.api.upgrades.IUpgradeInventory;
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.upgrades.UpgradeInventories;
-import appeng.core.definitions.AEItems;
-import lombok.Getter;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +19,22 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
+
+import appeng.api.config.Actionable;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.storage.StorageHelper;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
+import appeng.core.definitions.AEItems;
+
 import net.oktawia.crazyae2addons.multiblock.AbstractMultiblockControllerBE;
 import net.oktawia.crazyae2addons.multiblock.MultiblockDefinition;
 import net.oktawia.insaneae2addons.InsaneConfig;
@@ -40,9 +47,6 @@ import net.oktawia.insaneae2addons.defs.regs.InsaneMenuRegistrar;
 import net.oktawia.insaneae2addons.menus.block.SpawnerExtractorControllerMenu;
 import net.oktawia.insaneae2addons.mixins.BaseSpawnerAccessor;
 import net.oktawia.insaneae2addons.mobstorage.MobKey;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class SpawnerExtractorControllerBE extends AbstractMultiblockControllerBE implements IUpgradeableObject {
 
@@ -62,8 +66,7 @@ public class SpawnerExtractorControllerBE extends AbstractMultiblockControllerBE
                 pos,
                 blockState,
                 new ItemStack(InsaneBlockRegistrar.SPAWNER_EXTRACTOR_CONTROLLER_BLOCK.get()),
-                2.0F
-        );
+                2.0F);
     }
 
     @Override
@@ -124,7 +127,8 @@ public class SpawnerExtractorControllerBE extends AbstractMultiblockControllerBE
         BlockState state = getBlockState();
         if (state.hasProperty(SpawnerExtractorControllerBlock.FORMED)
                 && state.getValue(SpawnerExtractorControllerBlock.FORMED) != formed) {
-            level.setBlock(getBlockPos(), state.setValue(SpawnerExtractorControllerBlock.FORMED, formed), Block.UPDATE_CLIENTS);
+            level.setBlock(getBlockPos(), state.setValue(SpawnerExtractorControllerBlock.FORMED, formed),
+                    Block.UPDATE_CLIENTS);
         }
     }
 
@@ -195,8 +199,7 @@ public class SpawnerExtractorControllerBE extends AbstractMultiblockControllerBE
                 MobKey.of(type),
                 amount,
                 IActionSource.ofMachine(this),
-                Actionable.MODULATE
-        );
+                Actionable.MODULATE);
     }
 
     private @Nullable EntityType<?> readSpawnerEntity(Level level) {
@@ -224,7 +227,8 @@ public class SpawnerExtractorControllerBE extends AbstractMultiblockControllerBE
             return;
         }
 
-        ((BaseSpawnerAccessor) spawner.getSpawner()).setSpawnDelay(suppressed ? Integer.MAX_VALUE : VANILLA_SPAWN_DELAY);
+        ((BaseSpawnerAccessor) spawner.getSpawner())
+                .setSpawnDelay(suppressed ? Integer.MAX_VALUE : VANILLA_SPAWN_DELAY);
         spawner.setChanged();
     }
 

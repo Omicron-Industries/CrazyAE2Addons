@@ -1,27 +1,23 @@
 package net.oktawia.crazyae2addons.mixins.cpupriority;
 
-import appeng.api.networking.crafting.ICraftingCPU;
-import net.oktawia.crazyae2addons.CrazyConfig;
-import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
-import net.oktawia.crazyae2addons.mixins.accessors.CraftingCPURecordAccessor;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import appeng.api.networking.crafting.ICraftingCPU;
+
+import net.oktawia.crazyae2addons.CrazyConfig;
+import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
+import net.oktawia.crazyae2addons.mixins.accessors.CraftingCPURecordAccessor;
+
 @Mixin(targets = "appeng.menu.me.crafting.CraftingCPUCycler", remap = false)
 public abstract class MixinCraftingCPUCycler {
 
-    @Redirect(
-            method = "detectAndSendChanges",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Collections;sort(Ljava/util/List;)V"
-            )
-    )
+    @Redirect(method = "detectAndSendChanges", at = @At(value = "INVOKE", target = "Ljava/util/Collections;sort(Ljava/util/List;)V"))
     private void crazyae2addons$sortCpuRecordsByPrio(List<?> list) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
             Collections.sort((List<Comparable>) (List<?>) list);
