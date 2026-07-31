@@ -64,6 +64,29 @@ shot or a cell that is a few singularities short leaves you with nothing.
 
 ---
 
+## Lasers outside the sphere
+
+A Penrose Laser does not need a sphere around it. On its own it is a weapon.
+
+The laser takes a facing when you place it. Charge it with FE, then give it a redstone pulse to fire.
+
+The beam goes as far as something stops it. It stops when it runs out of charge, when it meets a block it cannot 
+break, when it meets a block belonging to a formed multiblock, or when it leaves the loaded chunks.
+There is also a hard limit of 1024 (default) blocks. Water and lava wont stop the beam.
+
+Blocks that belong to a formed multiblock stop the beam without taking any damage, so you cannot cut through your own
+sphere or through somebody's Research Unit. 
+
+---
+
+## Firing inside the sphere
+
+A laser that is part of a formed sphere arms the ignition, it breaks nothing, and it hurts nothing.
+It does draw a beam to the center of the core whenever it fires, so a successful ignition all four lasers are firing
+inwards. 
+
+---
+
 ## The black hole is not part of the multiblock
 
 Once lit, the black hole is a thing in the world of its own. It carries its own mass, its own accretion disc, and its
