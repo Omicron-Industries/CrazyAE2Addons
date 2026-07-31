@@ -120,10 +120,10 @@ public final class InsaneMultiblocks {
         addSkin(grid, hoops, true);
         addSkin(grid, spokes, true);
 
-        put(grid, new BlockPos(SPHERE_RADIUS, 0, 0), 'P');
-        put(grid, new BlockPos(-SPHERE_RADIUS, 0, 0), 'P');
-        put(grid, new BlockPos(0, 0, SPHERE_RADIUS), 'P');
-        put(grid, new BlockPos(0, 0, -SPHERE_RADIUS), 'P');
+        put(grid, new BlockPos(SPHERE_RADIUS + 2, 0, 0), 'P');
+        put(grid, new BlockPos(-SPHERE_RADIUS - 2, 0, 0), 'P');
+        put(grid, new BlockPos(0, 0, SPHERE_RADIUS + 2), 'P');
+        put(grid, new BlockPos(0, 0, -SPHERE_RADIUS - 2), 'P');
 
         int laserAlong = SPHERE_CORE_RADIUS + SKIN_THICKNESS + SPOKE_GAP + 1 - 3;
         put(grid, new BlockPos(laserAlong, 0, 0), 'L');
@@ -163,16 +163,11 @@ public final class InsaneMultiblocks {
 
 
     private static String[] penrosePortBlockIds() {
-        List<String> ids = new ArrayList<>(List.of(
-                "insaneae2addons:penrose_port",
-                "insaneae2addons:penrose_coil"
-        ));
-
+        List<String> ids = new ArrayList<>(List.of("insaneae2addons:penrose_port"));
         PenroseEnergyExport export = PenroseEnergyExport.get();
         if (export != null && InsaneConfig.COMMON.PENROSE_EU_OUTPUT_ENABLED.get()) {
             ids.addAll(export.portBlockIds());
         }
-
         return ids.toArray(String[]::new);
     }
 

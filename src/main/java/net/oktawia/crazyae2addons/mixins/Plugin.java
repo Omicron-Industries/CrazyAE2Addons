@@ -89,11 +89,22 @@ public class Plugin implements IMixinConfigPlugin {
                     doload = !advancedAeLoaded;
             case "net.oktawia.crazyae2addons.mixins.compat.MixinAdvancedAECraftingServiceCompat" ->
                     doload = advancedAeLoaded;
-            case "net.oktawia.crazyae2addons.mixins.compat.MixinCraftingServiceCLCompat",
-                 "net.oktawia.crazyae2addons.mixins.cancelallcrafting.MixinCraftingCPUScreenCL" ->
+            case "net.oktawia.crazyae2addons.mixins.compat.MixinCraftingServiceCLCompat" ->
                     doload = hasTrySubmitJobBoolean;
-            case "net.oktawia.crazyae2addons.mixins.cancelallcrafting.MixinCraftingCPUScreen" ->
-                    doload = !hasTrySubmitJobBoolean;
+            case "net.oktawia.crazyae2addons.mixins.cancelallcrafting.ae2clo.MixinCraftingCPUScreen" ->
+                    doload = Ae2Detection.CRAFTING_CPU_SCREEN_OVERRIDES_INIT;
+            case "net.oktawia.crazyae2addons.mixins.cancelallcrafting.ae2.MixinCraftingCPUScreen" ->
+                    doload = !Ae2Detection.CRAFTING_CPU_SCREEN_OVERRIDES_INIT;
+            case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2.MixinCPUSelectionList" ->
+                    doload = !Ae2Detection.SHARED_CPU_LIST_WIDGET;
+            case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2cln.MixinCPUSelectionList" ->
+                    doload = Ae2Detection.SHARED_CPU_LIST_WIDGET;
+            case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2cln.MixinCraftConfirmMenuCpuListPrio" ->
+                    doload = Ae2Detection.CRAFT_CONFIRM_BUILDS_CPU_LIST;
+            case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2.MixinCraftConfirmMenuAutoCpuPriority" ->
+                    doload = !Ae2Detection.CRAFT_CONFIRM_SUBMITS_WITH_FOLLOWING;
+            case "net.oktawia.crazyae2addons.mixins.cpupriority.ae2cl.MixinCraftConfirmMenuAutoCpuPriority" ->
+                    doload = Ae2Detection.CRAFT_CONFIRM_SUBMITS_WITH_FOLLOWING;
             case "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEInputBusPartMachine",
                  "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEInputHatchPartMachine",
                  "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEStockingItemSlot",

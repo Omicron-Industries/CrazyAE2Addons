@@ -24,8 +24,11 @@
     "cancelallcrafting.MixinCraftingCPUMenu",
     "compat.MixinAdvancedAECraftingServiceCompat",
     "compat.MixinCraftingServiceCLCompat",
-    "cpupriority.MixinCPUSelectionList",
-    "cpupriority.MixinCraftConfirmMenuAutoCpuPriority",
+    "cpupriority.ae2.MixinCPUSelectionList",
+    "cpupriority.ae2.MixinCraftConfirmMenuAutoCpuPriority",
+    "cpupriority.ae2cl.MixinCraftConfirmMenuAutoCpuPriority",
+    "cpupriority.ae2cln.MixinCPUSelectionList",
+    "cpupriority.ae2cln.MixinCraftConfirmMenuCpuListPrio",
     "cpupriority.MixinCraftingCpuCluster",
     "cpupriority.MixinCraftingCPUCycler",
     "cpupriority.MixinCraftingCpuListEntryPrio",
@@ -42,7 +45,7 @@
   ],
   "client": [
     "analogemitter.MixinStorageLevelEmitterScreenAnalog",
-    "cancelallcrafting.MixinCraftingCPUScreen",
-    "cancelallcrafting.MixinCraftingCPUScreenCL"
+    "cancelallcrafting.ae2.MixinCraftingCPUScreen",
+    "cancelallcrafting.ae2clo.MixinCraftingCPUScreen"
   ]
 }

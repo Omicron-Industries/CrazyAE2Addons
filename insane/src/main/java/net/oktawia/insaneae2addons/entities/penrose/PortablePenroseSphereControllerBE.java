@@ -381,6 +381,9 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
             this.pendingFeedSingu = 0;
             this.pendingEvaporation = 0L;
             tickPeripherals();
+            exportStoredEnergy(level);
+            recomputeDiskEnergy();
+            tickPeripherals();
             return TickRateModulation.IDLE;
         }
 
@@ -464,9 +467,6 @@ public class PortablePenroseSphereControllerBE extends AbstractMultiblockControl
 
         this.lastGeneratedFePerTick = generatedAccumulator / ticks;
         this.lastConsumedFePerTick = consumedAccumulator / ticks;
-        exportStoredEnergy(level);
-        recomputeDiskEnergy();
-        tickPeripherals();
 
         setChanged();
         return TickRateModulation.IDLE;

@@ -37,7 +37,7 @@ public final class InsaneConnectedTextures {
             new ResourceLocation("insaneae2addons", "block/penrose_frame_formed");
     private static final ResourceLocation PENROSE_GLASS_TEXTURE =
             new ResourceLocation("insaneae2addons", "block/penrose_glass");
-    private static final int PENROSE_GLASS_BAR_THICKNESS = 2;
+    private static final int PENROSE_GLASS_BAR_THICKNESS = 1;
     private static final ResourceLocation PENROSE_COIL_TEXTURE =
             new ResourceLocation("insaneae2addons", "block/penrose_coil");
     private static final ResourceLocation MOB_FARM_WALL_TEXTURE =

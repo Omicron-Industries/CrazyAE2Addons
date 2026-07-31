@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.mixins.cancelallcrafting;
+package net.oktawia.crazyae2addons.mixins.cancelallcrafting.ae2clo;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
@@ -11,6 +11,10 @@ import net.oktawia.crazyae2addons.defs.LangDefs;
 import net.oktawia.crazyae2addons.network.NetworkHandler;
 import net.oktawia.crazyae2addons.network.packets.CancelAllCraftingPacket;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = CraftingCPUScreen.class, remap = false)
 public abstract class MixinCraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T> {
@@ -19,9 +23,11 @@ public abstract class MixinCraftingCPUScreen<T extends CraftingCPUMenu> extends 
         super(menu, playerInventory, title, style);
     }
 
-    @Override
-    public void init() {
-        super.init();
+    @Inject(
+            method = {"init()V", "m_7856_()V"},
+            at = @At("TAIL")
+    )
+    private void crazyae2addons$addCancelAllAfterForkInit(CallbackInfo ci) {
         Button cancelAll = Button.builder(
                 Component.translatable(LangDefs.CANCEL_ALL_CRAFTING.getTranslationKey()),
                 btn -> NetworkHandler.sendToServer(new CancelAllCraftingPacket())
@@ -33,5 +39,4 @@ public abstract class MixinCraftingCPUScreen<T extends CraftingCPUMenu> extends 
 
         addRenderableWidget(cancelAll);
     }
-
 }

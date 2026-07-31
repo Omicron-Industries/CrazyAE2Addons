@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.mixins.cpupriority;
+package net.oktawia.crazyae2addons.mixins.cpupriority.ae2;
 
 import appeng.client.Point;
 import appeng.client.gui.Tooltip;

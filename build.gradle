@@ -19,6 +19,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'com.diffplug.spotless'
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
@@ -318,4 +319,18 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+spotless {
+    java {
+        target 'src/main/java/**/*.java'
+
+        endWithNewline()
+        indentWithSpaces()
+        trimTrailingWhitespace()
+        removeUnusedImports()
+        toggleOffOn()
+        eclipse().configFile rootProject.file('codeformat/codeformat.xml')
+        importOrderFile rootProject.file('codeformat/crazyae2.importorder')
+    }
 }
