@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,9 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
-import appeng.client.gui.Tooltip;
 import appeng.client.gui.widgets.CPUSelectionList;
-import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuListEntry;
 
 import net.oktawia.crazyae2addons.CrazyConfig;
 import net.oktawia.crazyae2addons.logic.cpupriority.CpuPriorityHelper;
@@ -27,15 +24,12 @@ import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
 @Mixin(value = CPUSelectionList.class, remap = false)
 public abstract class MixinCPUSelectionList {
 
-    @Shadow
-    protected abstract CraftingCpuListEntry hitTestCpu(Point mousePos);
-
     @Unique
-    private CraftingCpuListEntry crazyae2addons$lastHitCpu;
+    private Object crazyae2addons$lastHitCpu;
 
     @Redirect(method = "drawBackgroundLayer", at = @At(value = "INVOKE", target = "Ljava/util/List;subList(II)Ljava/util/List;"))
-    private List<CraftingCpuListEntry> crazyae2addons$sortThenSlice(
-            List<CraftingCpuListEntry> list,
+    private List<Object> crazyae2addons$sortThenSlice(
+            List<Object> list,
             int from,
             int to) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
@@ -51,7 +45,7 @@ public abstract class MixinCPUSelectionList {
     }
 
     @Redirect(method = "hitTestCpu", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;"))
-    private Object crazyae2addons$hitTestOnSorted(List<CraftingCpuListEntry> list, int index) {
+    private Object crazyae2addons$hitTestOnSorted(List<Object> list, int index) {
         if (!CrazyConfig.COMMON.CPU_PRIORITIES_ENABLED.get()) {
             return list.get(index);
         }
@@ -59,12 +53,9 @@ public abstract class MixinCPUSelectionList {
         return CpuPriorityHelper.sortEntries(list).get(index);
     }
 
-    @Inject(method = "getTooltip", at = @At("HEAD"))
-    private void crazyae2addons$captureCpu(
-            int mouseX,
-            int mouseY,
-            CallbackInfoReturnable<Tooltip> cir) {
-        this.crazyae2addons$lastHitCpu = hitTestCpu(new Point(mouseX, mouseY));
+    @Inject(method = "hitTestCpu", at = @At("RETURN"))
+    private void crazyae2addons$captureCpu(Point mousePos, CallbackInfoReturnable<Object> cir) {
+        this.crazyae2addons$lastHitCpu = cir.getReturnValue();
     }
 
     @ModifyArg(method = "getTooltip", at = @At(value = "INVOKE", target = "Lappeng/client/gui/Tooltip;<init>(Ljava/util/List;)V"), index = 0)
@@ -76,9 +67,8 @@ public abstract class MixinCPUSelectionList {
         var result = new ArrayList<>(lines);
         var cpu = this.crazyae2addons$lastHitCpu;
 
-        if (cpu != null) {
-            int prio = ((Object) cpu instanceof ICpuPrio p) ? p.getPrio() : 0;
-            result.add(Component.literal("Priority: " + prio));
+        if (cpu instanceof ICpuPrio prio) {
+            result.add(Component.literal("Priority: " + prio.getPrio()));
         }
 
         return result;

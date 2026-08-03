@@ -2,15 +2,19 @@ package net.oktawia.crazyae2addons.logic.cpupriority;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lombok.experimental.UtilityClass;
 
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
-import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuListEntry;
 
+import net.oktawia.crazyae2addons.logic.interfaces.ICpuListEntryInfo;
+import net.oktawia.crazyae2addons.logic.interfaces.ICpuListView;
 import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
 
 @UtilityClass
@@ -30,11 +34,51 @@ public class CpuPriorityHelper {
         return 0;
     }
 
-    public int getEntryPriority(CraftingCpuListEntry entry) {
-        if ((Object) entry instanceof ICpuPrio prio) {
+    public int getEntryPriority(Object entry) {
+        if (entry instanceof ICpuPrio prio) {
             return prio.getPrio();
         }
         return 0;
+    }
+
+    public int getEntrySerial(Object entry) {
+        if (entry instanceof ICpuListEntryInfo info) {
+            return info.serial();
+        }
+        return 0;
+    }
+
+    public String getEntryName(Object entry) {
+        if (entry instanceof ICpuListEntryInfo info) {
+            var name = info.name();
+            return name == null ? "CPU" : name.getString();
+        }
+        return "CPU";
+    }
+
+    public void applyEntryPriorities(Object cpuList, Set<ICraftingCPU> cpus, Map<ICraftingCPU, Integer> serials) {
+        if (!(cpuList instanceof ICpuListView list) || cpus == null) {
+            return;
+        }
+
+        var entries = list.cpus();
+        if (entries.isEmpty()) {
+            return;
+        }
+
+        var serialToCpu = new HashMap<Integer, ICraftingCPU>(serials.size());
+        for (var cpu : cpus) {
+            var serial = serials.get(cpu);
+            if (serial != null) {
+                serialToCpu.put(serial, cpu);
+            }
+        }
+
+        for (var entry : entries) {
+            if (entry instanceof ICpuPrio prio) {
+                prio.setPrio(getCpuPriority(serialToCpu.get(getEntrySerial(entry))));
+            }
+        }
     }
 
     public Comparator<ICraftingCPU> cpuComparator() {
@@ -57,15 +101,12 @@ public class CpuPriorityHelper {
                 .thenComparingInt(System::identityHashCode);
     }
 
-    public Comparator<CraftingCpuListEntry> entryComparator() {
+    public Comparator<Object> entryComparator() {
         return Comparator
                 .comparingInt(CpuPriorityHelper::getEntryPriority)
                 .reversed()
-                .thenComparing(entry -> {
-                    var name = entry.name();
-                    return name == null ? "CPU" : name.getString();
-                }, String.CASE_INSENSITIVE_ORDER)
-                .thenComparingInt(CraftingCpuListEntry::serial);
+                .thenComparing(CpuPriorityHelper::getEntryName, String.CASE_INSENSITIVE_ORDER)
+                .thenComparingInt(CpuPriorityHelper::getEntrySerial);
     }
 
     public Comparator<CraftingCPUCluster> extendFastFirstComparator(Comparator<CraftingCPUCluster> base) {
@@ -100,7 +141,7 @@ public class CpuPriorityHelper {
         return sortClusters(clusters).iterator();
     }
 
-    public List<CraftingCpuListEntry> sortEntries(List<CraftingCpuListEntry> entries) {
+    public <T> List<T> sortEntries(List<T> entries) {
         return entries.stream()
                 .sorted(entryComparator())
                 .toList();

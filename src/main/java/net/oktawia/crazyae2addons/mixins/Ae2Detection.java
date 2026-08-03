@@ -16,6 +16,7 @@ public final class Ae2Detection {
     private static final String CRAFT_CONFIRM_MENU = "appeng/menu/me/crafting/CraftConfirmMenu";
 
     private static final String CPU_LIST_MENU_DESC = "Lappeng/menu/me/crafting/ICpuListMenu;";
+    private static final String TOP_LEVEL_CPU_LIST_CLASS = "appeng/menu/me/crafting/CraftingCpuList";
     private static final String CRAFTING_SERVICE = "appeng/api/networking/crafting/ICraftingService";
     private static final String SUBMIT_JOB_FOLLOWING_DESC = "("
             + "Lappeng/api/networking/crafting/ICraftingPlan;"
@@ -27,6 +28,8 @@ public final class Ae2Detection {
             + ")Lappeng/api/networking/crafting/ICraftingSubmitResult;";
 
     public static final boolean SHARED_CPU_LIST_WIDGET = hasFieldOfType(CPU_SELECTION_LIST, "menu", CPU_LIST_MENU_DESC);
+
+    public static final boolean TOP_LEVEL_CPU_LIST = classExists(TOP_LEVEL_CPU_LIST_CLASS);
 
     public static final boolean CRAFTING_CPU_SCREEN_OVERRIDES_INIT = declaresMethod(CRAFTING_CPU_SCREEN, "()V", "init",
             "m_7856_");
@@ -51,6 +54,14 @@ public final class Ae2Detection {
             return node;
         } catch (Throwable ignored) {
             return null;
+        }
+    }
+
+    private static boolean classExists(String internalName) {
+        try (InputStream in = Ae2Detection.class.getClassLoader().getResourceAsStream(internalName + ".class")) {
+            return in != null;
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 

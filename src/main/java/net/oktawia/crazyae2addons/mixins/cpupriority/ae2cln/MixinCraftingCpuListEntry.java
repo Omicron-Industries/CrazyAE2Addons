@@ -1,4 +1,4 @@
-package net.oktawia.crazyae2addons.mixins.cpupriority;
+package net.oktawia.crazyae2addons.mixins.cpupriority.ae2cln;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -9,12 +9,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.menu.me.crafting.CraftingStatusMenu.CraftingCpuListEntry;
-
+import net.oktawia.crazyae2addons.logic.interfaces.ICpuListEntryInfo;
 import net.oktawia.crazyae2addons.logic.interfaces.ICpuPrio;
 
-@Mixin(value = CraftingCpuListEntry.class, remap = false)
-public class MixinCraftingCpuListEntryPrio implements ICpuPrio {
+@Mixin(targets = "appeng.menu.me.crafting.CraftingCpuListEntry", remap = false)
+public abstract class MixinCraftingCpuListEntry implements ICpuPrio, ICpuListEntryInfo {
 
     @Unique
     private int crazyae2addons$prio;
@@ -35,10 +34,7 @@ public class MixinCraftingCpuListEntryPrio implements ICpuPrio {
     }
 
     @Inject(method = "readFromPacket", at = @At("TAIL"))
-    private static void crazyae2addons$readPrio(
-            FriendlyByteBuf buf,
-            CallbackInfoReturnable<CraftingCpuListEntry> cir) {
-        var ret = cir.getReturnValue();
-        ((ICpuPrio) (Object) ret).setPrio(buf.readVarInt());
+    private static void crazyae2addons$readPrio(FriendlyByteBuf buf, CallbackInfoReturnable<Object> cir) {
+        ((ICpuPrio) cir.getReturnValue()).setPrio(buf.readVarInt());
     }
 }

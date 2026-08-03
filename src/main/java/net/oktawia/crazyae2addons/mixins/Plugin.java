@@ -112,7 +112,7 @@ public class Plugin implements IMixinConfigPlugin {
                     "net.oktawia.crazyae2addons.mixins.resourcetracking.MixinMEStockingFluidSlot" ->
                 doload = gtceuLoaded;
         }
-        ;
+
         LOGGER.info("{} load status: {}", mixinClassName, doload);
         return doload;
     }
@@ -123,7 +123,12 @@ public class Plugin implements IMixinConfigPlugin {
 
     @Override
     public List<String> getMixins() {
-        return null;
+        String variant = Ae2Detection.TOP_LEVEL_CPU_LIST ? "ae2cln" : "ae2";
+        LOGGER.info("cpu list variant: {}", variant);
+
+        return List.of(
+                "cpupriority." + variant + ".MixinCraftingCpuList",
+                "cpupriority." + variant + ".MixinCraftingCpuListEntry");
     }
 
     @Override
